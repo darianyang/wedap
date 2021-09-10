@@ -30,54 +30,62 @@ def create_cmd_arguments():
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
     ###########################################################
-    parser.add_argument("--first-iter", default=1,
+    # nargs = '?' "One argument will be consumed from the command line if possible, 
+        # and produced as a single item. If no command-line argument is present, 
+        # the value from default will be produced."
+
+    parser.add_argument("--first-iter", default=1, nargs="?",
                         dest="first_iter",
                         help="Plot data starting at iteration FIRST_ITER."
                              "By default, plot data starting at the first"
                              "iteration in the specified west.h5 file.",
                         type=int)
-    parser.add_argument("--last-iter", default=None,
+    parser.add_argument("--last-iter", default=None, nargs="?",
                         dest="last_iter",
                         help="Plot data up to and including iteration LAST_ITER."
                              "By default, plot data up to and including the last "
                              "iteration in the specified w_pdist file.",
                         type=int)
-    parser.add_argument("--bins", default=100,
+    parser.add_argument("--bins", default=100, nargs="?",
                         dest="bins",
                         help="Use BINS number of bins for histogramming "
                              "Divide the range between the minimum and maximum "
                              "observed values into this many bins",
                         type=int)
-    parser.add_argument("--p_max", default=None,
+    parser.add_argument("--p_max", default=None, nargs="?",
                         dest="p_max",
                         help="The maximum probability limit value."
                              "This determines the cbar limits and contours levels.",
                         type=int)
-    parser.add_argument("--p_units", default="kT",
+    parser.add_argument("--p_units", default="kT", nargs="?",
                         dest="p_units",
                         help="Can be 'kT' (default) or 'kcal'." # TODO: temp arg
                              "kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.",
                         type=str)
-    parser.add_argument("--plot_type", default="heat",
-                        dest="data_type",
+    parser.add_argument("--plot_type", default="heat", nargs="?",
+                        dest="plot_type",
                         help="Type of pdist dataset to generate, options are"
                              "'evolution' (1 dataset);" 
                              "'average' or 'instance' (1 or 2 datasets)",
                         type=str) 
-    parser.add_argument("--data_type", default="instance",
-                        dest="plot_type",
+    parser.add_argument("--data_type", default="instance", nargs="?",
+                        dest="data_type",
                         help="The type of plot desired, current options are"
                              "the default 'heat' and 'contour'.",
                         type=str)
-    parser.add_argument("--aux_x", default=None, #TODO: default to pcoord w/ none
+    parser.add_argument("--cmap", default="viridis", nargs="?",
+                        dest="cmap",
+                        help="mpl colormap style.",
+                        type=str)
+    parser.add_argument("--aux_x", default=None, nargs="?", #TODO: default to pcoord w/ none
                         dest="aux_x",
                         help="Target data for x axis.",
                         type=str)
-    parser.add_argument("--aux_y", default=None, #TODO: default to pcoord w/ none
+    parser.add_argument("--aux_y", default=None, nargs="?", #TODO: default to pcoord w/ none
                         dest="aux_y",
                         help="Target data for x axis.",
                         type=str)
-    parser.add_argument("--output", default="hist.pdf",
+    parser.add_argument("--output", default="hist.pdf", #nargs="?",
                         dest="output_path",
                         help="The filename to which the plot will be saved."
                              "Various image formats are available.  You " 
@@ -100,12 +108,14 @@ def create_cmd_arguments():
 
     # create file flag  
     required_args.add_argument("-h5", "--h5file", required = True, help = "The \
-    WESTPA west.h5 output file that will be analyzed.", action = "store", dest = "h5") 
+        WESTPA west.h5 output file that will be analyzed.", action = "store", 
+        dest = "h5", type=str) 
 
     # return the argument parser
     return parser 
 
 
+# TODO: adjust all to fix str/int/type auto
 def handle_command_line(argument_parser): 
     """
     Take command line arguments, check for issues, return the arguments. 
@@ -128,9 +138,9 @@ def handle_command_line(argument_parser):
     args = argument_parser.parse_args() 
 
     # h5 file and file exists
-    if not os.path.exists(args.file) or not ".h5" in args.file:  
-        # print error message and exits
-        sys.exit("Must input file that exists and is in .h5 file format.")
+    # if not os.path.exists(args.file) or not ".h5" in args.file:  
+    #     # print error message and exits
+    #     sys.exit("Must input file that exists and is in .h5 file format.")
 
     # if not args.percentage.isdigit():  # not correct input   
     #     # print out any possible issues

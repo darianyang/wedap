@@ -162,11 +162,12 @@ def get_iter_range(h5, aux, iteration, ext):
             )
 
 
-def pdist_to_normhist(h5, aux_x, aux_y=None, data_type="instant", last_iter=None, first_iter=1, 
-                      bins=100, bin_ext=0.05, p_max=None, p_units="kT"):
+def pdist_to_normhist(args_list):
     """
     Parameters
     ----------
+    args_list : argparse.Namespace
+        Contains command line arguments passed in by user.
     h5 : str
         path to west.h5 file
     aux_x : str
@@ -198,67 +199,67 @@ def pdist_to_normhist(h5, aux_x, aux_y=None, data_type="instant", last_iter=None
     #p_max += 10 # makes for smoother edges of contour plots # TODO, don't really need pmax here anymore
     p_max = None
 
-    if last_iter:
-        max_iter = last_iter
-    elif last_iter is None:
-        max_iter = h5py.File(h5, mode="r").attrs["west_current_iteration"] - 1
+    if args_list.last_iter:
+        max_iter = args_list.last_iter
+    elif args_list.last_iter is None:
+        max_iter = h5py.File(args_list.h5, mode="r").attrs["west_current_iteration"] - 1
     else:
         raise TypeError("last_iter must be int.")
 
     # get range for max iter hist values: use this as static bin value for evolution plot
-    max_iter_hist_range_x = get_iter_range(h5, aux_x, max_iter, 0.25)
-    if aux_y:
-        max_iter_hist_range_y = get_iter_range(h5, aux_y, max_iter, 0.25)
+    max_iter_hist_range_x = get_iter_range(args_list.h5, args_list.aux_x, max_iter, 0.25)
+    if args_list.aux_y:
+        max_iter_hist_range_y = get_iter_range(args_list.h5, args_list.aux_y, max_iter, 0.25)
 
-    if data_type == "instant":
-        if aux_y:
-            center_x, center_y, counts_total = aux_to_pdist(h5, max_iter, aux_x, aux_y=aux_y, 
-                                                            bins=bins, hist_range=(max_iter_hist_range_x, 
+    if args_list.data_type == "instant":
+        if args_list.aux_y:
+            center_x, center_y, counts_total = aux_to_pdist(args_list.h5, max_iter, args_list.aux_x, aux_y=args_list.aux_y, 
+                                                            bins=args_list.bins, hist_range=(max_iter_hist_range_x, 
                                                                                    max_iter_hist_range_y
                                                                                    )
                                                             )
-            counts_total = norm_hist(counts_total, p_units, p_max=p_max)
+            counts_total = norm_hist(counts_total, args_list.p_units, p_max=p_max)
             return center_x, center_y, counts_total
 
         else:
-            center, counts_total = aux_to_pdist(h5, max_iter, aux_x, bins=bins, hist_range=max_iter_hist_range_x)
-            counts_total = norm_hist(counts_total, p_units, p_max=p_max)
+            center, counts_total = aux_to_pdist(args_list.h5, max_iter, args_list.aux_x, bins=args_list.bins, hist_range=max_iter_hist_range_x)
+            counts_total = norm_hist(counts_total, args_list.p_units, p_max=p_max)
             return center, counts_total
 
-    elif data_type == "evolution" or data_type == "average":
+    elif args_list.data_type == "evolution" or args_list.data_type == "average":
         # make array to store hist (-lnP) values for n iterations of aux_x
-        evolution_x = np.zeros(shape=(max_iter, bins))
-        positions_x = np.zeros(shape=(max_iter, bins))
-        if aux_y:
-            average_xy = np.zeros(shape=(bins, bins))
+        evolution_x = np.zeros(shape=(max_iter, args_list.bins))
+        positions_x = np.zeros(shape=(max_iter, args_list.bins))
+        if args_list.aux_y:
+            average_xy = np.zeros(shape=(args_list.bins, args_list.bins))
 
-        for iter in range(first_iter, max_iter + 1):
-            center_x, counts_total_x = aux_to_pdist(h5, iter, aux_x, bins=bins, hist_range=max_iter_hist_range_x)
+        for iter in range(args_list.first_iter, max_iter + 1):
+            center_x, counts_total_x = aux_to_pdist(args_list.h5, iter, args_list.aux_x, bins=args_list.bins, hist_range=max_iter_hist_range_x)
             evolution_x[iter - 1] = counts_total_x
             positions_x[iter - 1] = center_x
             
             # 2D avg pdist data generation
-            if aux_y:
-                center_x, center_y, counts_total_xy = aux_to_pdist(h5, iter, aux_x, aux_y=aux_y, 
-                                                                   bins=bins, hist_range=(max_iter_hist_range_x, 
+            if args_list.aux_y:
+                center_x, center_y, counts_total_xy = aux_to_pdist(args_list.h5, iter, args_list.aux_x, aux_y=args_list.aux_y, 
+                                                                   bins=args_list.bins, hist_range=(max_iter_hist_range_x,  
                                                                                           max_iter_hist_range_y
                                                                                           )
                                                                     )
                 average_xy = np.add(average_xy, counts_total_xy)
 
         # 2D evolution plot of aux_x (aux_y not used if provided) per iteration        
-        if data_type == "evolution":
-            evolution_x = norm_hist(evolution_x, p_units, p_max=p_max)
+        if args_list.data_type == "evolution":
+            evolution_x = norm_hist(evolution_x, args_list.p_units, p_max=p_max)
             return positions_x, np.arange(1, max_iter + 1,1), evolution_x
 
-        if data_type == "average":
+        if args_list.data_type == "average":
             # summation of counts for all iterations : then normalize
             col_avg_x = [np.sum(col[col != np.isinf]) for col in evolution_x.T]
-            col_avg_x = norm_hist(col_avg_x, p_units, p_max=p_max)
+            col_avg_x = norm_hist(col_avg_x, args_list.p_units, p_max=p_max)
 
             # 2D average plot data for aux_x and aux_y
-            if aux_y: 
-                average_xy = norm_hist(average_xy, p_units, p_max=p_max)
+            if args_list.aux_y: 
+                average_xy = norm_hist(average_xy, args_list.p_units, p_max=p_max)
                 return center_x, center_y, average_xy
 
             # 1D average plot data for aux_x
@@ -269,15 +270,17 @@ def pdist_to_normhist(h5, aux_x, aux_y=None, data_type="instant", last_iter=None
         raise ValueError("data_type str must be 'instant', 'average', or 'evolution'")
 
 
-def plot_normhist(x, y, norm_hist=None, plot_type="heat", data_type="instance", p_max=None, p_units="kT", 
-                  savefig=None, cmap="viridis", **plot_options):
-    """ # TODO: add ax argument and plt.gca() option
+def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
+    """
     Parameters
     ----------
     x, y : ndarray
         x and y axis values, and if using aux_y or evolution (with only aux_x), also must input norm_hist.
+    args_list : argparse.Namespace
+        Contains command line arguments passed in by user.
     norm_hist : ndarray
         norm_hist is a 2-D matrix of the normalized histogram values.
+    ax : mpl axes object
     plot_type: str
         'heat' (default), or 'contour'. 
     data_type : str
@@ -291,33 +294,33 @@ def plot_normhist(x, y, norm_hist=None, plot_type="heat", data_type="instance", 
     cmap : str
         Colormap option, default = viridis.
     **plot_options : kwargs
-
-    # TODO: see AJD free energy plot py for example: use this function to optionally populate an axes.
-    # This way it can be used for multiple subplot figures.
     """
-    fig, ax = plt.subplots(figsize=(8,6))
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8,6))
+    else:
+        fig = plt.gca()
 
-    if norm_hist is not None and plot_type == "heat":
-        if p_max:
-            norm_hist[norm_hist > p_max] = inf
-        plot = ax.pcolormesh(x, y, norm_hist, cmap=cmap, shading="auto", vmin=0, vmax=p_max)
+    if norm_hist is not None and args_list.plot_type == "heat":
+        if args_list.p_max:
+            norm_hist[norm_hist > args_list.p_max] = inf
+        plot = ax.pcolormesh(x, y, norm_hist, cmap=args_list.cmap, shading="auto", vmin=0, vmax=args_list.p_max)
 
-    elif norm_hist is not None and plot_type == "contour":
-        if data_type == "evolution":
+    elif norm_hist is not None and args_list.plot_type == "contour":
+        if args_list.data_type == "evolution":
             raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
-        elif p_max is None:
+        elif args_list.p_max is None:
             warn("With 'contour' plot_type, p_max should be set. Otherwise max norm_hist is used.")
             levels = np.arange(0, np.max(norm_hist[norm_hist != np.inf ]), 1)
-        elif p_max <= 1:
-            levels = np.arange(0, p_max + 0.1, 0.1)
+        elif args_list.p_max <= 1:
+            levels = np.arange(0, args_list.p_max + 0.1, 0.1)
         else:
-            levels = np.arange(0, p_max + 1, 1)
+            levels = np.arange(0, args_list.p_max + 1, 1)
         lines = ax.contour(x, y, norm_hist, levels=levels, colors="black", linewidths=1)
-        plot = ax.contourf(x, y, norm_hist, levels=levels, cmap=cmap)
+        plot = ax.contourf(x, y, norm_hist, levels=levels, cmap=args_list.cmap)
 
     elif norm_hist is None:
-        if p_max:
-            y[y > p_max] = inf
+        if args_list.p_max:
+            y[y > args_list.p_max] = inf
         ax.plot(x, y)
     
     # unpack plot options dictionary
@@ -347,14 +350,14 @@ def plot_normhist(x, y, norm_hist=None, plot_type="heat", data_type="instance", 
         cbar = fig.colorbar(plot)
         #if lines:
         #    cbar.add_lines(lines)
-        if p_units == "kT":
+        if args_list.p_units == "kT":
             cbar.set_label(r"$\Delta F(\vec{x})\,/\,kT$" + "\n" + r"$\left[-\ln\,P(x)\right]$")
-        elif p_units == "kcal":
+        elif args_list.p_units == "kcal":
             cbar.set_label(r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)")
 
     fig.tight_layout()
-    if savefig:
-        fig.savefig(savefig, dpi=300, transparent=True)
+    if args_list.output_path:
+        fig.savefig(args_list.output_path, dpi=300, transparent=True)
     # else:
     #     plt.show()
 

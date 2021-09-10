@@ -20,9 +20,10 @@ if __name__ == '__main__':
     Generate pdist and plot
     """
     X, Y, Z = pdist_to_normhist(args_list)
-    plot_normhist(X, Y, Z, args_list)
+    plot_normhist(X, Y, args_list, norm_hist=Z) #TODO: adjust arg/kwarg order
+    plt.show()
 
     """
     Trace (Optional Argument)
     """
-    if args_list.trace is True:
+    #if args_list.trace is True:
