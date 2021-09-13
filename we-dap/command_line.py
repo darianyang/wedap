@@ -8,8 +8,8 @@ import sys
 
 from gooey import Gooey
 
-@Gooey
-def create_cmd_arguments(): 
+@Gooey(optional_cols=4, default_size=(900, 700))
+def create_cmd_arguments(aux): 
     """
     Use the `argparse` module to make the optional and required command-line
     arguments for the `wedap`. 
@@ -61,31 +61,32 @@ def create_cmd_arguments():
                              "This determines the cbar limits and contours levels.",
                         type=int)
     parser.add_argument("--p_units", default="kT", nargs="?",
-                        dest="p_units",
+                        dest="p_units", choices=("kT", "kcal"),
                         help="Can be 'kT' (default) or 'kcal'." # TODO: temp arg
                              "kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.",
                         type=str)
-    parser.add_argument("--plot_type", default="heat", nargs="?",
-                        dest="plot_type",
+    parser.add_argument("--data_type", default="evolution", nargs="?",
+                        dest="data_type", choices=("evolution", "average", "instance"),
                         help="Type of pdist dataset to generate, options are"
                              "'evolution' (1 dataset);" 
                              "'average' or 'instance' (1 or 2 datasets)",
                         type=str) 
-    parser.add_argument("--data_type", default="instance", nargs="?",
-                        dest="data_type",
+    parser.add_argument("--plot_type", default="heat", nargs="?",
+                        dest="plot_type", choices=("heat", "contour"),
                         help="The type of plot desired, current options are"
-                             "the default 'heat' and 'contour'.",
+                             "'heat' and 'contour'.",
                         type=str)
     parser.add_argument("--cmap", default="viridis", nargs="?",
-                        dest="cmap",
+                        dest="cmap", choices=("viridis", "afmhot", "gnuplot_r"),
                         help="mpl colormap style.",
                         type=str)
+    # TODO: could make choices tuple with the available aux values from the h5 file
     parser.add_argument("--aux_x", default=None, nargs="?", #TODO: default to pcoord w/ none
-                        dest="aux_x",
+                        dest="aux_x", choices=aux,
                         help="Target data for x axis.",
                         type=str)
     parser.add_argument("--aux_y", default=None, nargs="?", #TODO: default to pcoord w/ none
-                        dest="aux_y",
+                        dest="aux_y", choices=aux,
                         help="Target data for x axis.",
                         type=str)
     parser.add_argument("--output", default="hist.pdf", #nargs="?",

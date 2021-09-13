@@ -6,8 +6,11 @@ This script effectively replaces the need to use the native WESTPA plotting pipe
 west.h5 --w_pdist(with --construct-dataset module.py)--> 
 pdist.h5 --plothist(with --postprocess-functions hist_settings.py)--> plot.pdf
 
-TODO: maybe add option to output pdist as file, this would speed up subsequent plotting
-    of the same data.
+TODO: 
+    - maybe add option to output pdist as file, this would speed up subsequent plotting
+        of the same data.
+    - These all take the same args, could make into a class with init(args)
+    - Clean up to accomadate the argparse args_list
 """
 
 import h5py
@@ -19,10 +22,8 @@ from warnings import warn
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
-### TODO: these all take the same args, make into a class with init(args)
-
 def norm_hist(hist, p_units, p_max=None):
-    """
+    """ TODO: add temperature arg, also this function may not be needed.
     Parameters
     ----------
     hist : ndarray
@@ -170,9 +171,9 @@ def pdist_to_normhist(args_list):
         Contains command line arguments passed in by user.
     h5 : str
         path to west.h5 file
-    aux_x : str
+    aux_x : str #TODO: default to pcoord1
         target data for x axis
-    aux_y : str
+    aux_y : str #TODO: default to pcoord1
         target data for y axis
     data_type : str
         'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
@@ -281,30 +282,32 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
     norm_hist : ndarray
         norm_hist is a 2-D matrix of the normalized histogram values.
     ax : mpl axes object
-    plot_type: str
-        'heat' (default), or 'contour'. 
-    data_type : str
-        'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
-    p_max : int
-        The maximum probability limit value.
-    p_units : str
-        Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
-    savefig : str
-        Path to save the plot as 300 dpi png, otherwise show.
-    cmap : str
-        Colormap option, default = viridis.
-    **plot_options : kwargs
+        args_list options
+        -----------------
+        plot_type: str
+            'heat' (default), or 'contour'. 
+        data_type : str
+            'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
+        p_max : int
+            The maximum probability limit value.
+        p_units : str
+            Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
+        cmap : str
+            Colormap option, default = viridis.
+        **plot_options : kwargs
     """
     if ax is None:
         fig, ax = plt.subplots(figsize=(8,6))
     else:
         fig = plt.gca()
 
+    # 2D heatmaps
     if norm_hist is not None and args_list.plot_type == "heat":
         if args_list.p_max:
             norm_hist[norm_hist > args_list.p_max] = inf
         plot = ax.pcolormesh(x, y, norm_hist, cmap=args_list.cmap, shading="auto", vmin=0, vmax=args_list.p_max)
 
+    # 2D contour plots
     elif norm_hist is not None and args_list.plot_type == "contour":
         if args_list.data_type == "evolution":
             raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
@@ -318,12 +321,13 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
         lines = ax.contour(x, y, norm_hist, levels=levels, colors="black", linewidths=1)
         plot = ax.contourf(x, y, norm_hist, levels=levels, cmap=args_list.cmap)
 
+    # 1D data
     elif norm_hist is None:
         if args_list.p_max:
             y[y > args_list.p_max] = inf
         ax.plot(x, y)
     
-    # unpack plot options dictionary
+    # unpack plot options dictionary # TODO: update this for argparse
     for key, item in plot_options.items():
         if key == "xlabel":
             ax.set_xlabel(item)
@@ -337,7 +341,7 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
             ax.set_title(item)
         if key == "grid":
             ax.grid(item, alpha=0.5)
-        if key == "minima":
+        if key == "minima": # TODO: this is essentially bstate, also put maxima?
             # reorient transposed hist matrix
             norm_hist = np.rot90(np.flip(norm_hist, axis=0), k=3)
             # get minima coordinates index (inverse maxima since min = 0)
@@ -348,6 +352,7 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
 
     if norm_hist is not None:
         cbar = fig.colorbar(plot)
+        # TODO: lines on colorbar?
         #if lines:
         #    cbar.add_lines(lines)
         if args_list.p_units == "kT":
@@ -356,10 +361,6 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
             cbar.set_label(r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)")
 
     fig.tight_layout()
-    if args_list.output_path:
-        fig.savefig(args_list.output_path, dpi=300, transparent=True)
-    # else:
-    #     plt.show()
 
 
 # TODO: could convert to class, with args = h5, data_type, etc as attrs

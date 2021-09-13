@@ -57,29 +57,29 @@ def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False):
         plt.plot(aux_x[:,0], aux_y[:,0], c="cyan", lw=1)
 
 
-from h5_plot_main import *
-data_options = {"data_type" : "average",
-                "p_max" : 20,
-                "p_units" : "kcal",
-                "last_iter" : 200,
-                "bins" : 100
-                }
+# from h5_plot_main import *
+# data_options = {"data_type" : "average",
+#                 "p_max" : 20,
+#                 "p_units" : "kcal",
+#                 "last_iter" : 200,
+#                 "bins" : 100
+#                 }
 
-h5 = "1a43_v02/wcrawl/west_i200_crawled.h5"
-aux_x = "1_75_39_c2"
-aux_y = "M2Oe_M1He1"
+# h5 = "1a43_v02/wcrawl/west_i200_crawled.h5"
+# aux_x = "1_75_39_c2"
+# aux_y = "M2Oe_M1He1"
 
-X, Y, Z = pdist_to_normhist(h5, aux_x, aux_y, **data_options)
-levels = np.arange(0, data_options["p_max"] + 1, 1)
-plt.contour(X, Y, Z, levels=levels, colors="black", linewidths=1)
-plt.contourf(X, Y, Z, levels=levels, cmap="gnuplot_r")
-plt.colorbar()
+# X, Y, Z = pdist_to_normhist(h5, aux_x, aux_y, **data_options)
+# levels = np.arange(0, data_options["p_max"] + 1, 1)
+# plt.contour(X, Y, Z, levels=levels, colors="black", linewidths=1)
+# plt.contourf(X, Y, Z, levels=levels, cmap="gnuplot_r")
+# plt.colorbar()
 
 from search_aux import *
 # for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53° and 2.8A is alt minima = i173 s70
 iter, seg = search_aux_xy_nn(h5, aux_x, aux_y, 53, 2.8, data_options["last_iter"])
 plot_trace(h5, (iter,seg), aux_x, aux_y)
 
-plt.show()
+# plt.show()
 
 # TODO: combine this functionality into a condensed script
