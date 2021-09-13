@@ -6,6 +6,9 @@ import argparse
 import os
 import sys
 
+from gooey import Gooey
+
+@Gooey
 def create_cmd_arguments(): 
     """
     Use the `argparse` module to make the optional and required command-line
@@ -93,11 +96,9 @@ def create_cmd_arguments():
                         type=str)
 
     # create optional flag to output everything to console screen 
-    parser.add_argument("--outputToScreen", help = "Outputs all input\
-        data and calculated data to console screen. If this flag is NOT \
-        selected, data will be saved in JSON files.", 
+    parser.add_argument("--outputToScreen", default=True,
+        help = "Outputs plot to screen, otherwise save as image.", 
         action= "store_true", dest = "output_to_screen" ) 
-
 
     ##########################################################
     ############### REQUIRED ARGUMENTS #######################

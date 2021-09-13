@@ -21,7 +21,8 @@ if __name__ == '__main__':
     """
     X, Y, Z = pdist_to_normhist(args_list)
     plot_normhist(X, Y, args_list, norm_hist=Z) #TODO: adjust arg/kwarg order
-    plt.show()
+    if args_list.output_to_screen is True:
+        plt.show()
 
     """
     Trace (Optional Argument)
