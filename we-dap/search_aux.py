@@ -8,7 +8,7 @@ import h5py
 from scipy.spatial import KDTree
 
 
-def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, max_iter, first_iter=1):
+def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter, first_iter=1):
     """
     Parameters
     ----------
@@ -20,7 +20,7 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, max_iter, first_iter=1):
         target data for second aux value
     val_x : int or float
     val_y : int or float
-    max_iter : int
+    last_iter : int
         last iter to consider.
     first_iter : int
         default start at 1.
@@ -30,6 +30,11 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, max_iter, first_iter=1):
 
     # This is the target value you want to look for 
     target = [val_x, val_y]
+
+    if last_iter:
+        max_iter = last_iter
+    elif last_iter is None:
+        max_iter = h5py.File(h5, mode="r").attrs["west_current_iteration"] - 1
 
     # phase 1: finding iteration number
     array1 = []

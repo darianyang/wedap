@@ -95,6 +95,18 @@ def create_cmd_arguments(aux):
                              "Various image formats are available.  You " 
                              "may choose one by specifying an extension",
                         type=str)
+    trace_group = parser.add_mutually_exclusive_group()
+    # type to float for val inside tuple, and nargs to 2 since it is interpreted as a 2 item tuple or list
+    trace_group.add_argument("--trace_seg", default=None, nargs=2,
+                             dest="trace_seg",
+                             help="Trace and plot a single continuous trajectory based"
+                                 "off of a (iteration, segment) tuple.",
+                             type=int)
+    trace_group.add_argument("--trace_val", default=None, nargs=2,
+                             dest="trace_val",
+                             help="Trace and plot a single continuous trajectory based"
+                                  "off of a (aux_x value, aux_y value) tuple.",
+                             type=float)
 
     # create optional flag to output everything to console screen 
     parser.add_argument("--outputToScreen", default=True,

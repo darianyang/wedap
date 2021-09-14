@@ -75,10 +75,10 @@ def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False):
 # plt.contourf(X, Y, Z, levels=levels, cmap="gnuplot_r")
 # plt.colorbar()
 
-from search_aux import *
-# for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53° and 2.8A is alt minima = i173 s70
-iter, seg = search_aux_xy_nn(h5, aux_x, aux_y, 53, 2.8, data_options["last_iter"])
-plot_trace(h5, (iter,seg), aux_x, aux_y)
+# from search_aux import *
+# # for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53° and 2.8A is alt minima = i173 s70
+# iter, seg = search_aux_xy_nn(h5, aux_x, aux_y, 53, 2.8, data_options["last_iter"])
+# plot_trace(h5, (iter,seg), aux_x, aux_y)
 
 # plt.show()
 
