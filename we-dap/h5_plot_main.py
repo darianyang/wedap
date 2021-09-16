@@ -270,6 +270,19 @@ def pdist_to_normhist(args_list):
     else:
         raise ValueError("data_type str must be 'instant', 'average', or 'evolution'")
 
+# TODO
+# def _smooth(self):
+#     if self.data_smoothing_level is not None:
+#         self.Z_data[numpy.isnan(self.Z_data)] = numpy.nanmax(self.Z_data)
+#         self.Z_data = scipy.ndimage.filters.gaussian_filter(self.Z_data, 
+#                             self.data_smoothing_level)
+#     if self.curve_smoothing_level is not None:
+#         self.Z_curves[numpy.isnan(self.Z_curves)] = numpy.nanmax(self.Z_curves)
+#         self.Z_curves = scipy.ndimage.filters.gaussian_filter(self.Z_curves, 
+#                             self.curve_smoothing_level)
+#     self.Z_data[numpy.isnan(self.Z)] = numpy.nan 
+#     self.Z_curves[numpy.isnan(self.Z)] = numpy.nan 
+
 
 def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
     """
@@ -307,7 +320,7 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
             norm_hist[norm_hist > args_list.p_max] = inf
         plot = ax.pcolormesh(x, y, norm_hist, cmap=args_list.cmap, shading="auto", vmin=0, vmax=args_list.p_max)
 
-    # 2D contour plots
+    # 2D contour plots TODO: add smooting functionality
     elif norm_hist is not None and args_list.plot_type == "contour":
         if args_list.data_type == "evolution":
             raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
@@ -360,7 +373,7 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
         elif args_list.p_units == "kcal":
             cbar.set_label(r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)")
 
-    fig.tight_layout()
+    #fig.tight_layout()
 
 
 # TODO: could convert to class, with args = h5, data_type, etc as attrs

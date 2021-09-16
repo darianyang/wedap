@@ -65,7 +65,8 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter, first_iter=1):
     d2, i2 = tree2.query(target,k=1)  
     seg_num = int(i2)
 
-    print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))
+    #print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))
+    print(f"Trace plotted for ITERATION: {iter_num} and SEGMENT: {seg_num}")
     return iter_num, seg_num
 
 

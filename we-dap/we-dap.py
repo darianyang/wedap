@@ -39,15 +39,27 @@ if __name__ == '__main__':
         plot_trace(args_list.h5, args_list.trace_seg, args_list.aux_x, args_list.aux_y)
     if args_list.trace_val is not None:
         # for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53° and 2.8A is alt minima = i173 s70
+        # for demo: can use x = 53 and y = 2.7 or 2.6
         iter, seg = search_aux_xy_nn(args_list.h5, args_list.aux_x, args_list.aux_y, 
                                     # TODO: update to aux_x aux_y tuple
-                                    args_list.trace_val[0], args_list.trace_val[1], args_list.last_iter) 
+                                    args_list.trace_val[0], args_list.trace_val[1], args_list.last_iter)
         plot_trace(args_list.h5, (iter,seg), args_list.aux_x, args_list.aux_y)
+
+    """
+    Plot formatting
+    """
+    plt.xlabel(args_list.aux_x)
+    if args_list.aux_y:
+        plt.ylabel(args_list.aux_y)
+    if args_list.data_type == "evolution":
+        plt.ylabel("WE Iteration")
 
     """
     Show and/or save the final plot
     """
-    if args_list.output_path is True:
+    plt.tight_layout()
+    # TODO: the save fig option produces a choppy image
+    if args_list.output_path is not None:
         plt.savefig(args_list.output_path, dpi=300, transparent=True)
     if args_list.output_to_screen is True:
         plt.show()

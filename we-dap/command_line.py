@@ -25,10 +25,9 @@ def create_cmd_arguments(aux):
 
     # create argument parser 
     parser = argparse.ArgumentParser(description = 
-        """
-        Given an input west.h5 file from a successful WESTPA simulation, prepare
-        probability distributions and plots.
-        """)
+        "Weighted Ensemble data analysis and plotting (WE-dap). \n"
+        "Given an input west.h5 file from a successful WESTPA simulation, prepare "
+        "probability distributions and plots.")
 
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
@@ -89,7 +88,7 @@ def create_cmd_arguments(aux):
                         dest="aux_y", choices=aux,
                         help="Target data for x axis.",
                         type=str)
-    parser.add_argument("--output", default="hist.pdf", #nargs="?",
+    parser.add_argument("--output", default=None,
                         dest="output_path",
                         help="The filename to which the plot will be saved."
                              "Various image formats are available.  You " 
@@ -100,18 +99,27 @@ def create_cmd_arguments(aux):
     trace_group.add_argument("--trace_seg", default=None, nargs=2,
                              dest="trace_seg",
                              help="Trace and plot a single continuous trajectory based"
-                                 "off of a (iteration, segment) tuple.",
+                                 "off of 2 int values : iteration and segment",
                              type=int)
     trace_group.add_argument("--trace_val", default=None, nargs=2,
                              dest="trace_val",
                              help="Trace and plot a single continuous trajectory based"
-                                  "off of a (aux_x value, aux_y value) tuple.",
+                                  "off of 2 float : aux_x value and aux_y value",
                              type=float)
+
+    # TODO
+    # parser.add_argument('--smooth-data', default = None, 
+    #                     dest='data_smoothing_level',
+    #                     help='Smooth data (plotted as histogram or contour'
+    #                             ' levels) using a gaussian filter with sigma='
+    #                             'DATA_SMOOTHING_LEVEL.',
+    #                     type=float)
 
     # create optional flag to output everything to console screen 
     parser.add_argument("--outputToScreen", default=True,
-        help = "Outputs plot to screen, otherwise save as image.", 
-        action= "store_true", dest = "output_to_screen" ) 
+                        dest = "output_to_screen",
+                        help = "Outputs plot to screen", 
+                        action= "store_true") 
 
     ##########################################################
     ############### REQUIRED ARGUMENTS #######################
