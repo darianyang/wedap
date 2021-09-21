@@ -7,6 +7,8 @@ This repository is currently under development.
 This package reqiures the following:
 - Numpy
 - Matplotlib
+- H5py
+- Gooey
 
 Features should be developed on branches. To create and switch to a branch, use the command:
 
