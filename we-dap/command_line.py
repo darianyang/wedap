@@ -6,9 +6,9 @@ import argparse
 import os
 import sys
 
-from gooey import Gooey
+#from gooey import Gooey
 
-@Gooey(optional_cols=4, default_size=(900, 700))
+#@Gooey(optional_cols=4, default_size=(900, 700))
 def create_cmd_arguments(aux): 
     """
     Use the `argparse` module to make the optional and required command-line
