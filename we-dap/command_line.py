@@ -9,7 +9,7 @@ import sys
 #from gooey import Gooey
 
 #@Gooey(optional_cols=4, default_size=(900, 700))
-def create_cmd_arguments(aux): 
+def create_cmd_arguments(): 
     """
     Use the `argparse` module to make the optional and required command-line
     arguments for the `wedap`. 
@@ -81,11 +81,11 @@ def create_cmd_arguments(aux):
                         type=str)
     # TODO: could make choices tuple with the available aux values from the h5 file
     parser.add_argument("--aux_x", default=None, nargs="?", #TODO: default to pcoord w/ none
-                        dest="aux_x", choices=aux,
+                        dest="aux_x", #choices=aux, TODO
                         help="Target data for x axis.",
                         type=str)
     parser.add_argument("--aux_y", default=None, nargs="?", #TODO: default to pcoord w/ none
-                        dest="aux_y", choices=aux,
+                        dest="aux_y", #choices=aux, TODO
                         help="Target data for x axis.",
                         type=str)
     parser.add_argument("--output", default=None,

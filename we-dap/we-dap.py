@@ -13,8 +13,8 @@ from h5_plot_trace import *
 if __name__ == '__main__': 
     
     # TODO: chicken and egg problem, when to initialize the parser?
-    f = h5py.File("data/west.h5", mode="r")
-    aux = list(f[f"iterations/iter_00000001/auxdata/"])
+    #f = h5py.File("data/west.h5", mode="r")
+    #aux = list(f[f"iterations/iter_00000001/auxdata/"])
 
     """
     Command line
@@ -23,7 +23,7 @@ if __name__ == '__main__':
         # the default functions and keep the original args, I think this would allow 
         # for a better python API down the line
     # Create command line arguments with argparse
-    argument_parser = create_cmd_arguments(aux)
+    argument_parser = create_cmd_arguments()
     # Retrieve list of args
     args_list = handle_command_line(argument_parser)
 
