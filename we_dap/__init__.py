@@ -7,4 +7,4 @@ Description:
 """
 
 # Welcome to the WE-dap module! 
-
+from west_h5_plotting import *

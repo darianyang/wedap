@@ -1,4 +1,4 @@
-WE-dap
+WE_dap
 ===========================
 Weighted Ensemble data analysis and plotting.
 

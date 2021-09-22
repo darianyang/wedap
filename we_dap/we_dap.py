@@ -1,10 +1,9 @@
 """
 Main call.
-
 """
 
 from command_line import *
-from h5_plot_main import *
+from west_h5_plotting import *
 
 from search_aux import *
 from h5_plot_trace import *

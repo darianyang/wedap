@@ -22,6 +22,40 @@ from warnings import warn
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
+
+# TODO: add search aux as a class method with seperate args
+class WEST_H5_Plotting:
+    """
+    These class methods generate probability distrubutions and plot the output.
+    """
+
+    def __init__(self, h5, aux_x, aux_y, data_type, ):
+        """
+        Parameters
+        ----------
+        h5 : str
+            path to west.h5 file
+        aux_x : str #TODO: default to pcoord1
+            target data for x axis
+        aux_y : str #TODO: default to pcoord1
+            target data for y axis
+        data_type : str
+            'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
+        last_iter : int
+            Last iteration data to include, default is the last recorded iteration in the west.h5 file.
+        first_iter : int
+            Default start plot at iteration 1 data.
+        bins : int
+            amount of histogram bins in pdist data to be generated, default 100.
+        bin_ext : float
+            Increase the limits of the bins by a percentage value (0.05 = 5% = default).
+        p_max : int
+            The maximum probability limit value.
+        p_units : str
+            Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
+        """
+
+
 def norm_hist(hist, p_units, p_max=None):
     """ TODO: add temperature arg, also this function may not be needed.
     Parameters
