@@ -12,6 +12,8 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter, first_iter=1):
     """
     Parameters
     ----------
+    # TODO: add step size for searching, right now gets the last frame
+    # TODO: add option to search for pcoord and to plot any aux value trace along another aux plot
     h5 : str
         path to west.h5 file
     aux_x : str
@@ -62,7 +64,7 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter, first_iter=1):
     for j in range(0,len(r1)):
         small_array2.append([r1[j],r2[j]])
     tree2 = KDTree(small_array)
-    d2, i2 = tree2.query(target,k=1)  
+    d2, i2 = tree2.query(target,k=1)  # TODO: these can be multiple points, maybe can parse these and filter later
     seg_num = int(i2)
 
     #print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))

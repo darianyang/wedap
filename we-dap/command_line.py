@@ -29,6 +29,8 @@ def create_cmd_arguments():
         "Given an input west.h5 file from a successful WESTPA simulation, prepare "
         "probability distributions and plots.")
 
+    # TODO: put requried first
+
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
     ###########################################################
