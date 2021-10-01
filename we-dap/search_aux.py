@@ -61,7 +61,7 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter, first_iter=1):
     small_array2 = []
     for j in range(0,len(r1)):
         small_array2.append([r1[j],r2[j]])
-    tree2 = KDTree(small_array)
+    tree2 = KDTree(small_array2)
     d2, i2 = tree2.query(target,k=1)  
     seg_num = int(i2)
 
