@@ -9,8 +9,6 @@ pdist.h5 --plothist(with --postprocess-functions hist_settings.py)--> plot.pdf
 TODO: 
     - maybe add option to output pdist as file, this would speed up subsequent plotting
         of the same data.
-    - These all take the same args, could make into a class with init(args)
-    - Clean up to accomadate the argparse args_list
 """
 
 import h5py
@@ -22,39 +20,67 @@ from warnings import warn
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
-
 # TODO: add search aux as a class method with seperate args
-class WEST_H5_Plotting:
+class West_H5_Plotting:
     """
     These class methods generate probability distrubutions and plot the output.
     """
 
-    def __init__(self, h5, aux_x, aux_y, data_type, ):
+    def __init__(self, h5, data_type, aux_x=None, aux_y=None, first_iter=1, last_iter=None, 
+                 bins=100, bin_ext=0.05, p_min=0, p_max=None, p_units='kT'):
         """
         Parameters
         ----------
         h5 : str
             path to west.h5 file
+        data_type : str
+            'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
         aux_x : str #TODO: default to pcoord1
             target data for x axis
         aux_y : str #TODO: default to pcoord1
             target data for y axis
-        data_type : str
-            'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
-        last_iter : int
-            Last iteration data to include, default is the last recorded iteration in the west.h5 file.
         first_iter : int
             Default start plot at iteration 1 data.
+        last_iter : int
+            Last iteration data to include, default is the last recorded iteration in the west.h5 file.
         bins : int
             amount of histogram bins in pdist data to be generated, default 100.
         bin_ext : float
             Increase the limits of the bins by a percentage value (0.05 = 5% = default).
+        p_min : int
+            The minimun probability limit value. Default to 0.
         p_max : int
             The maximum probability limit value.
         p_units : str
             Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
+                TODO: make the temp a class attribute or something dynamic.
+        # TODO: add data smoothing
         """
+        self.h5 = h5
+        self.data_type = data_type
 
+        # TODO: make these instance attributes equal the h5 target directory, but default pcoord
+        if aux_x is not None:
+            self.aux_x = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{aux_x}"]) # TODO: maybe just the last part of string
+        elif aux_x is None:
+            self.aux_x = np.array(f[f"pcoord0"])
+
+        self.aux_y = aux_y
+
+        self.first_iter = first_iter
+        # default to last if not None
+        if last_iter is not None:
+            self.last_iter = last_iter
+        elif last_iter is None:
+            self.last_iter = h5py.File(h5, mode="r").attrs["west_current_iteration"] - 1
+        self.bins = bins
+        self.bin_ext = bin_ext # TODO: maybe not needed
+        self.p_min = p_min # TODO: not set up yet
+        self.p_max = p_max
+        self.p_units = p_units
+
+
+    # Note the arguments will be handled via the handler function in command line
 
 def norm_hist(hist, p_units, p_max=None):
     """ TODO: add temperature arg, also this function may not be needed.
@@ -410,14 +436,10 @@ def plot_normhist(x, y, args_list, norm_hist=None, ax=None, **plot_options):
     #fig.tight_layout()
 
 
-# TODO: could convert to class, with args = h5, data_type, etc as attrs
-    # then each class method calls self.h5 and etc
 
 # TODO: include postprocess.py trace and plot walker functionality
 
-# TODO: eventually add argparse, maybe add some unit tests
-    # argparse would be in a separate file
-    # all plotting options with test.h5, compare output
+    # TODO: all plotting options with test.h5, compare output
         # 1D Evo, 1D and 2D instant and average
         # optional: diff max_iter and bins args
 # TODO: maybe have a yaml config file for plot options
