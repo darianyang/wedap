@@ -1,6 +1,6 @@
-WE_dap
+wedap
 ===========================
-Weighted Ensemble data analysis and plotting.
+weighted ensemble data analysis and plotting.
 
 This repository is currently under development.
 
