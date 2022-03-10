@@ -1,6 +1,6 @@
-wedap
+WEdap
 ===========================
-weighted ensemble data analysis and plotting.
+Weighted Ensemble data analysis and plotting.
 
 This repository is currently under development.
 
@@ -22,4 +22,4 @@ To submit your feature to be incorporated into master branch, you should submit 
 
 ### Copyright
 
-Copyright (c) 2020, Darian Yang
+Copyright (c) 2022, Darian Yang
