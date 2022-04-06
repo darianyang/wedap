@@ -66,11 +66,13 @@ class West_H5_Plotting:
         self.data_type = data_type
 
         # TODO: make these instance attributes equal the h5 target directory, but default pcoord
+        # Default pcoord for either dim
         if aux_x is not None:
             #self.aux_x = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{aux_x}"]) # TODO: maybe just the last part of string
             self.aux_x = aux_x
         elif aux_x is None:
-            self.aux_x = np.array(f[f"pcoord0"])
+            #self.aux_x = np.array(f[f"pcoord0"])
+            self.aux_x = aux_x
 
         self.aux_y = aux_y
 
@@ -86,20 +88,12 @@ class West_H5_Plotting:
         self.p_max = p_max
         self.p_units = p_units
 
-
-    # Note the arguments will be handled via the handler function in command line
-
-    def norm_hist(self, hist, p_units, p_max=None):
+    def norm_hist(self, hist,):
         """ TODO: add temperature arg, also this function may not be needed.
         Parameters
         ----------
         hist : ndarray
             Array containing the histogram count values to be normalized.
-        p_units : str
-            Can be 'kT' or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
-            Adjust RT accordingly if a different temperature is used.
-        p_max : int (optional)
-            The maximum probability limit value.
 
         Returns
         -------
@@ -107,29 +101,23 @@ class West_H5_Plotting:
             The hist array is normalized according to the p_units argument. 
             If p_max, probability values above p_max are adjusted to be inf.
         """
-        if p_units == "kT":
+        if self.p_units == "kT":
             hist = -np.log(hist / np.max(hist))
-        elif p_units == "kcal":
+        elif self.p_units == "kcal":
             hist = -0.5922 * np.log(hist / np.max(hist))
         else:
             raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
-        if p_max: # TODO: this may not be necessary, can just set limits in plotting function
-            hist[hist > p_max] = inf
+        if self.p_max: # TODO: this may not be necessary, can just set limits in plotting function
+            hist[hist > self.p_max] = inf
+            # TODO: westpa makes these the max to keep the pdist shape
         return hist
 
-
-    def aux_to_pdist(self, iteration, aux_x, aux_y=None, bins=100, hist_range=None):
+    def aux_to_pdist(self, iteration, hist_range=None):
         """
         Parameters
         ----------
         iteration : int
             Desired iteration to extract timeseries info from.
-        aux_x : str
-            Auxillary data identifier for recorded values in west.h5 to be dimension 0.
-        aux_y : str
-            Optional auxillary data identifier for recorded values in west.h5 to be dimension 1.
-        bins : int
-            Amount of bins in histogram data, default 100.
         hist_range: tuple (optional)
             2 int values for min and max hist range.
 
@@ -147,17 +135,17 @@ class West_H5_Plotting:
         seg_weights = np.array(f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # return 1D aux data: 1D array for histogram and midpoint values
-        if aux_y == None:
-            aux = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{aux_x}"])
+        if self.aux_y == None:
+            aux = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{self.aux_x}"])
 
             # make an 1-D array to fit the hist values based off of bin count
-            histogram = np.zeros(shape=(bins))
+            histogram = np.zeros(shape=(self.bins))
             for seg in range(0, aux.shape[0]):
                 # can use dynamic hist range based off of dataset or a static value from arg
                 if hist_range:
-                    counts, bins = np.histogram(aux[seg], bins=bins, range=hist_range)
+                    counts, bins = np.histogram(aux[seg], bins=self.bins, range=hist_range)
                 else:
-                    counts, bins = np.histogram(aux[seg], bins=bins, range=(np.amin(aux), np.amax(aux)))
+                    counts, bins = np.histogram(aux[seg], bins=self.bins, range=(np.amin(aux), np.amax(aux)))
 
                 # multiply counts vector by weight scalar from seg index 
                 counts = np.multiply(counts, seg_weights[seg][0])
@@ -171,18 +159,18 @@ class West_H5_Plotting:
             return midpoints_x, histogram
 
         # 2D instant histogram and midpoint values for a single specified WE iteration
-        if aux_y:
-            aux_x = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{aux_x}"])
-            aux_y = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{aux_y}"])
+        if self.aux_y:
+            aux_x = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{self.aux_x}"])
+            aux_y = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{self.aux_y}"])
 
             # 2D array to store hist counts for each timepoint in both dimensions
-            histogram = np.zeros(shape=(bins, bins))
+            histogram = np.zeros(shape=(self.bins, self.bins))
             for seg in range(0, aux_x.shape[0]):
                 # can use dynamic hist range based off of dataset or a static value from arg
                 if hist_range:
-                    counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], bins=bins, range=hist_range)
+                    counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], bins=self.bins, range=hist_range)
                 else:
-                    counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], bins=bins, 
+                    counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], bins=self.bins, 
                                                             range=[[np.amin(aux_x), np.amax(aux_x)], 
                                                                 [np.amin(aux_y), np.amax(aux_y)]]
                                                             )
@@ -203,57 +191,30 @@ class West_H5_Plotting:
             return midpoints_x, midpoints_y, histogram
 
 
-    def get_iter_range(self, h5, aux, iteration, ext):
+    def get_iter_range(self, aux, iteration):
         """
         Parameters
         ----------
-        h5 : str
-            path to west.h5 file
         aux : str
             target auxillary data for range calculation
         iteration : int
             iteration to calculate range of
-        ext : float
-            percentage extension of range, e.g. 0.05 = 5% range extension
 
         Returns
         -------
         iter_range : tuple
             2 item tuple of min and max bin bounds for hist range of target aux data.
         """
-        f = h5py.File(h5, mode="r")
+        f = h5py.File(self.h5, mode="r")
         aux_at_iter = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{aux}"])
-        return (np.amin(aux_at_iter) - (np.amin(aux_at_iter) * ext * 5), # TODO: this works for now... but need a smarter solution
-                np.amax(aux_at_iter) + (np.amax(aux_at_iter) * ext)
+        return (np.amin(aux_at_iter) - (np.amin(aux_at_iter) * self.bin_ext * 5), # TODO: this works for now... but need a smarter solution
+                np.amax(aux_at_iter) + (np.amax(aux_at_iter) * self.bin_ext)
                 )
 
     def pdist_to_normhist(self):
         """
         Parameters
         ----------
-        args_list : argparse.Namespace
-            Contains command line arguments passed in by user.
-        h5 : str
-            path to west.h5 file
-        aux_x : str #TODO: default to pcoord1
-            target data for x axis
-        aux_y : str #TODO: default to pcoord1
-            target data for y axis
-        data_type : str
-            'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
-        last_iter : int
-            Last iteration data to include, default is the last recorded iteration in the west.h5 file.
-        first_iter : int
-            Default start plot at iteration 1 data.
-        bins : int
-            amount of histogram bins in pdist data to be generated, default 100.
-        bin_ext : float
-            Increase the limits of the bins by a percentage value (0.05 = 5% = default).
-        p_max : int
-            The maximum probability limit value.
-        p_units : str
-            Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
-
 
         Returns
         -------
@@ -262,7 +223,7 @@ class West_H5_Plotting:
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         #p_max += 10 # makes for smoother edges of contour plots # TODO, don't really need pmax here anymore
-        p_max = None
+        #p_max = None
 
         if self.last_iter:
             max_iter = self.last_iter
@@ -272,23 +233,23 @@ class West_H5_Plotting:
             raise TypeError("last_iter must be int.")
 
         # get range for max iter hist values: use this as static bin value for evolution plot
-        max_iter_hist_range_x = self.get_iter_range(self.h5, self.aux_x, max_iter, 0.25)
+        max_iter_hist_range_x = self.get_iter_range(self.aux_x, max_iter)
         if self.aux_y:
-            max_iter_hist_range_y = self.get_iter_range(self.h5, self.aux_y, max_iter, 0.25)
+            max_iter_hist_range_y = self.get_iter_range(self.aux_y, max_iter)
 
         if self.data_type == "instant":
             if self.aux_y:
-                center_x, center_y, counts_total = self.aux_to_pdist(self.h5, max_iter, self.aux_x, aux_y=self.aux_y, 
-                                                                bins=self.bins, hist_range=(max_iter_hist_range_x, 
-                                                                                    max_iter_hist_range_y
-                                                                                    )
-                                                                )
-                counts_total = self.norm_hist(counts_total, self.p_units, p_max=p_max)
+                center_x, center_y, counts_total = self.aux_to_pdist(max_iter, 
+                                                                     hist_range=(max_iter_hist_range_x, 
+                                                                                 max_iter_hist_range_y
+                                                                                 )
+                                                                    )
+                counts_total = self.norm_hist(counts_total)
                 return center_x, center_y, counts_total
 
             else:
-                center, counts_total = self.aux_to_pdist(self.h5, max_iter, self.aux_x, bins=self.bins, hist_range=max_iter_hist_range_x)
-                counts_total = self.norm_hist(counts_total, self.p_units, p_max=p_max)
+                center, counts_total = self.aux_to_pdist(max_iter, hist_range=max_iter_hist_range_x)
+                counts_total = self.norm_hist(counts_total)
                 return center, counts_total
 
         elif self.data_type == "evolution" or self.data_type == "average":
@@ -299,14 +260,13 @@ class West_H5_Plotting:
                 average_xy = np.zeros(shape=(self.bins, self.bins))
 
             for iter in range(self.first_iter, max_iter + 1):
-                center_x, counts_total_x = self.aux_to_pdist(self.h5, iter, self.aux_x, bins=self.bins, hist_range=max_iter_hist_range_x)
+                center_x, counts_total_x = self.aux_to_pdist(iter, hist_range=max_iter_hist_range_x)
                 evolution_x[iter - 1] = counts_total_x
                 positions_x[iter - 1] = center_x
                 
                 # 2D avg pdist data generation
                 if self.aux_y:
-                    center_x, center_y, counts_total_xy = self.aux_to_pdist(self.h5, iter, self.aux_x, aux_y=self.aux_y, 
-                                                                    bins=self.bins, hist_range=(max_iter_hist_range_x,  
+                    center_x, center_y, counts_total_xy = self.aux_to_pdist(iter, hist_range=(max_iter_hist_range_x,  
                                                                                             max_iter_hist_range_y
                                                                                             )
                                                                         )
@@ -314,17 +274,17 @@ class West_H5_Plotting:
 
             # 2D evolution plot of aux_x (aux_y not used if provided) per iteration        
             if self.data_type == "evolution":
-                evolution_x = self.norm_hist(evolution_x, self.p_units, p_max=p_max)
+                evolution_x = self.norm_hist(evolution_x)
                 return positions_x, np.arange(1, max_iter + 1,1), evolution_x
 
             if self.data_type == "average":
                 # summation of counts for all iterations : then normalize
                 col_avg_x = [np.sum(col[col != np.isinf]) for col in evolution_x.T]
-                col_avg_x = self.norm_hist(col_avg_x, self.p_units, p_max=p_max)
+                col_avg_x = self.norm_hist(col_avg_x)
 
                 # 2D average plot data for aux_x and aux_y
                 if self.aux_y: 
-                    average_xy = self.norm_hist(average_xy, self.p_units, p_max=p_max)
+                    average_xy = self.norm_hist(average_xy)
                     return center_x, center_y, average_xy
 
                 # 1D average plot data for aux_x
@@ -332,7 +292,7 @@ class West_H5_Plotting:
                     return center_x, col_avg_x
 
         else:
-            raise ValueError("data_type str must be 'instant', 'average', or 'evolution'")
+            raise ValueError(f"data_type str must be 'instant', 'average', or 'evolution'.\n\tCurrently set to {self.data_type}")
 
     # TODO
     # def _smooth(self):
@@ -348,7 +308,7 @@ class West_H5_Plotting:
     #     self.Z_curves[numpy.isnan(self.Z)] = numpy.nan 
 
     # TODO: move plotting functions to different file
-    def plot_normhist(self, x, y, args_list, plot_type="heat", cmap="viridis",  norm_hist=None, ax=None, **plot_options):
+    def plot_normhist(self, x, y, plot_type="heat", cmap="viridis",  norm_hist=None, ax=None, **plot_options):
         """
         Parameters
         ----------
