@@ -1,5 +1,5 @@
 
-from h5_plot_main import *
+from west_h5_plotting import *
 
 data_options = {"data_type" : "average",
                 "p_max" : 20,
@@ -18,20 +18,13 @@ plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)",
                 #"xlim" : (2,8)
                 }
 
-# X, Y, Z = pdisZ,t_to_normhist("2kod_v02/wcrawl/west_i200_crawled.h5", "1_75_39_c2", "fit_m1_rms_heavy_m2", **data_options)
+# X, Y, Z = pdisZ,t_to_normhist("data/west_i200_crawled.h5", "1_75_39_c2", "fit_m1_rms_heavy_m2", **data_options)
 # plot_normhist(X, Y,  plot_type="contour", cmap="gnuplot_r", **data_options, **plot_options)
 
-# X, Y, Z = pdist_to_normhist("2kod_v03/v01/west_i200.h5", "1_75_39_c2", "fit_m1_rms_heavy_m2", **data_options)
-# plot_normhist(X, Y, Z, plot_type="contour", cmap="gnuplot_r", **data_options, **plot_options)
+# initialize the h5 plotting class
+plotter = West_H5_Plotting("data/west_i200_crawled.h5", "instance", 
+                           aux_x="1_75_39_c2", aux_y="fit_m1_rms_heavy_m2")
 
-# X, Y = pdist_to_normhist("2kod_v02/wcrawl/west_i200_crawled.h5", "1_75_39_c2", **data_options)
-# plot_normhist(X, Y, **data_options, **plot_options)
-
-# X, Y, Z = pdist_to_normhist("1a43_v01/wcrawl/west_i150_crawled.h5", "1_75_39_c2", "M2Oe_M1He1", **data_options)
-# plot_normhist(X, Y, Z, plot_type="heat", cmap="gnuplot_r", **data_options, **plot_options)
-
-# X, Y, Z = pdist_to_normhist("1a43_v02/wcrawl/west_i200_crawled.h5", "1_75_39_c2", "fit_m1_rms_heavy_m2", **data_options)
-# plot_normhist(X, Y, Z, plot_type="contour", cmap="gnuplot_r", **data_options, **plot_options)
-
-X, Y, Z = pdist_to_normhist("1a43_v03/v01/west_i200.h5", "1_75_39_c2", "fit_m1_rms_heavy_m2", **data_options)
-plot_normhist(X, Y, Z, plot_type="contour", cmap="gnuplot_r", **data_options, **plot_options)
+# run pdist method
+plotter.
+# run plot method
