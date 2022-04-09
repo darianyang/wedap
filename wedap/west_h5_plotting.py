@@ -33,7 +33,7 @@ class West_H5_Plotting:
     """
 
     def __init__(self, h5, data_type, aux_x=None, aux_y=None, first_iter=1, last_iter=None, 
-                 bins=100, bin_ext=0.05, p_min=0, p_max=None, p_units='kT'):
+                 bins=100, bin_ext=0.25, p_min=0, p_max=None, p_units='kT'):
         """
         Parameters
         ----------
@@ -63,6 +63,10 @@ class West_H5_Plotting:
         # TODO: add data smoothing
         """
         self.h5 = h5
+
+        # TODO: adjust the other instances of this to only reference one read h5 file
+        self.f = h5py.File(h5, mode="r")
+
         self.data_type = data_type
 
         # TODO: make these instance attributes equal the h5 target directory, but default pcoord
@@ -168,6 +172,7 @@ class West_H5_Plotting:
             for seg in range(0, aux_x.shape[0]):
                 # can use dynamic hist range based off of dataset or a static value from arg
                 if hist_range:
+                    print(hist_range) # TODO
                     counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], bins=self.bins, range=hist_range)
                 else:
                     counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], bins=self.bins, 
@@ -260,6 +265,9 @@ class West_H5_Plotting:
                 average_xy = np.zeros(shape=(self.bins, self.bins))
 
             for iter in range(self.first_iter, max_iter + 1):
+                # generate evolution x data
+                ###center_x, counts_total_x = self.aux_to_pdist(iter, hist_range=max_iter_hist_range_x)
+                #print(max_iter_hist_range_x)
                 center_x, counts_total_x = self.aux_to_pdist(iter, hist_range=max_iter_hist_range_x)
                 evolution_x[iter - 1] = counts_total_x
                 positions_x[iter - 1] = center_x
