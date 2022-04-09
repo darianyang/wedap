@@ -3,7 +3,7 @@ Main call.
 """
 
 from command_line import *
-from west_h5_plotting import *
+from h5_pdist import *
 
 from search_aux import *
 from h5_plot_trace import *

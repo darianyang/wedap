@@ -3,9 +3,9 @@ Eventually incorporate into tests.
 
 TODO: figure out mpl styles and load a style for 1 col, 2 col, and poster figures.
 """
-from west_h5_plotting import *
+from h5_pdist import *
 
-data_options = {"data_type" : "average",
+data_options = {"data_type" : "instant",
                 #"p_max" : 20,
                 "p_units" : "kcal",
                 "last_iter" : 10,
