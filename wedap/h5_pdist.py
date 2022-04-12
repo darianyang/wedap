@@ -61,7 +61,6 @@ class H5_Pdist:
                 TODO: make the temp a class attribute or something dynamic.
         # TODO: add data smoothing
         """
-        # TODO: adjust the other instances of this to only reference one read h5 file
         self.f = h5py.File(h5, mode="r")
 
         self.data_type = data_type
@@ -90,9 +89,9 @@ class H5_Pdist:
         self.p_max = p_max
         self.p_units = p_units
 
-        # hist_range
+        # hist_range # TODO
 
-    def norm_hist(self, hist,):
+    def _normalize(self, hist):
         """ TODO: add temperature arg, also this function may not be needed.
         Parameters
         ----------
@@ -253,7 +252,7 @@ class H5_Pdist:
         # get range for max iter hist values: use this as static bin value for evolution plot
         hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
         center, counts_total = self.aux_to_pdist_1d(self.last_iter, hist_range=hist_range_x)
-        counts_total = self.norm_hist(counts_total)
+        counts_total = self._normalize(counts_total)
         return center, counts_total
 
     def instant_pdist_2d(self):
@@ -273,7 +272,7 @@ class H5_Pdist:
                                                                             hist_range_y
                                                                             )
                                                                 )
-        counts_total = self.norm_hist(counts_total)
+        counts_total = self._normalize(counts_total)
         return center_x, center_y, counts_total
 
     def evolution_pdist(self):
@@ -298,7 +297,7 @@ class H5_Pdist:
             positions_x[iter - 1] = center_x
 
         # 2D evolution plot of aux_x (aux_y not used if provided) per iteration        
-        evolution_x = self.norm_hist(evolution_x)
+        evolution_x = self._normalize(evolution_x)
 
         # bin positions along aux x, WE iteration numbers, z data
         return positions_x, np.arange(self.first_iter, self.last_iter + 1,1), evolution_x
@@ -326,7 +325,7 @@ class H5_Pdist:
 
         # summation of counts for all iterations : then normalize
         col_avg_x = [np.sum(col[col != np.isinf]) for col in evolution_x.T]
-        col_avg_x = self.norm_hist(col_avg_x)
+        col_avg_x = self._normalize(col_avg_x)
 
         # 1D average plot data for aux_x
         return center_x, col_avg_x
@@ -352,10 +351,11 @@ class H5_Pdist:
                 self.aux_to_pdist_2d(iter, hist_range=(hist_range_x, hist_range_y))
             average_xy = np.add(average_xy, counts_total_xy)
 
-        average_xy = self.norm_hist(average_xy)
+        average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
     # TODO: put in plotting or pdist?
+    # See AJD script for variable definitions
     def _smooth(self):
         if self.data_smoothing_level is not None:
             self.Z_data[np.isnan(self.Z_data)] = np.nanmax(self.Z_data)
@@ -368,8 +368,21 @@ class H5_Pdist:
         self.Z_data[np.isnan(self.Z)] = np.nan 
         self.Z_curves[np.isnan(self.Z)] = np.nan 
 
-    def plot_master(self):
+    def pdist_main(self):
         """
-        Main public method with plotting controls.
+        Main public method with pdist generation controls.
+        # TODO: put plot controls here? or pdist controls?
+                or seperate controls?
         """
-        pass
+        if self.data_type == "evolution":
+            return self.evolution_pdist()
+        elif self.data_type == "instant":
+            if self.aux_y:
+                return self.instant_pdist_2d()
+            else:
+                return self.instant_pdist_1d()
+        elif self.data_type == "average":
+            if self.aux_y:
+                return self.average_pdist_2d()
+            else:
+                return self.average_pdist_1d()

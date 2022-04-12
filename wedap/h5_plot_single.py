@@ -6,10 +6,10 @@ TODO: figure out mpl styles and load a style for 1 col, 2 col, and poster figure
 from h5_pdist import *
 from h5_plot import *
 
-data_options = {"data_type" : "instant",
+data_options = {"data_type" : "evolution",
                 #"p_max" : 20,
                 "p_units" : "kcal",
-                "last_iter" : 10,
+                "last_iter" : 100,
                 "bins" : 100
                 }
 plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
@@ -23,20 +23,20 @@ plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)",
                 #"xlim" : (2,8)
                 }
 
-# X, Y, Z = pdist_to_normhist("data/west_i200_crawled.h5", "1_75_39_c2", "fit_m1_rms_heavy_m2", **data_options)
-# plot_normhist(X, Y, Z, plot_type="contour", cmap="gnuplot_r", **data_options, **plot_options)
 
-# 2D Example: first initialize the h5 plotting class
-pdist = H5_Pdist("data/west_i200.h5", aux_x="1_75_39_c2", aux_y="fit_m1_rms_heavy_m2", **data_options)
-# run pdist method
-X, Y, Z = pdist.instant_pdist_2d()
-# run plot method
-plt.pcolormesh(X, Y, Z)
-#plotter.plot_normhist(X, Y, norm_hist=Z, **plot_options)
+# TODO: eventually use this format to write unit tests of each pdist method
+
+
+# 2D Example: first initialize the h5 pdist class
+# pdist = H5_Pdist("data/west_i200.h5", aux_x="1_75_39_c2", aux_y="fit_m1_rms_heavy_m2", **data_options)
+# X, Y, Z = pdist.pdist_main()
+# plt.pcolormesh(X, Y, Z)
+
 
 # 1D example
-# plotter = West_H5_Plotting("data/west_i200.h5", aux_x="1_75_39_c2", **data_options)
-# X, Y = plotter.pdist_to_normhist()
-# plotter.plot_normhist(X, Y, **plot_options)
+# pdist = H5_Pdist("data/west_i200.h5", aux_x="1_75_39_c2", **data_options)
+# X, Y = pdist.pdist_main()
+# plt.plot(X, Y)
+
 
 plt.show()
