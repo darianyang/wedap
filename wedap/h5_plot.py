@@ -13,6 +13,7 @@ TODO: add mpl style options
 
 import numpy as np
 import matplotlib.pyplot as plt
+from warnings import warn
 
 
 # TODO: method for each type of plot
@@ -62,8 +63,8 @@ class H5_plot:
 
         # 2D heatmaps
         if norm_hist is not None and plot_type == "heat":
-            if self.p_max:
-                norm_hist[norm_hist > self.p_max] = inf
+            # if self.p_max:
+            #     norm_hist[norm_hist > self.p_max] = inf
             plot = ax.pcolormesh(x, y, norm_hist, cmap=cmap, shading="auto", vmin=0, vmax=self.p_max)
 
         # 2D contour plots TODO: add smooting functionality

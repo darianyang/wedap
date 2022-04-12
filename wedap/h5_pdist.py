@@ -20,7 +20,6 @@ import h5py
 import numpy as np
 from numpy import inf
 import scipy.ndimage
-from warnings import warn
 
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
@@ -91,6 +90,8 @@ class H5_Pdist:
         self.p_max = p_max
         self.p_units = p_units
 
+        # hist_range
+
     def norm_hist(self, hist,):
         """ TODO: add temperature arg, also this function may not be needed.
         Parameters
@@ -110,7 +111,7 @@ class H5_Pdist:
             hist = -0.5922 * np.log(hist / np.max(hist))
         else:
             raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
-        if self.p_max: # TODO: this may not be necessary, can just set limits in plotting function
+        if self.p_max: # TODO: this may not be necessary, can just set limits in plotting function, or maybe it would be best to make the final pdist here and just leave plotting to the plot class
             hist[hist > self.p_max] = inf
             # TODO: westpa makes these the max to keep the pdist shape
         return hist
@@ -251,7 +252,7 @@ class H5_Pdist:
         """
         # get range for max iter hist values: use this as static bin value for evolution plot
         hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
-        center, counts_total = self.aux_to_pdist(self.last_iter, hist_range=hist_range_x)
+        center, counts_total = self.aux_to_pdist_1d(self.last_iter, hist_range=hist_range_x)
         counts_total = self.norm_hist(counts_total)
         return center, counts_total
 
@@ -267,11 +268,11 @@ class H5_Pdist:
         # get range for max iter hist values: use this as static bin value for evolution plot
         hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
         hist_range_y = self.get_iter_range(self.aux_y, self.last_iter)
-        center_x, center_y, counts_total = self.aux_to_pdist(self.last_iter, 
-                                                             hist_range=(hist_range_x,
-                                                                         hist_range_y
-                                                                         )
-                                                             )
+        center_x, center_y, counts_total = self.aux_to_pdist_2d(self.last_iter, 
+                                                                hist_range=(hist_range_x,
+                                                                            hist_range_y
+                                                                            )
+                                                                )
         counts_total = self.norm_hist(counts_total)
         return center_x, center_y, counts_total
 
@@ -319,7 +320,7 @@ class H5_Pdist:
 
         for iter in range(self.first_iter, self.last_iter + 1):
             # generate evolution x data
-            center_x, counts_total_x = self.aux_to_pdist(iter, hist_range=hist_range_x)
+            center_x, counts_total_x = self.aux_to_pdist_1d(iter, hist_range=hist_range_x)
             evolution_x[iter - 1] = counts_total_x
             positions_x[iter - 1] = center_x
 
@@ -348,7 +349,7 @@ class H5_Pdist:
         # 2D avg pdist data generation
         for iter in range(self.first_iter, self.last_iter + 1):
             center_x, center_y, counts_total_xy = \
-                self.aux_to_pdist(iter, hist_range=(hist_range_x, hist_range_y))
+                self.aux_to_pdist_2d(iter, hist_range=(hist_range_x, hist_range_y))
             average_xy = np.add(average_xy, counts_total_xy)
 
         average_xy = self.norm_hist(average_xy)

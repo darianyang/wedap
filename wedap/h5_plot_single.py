@@ -4,6 +4,7 @@ Eventually incorporate into tests.
 TODO: figure out mpl styles and load a style for 1 col, 2 col, and poster figures.
 """
 from h5_pdist import *
+from h5_plot import *
 
 data_options = {"data_type" : "instant",
                 #"p_max" : 20,
@@ -26,11 +27,12 @@ plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)",
 # plot_normhist(X, Y, Z, plot_type="contour", cmap="gnuplot_r", **data_options, **plot_options)
 
 # 2D Example: first initialize the h5 plotting class
-plotter = West_H5_Plotting("data/west_i200.h5", aux_x="1_75_39_c2", aux_y="fit_m1_rms_heavy_m2", **data_options)
+pdist = H5_Pdist("data/west_i200.h5", aux_x="1_75_39_c2", aux_y="fit_m1_rms_heavy_m2", **data_options)
 # run pdist method
-X, Y, Z = plotter.pdist_to_normhist()
+X, Y, Z = pdist.instant_pdist_2d()
 # run plot method
-plotter.plot_normhist(X, Y, norm_hist=Z, **plot_options)
+plt.pcolormesh(X, Y, Z)
+#plotter.plot_normhist(X, Y, norm_hist=Z, **plot_options)
 
 # 1D example
 # plotter = West_H5_Plotting("data/west_i200.h5", aux_x="1_75_39_c2", **data_options)
