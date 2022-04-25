@@ -36,8 +36,9 @@ from h5_pdist import H5_Pdist
 # TODO: could subclass the H5_Pdist class, then use this as the main in wedap.py
 class H5_Plot(H5_Pdist):
 
-    def __init__(self, X, Y, Z=None, plot_type="heat", cmap="viridis", ax=None, 
-        data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
+    def __init__(self, X=None, Y=None, Z=None, plot_type="heat", cmap="viridis", ax=None, 
+        plot_options=None, data_smoothing_level=None, curve_smoothing_level=None, 
+        *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
 
@@ -81,9 +82,17 @@ class H5_Plot(H5_Pdist):
         self.data_smoothing_level = data_smoothing_level
         self.curve_smoothing_level = curve_smoothing_level
 
+        # TODO: option if you want to generate pdist
+        if X is None and Y is None:
+            X, Y, Z = H5_Pdist(*args, **kwargs).run()
+
         self.X = X
         self.Y = Y
         self.Z = Z
+
+        self.cmap = cmap
+
+        self.plot_options = plot_options
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -119,32 +128,6 @@ class H5_Plot(H5_Pdist):
     #     if self.axis_list[0] > self.axis_list[1]:
     #         self.H = self.H.transpose()
 
-    def plot_hist_2d(self):
-        # 2D heatmaps
-        # if self.p_max:
-        #     self.Z[self.Z > self.p_max] = inf
-        self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=0, vmax=self.p_max)
-
-    def plot_contour(self):
-        # 2D contour plots
-        if self.data_type == "evolution":
-            raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
-        elif self.p_max is None:
-            warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
-            levels = np.arange(0, np.max(self.Z[self.Z != np.inf ]), 1)
-        elif self.p_max <= 1:
-            levels = np.arange(0, self.p_max + 0.1, 0.1)
-        else:
-            levels = np.arange(0, self.p_max + 1, 1)
-        self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
-        self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
-
-    def plot_1d(self):
-        # 1D data
-        if self.p_max:
-            self.Y[self.Y > self.p_max] = inf
-        self.ax.plot(self.X, self.Y)
-
     def cbar(self):
         cbar = self.fig.colorbar(self.plot)
         # TODO: lines on colorbar?
@@ -155,6 +138,35 @@ class H5_Plot(H5_Pdist):
         elif self.p_units == "kcal":
             cbar.set_label(r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)")
 
+    def plot_hist_2d(self):
+        # 2D heatmaps
+        # if self.p_max:
+        #     self.Z[self.Z > self.p_max] = inf
+        self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=self.p_min, vmax=self.p_max)
+        self.cbar()
+        self.unpack_plot_options()
+
+    def plot_contour(self):
+        # 2D contour plots
+        if self.data_type == "evolution":
+            raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
+        elif self.p_max is None:
+            warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
+            levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), 1)
+        elif self.p_max <= 1:
+            levels = np.arange(self.p_min, self.p_max + 0.1, 0.1)
+        else:
+            levels = np.arange(self.p_min, self.p_max + 1, 1)
+        self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
+        self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
+        self.cbar()
+        self.unpack_plot_options()
+
+    def plot_1d(self):
+        # 1D data
+        if self.p_max:
+            self.Y[self.Y > self.p_max] = inf
+        self.ax.plot(self.X, self.Y)
 
     def unpack_plot_options(self):
         """
