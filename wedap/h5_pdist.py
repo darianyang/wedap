@@ -10,21 +10,24 @@ TODO:
     - maybe add option to output pdist as file, this would speed up subsequent plotting
         of the same data.
 
+# TODO: add Z-bins option? or just add contour level option to plotting class
+    # this is equivalent to the Z bins
+
 # Steps:
 - first move into plot class and test it out with h5_plot_single (done)
 - then seperate into different class methods for evo, instant, average
 - then seperate into pdist class and plotting class 
+
+TODO: update docstrings
 """
 
 import h5py
 import numpy as np
 from numpy import inf
-import scipy.ndimage
 
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
-# TODO: add search aux as a class method with seperate args?
 class H5_Pdist:
     """
     These class methods generate probability distributions and plots the output.
@@ -59,7 +62,6 @@ class H5_Pdist:
         p_units : str
             Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
                 TODO: make the temp a class attribute or something dynamic.
-        # TODO: add data smoothing
         """
         self.f = h5py.File(h5, mode="r")
 
@@ -83,13 +85,16 @@ class H5_Pdist:
         elif last_iter is None:
             self.last_iter = h5py.File(h5, mode="r").attrs["west_current_iteration"] - 1
 
+        # TODO: split into x and y bins
         self.bins = bins
         self.bin_ext = bin_ext # TODO: maybe not needed
         self.p_min = p_min # TODO: not set up yet
         self.p_max = p_max
         self.p_units = p_units
 
-        # hist_range # TODO
+        # hist_range # TODO: this will supercede bin_ext
+        # can take the largest range on both dims for the histrange of evo and average
+            # instant will be just the single dist range
 
     def _normalize(self, hist):
         """ TODO: add temperature arg, also this function may not be needed.
@@ -354,25 +359,15 @@ class H5_Pdist:
         average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
-    # TODO: put in plotting or pdist?
-    # See AJD script for variable definitions
-    def _smooth(self):
-        if self.data_smoothing_level is not None:
-            self.Z_data[np.isnan(self.Z_data)] = np.nanmax(self.Z_data)
-            self.Z_data = scipy.ndimage.filters.gaussian_filter(self.Z_data, 
-                                self.data_smoothing_level)
-        if self.curve_smoothing_level is not None:
-            self.Z_curves[np.isnan(self.Z_curves)] = np.nanmax(self.Z_curves)
-            self.Z_curves = scipy.ndimage.filters.gaussian_filter(self.Z_curves, 
-                                self.curve_smoothing_level)
-        self.Z_data[np.isnan(self.Z)] = np.nan 
-        self.Z_curves[np.isnan(self.Z)] = np.nan 
-
-    def pdist_main(self):
+    def run(self):
         """
         Main public method with pdist generation controls.
         # TODO: put plot controls here? or pdist controls?
                 or seperate controls?
+        Could add plot methods here and then run the plot methods in each case.
+            Or subclass in plot, that is prob best for seperate functionality later on.
+            So users can call pdist class or plot class which does both pdist and plot
+                or just plots from input data.
         """
         if self.data_type == "evolution":
             return self.evolution_pdist()

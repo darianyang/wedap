@@ -9,38 +9,51 @@ Plot all of the datasets generated with h5_pdist.
         # optional: diff max_iter and bins args
 
 TODO: add mpl style options
+
+TODO: if there is x and y limits, use them to make the histogram bounds
+
+TODO: maybe make methods for the following plots:
+        '``contourf``--plot contour levels. '
+        '``histogram``--plot histogram. '
+        '``lines``--plot contour lines only. '
+        '``contourf_l``--plot contour levels and lines. '
+        '``histogram_l``--plot histogram and contour lines. ',
+        option - with and without side histograms
+        mpl mosaic options
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.ndimage
 from warnings import warn
+from numpy import inf
 
+from h5_pdist import H5_Pdist
 
+# TODO: add search aux as a class method with seperate args?
+    # have trace options in args for trace iter,wlk and x,y vals 
 # TODO: method for each type of plot
 # TODO: could subclass the H5_Pdist class, then use this as the main in wedap.py
-class H5_plot:
+class H5_Plot(H5_Pdist):
 
-    def __init__(self, ax=None):
+    def __init__(self, X, Y, Z=None, plot_type="heat", cmap="viridis", ax=None, 
+        data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
         """
-        Plotting of pdists generated from H5 datasets.
-        """
-        if ax is None:
-            self.fig, self.ax = plt.subplots(figsize=(5,4))
-        else:
-            self.fig = plt.gcf()
-            self.ax = ax
+        Plotting of pdists generated from H5 datasets.TODO: update docstrings
 
-    # TODO: move plotting functions to different file
-    def plot_normhist(self, x, y, plot_type="heat", cmap="viridis",  norm_hist=None, ax=None, **plot_options):
-        """
         Parameters
         ----------
+        # TODO: add/fix data smoothing
+        data_smoothing_level : float
+            A good value is around 0.4.
+        curve_smoothing_level : float
+            A good value is around 0.4.
         x, y : ndarray
-            x and y axis values, and if using aux_y or evolution (with only aux_x), also must input norm_hist.
+            x and y axis values, and if using aux_y or evolution (with only aux_x), also must input Z.
         args_list : argparse.Namespace
             Contains command line arguments passed in by user.
-        norm_hist : ndarray
-            norm_hist is a 2-D matrix of the normalized histogram values.
+        Z : ndarray
+            Z is a 2-D matrix of the normalized histogram values.
         ax : mpl axes object
             args_list options
             -----------------
@@ -56,68 +69,152 @@ class H5_plot:
                 Colormap option, default = viridis.
             **plot_options : kwargs
         """
+        # include the init args for H5_Pdist
+        super().__init__(*args, **kwargs)
+
         if ax is None:
-            fig, ax = plt.subplots(figsize=(8,6))
+            self.fig, self.ax = plt.subplots(figsize=(5,4))
         else:
-            fig = plt.gcf()
+            self.fig = plt.gcf()
+            self.ax = ax
 
+        self.data_smoothing_level = data_smoothing_level
+        self.curve_smoothing_level = curve_smoothing_level
+
+        self.X = X
+        self.Y = Y
+        self.Z = Z
+
+    # TODO: load from w_pdist, also can add method to load from wedap pdist output
+    # def _load_from_pdist_file(self):
+    #     '''
+    #     Load data from a w_pdist output file. This includes bin boundaries. 
+    #     '''
+    #     # Open the HDF5 file.
+    #     self.pdist_HDF5 = h5py.File(self.args.pdist_file)
+
+    #     # Load the histograms and sum along all axes except those specified by
+    #     # the user.  Also, only include the iterations specified by the user.
+    #     histogram      = numpy.array(self.pdist_HDF5['histograms'])
+
+    #     # Figure out what iterations to use
+    #     n_iter_array   = numpy.array(self.pdist_HDF5['n_iter'])
+    #     if self.args.first_iter is not None:
+    #         first_iter = self.args.first_iter
+    #     else:
+    #         first_iter = n_iter_array[0] 
+    #     if self.args.last_iter is not None:
+    #         last_iter = self.args.last_iter
+    #     else:
+    #         last_iter = n_iter_array[-1]
+    #     first_iter_idx = numpy.where(n_iter_array == first_iter)[0][0]
+    #     last_iter_idx  = numpy.where(n_iter_array == last_iter)[0][0]
+    #     histogram      = histogram[first_iter_idx:last_iter_idx+1]
+
+    #     # Sum along axes
+    #     self.axis_list = self._get_bins_from_expr(self.args.pdist_axes)
+    #     self.H         = self._sum_except_along(histogram, self.axis_list) 
+
+    #     # Make sure that the axis ordering is correct.
+    #     if self.axis_list[0] > self.axis_list[1]:
+    #         self.H = self.H.transpose()
+
+    def plot_hist_2d(self):
         # 2D heatmaps
-        if norm_hist is not None and plot_type == "heat":
-            # if self.p_max:
-            #     norm_hist[norm_hist > self.p_max] = inf
-            plot = ax.pcolormesh(x, y, norm_hist, cmap=cmap, shading="auto", vmin=0, vmax=self.p_max)
+        # if self.p_max:
+        #     self.Z[self.Z > self.p_max] = inf
+        self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=0, vmax=self.p_max)
 
-        # 2D contour plots TODO: add smooting functionality
-        elif norm_hist is not None and plot_type == "contour":
-            if self.data_type == "evolution":
-                raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
-            elif self.p_max is None:
-                warn("With 'contour' plot_type, p_max should be set. Otherwise max norm_hist is used.")
-                levels = np.arange(0, np.max(norm_hist[norm_hist != np.inf ]), 1)
-            elif self.p_max <= 1:
-                levels = np.arange(0, self.p_max + 0.1, 0.1)
-            else:
-                levels = np.arange(0, self.p_max + 1, 1)
-            lines = ax.contour(x, y, norm_hist, levels=levels, colors="black", linewidths=1)
-            plot = ax.contourf(x, y, norm_hist, levels=levels, cmap=cmap)
+    def plot_contour(self):
+        # 2D contour plots
+        if self.data_type == "evolution":
+            raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
+        elif self.p_max is None:
+            warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
+            levels = np.arange(0, np.max(self.Z[self.Z != np.inf ]), 1)
+        elif self.p_max <= 1:
+            levels = np.arange(0, self.p_max + 0.1, 0.1)
+        else:
+            levels = np.arange(0, self.p_max + 1, 1)
+        self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
+        self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
 
+    def plot_1d(self):
         # 1D data
-        elif norm_hist is None:
-            if self.p_max:
-                y[y > self.p_max] = inf
-            ax.plot(x, y)
-        
-        # unpack plot options dictionary # TODO: update this for argparse
-        for key, item in plot_options.items():
+        if self.p_max:
+            self.Y[self.Y > self.p_max] = inf
+        self.ax.plot(self.X, self.Y)
+
+    def cbar(self):
+        cbar = self.fig.colorbar(self.plot)
+        # TODO: lines on colorbar?
+        #if lines:
+        #    cbar.add_lines(lines)
+        if self.p_units == "kT":
+            cbar.set_label(r"$\Delta F(\vec{x})\,/\,kT$" + "\n" + r"$\left[-\ln\,P(x)\right]$")
+        elif self.p_units == "kcal":
+            cbar.set_label(r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)")
+
+
+    def unpack_plot_options(self):
+        """
+        Unpack the plot_options kwarg dictionary.
+        """
+        # unpack plot options dictionary # TODO: update this for argparse?
+        for key, item in self.plot_options.items():
             if key == "xlabel":
-                ax.set_xlabel(item)
+                self.ax.set_xlabel(item)
             if key == "ylabel":
-                ax.set_ylabel(item)
+                self.ax.set_ylabel(item)
             if key == "xlim":
-                ax.set_xlim(item)
+                self.ax.set_xlim(item)
             if key == "ylim":
-                ax.set_ylim(item)
+                self.ax.set_ylim(item)
             if key == "title":
-                ax.set_title(item)
+                self.ax.set_title(item)
             if key == "grid":
-                ax.grid(item, alpha=0.5)
+                self.ax.grid(item, alpha=0.5)
             if key == "minima": # TODO: this is essentially bstate, also put maxima?
                 # reorient transposed hist matrix
-                norm_hist = np.rot90(np.flip(norm_hist, axis=0), k=3)
+                Z = np.rot90(np.flip(self.Z, axis=0), k=3)
                 # get minima coordinates index (inverse maxima since min = 0)
-                maxima = np.where(1 / norm_hist ==  np.amax(1 / norm_hist, axis=(0, 1)))
+                maxima = np.where(1 / Z ==  np.amax(1 / Z, axis=(0, 1)))
                 # plot point at x and y bin midpoints that correspond to mimima
-                ax.plot(x[maxima[0]], y[maxima[1]], 'ko')
-                print(f"Minima: ({x[maxima[0]][0]}, {y[maxima[1]][0]})")
+                self.ax.plot(self.X[maxima[0]], self.Y[maxima[1]], 'ko')
+                print(f"Minima: ({self.X[maxima[0]][0]}, {self.Y[maxima[1]][0]})")
 
-        if norm_hist is not None:
-            cbar = fig.colorbar(plot)
-            # TODO: lines on colorbar?
-            #if lines:
-            #    cbar.add_lines(lines)
-            if self.p_units == "kT":
-                cbar.set_label(r"$\Delta F(\vec{x})\,/\,kT$" + "\n" + r"$\left[-\ln\,P(x)\right]$")
-            elif self.p_units == "kcal":
-                cbar.set_label(r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)")
 
-        #fig.tight_layout()
+    # TODO: put in plotting class?
+    # See AJD script for variable definitions
+    def _smooth(self):
+        if self.data_smoothing_level is not None:
+            self.Z_data[np.isnan(self.Z)] = np.nanmax(self.Z)
+            self.Z_data = scipy.ndimage.filters.gaussian_filter(self.Z, 
+                                self.data_smoothing_level)
+        if self.curve_smoothing_level is not None:
+            self.Z_curves[np.isnan(self.Z_curves)] = np.nanmax(self.Z_curves)
+            self.Z_curves = scipy.ndimage.filters.gaussian_filter(self.Z_curves, 
+                                self.curve_smoothing_level)
+        self.Z_data[np.isnan(self.Z)] = np.nan 
+        self.Z_curves[np.isnan(self.Z)] = np.nan 
+
+    # TODO
+    # def _run_postprocessing(self):
+    #     '''
+    #     Run the user-specified postprocessing function.
+    #     '''
+    #     import importlib
+    #     # Parse the user-specifed string for the module and class/function name.
+    #     module_name, attr_name = self.args.postprocess_func.split('.', 1) 
+    #     # import the module ``module_name`` and make the function/class 
+    #     # accessible as ``attr``.
+    #     attr = getattr(importlib.import_module(module_name), attr_name) 
+    #     # Call ``attr``.
+    #     attr()
+
+
+        # Do data smoothing. We have to make copies of the array so that
+        # the data and curves can have different smoothing levels.
+        # self.Z_data = np.copy(self.Z)
+        # self.Z_curves = np.copy(self.Z)
+        # self._smooth()
