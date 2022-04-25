@@ -38,7 +38,7 @@ class H5_Plot(H5_Pdist):
 
     def __init__(self, X=None, Y=None, Z=None, plot_type="heat", cmap="viridis", ax=None, 
         plot_options=None, data_smoothing_level=None, curve_smoothing_level=None, 
-        *args, **kwargs):
+        plot_mode="hist_2d", *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
 
@@ -83,6 +83,8 @@ class H5_Plot(H5_Pdist):
         self.curve_smoothing_level = curve_smoothing_level
 
         # TODO: option if you want to generate pdist
+        # also need option of just using the input X Y Z args
+        # or getting them from w_pdist h5 file, or from H5_Pdist output file
         if X is None and Y is None:
             X, Y, Z = H5_Pdist(*args, **kwargs).run()
 
@@ -90,8 +92,8 @@ class H5_Plot(H5_Pdist):
         self.Y = Y
         self.Z = Z
 
+        self.plot_mode = plot_mode
         self.cmap = cmap
-
         self.plot_options = plot_options
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
@@ -146,11 +148,9 @@ class H5_Plot(H5_Pdist):
         self.cbar()
         self.unpack_plot_options()
 
-    def plot_contour(self):
+    def plot_contour_2d(self):
         # 2D contour plots
-        if self.data_type == "evolution":
-            raise ValueError("For contour plot, data_type must be 'average' or 'instant'")
-        elif self.p_max is None:
+        if self.p_max is None:
             warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
             levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), 1)
         elif self.p_max <= 1:
@@ -159,10 +159,10 @@ class H5_Plot(H5_Pdist):
             levels = np.arange(self.p_min, self.p_max + 1, 1)
         self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
         self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
-        self.cbar()
-        self.unpack_plot_options()
+        # self.cbar()
+        # self.unpack_plot_options()
 
-    def plot_1d(self):
+    def plot_line_1d(self):
         # 1D data
         if self.p_max:
             self.Y[self.Y > self.p_max] = inf
@@ -200,14 +200,14 @@ class H5_Plot(H5_Pdist):
     # See AJD script for variable definitions
     def _smooth(self):
         if self.data_smoothing_level is not None:
-            self.Z_data[np.isnan(self.Z)] = np.nanmax(self.Z)
-            self.Z_data = scipy.ndimage.filters.gaussian_filter(self.Z, 
+            self.Z[np.isnan(self.Z)] = np.nanmax(self.Z)
+            self.Z = scipy.ndimage.filters.gaussian_filter(self.Z, 
                                 self.data_smoothing_level)
         if self.curve_smoothing_level is not None:
             self.Z_curves[np.isnan(self.Z_curves)] = np.nanmax(self.Z_curves)
             self.Z_curves = scipy.ndimage.filters.gaussian_filter(self.Z_curves, 
                                 self.curve_smoothing_level)
-        self.Z_data[np.isnan(self.Z)] = np.nan 
+        self.Z[np.isnan(self.Z)] = np.nan 
         self.Z_curves[np.isnan(self.Z)] = np.nan 
 
     # TODO
@@ -224,9 +224,18 @@ class H5_Plot(H5_Pdist):
     #     # Call ``attr``.
     #     attr()
 
+    def run(self):
+        """
+        Main public method.
+        """
+        if self.plot_mode == "contour":
+            # Do data smoothing. We have to make copies of the array so that
+            # the data and curves can have different smoothing levels.
+            self.Z_curves = np.copy(self.Z)
+            self._smooth()
+            self.plot_contour_2d()
+            self.cbar()
+            self.unpack_plot_options()
 
-        # Do data smoothing. We have to make copies of the array so that
-        # the data and curves can have different smoothing levels.
-        # self.Z_data = np.copy(self.Z)
-        # self.Z_curves = np.copy(self.Z)
-        # self._smooth()
+    # TODO: master plotting run function
+    # here can parse plot type and add cbars/tightlayout/plot_options/smoothing
