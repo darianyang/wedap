@@ -22,6 +22,7 @@ TODO: update docstrings
 """
 
 import h5py
+from matplotlib.pyplot import hist
 import numpy as np
 from numpy import inf
 
@@ -100,27 +101,35 @@ class H5_Pdist:
         # can take the largest range on both dims for the histrange of evo and average
             # instant will be just the single dist range
 
-    # def get_hist_range(self):
-    #     """ 
-    #     Get the proper instance attribute considering the min/max of the entire dataset.
+    def _get_hist_range(self, aux):
+        """ 
+        Get the proper instance attribute considering the min/max of the entire dataset.
 
-    #     Parameters
-    #     ----------
-    #     aux : str
-    #         target auxillary data for range calculation
-    #     iteration : int
-    #         iteration to calculate range of
+        Parameters
+        ----------
+        aux : str
+            target auxillary data for range calculation
 
-    #     Returns
-    #     -------
-    #     iter_range : tuple
-    #         2 item tuple of min and max bin bounds for hist range of target aux data.
-    #     """
-    #     aux_at_iter = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{aux}"])
-    #     # TODO: this *5 works for now... but need a smarter solution
-    #     return (np.amin(aux_at_iter) - (np.amin(aux_at_iter) * self.bin_ext), 
-    #             np.amax(aux_at_iter) + (np.amax(aux_at_iter) * self.bin_ext)
-    #             )
+        Returns
+        -------
+        histrange : tuple
+            2 item tuple of min and max bin bounds for hist range of target aux data.
+        """
+        # original min and max histrange values
+        histrange = [0,0]
+
+        # loop and update to the max and min for all iterations considered
+        for iter in range(self.first_iter, self.last_iter + 1):
+            aux = np.array(self.f[f"iterations/iter_{iter:08d}/auxdata/{aux}"])
+            
+            # update to get the largest possible range for all iterations
+            if np.amin(aux) < histrange[0]:
+                histrange[0] = np.amin(aux)
+            if np.amax(aux) > histrange[1]:
+                histrange[1] = np.amax(aux)
+
+        return histrange
+
 
     def get_iter_range(self, aux, iteration):
         """ TODO: make internal method?
