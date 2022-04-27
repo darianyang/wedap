@@ -20,6 +20,9 @@ TODO: maybe make methods for the following plots:
         '``histogram_l``--plot histogram and contour lines. ',
         option - with and without side histograms
         mpl mosaic options
+
+TODO: plot clustering centroids option
+      can then grab the search_aux at the centroid
 """
 
 import numpy as np
@@ -197,8 +200,7 @@ class H5_Plot(H5_Pdist):
                 self.ax.plot(self.X[maxima[0]], self.Y[maxima[1]], 'ko')
                 print(f"Minima: ({self.X[maxima[0]][0]}, {self.Y[maxima[1]][0]})")
 
-
-    # TODO: put in plotting class?
+    # TODO: i think the data smoothing works but not the curve
     # See AJD script for variable definitions
     def _smooth(self):
         if self.data_smoothing_level is not None:

@@ -85,7 +85,7 @@ class H5_Pdist:
         if last_iter is not None:
             self.last_iter = last_iter
         elif last_iter is None:
-            self.last_iter = h5py.File(h5, mode="r").attrs["west_current_iteration"] - 1
+            self.last_iter = self.f.attrs["west_current_iteration"] - 1
 
         # TODO: split into x and y bins
         self.bins = bins
@@ -101,9 +101,13 @@ class H5_Pdist:
         # can take the largest range on both dims for the histrange of evo and average
             # instant will be just the single dist range
 
-    def _get_hist_range(self, aux):
+
+        # save the available aux dataset names
+        self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
+
+    def _get_histrange(self, aux):
         """ 
-        Get the proper instance attribute considering the min/max of the entire dataset.
+        Get the histrange considering the min/max of all iterations considered.
 
         Parameters
         ----------
@@ -113,43 +117,26 @@ class H5_Pdist:
         Returns
         -------
         histrange : tuple
-            2 item tuple of min and max bin bounds for hist range of target aux data.
+            2 item list of min and max bin bounds for hist range of target aux data.
         """
-        # original min and max histrange values
-        histrange = [0,0]
+        # set base histrange based on first iteration
+        iter_aux = np.array(self.f[f"iterations/iter_{self.first_iter:08d}/auxdata/{aux}"])
+        histrange = [np.amin(iter_aux), np.amax(iter_aux)]
 
-        # loop and update to the max and min for all iterations considered
-        for iter in range(self.first_iter, self.last_iter + 1):
-            aux = np.array(self.f[f"iterations/iter_{iter:08d}/auxdata/{aux}"])
-            
-            # update to get the largest possible range for all iterations
-            if np.amin(aux) < histrange[0]:
-                histrange[0] = np.amin(aux)
-            if np.amax(aux) > histrange[1]:
-                histrange[1] = np.amax(aux)
+        # loop and update to the max and min for all other iterations considered
+        for iter in range(self.first_iter + 1, self.last_iter + 1):
+            # get min and max for the iteration
+            iter_aux = np.array(self.f[f"iterations/iter_{iter:08d}/auxdata/{aux}"])
+            iter_min = np.amin(iter_aux)
+            iter_max = np.amax(iter_aux)
+
+            # update to get the largest possible range from all iterations
+            if iter_min < histrange[0]:
+                histrange[0] = iter_min
+            if iter_max > histrange[1]:
+                histrange[1] = iter_max
 
         return histrange
-
-
-    def get_iter_range(self, aux, iteration):
-        """ TODO: make internal method?
-        Parameters
-        ----------
-        aux : str
-            target auxillary data for range calculation
-        iteration : int
-            iteration to calculate range of
-
-        Returns
-        -------
-        iter_range : tuple
-            2 item tuple of min and max bin bounds for hist range of target aux data.
-        """
-        aux_at_iter = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{aux}"])
-        # TODO: this *5 works for now... but need a smarter solution
-        return (np.amin(aux_at_iter) - (np.amin(aux_at_iter) * self.bin_ext), 
-                np.amax(aux_at_iter) + (np.amax(aux_at_iter) * self.bin_ext)
-                )
 
     def _normalize(self, hist):
         """ TODO: add temperature arg, also this function may not be needed.
@@ -175,7 +162,7 @@ class H5_Pdist:
             # TODO: westpa makes these the max to keep the pdist shape
         return hist
 
-    def aux_to_pdist_1d(self, iteration, hist_range=None):
+    def aux_to_pdist_1d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
         1D probability distribution. 
@@ -184,8 +171,6 @@ class H5_Pdist:
         ----------
         iteration : int
             Desired iteration to extract timeseries info from.
-        hist_range: tuple (optional)
-            2 int values for min and max hist range.
 
         Returns
         -------
@@ -206,11 +191,7 @@ class H5_Pdist:
         # make an 1-D array to fit the hist values based off of bin count
         histogram = np.zeros(shape=(self.bins))
         for seg in range(0, aux.shape[0]):
-            # can use dynamic hist range based off of dataset or a static value from arg
-            # TODO: i dont think this option is ever used
-            if hist_range is None:
-                hist_range = (np.amin(aux), np.amax(aux))
-            counts, bins = np.histogram(aux[seg], bins=self.bins, range=hist_range)
+            counts, bins = np.histogram(aux[seg], bins=self.bins, range=self.histrange_x)
 
             # multiply counts vector by weight scalar from seg index 
             counts = np.multiply(counts, seg_weights[seg][0])
@@ -225,7 +206,7 @@ class H5_Pdist:
         # TODO: save as instance attributes
         return midpoints_x, histogram
 
-    def aux_to_pdist_2d(self, iteration, hist_range=None):
+    def aux_to_pdist_2d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
         2D probability distribution. 
@@ -234,8 +215,6 @@ class H5_Pdist:
         ----------
         iteration : int
             Desired iteration to extract timeseries info from.
-        hist_range: tuple (optional)
-            2 int values for min and max hist range.
 
         Returns
         -------
@@ -257,12 +236,11 @@ class H5_Pdist:
         # 2D array to store hist counts for each timepoint in both dimensions
         histogram = np.zeros(shape=(self.bins, self.bins))
         for seg in range(0, aux_x.shape[0]):
-            # can use dynamic hist range based off of dataset or a static value from arg
-            if hist_range is None:
-                hist_range = [[np.amin(aux_x), np.amax(aux_x)], 
-                              [np.amin(aux_y), np.amax(aux_y)]]
             counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], 
-                                                    bins=self.bins, range=hist_range)
+                                                    bins=self.bins, 
+                                                    range=[self.histrange_x, 
+                                                           self.histrange_y]
+                                                    )
 
             # multiply counts vector by weight scalar from seg index 
             counts = np.multiply(counts, seg_weights[seg][0])
@@ -276,11 +254,11 @@ class H5_Pdist:
         midpoints_y = (bins_y[:-1] + bins_y[1:]) / 2
         
         # flip and rotate to correct orientation (alt: TODO, try np.transpose)
-        histogram = np.rot90(np.flip(histogram, axis=1))
+        #histogram = np.rot90(np.flip(histogram, axis=1))
 
         # TODO: save these as instance attributes
         # this will make it easier to save into a text pdist file later
-        return midpoints_x, midpoints_y, histogram
+        return midpoints_x, midpoints_y, histogram.T
 
     def instant_pdist_1d(self):
         """ Normalize the Z data
@@ -290,9 +268,7 @@ class H5_Pdist:
             x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # get range for max iter hist values: use this as static bin value for evolution plot
-        hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
-        center, counts_total = self.aux_to_pdist_1d(self.last_iter, hist_range=hist_range_x)
+        center, counts_total = self.aux_to_pdist_1d(self.last_iter)
         counts_total = self._normalize(counts_total)
         return center, counts_total
 
@@ -304,36 +280,25 @@ class H5_Pdist:
             x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # TODO: put histrange x and y in init
-        # get range for max iter hist values: use this as static bin value for evolution plot
-        hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
-        hist_range_y = self.get_iter_range(self.aux_y, self.last_iter)
-        center_x, center_y, counts_total = self.aux_to_pdist_2d(self.last_iter, 
-                                                                hist_range=(hist_range_x,
-                                                                            hist_range_y
-                                                                            )
-                                                                )
+        center_x, center_y, counts_total = self.aux_to_pdist_2d(self.last_iter)
         counts_total = self._normalize(counts_total)
         return center_x, center_y, counts_total
 
     def evolution_pdist(self):
-        """ Nor malize the Z data
+        """ Normalize the Z data
         Returns (TODO)
         -------
         x, y, norm_hist
             x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # get range for max iter hist values: use this as static bin value for evolution plot
-        hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
-
         # make array to store hist (-lnP) values for n iterations of aux_x
         evolution_x = np.zeros(shape=(self.last_iter, self.bins))
         positions_x = np.zeros(shape=(self.last_iter, self.bins))
 
         for iter in range(self.first_iter, self.last_iter + 1):
             # generate evolution x data
-            center_x, counts_total_x = self.aux_to_pdist_1d(iter, hist_range=hist_range_x)
+            center_x, counts_total_x = self.aux_to_pdist_1d(iter)
             evolution_x[iter - 1] = counts_total_x
             positions_x[iter - 1] = center_x
 
@@ -341,7 +306,7 @@ class H5_Pdist:
         evolution_x = self._normalize(evolution_x)
 
         # bin positions along aux x, WE iteration numbers, z data
-        return positions_x, np.arange(self.first_iter, self.last_iter + 1,1), evolution_x
+        return positions_x, np.arange(self.first_iter, self.last_iter + 1, 1), evolution_x
 
     def average_pdist_1d(self):
         """ Normalize the Z data
@@ -351,16 +316,13 @@ class H5_Pdist:
             x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # get range for max iter hist values: use this as static bin value for evolution plot
-        hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
-
         # make array to store hist (-lnP) values for n iterations of aux_x
         evolution_x = np.zeros(shape=(self.last_iter, self.bins))
         positions_x = np.zeros(shape=(self.last_iter, self.bins))
 
         for iter in range(self.first_iter, self.last_iter + 1):
             # generate evolution x data
-            center_x, counts_total_x = self.aux_to_pdist_1d(iter, hist_range=hist_range_x)
+            center_x, counts_total_x = self.aux_to_pdist_1d(iter)
             evolution_x[iter - 1] = counts_total_x
             positions_x[iter - 1] = center_x
 
@@ -379,17 +341,12 @@ class H5_Pdist:
             x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # get range for max iter hist values: use this as static bin value for evolution plot
-        hist_range_x = self.get_iter_range(self.aux_x, self.last_iter)
-        hist_range_y = self.get_iter_range(self.aux_y, self.last_iter)
-
         # empty array for 2D pdist
         average_xy = np.zeros(shape=(self.bins, self.bins))
 
         # 2D avg pdist data generation
         for iter in range(self.first_iter, self.last_iter + 1):
-            center_x, center_y, counts_total_xy = \
-                self.aux_to_pdist_2d(iter, hist_range=(hist_range_x, hist_range_y))
+            center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
 
         average_xy = self._normalize(average_xy)
@@ -404,7 +361,15 @@ class H5_Pdist:
             Or subclass in plot, that is prob best for seperate functionality later on.
             So users can call pdist class or plot class which does both pdist and plot
                 or just plots from input data.
-        """
+        """ 
+        # TODO: need to consolidate the aux_y 2d vs 1d stuff somehow
+
+        # TODO: only if histrange is None
+        # get the optimal histrange
+        self.histrange_x = self._get_histrange(self.aux_x)
+        if self.aux_y:
+            self.histrange_y = self._get_histrange(self.aux_y)
+
         if self.data_type == "evolution":
             return self.evolution_pdist()
         elif self.data_type == "instant":

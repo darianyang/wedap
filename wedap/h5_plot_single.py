@@ -6,22 +6,23 @@ TODO: figure out mpl styles and load a style for 1 col, 2 col, and poster figure
 from h5_pdist import *
 from h5_plot import *
 
+# TODO: auto ignore auxy when using 1d
 data_options = {"h5" : "data/west_c2.h5",
-                #"aux_x" : "1_75_39_c2",
-                #"aux_y" : "angle_3pt",
-                #"aux_x" : "rms_bb_nmr",
-                "aux_x" : "M2_E175_chi1",
-                "aux_y" : "M2_E175_chi2",
+                "aux_x" : "1_75_39_c2",
+                #"aux_x" : "angle_3pt",
+                #"aux_y" : "rms_dimer_int_xtal",
+                "aux_y" : "rms_heavy_xtal",
+                #"aux_x" : "M2_E175_chi1",
+                #"aux_y" : "M2_E175_chi2",
                 "data_type" : "average",
-                "p_max" : 5,
+                "p_max" : 10,
                 "p_units" : "kcal",
                 "first_iter" : 1,
                 "last_iter" : 24,
                 "bins" : 100,
-                "bin_ext" : 0.01,
                 #"plot_mode" : "line_1d",
-                "plot_mode" : "hist_2d",
-                #"data_smoothing_level" : 0.4,
+                "plot_mode" : "contour",
+                "data_smoothing_level" : 0.4,
                 #"curve_smoothing_level" : 0.4,
                 }
 plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
@@ -55,8 +56,9 @@ start = timeit.default_timer()
 
 # TODO: I should be able to use the classes sepertely or together
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
-H5_Plot(plot_options=plot_options, **data_options).plot()
-
+wedap = H5_Plot(plot_options=plot_options, **data_options)
+wedap.plot()
+print(wedap.auxnames)
 
 # 1D example
 # pdist = H5_Pdist("data/west_i200.h5", aux_x="1_75_39_c2", **data_options)
