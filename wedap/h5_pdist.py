@@ -33,9 +33,9 @@ class H5_Pdist:
     These class methods generate probability distributions and plots the output.
     TODO: split?
     """
-
+    # TODO: change aux_x to X?
     def __init__(self, h5, data_type, aux_x=None, aux_y=None, first_iter=1, last_iter=None, 
-                 bins=100, bin_ext=0.25, p_min=0, p_max=None, p_units='kT'):
+                 bins=100, bin_ext=0.1, p_min=0, p_max=None, p_units='kT'):
         """
         Parameters
         ----------
@@ -53,7 +53,7 @@ class H5_Pdist:
             Last iteration data to include, default is the last recorded iteration in the west.h5 file.
         bins : int
             amount of histogram bins in pdist data to be generated, default 100.
-        bin_ext : float
+        bin_ext : float TODO
             Increase the limits of the bins by a percentage value (0.05 = 5% = default).
         p_min : int
             The minimun probability limit value. Default to 0.
@@ -62,6 +62,7 @@ class H5_Pdist:
         p_units : str
             Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
                 TODO: make the temp a class attribute or something dynamic.
+        TODO: arg for histrange_x and histrange_y, can use xlim and ylim if provided in H5_Plot
         """
         self.f = h5py.File(h5, mode="r")
 
@@ -92,9 +93,54 @@ class H5_Pdist:
         self.p_max = p_max
         self.p_units = p_units
 
+        # TODO: this needs to be updated for periodic values
+            # current workaround for periodic torsion data:
+                # use bin_ext of <= 0.01
         # hist_range # TODO: this will supercede bin_ext
         # can take the largest range on both dims for the histrange of evo and average
             # instant will be just the single dist range
+
+    # def get_hist_range(self):
+    #     """ 
+    #     Get the proper instance attribute considering the min/max of the entire dataset.
+
+    #     Parameters
+    #     ----------
+    #     aux : str
+    #         target auxillary data for range calculation
+    #     iteration : int
+    #         iteration to calculate range of
+
+    #     Returns
+    #     -------
+    #     iter_range : tuple
+    #         2 item tuple of min and max bin bounds for hist range of target aux data.
+    #     """
+    #     aux_at_iter = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{aux}"])
+    #     # TODO: this *5 works for now... but need a smarter solution
+    #     return (np.amin(aux_at_iter) - (np.amin(aux_at_iter) * self.bin_ext), 
+    #             np.amax(aux_at_iter) + (np.amax(aux_at_iter) * self.bin_ext)
+    #             )
+
+    def get_iter_range(self, aux, iteration):
+        """ TODO: make internal method?
+        Parameters
+        ----------
+        aux : str
+            target auxillary data for range calculation
+        iteration : int
+            iteration to calculate range of
+
+        Returns
+        -------
+        iter_range : tuple
+            2 item tuple of min and max bin bounds for hist range of target aux data.
+        """
+        aux_at_iter = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{aux}"])
+        # TODO: this *5 works for now... but need a smarter solution
+        return (np.amin(aux_at_iter) - (np.amin(aux_at_iter) * self.bin_ext), 
+                np.amax(aux_at_iter) + (np.amax(aux_at_iter) * self.bin_ext)
+                )
 
     def _normalize(self, hist):
         """ TODO: add temperature arg, also this function may not be needed.
@@ -152,6 +198,7 @@ class H5_Pdist:
         histogram = np.zeros(shape=(self.bins))
         for seg in range(0, aux.shape[0]):
             # can use dynamic hist range based off of dataset or a static value from arg
+            # TODO: i dont think this option is ever used
             if hist_range is None:
                 hist_range = (np.amin(aux), np.amax(aux))
             counts, bins = np.histogram(aux[seg], bins=self.bins, range=hist_range)
@@ -225,26 +272,6 @@ class H5_Pdist:
         # TODO: save these as instance attributes
         # this will make it easier to save into a text pdist file later
         return midpoints_x, midpoints_y, histogram
-
-    def get_iter_range(self, aux, iteration):
-        """ TODO: make internal method?
-        Parameters
-        ----------
-        aux : str
-            target auxillary data for range calculation
-        iteration : int
-            iteration to calculate range of
-
-        Returns
-        -------
-        iter_range : tuple
-            2 item tuple of min and max bin bounds for hist range of target aux data.
-        """
-        aux_at_iter = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{aux}"])
-        # TODO: this *5 works for now... but need a smarter solution
-        return (np.amin(aux_at_iter) - (np.amin(aux_at_iter) * self.bin_ext * 5), 
-                np.amax(aux_at_iter) + (np.amax(aux_at_iter) * self.bin_ext)
-                )
 
     def instant_pdist_1d(self):
         """ Normalize the Z data
@@ -359,7 +386,7 @@ class H5_Pdist:
         average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
-    def run(self):
+    def pdist(self):
         """
         Main public method with pdist generation controls.
         # TODO: put plot controls here? or pdist controls?

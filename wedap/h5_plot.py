@@ -85,8 +85,11 @@ class H5_Plot(H5_Pdist):
         # TODO: option if you want to generate pdist
         # also need option of just using the input X Y Z args
         # or getting them from w_pdist h5 file, or from H5_Pdist output file
-        if X is None and Y is None:
-            X, Y, Z = H5_Pdist(*args, **kwargs).run()
+        # TODO: 1D plot not working
+        if plot_mode == "line_1d":
+            X, Y = H5_Pdist(*args, **kwargs).pdist()
+        elif X is None and Y is None and Z is None:
+            X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
 
         self.X = X
         self.Y = Y
@@ -95,6 +98,11 @@ class H5_Plot(H5_Pdist):
         self.plot_mode = plot_mode
         self.cmap = cmap
         self.plot_options = plot_options
+
+        if self.p_units == "kT":
+            self.cbar_label = "$\Delta F(\vec{x})\,/\,kT$" + "\n" + r"$\left[-\ln\,P(x)\right]$"
+        elif self.p_units == "kcal":
+            self.cbar_label = r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)"
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -135,18 +143,13 @@ class H5_Plot(H5_Pdist):
         # TODO: lines on colorbar?
         #if lines:
         #    cbar.add_lines(lines)
-        if self.p_units == "kT":
-            cbar.set_label(r"$\Delta F(\vec{x})\,/\,kT$" + "\n" + r"$\left[-\ln\,P(x)\right]$")
-        elif self.p_units == "kcal":
-            cbar.set_label(r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)")
-
+        cbar.set_label(self.cbar_label)
+    
     def plot_hist_2d(self):
         # 2D heatmaps
         # if self.p_max:
         #     self.Z[self.Z > self.p_max] = inf
         self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=self.p_min, vmax=self.p_max)
-        self.cbar()
-        self.unpack_plot_options()
 
     def plot_contour_2d(self):
         # 2D contour plots
@@ -159,14 +162,13 @@ class H5_Plot(H5_Pdist):
             levels = np.arange(self.p_min, self.p_max + 1, 1)
         self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
         self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
-        # self.cbar()
-        # self.unpack_plot_options()
 
     def plot_line_1d(self):
         # 1D data
-        if self.p_max:
-            self.Y[self.Y > self.p_max] = inf
+        #if self.p_max:
+        #    self.Y[self.Y > self.p_max] = inf
         self.ax.plot(self.X, self.Y)
+        self.ax.set_ylabel("")
 
     def unpack_plot_options(self):
         """
@@ -224,7 +226,7 @@ class H5_Plot(H5_Pdist):
     #     # Call ``attr``.
     #     attr()
 
-    def run(self):
+    def plot(self):
         """
         Main public method.
         """
@@ -235,7 +237,16 @@ class H5_Plot(H5_Pdist):
             self._smooth()
             self.plot_contour_2d()
             self.cbar()
-            self.unpack_plot_options()
+
+        if self.plot_mode == "hist_2d":
+            self.plot_hist_2d()
+            self.cbar()
+
+        if self.plot_mode == "line_1d":
+            self.plot_line_1d()
+
+        self.unpack_plot_options()        
+        self.fig.tight_layout()
 
     # TODO: master plotting run function
     # here can parse plot type and add cbars/tightlayout/plot_options/smoothing
