@@ -162,6 +162,17 @@ class H5_Pdist:
             # TODO: westpa makes these the max to keep the pdist shape
         return hist
 
+    # TODO: midpoint function
+    # def _edges_to_midpoints(self):
+    #     '''
+    #     Get the midpoints of bins stored in ``self.xedges`` and ``self.yedges``.
+    #     Store midpoints in ``self.x_mids`` and ``self.y_mids``.
+    #     '''
+    #     self.x_mids = [(self.xedges[i]+self.xedges[i+1])/2\
+    #                    for i in range(self.xedges.shape[0] -1)]
+    #     self.y_mids = [(self.yedges[i]+self.yedges[i+1])/2\
+    #                    for i in range(self.yedges.shape[0] -1)]
+
     def aux_to_pdist_1d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted

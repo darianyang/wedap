@@ -163,7 +163,15 @@ class H5_Plot(H5_Pdist):
             levels = np.arange(self.p_min, self.p_max + 0.1, 0.1)
         else:
             levels = np.arange(self.p_min, self.p_max + 1, 1)
-        self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
+
+        # TODO: better implementation of this
+        if self.curve_smoothing_level:
+            # TODO: gets rid of nan, I don't think needed here since _smooth does this
+            #self.Z_curves[np.isnan(self.Z_curves)] = np.max(self.Z)*2
+            self.lines = self.ax.contour(self.X, self.Y, self.Z_curves, levels=levels, colors="black", linewidths=1)
+        else:
+            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
+
         self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
 
     def plot_line_1d(self):
@@ -171,7 +179,7 @@ class H5_Plot(H5_Pdist):
         #if self.p_max:
         #    self.Y[self.Y > self.p_max] = inf
         self.ax.plot(self.X, self.Y)
-        self.ax.set_ylabel("")
+        self.ax.set_ylabel(self.cbar_label)
 
     def unpack_plot_options(self):
         """
@@ -212,7 +220,10 @@ class H5_Plot(H5_Pdist):
             self.Z_curves = scipy.ndimage.filters.gaussian_filter(self.Z_curves, 
                                 self.curve_smoothing_level)
         self.Z[np.isnan(self.Z)] = np.nan 
-        self.Z_curves[np.isnan(self.Z)] = np.nan 
+        #self.Z_curves[np.isnan(self.Z)] = np.nan 
+        #self.Z_curves[np.isinf(self.Z_curves)] = np.max(self.Z)*2
+        # TODO: are any of these needed, the Z_curve seems to not change much
+
 
     # TODO
     # def _run_postprocessing(self):
@@ -231,6 +242,10 @@ class H5_Plot(H5_Pdist):
     def plot(self):
         """
         Main public method.
+        master plotting run function
+        here can parse plot type and add cbars/tightlayout/plot_options/smoothing
+
+        TODO: some kind 1d vs 2d indicator, then if not 1d plot cbar
         """
         if self.plot_mode == "contour":
             # Do data smoothing. We have to make copies of the array so that
@@ -240,15 +255,16 @@ class H5_Plot(H5_Pdist):
             self.plot_contour_2d()
             self.cbar()
 
-        if self.plot_mode == "hist_2d":
+        elif self.plot_mode == "hist_2d":
             self.plot_hist_2d()
             self.cbar()
 
-        if self.plot_mode == "line_1d":
+        elif self.plot_mode == "line_1d":
             self.plot_line_1d()
+
+        # error if unknown plot_mode
+        else:
+            raise ValueError(f"plot_mode = '{self.plot_mode}' is not valid.")
 
         self.unpack_plot_options()        
         self.fig.tight_layout()
-
-    # TODO: master plotting run function
-    # here can parse plot type and add cbars/tightlayout/plot_options/smoothing
