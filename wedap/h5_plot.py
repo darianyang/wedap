@@ -39,9 +39,8 @@ from h5_pdist import H5_Pdist
 # TODO: could subclass the H5_Pdist class, then use this as the main in wedap.py
 class H5_Plot(H5_Pdist):
 
-    def __init__(self, X=None, Y=None, Z=None, plot_type="heat", cmap="viridis", ax=None, 
-        plot_options=None, data_smoothing_level=None, curve_smoothing_level=None, 
-        plot_mode="hist_2d", *args, **kwargs):
+    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist_2d", cmap="viridis", 
+        color="tab:blue", ax=None, plot_options=None, data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
 
@@ -68,16 +67,18 @@ class H5_Plot(H5_Pdist):
             p_max : int
                 The maximum probability limit value.
             p_units : str
-                Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
+                Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), 
+                where RT = 0.5922 at 298K.
             cmap : str
                 Colormap option, default = viridis.
             **plot_options : kwargs
         """
         # include the init args for H5_Pdist
+        # TODO: how to make some of the args optional if I want to use classes seperately?
         super().__init__(*args, **kwargs)
 
         if ax is None:
-            self.fig, self.ax = plt.subplots(figsize=(5,4))
+            self.fig, self.ax = plt.subplots()
         else:
             self.fig = plt.gcf()
             self.ax = ax
@@ -89,7 +90,7 @@ class H5_Plot(H5_Pdist):
         # also need option of just using the input X Y Z args
         # or getting them from w_pdist h5 file, or from H5_Pdist output file
         # TODO: 1D plot not working
-        if plot_mode == "line_1d":
+        if plot_mode == "line" or plot_mode == "bar" or plot_mode == "hist1d":
             X, Y = H5_Pdist(*args, **kwargs).pdist()
         elif X is None and Y is None and Z is None:
             X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
@@ -100,12 +101,13 @@ class H5_Plot(H5_Pdist):
 
         self.plot_mode = plot_mode
         self.cmap = cmap
+        self.color = color # 1D color
         self.plot_options = plot_options
 
         if self.p_units == "kT":
-            self.cbar_label = "$\Delta F(\vec{x})\,/\,kT$" + "\n" + r"$\left[-\ln\,P(x)\right]$"
+            self.cbar_label = "$-\ln\,P(x)\ [kT^{-1}]$"
         elif self.p_units == "kcal":
-            self.cbar_label = r"$\it{-RT}$ ln $\it{P}$ (kcal mol$^{-1}$)"
+            self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -144,17 +146,21 @@ class H5_Plot(H5_Pdist):
     def cbar(self):
         cbar = self.fig.colorbar(self.plot)
         # TODO: lines on colorbar?
+        # TODO: related, make a discrete colorbar/mapping for hist2d?
         #if lines:
         #    cbar.add_lines(lines)
-        cbar.set_label(self.cbar_label)
+        cbar.set_label(self.cbar_label, labelpad=14)
+
+        # allow for cbar object manipulation (e.g. removal in movie)
+        self.cbar = cbar
     
-    def plot_hist_2d(self):
+    def plot_hist2d(self):
         # 2D heatmaps
         # if self.p_max:
         #     self.Z[self.Z > self.p_max] = inf
         self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=self.p_min, vmax=self.p_max)
 
-    def plot_contour_2d(self):
+    def plot_contour(self):
         # 2D contour plots
         if self.p_max is None:
             warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
@@ -174,11 +180,25 @@ class H5_Plot(H5_Pdist):
 
         self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
 
-    def plot_line_1d(self):
+    def plot_bar(self):
+        # 1D data
+        # recover the pdf from the -ln P
+        # TODO: does this account for p_max naturally?
+        self.ax.bar(self.X, np.exp(-self.Y), color=self.color)
+        self.ax.set_ylabel("P(x)")
+
+    def plot_hist1d(self):
+        # 1D data
+        # recover the pdf from the -ln P
+        # TODO: does this account for p_max naturally?
+        self.ax.hist(self.X, self.Y)
+        self.ax.set_ylabel("P(x)")
+
+    def plot_line(self):
         # 1D data
         #if self.p_max:
         #    self.Y[self.Y > self.p_max] = inf
-        self.ax.plot(self.X, self.Y)
+        self.ax.plot(self.X, self.Y, color=self.color)
         self.ax.set_ylabel(self.cbar_label)
 
     def unpack_plot_options(self):
@@ -209,7 +229,6 @@ class H5_Plot(H5_Pdist):
                 print(f"Minima: ({self.X[maxima[0]][0]}, {self.Y[maxima[1]][0]})")
 
     # TODO: i think the data smoothing works but not the curve
-    # See AJD script for variable definitions
     def _smooth(self):
         if self.data_smoothing_level is not None:
             self.Z[np.isnan(self.Z)] = np.nanmax(self.Z)
@@ -252,15 +271,21 @@ class H5_Plot(H5_Pdist):
             # the data and curves can have different smoothing levels.
             self.Z_curves = np.copy(self.Z)
             self._smooth()
-            self.plot_contour_2d()
+            self.plot_contour()
             self.cbar()
 
-        elif self.plot_mode == "hist_2d":
-            self.plot_hist_2d()
+        elif self.plot_mode == "hist2d":
+            self.plot_hist2d()
             self.cbar()
 
-        elif self.plot_mode == "line_1d":
-            self.plot_line_1d()
+        elif self.plot_mode == "bar":
+            self.plot_bar()
+
+        elif self.plot_mode == "line":
+            self.plot_line()
+
+        elif self.plot_mode == "hist1d":
+            self.plot_hist1d()
 
         # error if unknown plot_mode
         else:

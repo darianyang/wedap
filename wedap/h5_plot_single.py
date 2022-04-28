@@ -6,32 +6,37 @@ TODO: figure out mpl styles and load a style for 1 col, 2 col, and poster figure
 from h5_pdist import *
 from h5_plot import *
 
+# formatting
+plt.style.use("default.mplstyle")
+
 # TODO: auto ignore auxy when using 1d
 data_options = {"h5" : "data/west_c2.h5",
                 "aux_x" : "1_75_39_c2",
-                #"aux_x" : "angle_3pt",
-                #"aux_y" : "rms_dimer_int_xtal",
+                #"aux_y" : "angle_3pt",
                 "aux_y" : "rms_heavy_xtal",
-                #"aux_x" : "M2_E175_chi1",
+                #"aux_y" : "rms_dimer_int_xtal",
+                #"aux_y" : "rms_bb_xtal",
+                #"aux_x" : "M1_E175_chi2",
                 #"aux_y" : "M2_E175_chi2",
-                "data_type" : "average",
+                "data_type" : "instant",
                 "p_max" : 10,
                 "p_units" : "kcal",
-                "first_iter" : 1,
-                "last_iter" : 24,
+                #"first_iter" : 76,
+                "last_iter" : 78,
                 "bins" : 100,
-                #"plot_mode" : "line_1d",
-                "plot_mode" : "hist_2d",
+                "plot_mode" : "hist2d",
+                #"cmap" : "gnuplot_r",
+                #"plot_mode" : "hist2d",
                 #"data_smoothing_level" : 0.4,
                 #"curve_smoothing_level" : 0.4,
                 }
 plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
-                #"ylabel" : "RMSD ($\AA$)", 
+                "ylabel" : "RMSD ($\AA$)", 
                 #"ylabel" : "WE Iteration", 
-                #"xlabel" : "Helical Angle (°)",
-                #"title" : "1A43 V02 100i WE",
-                #"ylim" : (1, 4),
-                #"xlim" : (20, 90),
+                "xlabel" : "Helical Angle (°)",
+                "title" : "2KOD C2 100i WE",
+                #"ylim" : (2, 10),
+                #"xlim" : (10, 110),
                 #"xlim" : (30, 80),
                 #"xlim" : (-180,180),
                 #"ylim" : (-180,180),
@@ -58,7 +63,10 @@ start = timeit.default_timer()
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
 wedap = H5_Plot(plot_options=plot_options, **data_options)
 wedap.plot()
-print(wedap.auxnames)
+#plt.savefig("west_c2.png")
+#print(wedap.auxnames)
+
+# TODO: test using different p_max values and bar
 
 # 1D example
 # pdist = H5_Pdist("data/west_i200.h5", aux_x="1_75_39_c2", **data_options)
@@ -70,3 +78,5 @@ execution_time = stop - start
 print(f"Executed in {execution_time:04f} seconds")
 
 plt.show()
+
+# TODO: build an tracer function that finds the iter,seg,frame(s) for an input hist bin

@@ -19,6 +19,7 @@ TODO:
 - then seperate into pdist class and plotting class 
 
 TODO: update docstrings
+TODO: option for unweighted output
 """
 
 import h5py
