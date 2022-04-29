@@ -161,12 +161,14 @@ class H5_Plot(H5_Pdist):
         self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=self.p_min, vmax=self.p_max)
 
     def plot_contour(self):
+        # TODO: seperate functions for contourf and contourl?
+            # then can use hist and contourl
         # 2D contour plots
         if self.p_max is None:
             warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
             levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), 1)
         elif self.p_max <= 1:
-            levels = np.arange(self.p_min, self.p_max + 0.1, 0.1)
+            levels = np.arange(self.p_min, self.p_max + 0.2, 0.2)
         else:
             levels = np.arange(self.p_min, self.p_max + 1, 1)
 
@@ -201,7 +203,7 @@ class H5_Plot(H5_Pdist):
         self.ax.plot(self.X, self.Y, color=self.color)
         self.ax.set_ylabel(self.cbar_label)
 
-    def unpack_plot_options(self):
+    def _unpack_plot_options(self):
         """
         Unpack the plot_options kwarg dictionary.
         """
@@ -243,8 +245,7 @@ class H5_Plot(H5_Pdist):
         #self.Z_curves[np.isinf(self.Z_curves)] = np.max(self.Z)*2
         # TODO: are any of these needed, the Z_curve seems to not change much
 
-
-    # TODO
+    # TODO ?
     # def _run_postprocessing(self):
     #     '''
     #     Run the user-specified postprocessing function.
@@ -291,5 +292,5 @@ class H5_Plot(H5_Pdist):
         else:
             raise ValueError(f"plot_mode = '{self.plot_mode}' is not valid.")
 
-        self.unpack_plot_options()        
+        self._unpack_plot_options()        
         self.fig.tight_layout()

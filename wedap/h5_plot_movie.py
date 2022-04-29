@@ -3,19 +3,7 @@ from h5_plot import *
 from moviepy.editor import VideoClip
 from moviepy.video.io.bindings import mplfig_to_npimage
 
-plt.rcParams.update({'font.size': 16})
-plt.rcParams["font.family"]="Sans-serif"
-#plt.rcParams['font.sans-serif'] = 'Arial'
-plt.rcParams['font.sans-serif'] = 'DejaVu Sans'
-plt.rcParams['mathtext.default'] = 'regular'
-plt.rcParams['axes.linewidth'] = 3
-plt.rcParams['xtick.major.size'] = 9.5
-plt.rcParams['xtick.major.width'] = 3
-plt.rcParams['xtick.minor.size'] = 6
-plt.rcParams['xtick.minor.width'] = 3
-plt.rcParams['ytick.major.size'] = 6
-plt.rcParams['ytick.major.width'] = 3
-plt.rcParams['axes.labelsize'] = 20
+plt.style.use("default.mplstyle")
 
 # iterations is about 100*duration with 20 fps and iteration = (t + 0.01) * 100
 # seconds

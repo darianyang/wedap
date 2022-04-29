@@ -1,23 +1,8 @@
 
-from h5_plot_main import *
+from h5_plot import *
 from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 
-plt.rcParams.update({'font.size': 18})
-plt.rcParams["figure.titleweight"] = "bold"
-# plt.rcParams['font.family'] = 'sans-serif'
-# plt.rcParams['font.sans-serif'] = 'Helvetica World'
-plt.rcParams["font.weight"] = "semibold"
-plt.rcParams["axes.labelweight"] = "semibold"
-# plt.rcParams.update({
-#         "font.weight": "bold",  # bold fonts
-#         #"tick.labelsize": 15,   # large tick labels
-#         "lines.linewidth": 1,   # thick lines
-#         "lines.color": "k",     # black lines
-#         "grid.color": "0.5",    # gray gridlines
-#         "grid.linestyle": "-",  # solid gridlines
-#         "grid.linewidth": 0.5,  # thin gridlines
-#         "savefig.dpi": 300,     # higher resolution output.
-#     })
+plt.style.use("default.mplstyle")
 
 # see AJD-autocorr plot: can use plt.gcf() (get current figure) in plotting function for multi fig subplots
     
