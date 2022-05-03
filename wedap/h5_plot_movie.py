@@ -7,7 +7,7 @@ plt.style.use("default.mplstyle")
 
 # iterations is about 100*duration with 20 fps and iteration = (t + 0.01) * 100
 # seconds
-duration = 1.5
+duration = 3
 # frames per second
 fps = 20
 
@@ -26,12 +26,12 @@ def make_frame(t):
     data_options = {"h5" : "data/west_c2.h5",
                     "aux_x" : "1_75_39_c2",
                     #"aux_y" : "angle_3pt",
-                    "aux_y" : "rms_heavy_xtal",
+                    "aux_y" : "rms_m1_xtal",
                     #"aux_y" : "rms_dimer_int_xtal",
                     #"aux_y" : "rms_bb_xtal",
                     #"aux_x" : "M1_E175_chi2",
                     #"aux_y" : "M2_E175_chi2",
-                    "data_type" : "average",
+                    "data_type" : "instant",
                     "p_max" : 15,
                     "p_units" : "kcal",
                     #"first_iter" : 100,
@@ -50,7 +50,7 @@ def make_frame(t):
                     #"xlabel" : "Helical Angle (°)",
                     #"title" : "2KOD C2 100i WE",
                     "title" : f"WE Iteration {int(iteration)}",
-                    "ylim" : (2, 8),
+                    "ylim" : (2, 20),
                     #"xlim" : (10, 110),
                     "xlim" : (30, 85),
                     #"xlim" : (-180,180),
