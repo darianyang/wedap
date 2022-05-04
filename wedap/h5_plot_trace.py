@@ -1,6 +1,6 @@
 """
 Plot a traced WE trajectory onto 2D plots.
-# TODO: eventually can combine with search_aux and instantly get rep trace
+# TODO: integrate into h5_plot
 """
 
 import numpy as np
@@ -34,7 +34,15 @@ def get_aux(path, h5_file, aux_name):
         #pcoords.append(h5_file[f'iterations/iter_{it:08d}']['pcoord'][wlk][::10,:])
     return np.array(aux_coords)
 
-def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False):
+def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False, ax=None):
+    """
+    Plot trace.
+    """
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(7,5))
+    else:
+        fig = plt.gcf()
+
     it, wlk = walker_tuple
     with h5py.File(h5, "r") as w:
         # adjustments for plothist evolution of only aux_x data
@@ -43,8 +51,8 @@ def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False):
             iter_split = [i + (j/aux_x.shape[1]) 
                           for i in range(0, it) 
                           for j in range(0, aux_x.shape[1])]
-            plt.plot(aux_x[:,0], iter_split, c="black", lw=2)
-            plt.plot(aux_x[:,0], iter_split, c="white", lw=1)
+            ax.plot(aux_x[:,0], iter_split, c="black", lw=2)
+            ax.plot(aux_x[:,0], iter_split, c="white", lw=1)
             return
 
         path = trace_walker((it, wlk), w)
@@ -53,8 +61,8 @@ def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False):
         aux_x = get_aux(path, w, aux_x)
         aux_y = get_aux(path, w, aux_y)
 
-        plt.plot(aux_x[:,0], aux_y[:,0], c="black", lw=2)
-        plt.plot(aux_x[:,0], aux_y[:,0], c="cyan", lw=1)
+        ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=2)
+        ax.plot(aux_x[:,0], aux_y[:,0], c="cyan", lw=1)
 
 
 # from h5_plot_main import *
@@ -81,5 +89,3 @@ def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False):
 # plot_trace(h5, (iter,seg), aux_x, aux_y)
 
 # plt.show()
-
-# TODO: combine this functionality into a condensed script

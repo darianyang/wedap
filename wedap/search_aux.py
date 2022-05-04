@@ -97,5 +97,5 @@ output, error = process.communicate()
 
 #iter, seg = search_aux_xy_nn("1a43_v02/wcrawl/west_i200_crawled.h5", "1_75_39_c2", "M2Oe_M1He1", 53, 2.8, 200)
 
-iter, seg = search_aux_xy_nn("data/west_c2.h5", "1_75_39_c2", "rms_bb_xtal", 54, 4, 
-                             first_iter=1, last_iter=300)
+iter, seg = search_aux_xy_nn("data/west_c2.h5", "1_75_39_c2", "rms_bb_xtal", 80, 6.5, 
+                             first_iter=1, last_iter=350)
