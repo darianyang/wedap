@@ -25,7 +25,7 @@ TODO: option for unweighted output
 import h5py
 from matplotlib.pyplot import hist
 import numpy as np
-from numpy import inf
+from numpy import inf, ndim
 
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
@@ -36,8 +36,9 @@ class H5_Pdist:
     TODO: split?
     """
     # TODO: change aux_x to X?
-    def __init__(self, h5, data_type, aux_x=None, aux_y=None, first_iter=1, last_iter=None, 
-                 bins=100, bin_ext=0.1, p_min=0, p_max=None, p_units='kT'):
+    # TODO: is setting aux_y to None the best approach to 1D plot settings?
+    def __init__(self, h5, data_type, aux_x="pcoord", aux_y=None, first_iter=1, 
+                 last_iter=None, bins=100, p_units='kT'):
         """
         Parameters
         ----------
@@ -53,36 +54,47 @@ class H5_Pdist:
             Default start plot at iteration 1 data.
         last_iter : int
             Last iteration data to include, default is the last recorded iteration in the west.h5 file.
-        bins : int
+        bins : int TODO: x and y?
             amount of histogram bins in pdist data to be generated, default 100.
-        bin_ext : float TODO
-            Increase the limits of the bins by a percentage value (0.05 = 5% = default).
-        p_min : int
-            The minimun probability limit value. Default to 0.
-        p_max : int
-            The maximum probability limit value.
         p_units : str
             Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
                 TODO: make the temp a class attribute or something dynamic.
         TODO: arg for histrange_x and histrange_y, can use xlim and ylim if provided in H5_Plot
         """
         self.f = h5py.File(h5, mode="r")
-
         self.data_type = data_type
+        self.p_units = p_units
 
-        # TODO: make these instance attributes equal the h5 target directory, but default pcoord
-        # Default pcoord for either dim
-        if aux_x is not None:
-            #self.aux_x = np.array(f[f"iterations/iter_{iteration:08d}/auxdata/{aux_x}"]) # TODO: maybe just the last part of string
-            self.aux_x = aux_x
-        elif aux_x is None:
-            #self.aux_x = np.array(f[f"pcoord0"])
-            self.aux_x = aux_x
+        # TODO: Default pcoord for either dim
+        if aux_x is not "pcoord":
+            self.aux_x = "auxdata/" + aux_x
+        elif aux_x is "pcoord":
+            self.aux_x = "pcoord"
+        # TODO: set this up as an arg to be able to process 3D+ arrays form aux
+        # need to define the index if pcoord is 3D+ array, index is ndim - 1
+        # TODO: can prob do this better
+        aux_x = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.aux_x}"])
+        if aux_x.ndim > 2:
+            self.index_x = np.shape(aux_x)[2] - 1
+        else: # TODO: this isn't needed prob
+            self.index_x = 0
 
-        self.aux_y = aux_y
+        # for 1D plots, but could be better (TODO)
+        if aux_y is None:
+            self.aux_y = aux_y
+        else:
+            if aux_y is not "pcoord":
+                self.aux_y = "auxdata/" + aux_y
+            elif aux_y is "pcoord":
+                self.aux_y = "pcoord"
+            aux_y = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.aux_y}"])
+            if aux_y.ndim > 2:
+                self.index_y = np.shape(aux_y)[2] - 1
+            else:
+                self.index_y = 0
 
         self.first_iter = first_iter
-        # default to last if not None
+        # default to last
         if last_iter is not None:
             self.last_iter = last_iter
         elif last_iter is None:
@@ -90,23 +102,24 @@ class H5_Pdist:
 
         # TODO: split into x and y bins
         self.bins = bins
-        self.bin_ext = bin_ext # TODO: maybe not needed
-        self.p_min = p_min # TODO: not set up yet
-        self.p_max = p_max
-        self.p_units = p_units
-
-        # TODO: this needs to be updated for periodic values
-            # current workaround for periodic torsion data:
-                # use bin_ext of <= 0.01
-        # hist_range # TODO: this will supercede bin_ext
-        # can take the largest range on both dims for the histrange of evo and average
-            # instant will be just the single dist range
-
 
         # save the available aux dataset names
         self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
 
-    def _get_histrange(self, aux):
+    def _get_aux_array(self, aux, index, iteration):
+        """
+        Extract, index, and return the aux array of interest.
+        """
+        aux_array = np.array(self.f[f"iterations/iter_{iteration:08d}/{aux}"])
+        
+        # TODO: should work for 1D and 2D pcoords
+        if aux_array.ndim > 2:
+            # get properly indexed dataset
+            aux_array = aux_array[:,:,index]
+
+        return aux_array
+
+    def _get_histrange(self, aux, index):
         """ 
         Get the histrange considering the min/max of all iterations considered.
 
@@ -121,13 +134,13 @@ class H5_Pdist:
             2 item list of min and max bin bounds for hist range of target aux data.
         """
         # set base histrange based on first iteration
-        iter_aux = np.array(self.f[f"iterations/iter_{self.first_iter:08d}/auxdata/{aux}"])
+        iter_aux = self._get_aux_array(aux, index, self.first_iter)
         histrange = [np.amin(iter_aux), np.amax(iter_aux)]
 
         # loop and update to the max and min for all other iterations considered
         for iter in range(self.first_iter + 1, self.last_iter + 1):
             # get min and max for the iteration
-            iter_aux = np.array(self.f[f"iterations/iter_{iter:08d}/auxdata/{aux}"])
+            iter_aux = self._get_aux_array(aux, index, iter)
             iter_min = np.amin(iter_aux)
             iter_max = np.amax(iter_aux)
 
@@ -150,7 +163,6 @@ class H5_Pdist:
         -------
         hist : ndarray
             The hist array is normalized according to the p_units argument. 
-            If p_max, probability values above p_max are adjusted to be inf.
         """
         if self.p_units == "kT":
             hist = -np.log(hist / np.max(hist))
@@ -158,9 +170,6 @@ class H5_Pdist:
             hist = -0.5922 * np.log(hist / np.max(hist))
         else:
             raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
-        if self.p_max: # TODO: this may not be necessary, can just set limits in plotting function, or maybe it would be best to make the final pdist here and just leave plotting to the plot class
-            hist[hist > self.p_max] = inf
-            # TODO: westpa makes these the max to keep the pdist shape
         return hist
 
     # TODO: midpoint function
@@ -198,7 +207,7 @@ class H5_Pdist:
         seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # return 1D aux data: 1D array for histogram and midpoint values
-        aux = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{self.aux_x}"])
+        aux = self._get_aux_array(self.aux_x, self.index_x, iteration)
 
         # make an 1-D array to fit the hist values based off of bin count
         histogram = np.zeros(shape=(self.bins))
@@ -242,8 +251,8 @@ class H5_Pdist:
         seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # 2D instant histogram and midpoint values for a single specified WE iteration
-        aux_x = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{self.aux_x}"])
-        aux_y = np.array(self.f[f"iterations/iter_{iteration:08d}/auxdata/{self.aux_y}"])
+        aux_x = self._get_aux_array(self.aux_x, self.index_x, iteration)
+        aux_y = self._get_aux_array(self.aux_y, self.index_y, iteration)
 
         # 2D array to store hist counts for each timepoint in both dimensions
         histogram = np.zeros(shape=(self.bins, self.bins))
@@ -264,12 +273,10 @@ class H5_Pdist:
         # get bin midpoints
         midpoints_x = (bins_x[:-1] + bins_x[1:]) / 2
         midpoints_y = (bins_y[:-1] + bins_y[1:]) / 2
-        
-        # flip and rotate to correct orientation (alt: TODO, try np.transpose)
-        #histogram = np.rot90(np.flip(histogram, axis=1))
 
         # TODO: save these as instance attributes
         # this will make it easier to save into a text pdist file later
+        # save midpoints and transposed histogram (corrected for plotting)
         return midpoints_x, midpoints_y, histogram.T
 
     def instant_pdist_1d(self):
@@ -378,9 +385,9 @@ class H5_Pdist:
 
         # TODO: only if histrange is None
         # get the optimal histrange
-        self.histrange_x = self._get_histrange(self.aux_x)
+        self.histrange_x = self._get_histrange(self.aux_x, self.index_x)
         if self.aux_y:
-            self.histrange_y = self._get_histrange(self.aux_y)
+            self.histrange_y = self._get_histrange(self.aux_y, self.index_y)
 
         if self.data_type == "evolution":
             return self.evolution_pdist()

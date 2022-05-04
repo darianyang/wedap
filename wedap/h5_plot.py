@@ -40,7 +40,8 @@ from h5_pdist import H5_Pdist
 class H5_Plot(H5_Pdist):
 
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist_2d", cmap="viridis", 
-        color="tab:blue", ax=None, plot_options=None, data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
+        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, 
+        data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
 
@@ -99,6 +100,9 @@ class H5_Plot(H5_Pdist):
         self.Y = Y
         self.Z = Z
 
+        self.p_min = p_min
+        self.p_max = p_max
+
         self.plot_mode = plot_mode
         self.cmap = cmap
         self.color = color # 1D color
@@ -156,6 +160,7 @@ class H5_Plot(H5_Pdist):
     
     def plot_hist2d(self):
         # 2D heatmaps
+        # TODO: westpa makes these the max to keep the pdist shape
         # if self.p_max:
         #     self.Z[self.Z > self.p_max] = inf
         self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=self.p_min, vmax=self.p_max)

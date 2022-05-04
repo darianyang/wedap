@@ -12,18 +12,22 @@ plt.style.use("default.mplstyle")
 # TODO: auto ignore auxy when using 1d
 data_options = {"h5" : "data/west_c2.h5",
                 #"h5" : "data/multi_2kod.h5",
-                #"aux_y" : "1_75_39_c2",
+                #"h5" : "data/p53.h5",
+                #"aux_x" : "1_75_39_c2",
+                "aux_x" : "pcoord",
+                #"aux_y" : "pcoord",
                 #"aux_y" : "angle_3pt",
                 #"aux_y" : "RoG",
                 #"aux_y" : "XTAL_REF_RMS_Heavy",
                 #"aux_x" : "rog",
-                "aux_x" : "rms_bb_nmr",
-                "aux_y" : "rms_bb_xtal",
+                "aux_y" : "rms_bb_nmr",
+                #"aux_y" : "rms_bb_xtal",
                 #"aux_y" : "rms_m1_xtal",
                 #"aux_x" : "M1_E175_chi2",
                 #"aux_y" : "M2_E175_chi2",
-                "data_type" : "average",
-                "p_max" : 15,
+                "data_type" : "instant",
+                #"p_min" : 15,
+                #"p_max" : 20,
                 "p_units" : "kcal",
                 #"first_iter" : 161,
                 #"last_iter" : 161, 
@@ -31,6 +35,7 @@ data_options = {"h5" : "data/west_c2.h5",
                 #"plot_mode" : "contour",
                 #"cmap" : "gnuplot_r",
                 "plot_mode" : "hist2d",
+                #"plot_mode" : "line",
                 #"data_smoothing_level" : 0.4,
                 #"curve_smoothing_level" : 0.4,
                 }
@@ -43,8 +48,8 @@ plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)",
                 #"xlabel" : "Helical Angle (°)",
                 "title" : "2KOD 20-100° WE",
                 #"title" : "2KOD 10µs RMSD WE",
-                "xlim" : (1,7),
-                "ylim" : (1,7),
+                #"xlim" : (1,7),
+                #"ylim" : (1,7),
                 #"xlim" : (0, 120),
                 #"xlim" : (17, 22),
                 #"ylim" : (30, 100),
@@ -74,6 +79,7 @@ start = timeit.default_timer()
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
 wedap = H5_Plot(plot_options=plot_options, **data_options)
 wedap.plot()
+print(wedap.index_x)
 #plt.savefig("west_c2.png")
 #print(wedap.auxnames)
 
