@@ -90,7 +90,6 @@ class H5_Plot(H5_Pdist):
         # TODO: option if you want to generate pdist
         # also need option of just using the input X Y Z args
         # or getting them from w_pdist h5 file, or from H5_Pdist output file
-        # TODO: 1D plot not working
         if plot_mode == "line" or plot_mode == "bar" or plot_mode == "hist1d":
             X, Y = H5_Pdist(*args, **kwargs).pdist()
         elif X is None and Y is None and Z is None:
@@ -163,7 +162,8 @@ class H5_Plot(H5_Pdist):
         # TODO: westpa makes these the max to keep the pdist shape
         # if self.p_max:
         #     self.Z[self.Z > self.p_max] = inf
-        self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, shading="auto", vmin=self.p_min, vmax=self.p_max)
+        self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, 
+                                       shading="auto", vmin=self.p_min, vmax=self.p_max)
 
     def plot_contour(self):
         # TODO: seperate functions for contourf and contourl?
@@ -213,6 +213,7 @@ class H5_Plot(H5_Pdist):
         Unpack the plot_options kwarg dictionary.
         """
         # unpack plot options dictionary # TODO: update this for argparse?
+        # TODO: put all in ax.set()?
         for key, item in self.plot_options.items():
             if key == "xlabel":
                 self.ax.set_xlabel(item)
@@ -250,20 +251,6 @@ class H5_Plot(H5_Pdist):
         #self.Z_curves[np.isinf(self.Z_curves)] = np.max(self.Z)*2
         # TODO: are any of these needed, the Z_curve seems to not change much
 
-    # TODO ?
-    # def _run_postprocessing(self):
-    #     '''
-    #     Run the user-specified postprocessing function.
-    #     '''
-    #     import importlib
-    #     # Parse the user-specifed string for the module and class/function name.
-    #     module_name, attr_name = self.args.postprocess_func.split('.', 1) 
-    #     # import the module ``module_name`` and make the function/class 
-    #     # accessible as ``attr``.
-    #     attr = getattr(importlib.import_module(module_name), attr_name) 
-    #     # Call ``attr``.
-    #     attr()
-
     def plot(self):
         """
         Main public method.
@@ -280,6 +267,7 @@ class H5_Plot(H5_Pdist):
             self.plot_contour()
             self.cbar()
 
+        # TODO: auto label WE iterations on evolution?
         elif self.plot_mode == "hist2d":
             self.plot_hist2d()
             self.cbar()
@@ -300,10 +288,11 @@ class H5_Plot(H5_Pdist):
         else:
             raise ValueError(f"plot_mode = '{self.plot_mode}' is not valid.")
 
-        if self.aux_x == "pcoord":
-            self.ax.set_xlabel("Progress Coordinate 0")
-        if self.aux_y == "pcoord":
-            self.ax.set_ylabel("Progress Coordinate 1")
+        # TODO: can this work with non H5_Pdist input?
+        if self.Xname == "pcoord":
+            self.ax.set_xlabel(f"Progress Coordinate {self.Xindex}")
+        if self.Yname == "pcoord":
+            self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
         self._unpack_plot_options()        
         self.fig.tight_layout()

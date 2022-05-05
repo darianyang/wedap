@@ -14,24 +14,26 @@ plt.style.use("default.mplstyle")
 data_options = {#"h5" : "data/west_c2.h5",
                 #"h5" : "data/multi_2kod.h5",
                 "h5" : "data/p53.h5",
-                #"aux_x" : "1_75_39_c2",
-                "aux_y" : "dihedral_4",
-                #"aux_x" : "pcoord",
-                #"aux_y" : "pcoord",
-                #"aux_y" : "angle_3pt",
-                "aux_x" : "dihedral_3",
-                #"aux_y" : "RoG",
-                #"aux_y" : "XTAL_REF_RMS_Heavy",
-                #"aux_x" : "rog",
-                #"aux_y" : "rms_bb_nmr",
-                #"aux_y" : "rms_bb_xtal",
-                #"aux_y" : "rms_m1_xtal",
-                #"aux_x" : "M1_E175_chi2",
-                #"aux_y" : "M2_E175_chi2",
+                #"Xname" : "1_75_39_c2",
+                #"Yname" : "dihedral_4",
+                "Xname" : "pcoord",
+                "Yname" : "pcoord",
+                "Xindex" : 1,
+                "Yindex" : 0,            # TODO: maybe can set this more automatically?
+                #"Yname" : "angle_3pt",
+                #"Xname" : "dihedral_3",
+                #"Yname" : "RoG",
+                #"Yname" : "XTAL_REF_RMS_Heavy",
+                #"Xname" : "rog",
+                #"Yname" : "rms_bb_nmr",
+                #"Yname" : "rms_bb_xtal",
+                #"Yname" : "rms_m1_xtal",
+                #"Xname" : "M1_E175_chi2",
+                #"Yname" : "M2_E175_chi2",
                 "data_type" : "instant",
                 #"p_min" : 15,
                 #"p_max" : 20,
-                "p_units" : "kcal",
+                #"p_units" : "kcal",
                 #"first_iter" : 161,
                 #"last_iter" : 161, 
                 #"bins" : 100, # note bins affects contour quality
@@ -81,6 +83,9 @@ start = timeit.default_timer()
 # TODO: I should be able to use the classes sepertely or together
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
 wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
+#wedap = H5_Pdist(**data_options)
+#X, Y, Z = wedap.pdist()
+
 #wedap.plot()
 #plt.savefig("west_c2.png")
 #print(wedap.auxnames)
@@ -88,7 +93,7 @@ wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
 # TODO: test using different p_max values and bar
 
 # 1D example
-# pdist = H5_Pdist("data/west_i200.h5", aux_x="1_75_39_c2", **data_options)
+# pdist = H5_Pdist("data/west_i200.h5", X="1_75_39_c2", **data_options)
 # X, Y = pdist.run()
 # plt.plot(X, Y)
 
