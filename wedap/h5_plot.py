@@ -286,16 +286,24 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "bar":
             self.plot_bar()
+            self.ax.set_ylabel(self.cbar_label)
 
         elif self.plot_mode == "line":
             self.plot_line()
+            self.ax.set_ylabel(self.cbar_label)
 
         elif self.plot_mode == "hist1d":
             self.plot_hist1d()
+            self.ax.set_ylabel("Counts")
 
         # error if unknown plot_mode
         else:
             raise ValueError(f"plot_mode = '{self.plot_mode}' is not valid.")
+
+        if self.aux_x == "pcoord":
+            self.ax.set_xlabel("Progress Coordinate 0")
+        if self.aux_y == "pcoord":
+            self.ax.set_ylabel("Progress Coordinate 1")
 
         self._unpack_plot_options()        
         self.fig.tight_layout()

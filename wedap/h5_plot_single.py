@@ -2,6 +2,7 @@
 Eventually incorporate into tests.
 
 TODO: add styles for 1 col, 2 col, and poster figures.
+TODO: how to allow for evolution and 1D plots of second pcoord dimension.
 """
 from h5_pdist import *
 from h5_plot import *
@@ -10,17 +11,19 @@ from h5_plot import *
 plt.style.use("default.mplstyle")
 
 # TODO: auto ignore auxy when using 1d
-data_options = {"h5" : "data/west_c2.h5",
+data_options = {#"h5" : "data/west_c2.h5",
                 #"h5" : "data/multi_2kod.h5",
-                #"h5" : "data/p53.h5",
+                "h5" : "data/p53.h5",
                 #"aux_x" : "1_75_39_c2",
-                "aux_x" : "pcoord",
+                "aux_y" : "dihedral_4",
+                #"aux_x" : "pcoord",
                 #"aux_y" : "pcoord",
                 #"aux_y" : "angle_3pt",
+                "aux_x" : "dihedral_3",
                 #"aux_y" : "RoG",
                 #"aux_y" : "XTAL_REF_RMS_Heavy",
                 #"aux_x" : "rog",
-                "aux_y" : "rms_bb_nmr",
+                #"aux_y" : "rms_bb_nmr",
                 #"aux_y" : "rms_bb_xtal",
                 #"aux_y" : "rms_m1_xtal",
                 #"aux_x" : "M1_E175_chi2",
@@ -31,7 +34,7 @@ data_options = {"h5" : "data/west_c2.h5",
                 "p_units" : "kcal",
                 #"first_iter" : 161,
                 #"last_iter" : 161, 
-                "bins" : 100, # note bins affects contour quality
+                #"bins" : 100, # note bins affects contour quality
                 #"plot_mode" : "contour",
                 #"cmap" : "gnuplot_r",
                 "plot_mode" : "hist2d",
@@ -77,9 +80,8 @@ start = timeit.default_timer()
 
 # TODO: I should be able to use the classes sepertely or together
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
-wedap = H5_Plot(plot_options=plot_options, **data_options)
-wedap.plot()
-print(wedap.index_x)
+wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
+#wedap.plot()
 #plt.savefig("west_c2.png")
 #print(wedap.auxnames)
 

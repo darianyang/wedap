@@ -10,22 +10,13 @@ TODO:
     - maybe add option to output pdist as file, this would speed up subsequent plotting
         of the same data.
 
-# TODO: add Z-bins option? or just add contour level option to plotting class
-    # this is equivalent to the Z bins
-
-# Steps:
-- first move into plot class and test it out with h5_plot_single (done)
-- then seperate into different class methods for evo, instant, average
-- then seperate into pdist class and plotting class 
-
 TODO: update docstrings
 TODO: option for unweighted output
 """
 
 import h5py
-from matplotlib.pyplot import hist
 import numpy as np
-from numpy import inf, ndim
+from numpy import inf
 
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
@@ -38,7 +29,7 @@ class H5_Pdist:
     # TODO: change aux_x to X?
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, aux_x="pcoord", aux_y=None, first_iter=1, 
-                 last_iter=None, bins=100, p_units='kT'):
+                 last_iter=None, bins=100, p_units='kT', T=298):
         """
         Parameters
         ----------
@@ -57,13 +48,15 @@ class H5_Pdist:
         bins : int TODO: x and y?
             amount of histogram bins in pdist data to be generated, default 100.
         p_units : str
-            Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.
-                TODO: make the temp a class attribute or something dynamic.
-        TODO: arg for histrange_x and histrange_y, can use xlim and ylim if provided in H5_Plot
+            Can be 'kT' (default) or 'kcal'. 
+            kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
+        T : int
+            Temperature if using kcal/mol.
         """
         self.f = h5py.File(h5, mode="r")
         self.data_type = data_type
         self.p_units = p_units
+        self.T = T
 
         # TODO: Default pcoord for either dim
         if aux_x is not "pcoord":
@@ -75,7 +68,8 @@ class H5_Pdist:
         # TODO: can prob do this better
         aux_x = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.aux_x}"])
         if aux_x.ndim > 2:
-            self.index_x = np.shape(aux_x)[2] - 1
+            # sets to dim 0 TODO
+            self.index_x = np.shape(aux_x)[2] - 2
         else: # TODO: this isn't needed prob
             self.index_x = 0
 
@@ -89,6 +83,7 @@ class H5_Pdist:
                 self.aux_y = "pcoord"
             aux_y = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.aux_y}"])
             if aux_y.ndim > 2:
+                # sets to dim 1 TODO
                 self.index_y = np.shape(aux_y)[2] - 1
             else:
                 self.index_y = 0
@@ -111,7 +106,7 @@ class H5_Pdist:
         Extract, index, and return the aux array of interest.
         """
         aux_array = np.array(self.f[f"iterations/iter_{iteration:08d}/{aux}"])
-        
+
         # TODO: should work for 1D and 2D pcoords
         if aux_array.ndim > 2:
             # get properly indexed dataset
@@ -153,7 +148,7 @@ class H5_Pdist:
         return histrange
 
     def _normalize(self, hist):
-        """ TODO: add temperature arg, also this function may not be needed.
+        """
         Parameters
         ----------
         hist : ndarray
@@ -164,10 +159,13 @@ class H5_Pdist:
         hist : ndarray
             The hist array is normalized according to the p_units argument. 
         """
+        # -lnP
         if self.p_units == "kT":
             hist = -np.log(hist / np.max(hist))
+        # -RT*lnP
         elif self.p_units == "kcal":
-            hist = -0.5922 * np.log(hist / np.max(hist))
+            # Gas constant R = 1.9872 cal/K*mol or 0.0019872 kcal/K*mol
+            hist = -0.0019872 * self.T * np.log(hist / np.max(hist))
         else:
             raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
         return hist
