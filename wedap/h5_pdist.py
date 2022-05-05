@@ -23,13 +23,11 @@ np.seterr(divide='ignore', invalid='ignore')
 
 class H5_Pdist:
     """
-    These class methods generate probability distributions and plots the output.
-    TODO: split?
+    These class methods generate probability distributions from a WESTPA H5 file.
     """
-    # TODO: change aux_x to X?
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
-    def __init__(self, h5, data_type, aux_x="pcoord", aux_y=None, first_iter=1, 
-                 last_iter=None, bins=100, p_units='kT', T=298):
+    def __init__(self, h5, data_type, X="pcoord", Xindex=0, Y=None, Yindex=0,
+                 first_iter=1, last_iter=None, bins=100, p_units='kT', T=298):
         """
         Parameters
         ----------
@@ -37,9 +35,9 @@ class H5_Pdist:
             path to west.h5 file
         data_type : str
             'evolution' (1 dataset); 'average' or 'instant' (1 or 2 datasets)
-        aux_x : str #TODO: default to pcoord1
+        X : str #TODO: default to pcoord1
             target data for x axis
-        aux_y : str #TODO: default to pcoord1
+        Y : str #TODO: default to pcoord1
             target data for y axis
         first_iter : int
             Default start plot at iteration 1 data.
@@ -59,32 +57,32 @@ class H5_Pdist:
         self.T = T
 
         # TODO: Default pcoord for either dim
-        if aux_x is not "pcoord":
-            self.aux_x = "auxdata/" + aux_x
-        elif aux_x is "pcoord":
-            self.aux_x = "pcoord"
+        if X is not "pcoord":
+            self.X = "auxdata/" + X
+        elif X is "pcoord":
+            self.X = "pcoord"
         # TODO: set this up as an arg to be able to process 3D+ arrays form aux
         # need to define the index if pcoord is 3D+ array, index is ndim - 1
         # TODO: can prob do this better
-        aux_x = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.aux_x}"])
-        if aux_x.ndim > 2:
+        X = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.X}"])
+        if X.ndim > 2:
             # sets to dim 0 TODO
-            self.index_x = np.shape(aux_x)[2] - 2
+            self.index_x = np.shape(X)[2] - 2
         else: # TODO: this isn't needed prob
             self.index_x = 0
 
         # for 1D plots, but could be better (TODO)
-        if aux_y is None:
-            self.aux_y = aux_y
+        if Y is None:
+            self.Y = Y
         else:
-            if aux_y is not "pcoord":
-                self.aux_y = "auxdata/" + aux_y
-            elif aux_y is "pcoord":
-                self.aux_y = "pcoord"
-            aux_y = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.aux_y}"])
-            if aux_y.ndim > 2:
+            if Y is not "pcoord":
+                self.Y = "auxdata/" + Y
+            elif Y is "pcoord":
+                self.Y = "pcoord"
+            Y = np.array(self.f[f"iterations/iter_{first_iter:08d}/{self.Y}"])
+            if Y.ndim > 2:
                 # sets to dim 1 TODO
-                self.index_y = np.shape(aux_y)[2] - 1
+                self.index_y = np.shape(Y)[2] - 1
             else:
                 self.index_y = 0
 
@@ -170,17 +168,6 @@ class H5_Pdist:
             raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
         return hist
 
-    # TODO: midpoint function
-    # def _edges_to_midpoints(self):
-    #     '''
-    #     Get the midpoints of bins stored in ``self.xedges`` and ``self.yedges``.
-    #     Store midpoints in ``self.x_mids`` and ``self.y_mids``.
-    #     '''
-    #     self.x_mids = [(self.xedges[i]+self.xedges[i+1])/2\
-    #                    for i in range(self.xedges.shape[0] -1)]
-    #     self.y_mids = [(self.yedges[i]+self.yedges[i+1])/2\
-    #                    for i in range(self.yedges.shape[0] -1)]
-
     def aux_to_pdist_1d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
@@ -205,7 +192,7 @@ class H5_Pdist:
         seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # return 1D aux data: 1D array for histogram and midpoint values
-        aux = self._get_aux_array(self.aux_x, self.index_x, iteration)
+        aux = self._get_aux_array(self.X, self.index_x, iteration)
 
         # make an 1-D array to fit the hist values based off of bin count
         histogram = np.zeros(shape=(self.bins))
@@ -222,7 +209,7 @@ class H5_Pdist:
         # get bin midpoints
         midpoints_x = (bins[:-1] + bins[1:]) / 2
         
-        # TODO: save as instance attributes
+        # TODO: also save as instance attributes
         return midpoints_x, histogram
 
     def aux_to_pdist_2d(self, iteration):
@@ -249,13 +236,13 @@ class H5_Pdist:
         seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # 2D instant histogram and midpoint values for a single specified WE iteration
-        aux_x = self._get_aux_array(self.aux_x, self.index_x, iteration)
-        aux_y = self._get_aux_array(self.aux_y, self.index_y, iteration)
+        X = self._get_aux_array(self.X, self.index_x, iteration)
+        Y = self._get_aux_array(self.Y, self.index_y, iteration)
 
         # 2D array to store hist counts for each timepoint in both dimensions
         histogram = np.zeros(shape=(self.bins, self.bins))
-        for seg in range(0, aux_x.shape[0]):
-            counts, bins_x, bins_y = np.histogram2d(aux_x[seg], aux_y[seg], 
+        for seg in range(0, X.shape[0]):
+            counts, bins_x, bins_y = np.histogram2d(X[seg], Y[seg], 
                                                     bins=self.bins, 
                                                     range=[self.histrange_x, 
                                                            self.histrange_y]
@@ -282,7 +269,7 @@ class H5_Pdist:
         Returns
         -------
         x, y, norm_hist
-            x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
+            x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         center, counts_total = self.aux_to_pdist_1d(self.last_iter)
@@ -294,7 +281,7 @@ class H5_Pdist:
         Returns
         -------
         x, y, norm_hist
-            x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
+            x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         center_x, center_y, counts_total = self.aux_to_pdist_2d(self.last_iter)
@@ -306,10 +293,10 @@ class H5_Pdist:
         Returns (TODO)
         -------
         x, y, norm_hist
-            x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
+            x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # make array to store hist (-lnP) values for n iterations of aux_x
+        # make array to store hist (-lnP) values for n iterations of X
         evolution_x = np.zeros(shape=(self.last_iter, self.bins))
         positions_x = np.zeros(shape=(self.last_iter, self.bins))
 
@@ -319,7 +306,7 @@ class H5_Pdist:
             evolution_x[iter - 1] = counts_total_x
             positions_x[iter - 1] = center_x
 
-        # 2D evolution plot of aux_x (aux_y not used if provided) per iteration        
+        # 2D evolution plot of X (Y not used if provided) per iteration        
         evolution_x = self._normalize(evolution_x)
 
         # bin positions along aux x, WE iteration numbers, z data
@@ -330,10 +317,10 @@ class H5_Pdist:
         Returns
         -------
         x, y, norm_hist
-            x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
+            x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # make array to store hist (-lnP) values for n iterations of aux_x
+        # make array to store hist (-lnP) values for n iterations of X
         evolution_x = np.zeros(shape=(self.last_iter, self.bins))
         positions_x = np.zeros(shape=(self.last_iter, self.bins))
 
@@ -347,7 +334,7 @@ class H5_Pdist:
         col_avg_x = [np.sum(col[col != np.isinf]) for col in evolution_x.T]
         col_avg_x = self._normalize(col_avg_x)
 
-        # 1D average plot data for aux_x
+        # 1D average plot data for X
         return center_x, col_avg_x
 
     def average_pdist_2d(self):
@@ -355,7 +342,7 @@ class H5_Pdist:
         Returns
         -------
         x, y, norm_hist
-            x and y axis values, and if using aux_y or evolution (with only aux_x), also returns norm_hist.
+            x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # empty array for 2D pdist
@@ -379,23 +366,23 @@ class H5_Pdist:
             So users can call pdist class or plot class which does both pdist and plot
                 or just plots from input data.
         """ 
-        # TODO: need to consolidate the aux_y 2d vs 1d stuff somehow
+        # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
         # TODO: only if histrange is None
         # get the optimal histrange
-        self.histrange_x = self._get_histrange(self.aux_x, self.index_x)
-        if self.aux_y:
-            self.histrange_y = self._get_histrange(self.aux_y, self.index_y)
+        self.histrange_x = self._get_histrange(self.X, self.index_x)
+        if self.Y:
+            self.histrange_y = self._get_histrange(self.Y, self.index_y)
 
         if self.data_type == "evolution":
             return self.evolution_pdist()
         elif self.data_type == "instant":
-            if self.aux_y:
+            if self.Y:
                 return self.instant_pdist_2d()
             else:
                 return self.instant_pdist_1d()
         elif self.data_type == "average":
-            if self.aux_y:
+            if self.Y:
                 return self.average_pdist_2d()
             else:
                 return self.average_pdist_1d()
