@@ -1,7 +1,6 @@
 numpy
 matplotlib
 h5py
-gooey
 scipy
 moviepy
 pandas
