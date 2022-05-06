@@ -38,11 +38,11 @@ class H5_Pdist:
         Xdata : str
             target data for x axis, default pcoord.
         Xindex : int
-            If X.ndim >= 3, use this to index.
+            If X.ndim > 2, use this to index.
         Ydata : str
             target data for y axis, default None.
         Yindex : int
-            If Y.ndim >= 3, use this to index.
+            If Y.ndim > 2, use this to index.
         first_iter : int
             Default start plot at iteration 1 data.
         last_iter : int
