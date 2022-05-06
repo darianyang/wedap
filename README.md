@@ -12,6 +12,7 @@ This repository is currently under development.
 - Moviepy
 - Scipy
 - Gooey
+- Pandas
 
 ### GUI
 

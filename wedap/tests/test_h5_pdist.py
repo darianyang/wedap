@@ -2,19 +2,24 @@
 Unit and regression tests for the H5_Pdist class.
 """
 
+from __future__ import unicode_literals
+
 # Import package, test suite, and other packages as needed
-from h5_pdist import H5_Pdist
-import pytest
+import wedap
 
 import numpy as np
 
+from distutils import dir_util
+from pytest import fixture
+import os
+
 # look at file coverage for testing
-# pytest -v --cov=molecool
+# pytest -v --cov=wedap
 # produces .coverage binary file to be used by other tools to visualize 
 # do not need 100% coverage, 80-90% is very high
 
 # can have report in 
-# $ pytest -v --cov=molecool --cov-report=html
+# $ pytest -v --cov=wedap --cov-report=html
 # index.html to better visualize the test coverage
 
 # decorator to skip in pytest
@@ -26,10 +31,20 @@ class Test_H5_Pdist():
     """
     h5 = "data/p53.h5"
 
+    # TODO: maybe make one for each function
+    # maybe use parameterization to test multiple args like pcoord or other index evo
     def test_evolution(self):
         # using default pcoord 0
-        pdist = H5_Pdist(self.h5, "evolution").pdist()
+        evolution = wedap.H5_Pdist(self.h5, "evolution")
+        X, Y, Z = evolution.pdist()
+        # X data is the variably filled array of instance pdist x values
+        np.testing.assert_array_equal(X, np.loadtxt("tests/evolution_X.txt"))
 
+        # Y data is just the WE iterations
+        np.testing.assert_array_equal(Y, 
+            np.arange(evolution.first_iter, evolution.last_iter + 1, 1))
+
+        # TODO: need to either seperate this or make a error message list and check empty
 
 data_options = {#"h5" : "data/west_c2.h5",
                 #"h5" : "data/multi_2kod.h5",

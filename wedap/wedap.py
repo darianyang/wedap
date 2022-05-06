@@ -4,6 +4,7 @@ Main call.
 
 from command_line import *
 from h5_pdist import *
+from h5_plot import *
 
 from search_aux import *
 from h5_plot_trace import *
@@ -29,8 +30,7 @@ if __name__ == '__main__':
     """
     Generate pdist and plot it
     """
-    X, Y, Z = pdist_to_normhist(args_list)
-    plot_normhist(X, Y, args_list, norm_hist=Z) #TODO: adjust arg/kwarg order
+    H5_Plot(args_list).plot()
 
     """
     Trace (Optional Argument)

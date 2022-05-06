@@ -82,9 +82,15 @@ start = timeit.default_timer()
 
 # TODO: I should be able to use the classes sepertely or together
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
-wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
+#wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
 #wedap = H5_Pdist(**data_options)
 #X, Y, Z = wedap.pdist()
+
+# data for tests
+import pandas as pd
+pdist = H5_Pdist("data/p53.h5", "evolution")
+X, Y, Z = pdist.pdist()
+np.savetxt("tests/evolution_X.txt", X)
 
 #wedap.plot()
 #plt.savefig("west_c2.png")

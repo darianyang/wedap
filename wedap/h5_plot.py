@@ -10,8 +10,6 @@ Plot all of the datasets generated with h5_pdist.
 
 TODO: add mpl style options
 
-TODO: if there is x and y limits, use them to make the histogram bounds
-
 TODO: maybe make methods for the following plots:
         '``contourf``--plot contour levels. '
         '``histogram``--plot histogram. '
@@ -31,7 +29,7 @@ import scipy.ndimage
 from warnings import warn
 from numpy import inf
 
-from h5_pdist import H5_Pdist
+from wedap import H5_Pdist
 
 # TODO: add search aux as a class method with seperate args?
     # have trace options in args for trace iter,wlk and x,y vals 
