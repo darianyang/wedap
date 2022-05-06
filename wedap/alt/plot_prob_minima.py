@@ -2,33 +2,33 @@
 Need to import get prob of aux from h5 function, then can plot prob minima per iteration.
 """
 
-import h5py
-import numpy as np
-from numpy import inf
-import pandas as pd
-import matplotlib.pyplot as plt
+# import wedap
+# import numpy as np
+# from numpy import inf
+# import pandas as pd
+# import matplotlib.pyplot as plt
 
-# Suppress divide-by-zero in log
-np.seterr(divide='ignore', invalid='ignore')
+# # Suppress divide-by-zero in log
+# np.seterr(divide='ignore', invalid='ignore')
 
-def calc_minimum_free(midpoints, histogram):
-    """
-    Returns minimum pcoord value for the target iteration.
-    """
-    # here I could make 2 row ndarray instead
-    pdist = dict(zip(histogram, midpoints))
+# def calc_minimum_free(midpoints, histogram):
+#     """
+#     Returns minimum pcoord value for the target iteration.
+#     """
+#     # here I could make 2 row ndarray instead
+#     pdist = dict(zip(histogram, midpoints))
 
-    # get pcoord value at minimum probability / free energy
-    return pdist[np.min(histogram)]
+#     # get pcoord value at minimum probability / free energy
+#     return pdist[np.min(histogram)]
 
-def plot_prob_minima(aux, fraction=None):
-    minima = []
-    for i in range(1,134):
-        center, counts_total = aux_to_pdist("1a43_v01/west_i150.h5", i, aux)
-        if fraction:
-            center = np.divide(center, fraction)
-        minima.append(calc_minimum_free(center, counts_total))
-    plt.plot(minima, alpha=1, linewidth=1.5, label=aux)
+# def plot_prob_minima(aux, fraction=None):
+#     minima = []
+#     for i in range(1,134):
+#         center, counts_total = wedap.aux_to_pdist("1a43_v01/west_i150.h5", i, aux)
+#         if fraction:
+#             center = np.divide(center, fraction)
+#         minima.append(calc_minimum_free(center, counts_total))
+#     plt.plot(minima, alpha=1, linewidth=1.5, label=aux)
 
 ### RMS Aux Data ###
 # rmss = ["RMS_Heavy", "RMS_Backbone", "RMS_Dimer_Int", "RMS_Key_Int", "RMS_Mono1", "RMS_Mono2"]

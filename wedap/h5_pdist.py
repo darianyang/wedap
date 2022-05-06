@@ -62,7 +62,7 @@ class H5_Pdist:
 
         # TODO: Default pcoord for either dim
         # add auxdata prefix if not using pcoord
-        if Xname is not "pcoord":
+        if Xname != "pcoord":
             Xname = "auxdata/" + Xname
         self.Xname = Xname
         # TODO: set this up as an arg to be able to process 3D+ arrays form aux
@@ -74,7 +74,7 @@ class H5_Pdist:
             self.Yname = Yname
         else:
             # add auxdata prefix if not using pcoord
-            if Yname is not "pcoord":
+            if Yname != "pcoord":
                 Yname = "auxdata/" + Yname
             self.Yname = Yname
             self.Yindex = Yindex
