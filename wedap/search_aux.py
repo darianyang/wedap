@@ -98,5 +98,11 @@ output, error = process.communicate()
 if __name__ == '__main__': 
     #iter, seg = search_aux_xy_nn("1a43_v02/wcrawl/west_i200_crawled.h5", "1_75_39_c2", "M2Oe_M1He1", 53, 2.8, 200)
 
-    iter, seg = search_aux_xy_nn("data/west_c2.h5", "1_75_39_c2", "rms_bb_xtal", 80, 6.5, 
-                                first_iter=1, last_iter=350)
+    # iter, seg = search_aux_xy_nn("data/west_c2.h5", "1_75_39_c2", "rms_bb_xtal", 80, 6.5, 
+    #                             first_iter=1, last_iter=350)
+
+    # iter, seg = search_aux_xy_nn("data/multi_2kod.h5", "1_75_39_c2", "XTAL_REF_RMS_Heavy",
+    #                              109, 8.7, first_iter=1, last_iter=200)
+
+    iter, seg = search_aux_xy_nn("data/2kod_v03.02.h5", "1_75_39_c2", "XTAL_REF_RMS_Heavy",
+                                103, 8.6, first_iter=1, last_iter=200)

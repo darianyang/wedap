@@ -9,7 +9,7 @@ plt.style.use("default.mplstyle")
 # seconds
 duration = 4.0
 # frames per second
-fps = 20
+fps = 30
 
 fig, ax = plt.subplots()
 def make_frame(t):
@@ -17,6 +17,7 @@ def make_frame(t):
     Returns an image of the frame for time t.
     """
     ax.clear()
+    #plt.clf()
 
     #print(t)
 
@@ -24,15 +25,15 @@ def make_frame(t):
 
           
     data_options = {"h5" : "data/west_c2.h5",
-                    "aux_x" : "1_75_39_c2",
-                    #"aux_y" : "angle_3pt",
-                    "aux_y" : "rms_bb_xtal",
-                    #"aux_y" : "rms_dimer_int_xtal",
-                    #"aux_y" : "rms_bb_xtal",
-                    #"aux_x" : "M1_E175_chi2",
-                    #"aux_y" : "M2_E175_chi2",
+                    "Xname" : "1_75_39_c2",
+                    #"Yname" : "angle_3pt",
+                    "Yname" : "rms_bb_xtal",
+                    #"Yname" : "rms_dimer_int_xtal",
+                    #"Yname" : "rms_bb_xtal",
+                    #"Xname" : "M1_E175_chi2",
+                    #"Yname" : "M2_E175_chi2",
                     "data_type" : "instant",
-                    "p_max" : 15,
+                    "p_max" : 30,
                     "p_units" : "kcal",
                     #"first_iter" : 100,
                     "last_iter" : int(iteration),
@@ -46,8 +47,9 @@ def make_frame(t):
                     }
     plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
                     #"ylabel" : "RMSD to NMR ($\AA$)", 
+                    "ylabel" : "RMSD to XTAL ($\AA$)", 
                     #"ylabel" : "WE Iteration", 
-                    #"xlabel" : "Helical Angle (°)",
+                    "xlabel" : "Helical Angle (°)",
                     #"title" : "2KOD C2 100i WE",
                     "title" : f"WE Iteration {int(iteration)}",
                     "ylim" : (2, 8),

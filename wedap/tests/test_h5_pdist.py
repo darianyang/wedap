@@ -29,6 +29,7 @@ class Test_H5_Pdist():
     """
     Test each method of the H5_Pdist class.
     """
+    # TODO: need a smaller file (<100Mb) for testing
     h5 = "data/p53.h5"
 
     # TODO: maybe make one for each function
