@@ -29,7 +29,7 @@ class H5_Pdist:
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
-                 first_iter=1, last_iter=None, bins=100, p_units='kT', T=298):
+                 first_iter=1, last_iter=None, bins=100, p_units='kT', T=298, weights=True):
         """
         Parameters
         ----------
@@ -56,12 +56,15 @@ class H5_Pdist:
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
         T : int
             Temperature if using kcal/mol.
+        weights : bool
+            Default True, use WE segment weights in pdist calculation.
         TODO: histrangexy args?
         """
         self.f = h5py.File(h5, mode="r")
         self.data_type = data_type
         self.p_units = p_units
         self.T = T
+        self.weights = weights
 
         # TODO: Default pcoord for either dim
         # add auxdata prefix if not using pcoord
@@ -112,9 +115,18 @@ class H5_Pdist:
 
         return data
 
+    # TODO: this does add a little overhead at high iteration ranges
+        # ~0.5s from 100i to 400i
+        # maybe can find a more efficient way
+        # before I just took the max of the last iteration but this lead to some 
+            # issues with not catching the entire dist (hence bin_ext)
+            # how does w_pdist/plothist do this? how about AJD?
+        # need to add option for custom, then make limits plug into histranges?
     def _get_histrange(self, name, index):
-        """ 
+        """
         Get the histrange considering the min/max of all iterations considered.
+        TODO: this is currently done before the pdist gen, but maybe better during
+            the pdist gen loop for efficiency, but problem is, need histrange for pdist.
 
         Parameters
         ----------
@@ -188,7 +200,7 @@ class H5_Pdist:
             Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).
         """
         # each row is walker with 1 column that is a tuple of values
-        # the first being the seg weight
+        # the first being the seg weight (TODO: weighting internal method?)
         seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # return 1D aux data: 1D array for histogram and midpoint values
@@ -199,8 +211,10 @@ class H5_Pdist:
         for seg in range(0, aux.shape[0]):
             counts, bins = np.histogram(aux[seg], bins=self.bins, range=self.histrange_x)
 
-            # multiply counts vector by weight scalar from seg index 
-            counts = np.multiply(counts, seg_weights[seg][0])
+            # TODO: these parts would also be in the weighting internal method
+            if self.weights is True:
+                # multiply counts vector by weight scalar from seg index 
+                counts = np.multiply(counts, seg_weights[seg][0])
 
             # add all of the weighted walkers to total array for the 
             # resulting linear combination
@@ -248,8 +262,9 @@ class H5_Pdist:
                                                            self.histrange_y]
                                                     )
 
-            # multiply counts vector by weight scalar from seg index 
-            counts = np.multiply(counts, seg_weights[seg][0])
+            if self.weights is True:
+                # multiply counts vector by weight scalar from seg index 
+                counts = np.multiply(counts, seg_weights[seg][0])
 
             # add all of the weighted walkers to total array for 
             # the resulting linear combination
