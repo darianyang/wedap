@@ -21,6 +21,10 @@ TODO: maybe make methods for the following plots:
 
 TODO: plot clustering centroids option
       can then grab the search_aux at the centroid
+
+TODO: bin visualizer
+TODO: option for z as another aux dataset
+      and maybe show the trajectories as just dots
 """
 
 import numpy as np
@@ -144,7 +148,7 @@ class H5_Plot(H5_Pdist):
     #     if self.axis_list[0] > self.axis_list[1]:
     #         self.H = self.H.transpose()
 
-    def cbar(self):
+    def add_cbar(self):
         cbar = self.fig.colorbar(self.plot)
         # TODO: lines on colorbar?
         # TODO: related, make a discrete colorbar/mapping for hist2d?
@@ -263,12 +267,12 @@ class H5_Plot(H5_Pdist):
             self.Z_curves = np.copy(self.Z)
             self._smooth()
             self.plot_contour()
-            self.cbar()
+            self.add_cbar()
 
         # TODO: auto label WE iterations on evolution?
         elif self.plot_mode == "hist2d":
             self.plot_hist2d()
-            self.cbar()
+            self.add_cbar()
 
         elif self.plot_mode == "bar":
             self.plot_bar()
