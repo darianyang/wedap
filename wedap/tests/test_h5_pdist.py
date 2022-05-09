@@ -30,7 +30,7 @@ class Test_H5_Pdist():
     Test each method of the H5_Pdist class.
     """
     # TODO: need a smaller file (<100Mb) for testing
-    h5 = "data/p53.h5"
+    h5 = "wedap/data/p53.h5"
 
     # TODO: maybe make one for each function
     # maybe use parameterization to test multiple args like pcoord or other index evo
