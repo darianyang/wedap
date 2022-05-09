@@ -12,6 +12,8 @@ TODO:
 
 TODO: update docstrings
 TODO: option for unweighted output
+TODO: option for z as another aux dataset
+      and maybe show the trajectories as just dots
 """
 
 import h5py
@@ -54,6 +56,7 @@ class H5_Pdist:
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
         T : int
             Temperature if using kcal/mol.
+        TODO: histrangexy args?
         """
         self.f = h5py.File(h5, mode="r")
         self.data_type = data_type
@@ -92,18 +95,18 @@ class H5_Pdist:
         # save the available aux dataset names
         self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
 
-    def _get_aux_array(self, name, index, iteration):
+    def _get_data_array(self, name, index, iteration):
         """
-        Extract, index, and return the aux array of interest.
+        Extract, index, and return the aux/data array of interest.
         """
         data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
 
         # TODO: should work for 1D and 2D pcoords
         if data.ndim > 2:
             # get properly indexed dataset
-            aux_array = data[:,:,index]
+            data = data[:,:,index]
 
-        return aux_array
+        return data
 
     def _get_histrange(self, name, index):
         """ 
@@ -120,13 +123,13 @@ class H5_Pdist:
             2 item list of min and max bin bounds for hist range of target aux data.
         """
         # set base histrange based on first iteration
-        iter_data = self._get_aux_array(name, index, self.first_iter)
+        iter_data = self._get_data_array(name, index, self.first_iter)
         histrange = [np.amin(iter_data), np.amax(iter_data)]
 
         # loop and update to the max and min for all other iterations considered
         for iter in range(self.first_iter + 1, self.last_iter + 1):
             # get min and max for the iteration
-            iter_data = self._get_aux_array(name, index, iter)
+            iter_data = self._get_data_array(name, index, iter)
             iter_min = np.amin(iter_data)
             iter_max = np.amax(iter_data)
 
@@ -185,7 +188,7 @@ class H5_Pdist:
         seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # return 1D aux data: 1D array for histogram and midpoint values
-        aux = self._get_aux_array(self.Xname, self.Xindex, iteration)
+        aux = self._get_data_array(self.Xname, self.Xindex, iteration)
 
         # make an 1-D array to fit the hist values based off of bin count
         histogram = np.zeros(shape=(self.bins))
@@ -229,8 +232,8 @@ class H5_Pdist:
         seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # 2D instant histogram and midpoint values for a single specified WE iteration
-        X = self._get_aux_array(self.Xname, self.Xindex, iteration)
-        Y = self._get_aux_array(self.Yname, self.Yindex, iteration)
+        X = self._get_data_array(self.Xname, self.Xindex, iteration)
+        Y = self._get_data_array(self.Yname, self.Yindex, iteration)
 
         # 2D array to store hist counts for each timepoint in both dimensions
         histogram = np.zeros(shape=(self.bins, self.bins))
