@@ -48,7 +48,7 @@ class H5_Pdist:
         first_iter : int
             Default start plot at iteration 1 data.
         last_iter : int
-            Last iteration data to include, default is the last recorded iteration in the west.h5 file.
+            Last iteration data to include, default is the last recorded iteration in the west.h5 file. Note that `instant` type pdists only depend on last_iter.
         bins : int TODO: x and y?
             amount of histogram bins in pdist data to be generated, default 100.
         p_units : str
@@ -82,12 +82,16 @@ class H5_Pdist:
             self.Yname = Yname
             self.Yindex = Yindex
 
-        self.first_iter = first_iter
         # default to last
         if last_iter is not None:
             self.last_iter = last_iter
         elif last_iter is None:
             self.last_iter = self.f.attrs["west_current_iteration"] - 1
+
+        if data_type == "instant":
+            self.first_iter = self.last_iter
+        else:
+            self.first_iter = first_iter
 
         # TODO: split into x and y bins
         self.bins = bins
