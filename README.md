@@ -1,5 +1,7 @@
 wedap
 ===========================
+![tests](https://github.com/darianyang/fluorelax/actions/workflows/test.yml/badge.svg)
+
 Weighted Ensemble data analysis and plotting.
 
 This repository is currently under development.
