@@ -29,7 +29,7 @@ class H5_Pdist:
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
-                 first_iter=1, last_iter=None, bins=100, p_units='kT', T=298, weights=True):
+                 first_iter=1, last_iter=None, bins=100, p_units='kT', T=298, weighted=True):
         """
         Parameters
         ----------
@@ -56,7 +56,7 @@ class H5_Pdist:
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
         T : int
             Temperature if using kcal/mol.
-        weights : bool
+        weighted : bool
             Default True, use WE segment weights in pdist calculation.
         TODO: histrangexy args?
         """
@@ -64,7 +64,7 @@ class H5_Pdist:
         self.data_type = data_type
         self.p_units = p_units
         self.T = T
-        self.weights = weights
+        self.weighted = weighted
 
         # TODO: Default pcoord for either dim
         # add auxdata prefix if not using pcoord
@@ -212,7 +212,7 @@ class H5_Pdist:
             counts, bins = np.histogram(aux[seg], bins=self.bins, range=self.histrange_x)
 
             # TODO: these parts would also be in the weighting internal method
-            if self.weights is True:
+            if self.weighted is True:
                 # multiply counts vector by weight scalar from seg index 
                 counts = np.multiply(counts, seg_weights[seg][0])
 
@@ -262,7 +262,7 @@ class H5_Pdist:
                                                            self.histrange_y]
                                                     )
 
-            if self.weights is True:
+            if self.weighted is True:
                 # multiply counts vector by weight scalar from seg index 
                 counts = np.multiply(counts, seg_weights[seg][0])
 

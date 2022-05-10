@@ -29,10 +29,10 @@ data_options = {"h5" : "data/west_c2.h5",
                 #"Yname" : "rms_bb_nmr",
                 #"Yname" : "rms_heavy_xtal",
                 #"Yname" : "rms_m1_xtal",
-                "Xname" : "M1_E175_phi",
-                "Yname" : "M1_E175_psi",
-                "data_type" : "average",
-                "weights" : False,
+                #"Xname" : "M1_E175_phi",
+                #"Yname" : "M1_E175_psi",
+                "data_type" : "evolution",
+                "weighted" : False,
                 #"p_min" : 15,
                 #"p_max" : 20,
                 "p_units" : "kcal",
@@ -80,16 +80,22 @@ start = timeit.default_timer()
 
 # TODO: I should be able to use the classes sepertely or together
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
-wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
+#wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
+
 #wedap = H5_Pdist(**data_options)
 #X, Y, Z = wedap.pdist()
 #plt.pcolormesh(X, Y, Z)
 
+# TODO: put this in a seperate file
 # data for tests
-# import pandas as pd
-# pdist = H5_Pdist("data/p53.h5", "evolution")
-# X, Y, Z = pdist.pdist()
-# np.savetxt("tests/evolution_X.txt", X)
+mode = "instant"
+for pcoord in ["pcoord", "dihedral_2"]:
+    for pcoord2 in ["dihedral_3", "dihedral_4"]:
+        pdist = H5_Pdist("data/p53.h5", mode, Xname=pcoord, Yname=pcoord2)
+        X, Y, Z = pdist.pdist()
+        np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_X.txt", X)
+        np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_Y.txt", Y)
+        np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_Z.txt", Z)
 
 #wedap.plot()
 #plt.savefig("west_c2.png")
