@@ -209,6 +209,9 @@ class H5_Plot(H5_Pdist):
         #    self.Y[self.Y > self.p_max] = inf
         self.ax.plot(self.X, self.Y, color=self.color)
         self.ax.set_ylabel(self.cbar_label)
+    
+    def plot_scatter3d(self):
+        self.ax.scatter(self.X, self.Y, c=self.Z, cmap=self.cmap)
 
     def _unpack_plot_options(self):
         """
@@ -285,6 +288,9 @@ class H5_Plot(H5_Pdist):
         elif self.plot_mode == "hist1d":
             self.plot_hist1d()
             self.ax.set_ylabel("Counts")
+
+        elif self.plot_mode == "scatter3d":
+            self.plot_scatter3d()
 
         # error if unknown plot_mode
         else:

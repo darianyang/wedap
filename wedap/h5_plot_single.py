@@ -21,17 +21,17 @@ data_options = {"h5" : "data/west_c2.h5",
                 #"Yname" : "pcoord",
                 #"Xindex" : 1,
                 #"Yindex" : 0,            # TODO: maybe can set this more automatically?
-                #"Yname" : "angle_3pt",
+                "Yname" : "angle_3pt",
                 #"Yname" : "RoG",
                 #"Yname" : "XTAL_REF_RMS_Heavy",
                 #"Xname" : "rog",
-                #"Yname" : "rms_bb_nmr",
+                "Zname" : "rms_bb_nmr",
                 #"Yname" : "rms_heavy_xtal",
                 #"Yname" : "rms_m1_xtal",
                 #"Xname" : "M1_E175_phi",
                 #"Yname" : "M1_E175_psi",
-                "data_type" : "evolution",
-                "weighted" : False,
+                "data_type" : "instant",
+                "weighted" : True,
                 #"p_min" : 15,
                 #"p_max" : 20,
                 "p_units" : "kcal",
@@ -40,7 +40,8 @@ data_options = {"h5" : "data/west_c2.h5",
                 #"bins" : 100, # note bins affects contour quality
                 #"plot_mode" : "contour",
                 #"cmap" : "gnuplot_r",
-                "plot_mode" : "hist2d",
+                #"plot_mode" : "hist2d",
+                "plot_mode" : "scatter3d",
                 #"plot_mode" : "line",
                 #"data_smoothing_level" : 0.4,
                 #"curve_smoothing_level" : 0.4,
@@ -79,7 +80,8 @@ start = timeit.default_timer()
 
 # TODO: I should be able to use the classes sepertely or together
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
-#wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
+
+wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
 
 #wedap = H5_Pdist(**data_options)
 #X, Y, Z = wedap.pdist()

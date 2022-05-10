@@ -20,6 +20,8 @@ import h5py
 import numpy as np
 from numpy import inf
 
+from warnings import warn
+
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -29,7 +31,8 @@ class H5_Pdist:
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
-                 first_iter=1, last_iter=None, bins=100, p_units='kT', T=298, weighted=True):
+                 Zname=None, Zindex=0, first_iter=1, last_iter=None, bins=100, 
+                 p_units='kT', T=298, weighted=True):
         """
         Parameters
         ----------
@@ -37,14 +40,22 @@ class H5_Pdist:
             path to west.h5 file
         data_type : str
             'evolution' (1 dataset); 'average' or 'instant' (1 or 2 datasets)
-        Xdata : str
+        Xname : str
             target data for x axis, default pcoord.
         Xindex : int
             If X.ndim > 2, use this to index.
-        Ydata : str
+        Yname : str
             target data for y axis, default None.
         Yindex : int
             If Y.ndim > 2, use this to index.
+        Zname : str
+            target data for z axis, default None. 
+            Use this if you want to use a dataset instead of pdist for Z axis.
+            This will be best plotted as a scatter plot with Z as the marker color.
+            Instead of returning the pdist, only the XYZ datasets will be returned.
+            This is becasue the weights/pdist isn't considered.
+        Zindex : int
+            If Z.ndim > 2, use this to index.
         first_iter : int
             Default start plot at iteration 1 data.
         last_iter : int
@@ -84,6 +95,16 @@ class H5_Pdist:
                 Yname = "auxdata/" + Yname
             self.Yname = Yname
             self.Yindex = Yindex
+
+        # for replacing the Z axis pdist with a dataset
+        if Zname is None:
+            self.Zname = Zname
+        else:
+            # add auxdata prefix if not using pcoord
+            if Zname != "pcoord":
+                Zname = "auxdata/" + Zname
+        self.Zname = Zname
+        self.Zindex = Zindex
 
         # default to last
         if last_iter is not None:
@@ -279,6 +300,31 @@ class H5_Pdist:
         # save midpoints and transposed histogram (corrected for plotting)
         return midpoints_x, midpoints_y, histogram.T
 
+    def evolution_pdist(self):
+        """
+        Returns (TODO)
+        -------
+        x, y, norm_hist
+            x and y axis values, and if using Y or evolution (with only X), 
+            also returns norm_hist.
+            norm_hist is a 2-D matrix of the normalized histogram values.
+        """
+        # make array to store hist (-lnP) values for n iterations of X
+        evolution_x = np.zeros(shape=(self.last_iter, self.bins))
+        positions_x = np.zeros(shape=(self.last_iter, self.bins))
+
+        for iter in range(self.first_iter, self.last_iter + 1):
+            # generate evolution x data
+            center_x, counts_total_x = self.aux_to_pdist_1d(iter)
+            evolution_x[iter - 1] = counts_total_x
+            positions_x[iter - 1] = center_x
+
+        # 2D evolution plot of X (Y not used if provided) per iteration        
+        evolution_x = self._normalize(evolution_x)
+
+        # bin positions along aux x, WE iteration numbers, z data
+        return positions_x, np.arange(self.first_iter, self.last_iter + 1, 1), evolution_x
+
     # TODO: maybe don't need individual functions, maybe can handle in main
     def instant_pdist_1d(self):
         """
@@ -306,30 +352,20 @@ class H5_Pdist:
         counts_total = self._normalize(counts_total)
         return center_x, center_y, counts_total
 
-    def evolution_pdist(self):
+    def instant_datasets_3d(self):
         """
-        Returns (TODO)
-        -------
-        x, y, norm_hist
-            x and y axis values, and if using Y or evolution (with only X), 
-            also returns norm_hist.
-            norm_hist is a 2-D matrix of the normalized histogram values.
+        Unique case where `Zname` is specified and the XYZ datasets are returned.
         """
-        # make array to store hist (-lnP) values for n iterations of X
-        evolution_x = np.zeros(shape=(self.last_iter, self.bins))
-        positions_x = np.zeros(shape=(self.last_iter, self.bins))
+        X = self._get_data_array(self.Xname, self.Xindex, self.last_iter)
+        # for the case where Zname is specified but not Yname
+        if self.Yname is None:
+            warn("`Zname` is defined but not `Yname`, using Yname=`pcoord`")
+            Y = self._get_data_array("pcoord", self.Yindex, self.last_iter)
+        else:
+            Y = self._get_data_array(self.Yname, self.Yindex, self.last_iter)
+        Z = self._get_data_array(self.Zname, self.Zindex, self.last_iter)
 
-        for iter in range(self.first_iter, self.last_iter + 1):
-            # generate evolution x data
-            center_x, counts_total_x = self.aux_to_pdist_1d(iter)
-            evolution_x[iter - 1] = counts_total_x
-            positions_x[iter - 1] = center_x
-
-        # 2D evolution plot of X (Y not used if provided) per iteration        
-        evolution_x = self._normalize(evolution_x)
-
-        # bin positions along aux x, WE iteration numbers, z data
-        return positions_x, np.arange(self.first_iter, self.last_iter + 1, 1), evolution_x
+        return X, Y, Z
 
     def average_pdist_1d(self):
         """
@@ -376,6 +412,12 @@ class H5_Pdist:
         average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
+    def average_datasets_3d(self):
+        """
+        Unique case where `Zname` is specified and the XYZ datasets are returned.
+        """
+        pass
+
     def pdist(self):
         """
         Main public method with pdist generation controls.
@@ -391,7 +433,9 @@ class H5_Pdist:
         if self.data_type == "evolution":
             return self.evolution_pdist()
         elif self.data_type == "instant":
-            if self.Yname:
+            if self.Yname and self.Zname:
+                return self.instant_datasets_3d()
+            elif self.Yname:
                 return self.instant_pdist_2d()
             else:
                 return self.instant_pdist_1d()
