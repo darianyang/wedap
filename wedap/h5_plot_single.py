@@ -2,7 +2,6 @@
 Eventually incorporate into tests.
 
 TODO: add styles for 1 col, 2 col, and poster figures.
-TODO: how to allow for evolution and 1D plots of second pcoord dimension.
 """
 from h5_pdist import *
 from h5_plot import *
@@ -86,7 +85,7 @@ start = timeit.default_timer()
 #X, Y, Z = wedap.pdist()
 #plt.pcolormesh(X, Y, Z)
 
-# TODO: put this in a seperate file
+# TODO: put this in a seperate file?
 # data for tests
 # mode = "instant"
 # for pcoord in ["pcoord", "dihedral_2"]:

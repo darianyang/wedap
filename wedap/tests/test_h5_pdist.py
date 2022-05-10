@@ -2,17 +2,11 @@
 Unit and regression tests for the H5_Pdist class.
 """
 
-from __future__ import unicode_literals
-
 # Import package, test suite, and other packages as needed
 import wedap
 
 import numpy as np
 import pytest
-
-from distutils import dir_util
-from pytest import fixture
-import os
 
 # look at file coverage for testing
 # pytest -v --cov=wedap
