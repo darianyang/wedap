@@ -412,19 +412,62 @@ class H5_Pdist:
         average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
-    def average_datasets_3d(self):
+    def average_datasets_3d(self, interval=10):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
         """
-        pass
+        if self.Yname is None:
+            warn("`Zname` is defined but not `Yname`, using Yname=`pcoord`")
+            self.Yname = "pcoord"
 
-    def pdist(self):
+        # get length of each segment
+        seg_length = np.array(self.f[f"iterations/iter_{self.first_iter:08d}/pcoord"])
+        seg_length = np.shape(seg_length)[1]
+    
+        # get the total amount of segments in each iteration
+        # column 0 of summary is the particles/segments per iteration
+        # each row from H5 is a single item that is a tuple of multiple items
+        seg_totals = np.array(self.f[f"summary"])
+        seg_totals = np.array([i[0] for i in seg_totals])
+
+        # sum only for the iterations considered
+        # note that the last_iter attribute is already -1 adjusted
+        seg_total = np.sum(seg_totals[self.first_iter - 1:self.last_iter])
+
+        # arrays to be filled with values from each iteration
+        # rows are for all segments, columns are each segment datapoint
+        X = np.zeros(shape=(seg_total, seg_length))
+        Y = np.zeros(shape=(seg_total, seg_length))
+        Z = np.zeros(shape=(seg_total, seg_length))
+
+        # loop each iteration
+        seg_start = 0
+        for iter in range(self.first_iter, self.last_iter + 1):
+            # then go through and add all segments/walkers in the iteration
+            X[seg_start:seg_start + seg_totals[iter - 1]] = \
+                self._get_data_array(self.Xname, self.Xindex, iter)
+            Y[seg_start:seg_start + seg_totals[iter - 1]] = \
+                self._get_data_array(self.Yname, self.Yindex, iter)
+            Z[seg_start:seg_start + seg_totals[iter - 1]] = \
+                self._get_data_array(self.Zname, self.Zindex, iter)
+
+            # keeps track of position in the seg_total length based arrays
+            seg_start += seg_totals[iter - 1]
+
+        # 3D average datasets using all available data can more managable with interval
+        return X[::interval], Y[::interval], Z[::interval]
+
+    def pdist(self, avg3dint=10):
         """
         Main public method with pdist generation controls.
+
+        # TODO: maybe make interval for all returns? nah, hist prob doesn't need it?
         """ 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
         # TODO: only if histrange is None
+        # TODO: if I can get rid of this or optimize it, I can then use the 
+            # original methods of each pdist by themselves
         # get the optimal histrange
         self.histrange_x = self._get_histrange(self.Xname, self.Xindex)
         if self.Yname:
@@ -440,7 +483,9 @@ class H5_Pdist:
             else:
                 return self.instant_pdist_1d()
         elif self.data_type == "average":
-            if self.Yname:
+            if self.Yname and self.Zname:
+                return self.average_datasets_3d(interval=avg3dint)
+            elif self.Yname:
                 return self.average_pdist_2d()
             else:
                 return self.average_pdist_1d()

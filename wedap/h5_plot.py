@@ -41,8 +41,8 @@ from wedap import H5_Pdist
 # TODO: could subclass the H5_Pdist class, then use this as the main in wedap.py
 class H5_Plot(H5_Pdist):
 
-    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist_2d", cmap="viridis", 
-        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, 
+    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", 
+        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, cbar_label=None,
         data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
@@ -113,6 +113,10 @@ class H5_Plot(H5_Pdist):
             self.cbar_label = "$-\ln\,P(x)\ [kT^{-1}]$"
         elif self.p_units == "kcal":
             self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+        
+        # user override None cbar_label
+        if cbar_label:
+            self.cbar_label = cbar_label
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -211,7 +215,7 @@ class H5_Plot(H5_Pdist):
         self.ax.set_ylabel(self.cbar_label)
     
     def plot_scatter3d(self):
-        self.ax.scatter(self.X, self.Y, c=self.Z, cmap=self.cmap)
+        self.plot = self.ax.scatter(self.X, self.Y, c=self.Z, cmap=self.cmap)
 
     def _unpack_plot_options(self):
         """
@@ -291,6 +295,7 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "scatter3d":
             self.plot_scatter3d()
+            self.add_cbar()
 
         # error if unknown plot_mode
         else:
