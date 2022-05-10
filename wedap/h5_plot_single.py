@@ -88,14 +88,14 @@ start = timeit.default_timer()
 
 # TODO: put this in a seperate file
 # data for tests
-mode = "instant"
-for pcoord in ["pcoord", "dihedral_2"]:
-    for pcoord2 in ["dihedral_3", "dihedral_4"]:
-        pdist = H5_Pdist("data/p53.h5", mode, Xname=pcoord, Yname=pcoord2)
-        X, Y, Z = pdist.pdist()
-        np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_X.txt", X)
-        np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_Y.txt", Y)
-        np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_Z.txt", Z)
+# mode = "instant"
+# for pcoord in ["pcoord", "dihedral_2"]:
+#     for pcoord2 in ["dihedral_3", "dihedral_4"]:
+#         pdist = H5_Pdist("data/p53.h5", mode, Xname=pcoord, Yname=pcoord2)
+#         X, Y, Z = pdist.pdist()
+#         np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_X.txt", X)
+#         np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_Y.txt", Y)
+#         np.savetxt(f"tests/{mode}_{pcoord}_{pcoord2}_Z.txt", Z)
 
 #wedap.plot()
 #plt.savefig("west_c2.png")
