@@ -92,12 +92,8 @@ class H5_Plot(H5_Pdist):
         # TODO: option if you want to generate pdist
         # also need option of just using the input X Y Z args
         # or getting them from w_pdist h5 file, or from H5_Pdist output file
-        if X is not None and Y is not None and Z is not None: # user inputs XYZ
-            pass
-        elif plot_mode == "line" or plot_mode == "bar" or plot_mode == "hist1d":
-            super().__init__(*args, **kwargs)
-            X, Y = H5_Pdist(*args, **kwargs).pdist()
-        elif X is None and Y is None and Z is None:
+        # user inputs XYZ
+        if X is None and Y is None and Z is None:
             super().__init__(*args, **kwargs)
             X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
 
@@ -118,7 +114,7 @@ class H5_Plot(H5_Pdist):
         # elif self.p_units == "kcal":
         #     self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
         
-        # user override None cbar_label
+        # user override None cbar_label TODO
         if cbar_label:
             self.cbar_label = cbar_label
 

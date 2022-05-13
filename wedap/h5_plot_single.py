@@ -31,21 +31,21 @@ data_options = {"h5" : "data/west_c2.h5",
                 #"Yname" : "M1M2_L46",
                 #"Yname" : "rms_m1_xtal",
                 "Xname" : "M2_E175_chi1",
-                "Yname" : "M2_E175_chi2",
+                #"Yname" : "M2_E175_chi2",
                 "data_type" : "average",
                 #"weighted" : True,
                 #"p_min" : 15,
-                "p_max" : 10,
+                #"p_max" : 10,
                 "p_units" : "kcal",
                 "first_iter" : 200,
                 "last_iter" : 400, 
                 #"bins" : 100, # note bins affects contour quality
-                "plot_mode" : "contour",
-                "cmap" : "gnuplot_r",
+                #"plot_mode" : "contour",
+                #"cmap" : "gnuplot_r",
                 #"cbar_label" : "RMSD ($\AA$)",
                 #"plot_mode" : "hist2d",
                 #"plot_mode" : "scatter3d",
-                #"plot_mode" : "line",
+                "plot_mode" : "line",
                 #"data_smoothing_level" : 0.4,
                 #"curve_smoothing_level" : 0.4,
                 }
@@ -90,8 +90,8 @@ start = timeit.default_timer()
 #plt.xkcd()
 wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
 
-#wedap = H5_Pdist(**data_options)
-#X, Y, Z = wedap.pdist()
+# wedap = H5_Pdist(**data_options)
+# X, Y, Z = wedap.pdist()
 #plt.pcolormesh(X, Y, Z)
 
 # TODO: put this in a seperate file?

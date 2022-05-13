@@ -90,7 +90,7 @@ def create_cmd_arguments():
                              "kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.",
                         type=str)
     parser.add_argument("--data_type", default="evolution", nargs="?",
-                        dest="data_type", choices=("evolution", "average", "instance"),
+                        dest="data_type", choices=("evolution", "average", "instant"),
                         help="Type of pdist dataset to generate, options are"
                              "'evolution' (1 dataset);" 
                              "'average' or 'instance' (1 or 2 datasets)",

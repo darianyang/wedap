@@ -16,6 +16,7 @@ TODO: option for z as another aux dataset
       and maybe show the trajectories as just dots
 """
 
+from turtle import shape
 import h5py
 import numpy as np
 from numpy import inf
@@ -473,6 +474,7 @@ class H5_Pdist:
         if self.Yname:
             self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
 
+        # TODO: need a better way to always return XYZ
         if self.data_type == "evolution":
             return self.evolution_pdist()
         elif self.data_type == "instant":
@@ -481,11 +483,13 @@ class H5_Pdist:
             elif self.Yname:
                 return self.instant_pdist_2d()
             else:
-                return self.instant_pdist_1d()
+                X, Y = self.instant_pdist_1d()
+                return X, Y, np.ones(shape=(self.first_iter, self.last_iter))
         elif self.data_type == "average":
             if self.Yname and self.Zname:
                 return self.average_datasets_3d(interval=avg3dint)
             elif self.Yname:
                 return self.average_pdist_2d()
             else:
-                return self.average_pdist_1d()
+                X, Y = self.average_pdist_1d()
+                return X, Y, np.ones(shape=(self.first_iter, self.last_iter))
