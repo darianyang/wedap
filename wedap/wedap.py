@@ -36,7 +36,7 @@ if __name__ == '__main__':
     #H5_Plot(args, h5=args.h5, data_type=args.data_type).plot()
 
     if args.p_units == "kT":
-        cbar_label = "$-\ln\,P(x)\ [kT^{-1}]$"
+        cbar_label = "$-\ln\,P(x)$"
     elif args.p_units == "kcal":
         cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
 
