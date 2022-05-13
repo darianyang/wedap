@@ -7,7 +7,7 @@ import numpy
 import h5py
 from scipy.spatial import KDTree
 
-
+# TODO: update for pcoord
 def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter=None, first_iter=1):
     """
     Parameters
@@ -105,4 +105,4 @@ if __name__ == '__main__':
     #                              109, 8.7, first_iter=1, last_iter=200)
 
     iter, seg = search_aux_xy_nn("data/2kod_v03.02.h5", "1_75_39_c2", "XTAL_REF_RMS_Heavy",
-                                103, 8.6, first_iter=1, last_iter=200)
+                               103, 8.6, first_iter=1, last_iter=200)

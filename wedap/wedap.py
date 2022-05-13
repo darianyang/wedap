@@ -2,6 +2,7 @@
 Main call.
 """
 
+from turtle import color
 from command_line import *
 from h5_pdist import *
 from h5_plot import *
@@ -39,26 +40,35 @@ if __name__ == '__main__':
     elif args.p_units == "kcal":
         cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
 
-    # always output XYZ with fake Z for 1D, makes this easier
-    X, Y, Z = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Yname=args.Yname, Zname=args.Zname, first_iter=args.first_iter, last_iter=args.last_iter, bins=args.bins, p_units=args.p_units).pdist()
-    plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, p_max=args.p_max, cbar_label=cbar_label)
+    # always output XYZ with fake Z for 1D, makes this part easier/less verbose
+    X, Y, Z = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Xindex=args.Xindex, 
+                       Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
+                       Zindex=args.Zindex, first_iter=args.first_iter, 
+                       last_iter=args.last_iter, bins=args.bins, T=args.T,
+                       weighted=args.weighted, p_units=args.p_units).pdist()
+    plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, 
+                   p_max=args.p_max, cbar_label=cbar_label, color=args.color)
     plot.plot()
 
     """
-    Trace (Optional Argument) TODO: doesn not work with pcoord or evolution well
+    Trace (Optional Argument) TODO: does not work with pcoord or evolution well
     """
+    if args.data_type == "evolution": # TODO; this isn't the best
+        evo = True
+    else:
+        evo = False
     if args.trace_seg is not None:
-        plot_trace(args.h5, args.trace_seg, args.Xname, args.Yname)
+        plot_trace(args.h5, args.trace_seg, args.Xname, args.Yname, ax=plot.ax, evolution=evo)
     if args.trace_val is not None:
         # for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53° and 2.8A is alt minima = i173 s70
         # for demo: can use x = 53 and y = 2.7 or 2.6
-        iter, seg = search_aux_xy_nn(args.h5, args.Xname, args.Yname, 
+        print(args.h5, args.Xname, args.Yname, 
                                     # TODO: update to aux_x aux_y tuple
                                     args.trace_val[0], args.trace_val[1], args.last_iter)
-        if args.data_type == "evolution": # TODO; this isn't the best
-            evo = True
-        else:
-            evo = False
+        iter, seg = search_aux_xy_nn(args.h5, args.Xname, args.Yname, 
+                                    # TODO: update to aux_x aux_y tuple
+                                    args.trace_val[0], args.trace_val[1], 
+                                    last_iter=args.last_iter)
         plot_trace(args.h5, (iter,seg), args.Xname, args.Yname, ax=plot.ax, evolution=evo)
 
     """

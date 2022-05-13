@@ -222,7 +222,7 @@ class H5_Plot(H5_Pdist):
         """
         Unpack the plot_options kwarg dictionary.
         """
-        # unpack plot options dictionary # TODO: update this for argparse?
+        # unpack plot options dictionary
         # TODO: put all in ax.set()?
         for key, item in self.plot_options.items():
             if key == "xlabel":

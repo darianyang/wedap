@@ -9,7 +9,7 @@ import sys
 from gooey import Gooey
 from gooey import GooeyParser
 
-@Gooey(optional_cols=4, default_size=(900, 600))
+@Gooey(optional_cols=6, default_size=(1000, 600))
 def create_cmd_arguments(): 
     """
     Use the `argparse` module to make the optional and required command-line
@@ -72,7 +72,7 @@ def create_cmd_arguments():
                         dest="last_iter",
                         help="Plot data up to and including iteration LAST_ITER."
                              "By default, plot data up to and including the last "
-                             "iteration in the specified w_pdist file.",
+                             "iteration in the specified H5 file.",
                         type=int)
     optional.add_argument("--bins", default=100, nargs="?",
                         dest="bins",
@@ -80,45 +80,65 @@ def create_cmd_arguments():
                              "Divide the range between the minimum and maximum "
                              "observed values into this many bins",
                         type=int)
+    optional.add_argument("--p_min", default=0, nargs="?",
+                        dest="p_min",
+                        help="The minimum probability value limit."
+                             "This determines the cbar limits and contour levels.",
+                        type=int)
     optional.add_argument("--p_max", default=None, nargs="?",
                         dest="p_max",
                         help="The maximum probability limit value."
-                             "This determines the cbar limits and contours levels.",
+                             "This determines the cbar limits and contour levels.",
                         type=int)
     optional.add_argument("--p_units", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal"),
                         help="Can be 'kT' (default) or 'kcal'." # TODO: temp arg
-                             "kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.",
+                             "kT = -lnP, kcal/mol = -RT(lnP), where RT=0.5922 at T(298K).",
                         type=str)
+    optional.add_argument("-T", "--temp", default=298, nargs="?",
+                        dest="T", help="Used with kcal/mol 'p_unit'.",
+                        type=int)
+    # TODO: not actually working
+    optional.add_argument("--weighted", default=True, action="store_true",
+                        dest="weighted", help="Use weights from WE.")
     optional.add_argument("--data_type", default="evolution", nargs="?",
                         dest="data_type", choices=("evolution", "average", "instant"),
                         help="Type of pdist dataset to generate, options are"
                              "'evolution' (1 dataset);" 
-                             "'average' or 'instance' (1 or 2 datasets)",
+                             "'average' or 'instance' (1 or 2 or 3 datasets)",
                         type=str) 
     optional.add_argument("--plot_mode", default="hist2d", nargs="?",
                         dest="plot_mode", choices=("hist2d", "contour", 
                                                    "line", "scatter3d"),
-                        help="The type of plot desired, current options are"
-                             "'heat' and 'contour'.",
+                        help="The type of plot desired, current options for: "
+                             "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'",
                         type=str)
     optional.add_argument("--cmap", default="viridis", nargs="?",
                         dest="cmap", choices=("viridis", "afmhot", "gnuplot_r"),
-                        help="mpl colormap style.",
+                        help="mpl colormap name.",
                         type=str)
+    optional.add_argument("--color",
+                        dest="color", help="color for 1D plots",
+                        widget="ColourChooser")
     # TODO: could make choices tuple with the available aux values from the h5 file
-    optional.add_argument("--Xname", default="pcoord", nargs="?",
+    optional.add_argument("--Xname", "-X", default="pcoord", nargs="?",
                         dest="Xname", #choices=aux, TODO
-                        help="Target data for x axis.",
+                        help="Target data name for x axis.",
                         type=str)
-    optional.add_argument("--Yname", default=None, nargs="?",
+    optional.add_argument("--Yname", "-Y", default=None, nargs="?",
                         dest="Yname", #choices=aux, TODO
-                        help="Target data for y axis.",
+                        help="Target data name for y axis.",
                         type=str)
-    optional.add_argument("--Zname", default=None, nargs="?",
+    optional.add_argument("--Zname", "-Z", default=None, nargs="?",
                         dest="Zname", #choices=aux, TODO
-                        help="Target data for z axis. Must use scatter3d",
+                        help="Target data name for z axis. Must use 'scatter3d'.",
                         type=str)
+    optional.add_argument("--Xindex", default=0, nargs="?", type=int,
+                        dest="Xindex", help="Index in third dimension for >2D datasets.")
+    optional.add_argument("--Yindex", default=0, nargs="?", type=int,
+                        dest="Yindex", help="Index in third dimension for >2D datasets.")
+    optional.add_argument("--Zindex", default=0, nargs="?", type=int,
+                        dest="Zindex", help="Index in third dimension for >2D datasets.")
     optional.add_argument("--output", default=None,
                         dest="output_path",
                         help="The filename to which the plot will be saved."
@@ -146,12 +166,12 @@ def create_cmd_arguments():
     trace_group.add_argument("--trace_seg", default=None, nargs=2,
                              dest="trace_seg",
                              help="Trace and plot a single continuous trajectory based"
-                                 "off of 2 int values : iteration and segment",
+                                 "off of 2 space-seperated ints : iteration segment",
                              type=int)
     trace_group.add_argument("--trace_val", default=None, nargs=2,
                              dest="trace_val",
                              help="Trace and plot a single continuous trajectory based"
-                                  "off of 2 float : aux_x value and aux_y value",
+                                  "off of 2 space-seprated floats : Xvalue Yvalue",
                              type=float)
 
     ##########################################################
