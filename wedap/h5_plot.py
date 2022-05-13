@@ -42,7 +42,7 @@ from wedap import H5_Pdist
 class H5_Plot(H5_Pdist):
 
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", 
-        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, cbar_label=None,
+        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, cbar_label="kT",
         data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
@@ -78,7 +78,7 @@ class H5_Plot(H5_Pdist):
         """
         # include the init args for H5_Pdist
         # TODO: how to make some of the args optional if I want to use classes seperately?
-        super().__init__(*args, **kwargs)
+        #super().__init__(*args, **kwargs)
 
         if ax is None:
             self.fig, self.ax = plt.subplots()
@@ -92,9 +92,13 @@ class H5_Plot(H5_Pdist):
         # TODO: option if you want to generate pdist
         # also need option of just using the input X Y Z args
         # or getting them from w_pdist h5 file, or from H5_Pdist output file
-        if plot_mode == "line" or plot_mode == "bar" or plot_mode == "hist1d":
+        if X is not None and Y is not None and Z is not None: # user inputs XYZ
+            pass
+        elif plot_mode == "line" or plot_mode == "bar" or plot_mode == "hist1d":
+            super().__init__(*args, **kwargs)
             X, Y = H5_Pdist(*args, **kwargs).pdist()
         elif X is None and Y is None and Z is None:
+            super().__init__(*args, **kwargs)
             X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
 
         self.X = X
@@ -109,10 +113,10 @@ class H5_Plot(H5_Pdist):
         self.color = color # 1D color
         self.plot_options = plot_options
 
-        if self.p_units == "kT":
-            self.cbar_label = "$-\ln\,P(x)\ [kT^{-1}]$"
-        elif self.p_units == "kcal":
-            self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+        # if self.p_units == "kT":
+        #     self.cbar_label = "$-\ln\,P(x)\ [kT^{-1}]$"
+        # elif self.p_units == "kcal":
+        #     self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
         
         # user override None cbar_label
         if cbar_label:
@@ -234,7 +238,7 @@ class H5_Plot(H5_Pdist):
                 self.ax.set_ylim(item)
             if key == "title":
                 self.ax.set_title(item)
-            if key == "grid":
+            if key == "grid" and key is True:
                 self.ax.grid(item, alpha=0.5)
             if key == "minima": # TODO: this is essentially bstate, also put maxima?
                 # reorient transposed hist matrix
@@ -302,10 +306,10 @@ class H5_Plot(H5_Pdist):
             raise ValueError(f"plot_mode = '{self.plot_mode}' is not valid.")
 
         # TODO: can this work with non H5_Pdist input?
-        if self.Xname == "pcoord":
-            self.ax.set_xlabel(f"Progress Coordinate {self.Xindex}")
-        if self.Yname == "pcoord":
-            self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
+        # if self.Xname == "pcoord":
+        #     self.ax.set_xlabel(f"Progress Coordinate {self.Xindex}")
+        # if self.Yname == "pcoord":
+        #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
-        self._unpack_plot_options()        
+        #self._unpack_plot_options()         # TODO
         self.fig.tight_layout()

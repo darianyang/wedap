@@ -6,9 +6,10 @@ import argparse
 import os
 import sys
 
-#from gooey import Gooey
+from gooey import Gooey
+from gooey import GooeyParser
 
-#@Gooey(optional_cols=4, default_size=(900, 700))
+@Gooey(optional_cols=4, default_size=(900, 700))
 def create_cmd_arguments(): 
     """
     Use the `argparse` module to make the optional and required command-line
@@ -24,12 +25,34 @@ def create_cmd_arguments():
     """
 
     # create argument parser 
-    parser = argparse.ArgumentParser(description = 
+#     parser = argparse.ArgumentParser(description = 
+#         "Weighted Ensemble data analysis and plotting (WE-dap). \n"
+#         "Given an input west.h5 file from a successful WESTPA simulation, prepare "
+#         "probability distributions and plots.")
+    parser = GooeyParser(description = 
         "Weighted Ensemble data analysis and plotting (WE-dap). \n"
         "Given an input west.h5 file from a successful WESTPA simulation, prepare "
         "probability distributions and plots.")
 
     # TODO: put requried first
+    ##########################################################
+    ############### REQUIRED ARGUMENTS #######################
+    ##########################################################
+
+    # create new group for required args 
+#     required_args = parser.add_argument_group("Required Arguments") 
+
+#     # create file flag  
+#     required_args.add_argument("-h5", "--h5file", required = True, help = "The \
+#         WESTPA west.h5 output file that will be analyzed.", action = "store", 
+#         dest = "h5", type=str) 
+
+    # test out gooey specific widgets
+    required_args = parser.add_argument_group(description="Required Arguments")
+    required_args.add_argument("-h5", "--h5file", required = True, help = "The \
+          WESTPA west.h5 output file that will be analyzed.", action = "store",
+          dest = "h5", type=str, widget='FileChooser')
+
 
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
@@ -72,8 +95,9 @@ def create_cmd_arguments():
                              "'evolution' (1 dataset);" 
                              "'average' or 'instance' (1 or 2 datasets)",
                         type=str) 
-    parser.add_argument("--plot_type", default="heat", nargs="?",
-                        dest="plot_type", choices=("heat", "contour"),
+    parser.add_argument("--plot_mode", default="hist2d", nargs="?",
+                        dest="plot_mode", choices=("hist2d", "contour", 
+                                                   "line", "scatter3d"),
                         help="The type of plot desired, current options are"
                              "'heat' and 'contour'.",
                         type=str)
@@ -82,13 +106,17 @@ def create_cmd_arguments():
                         help="mpl colormap style.",
                         type=str)
     # TODO: could make choices tuple with the available aux values from the h5 file
-    parser.add_argument("--aux_x", default=None, nargs="?", #TODO: default to pcoord w/ none
-                        dest="aux_x", #choices=aux, TODO
+    parser.add_argument("--Xname", default="pcoord", nargs="?",
+                        dest="Xname", #choices=aux, TODO
                         help="Target data for x axis.",
                         type=str)
-    parser.add_argument("--aux_y", default=None, nargs="?", #TODO: default to pcoord w/ none
-                        dest="aux_y", #choices=aux, TODO
-                        help="Target data for x axis.",
+    parser.add_argument("--Yname", default=None, nargs="?", #TODO: default to pcoord w/ none
+                        dest="Yname", #choices=aux, TODO
+                        help="Target data for y axis.",
+                        type=str)
+    parser.add_argument("--Zname", default=None, nargs="?",
+                        dest="Zname", #choices=aux, TODO
+                        help="Target data for z axis. Must use scatter3d",
                         type=str)
     parser.add_argument("--output", default=None,
                         dest="output_path",
@@ -117,23 +145,11 @@ def create_cmd_arguments():
     #                             'DATA_SMOOTHING_LEVEL.',
     #                     type=float)
 
-    # create optional flag to output everything to console screen 
+    # create optional flag to output everything to console screen
     parser.add_argument("--outputToScreen", default=True,
                         dest = "output_to_screen",
                         help = "Outputs plot to screen", 
                         action= "store_true") 
-
-    ##########################################################
-    ############### REQUIRED ARGUMENTS #######################
-    ##########################################################
-
-    # create new group for required args 
-    required_args = parser.add_argument_group("Required Arguments") 
-
-    # create file flag  
-    required_args.add_argument("-h5", "--h5file", required = True, help = "The \
-        WESTPA west.h5 output file that will be analyzed.", action = "store", 
-        dest = "h5", type=str) 
 
     # return the argument parser
     return parser 

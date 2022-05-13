@@ -61,6 +61,16 @@ class Test_H5_Pdist():
             np.loadtxt(f"wedap/data/instant_{Xname}_{Yname}_Y.txt"))
         np.testing.assert_allclose(Z, 
             np.loadtxt(f"wedap/data/instant_{Xname}_{Yname}_Z.txt"))
+    
+    # TODO along with average
+    # def test_instant_3d(self):
+    #     X, Y, Z = wedap.H5_Pdist(self.h5, "instant", Xname=Xname, Yname=Yname).pdist()
+    #     np.testing.assert_allclose(X, 
+    #         np.loadtxt(f"wedap/data/instant_{Xname}_{Yname}_X.txt"))
+    #     np.testing.assert_allclose(Y, 
+    #         np.loadtxt(f"wedap/data/instant_{Xname}_{Yname}_Y.txt"))
+    #     np.testing.assert_allclose(Z, 
+    #         np.loadtxt(f"wedap/data/instant_{Xname}_{Yname}_Z.txt"))
 
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     def test_average_1d(self, Xname):

@@ -10,7 +10,7 @@ import h5py
 
 def get_parents(walker_tuple, h5_file):
     it, wlk = walker_tuple
-    parent = h5_file["iterations/iter_{:08d}".format(it)]["seg_index"]["parent_id"][wlk]
+    parent = h5_file[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
     return it-1, parent
 
 def trace_walker(walker_tuple, h5_file):

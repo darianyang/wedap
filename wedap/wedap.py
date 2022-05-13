@@ -19,47 +19,56 @@ if __name__ == '__main__':
     """
     Command line
     """
-    # TODO: it may be more interpretable if I add each args_list.value as arguments to
-        # the default functions and keep the original args, I think this would allow 
-        # for a better python API down the line
     # Create command line arguments with argparse
     argument_parser = create_cmd_arguments()
     # Retrieve list of args
-    args_list = handle_command_line(argument_parser)
+    args = handle_command_line(argument_parser)
 
     """
     Generate pdist and plot it
     """
-    H5_Plot(args_list).plot()
+    # TODO: clean this
+    #H5_Plot(args, h5=args.h5, data_type=args.data_type).plot()
+
+    if args.plot_mode == "line" or args.plot_mode == "bar" or args.plot_mode == "hist1d":
+        X, Y = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Yname=args.Yname, Zname=args.Zname, first_iter=args.first_iter, last_iter=args.last_iter, bins=args.bins, p_units=args.p_units).pdist()
+        plot = H5_Plot(X, Y, plot_mode=args.plot_mode, cmap=args.cmap, p_max=args.p_max)
+        plot.plot()
+    else:
+        X, Y, Z = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Yname=args.Yname, Zname=args.Zname, first_iter=args.first_iter, last_iter=args.last_iter, bins=args.bins, p_units=args.p_units).pdist()
+        plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, p_max=args.p_max)
+        plot.plot()
 
     """
     Trace (Optional Argument)
     """
-    if args_list.trace_seg is not None:
-        plot_trace(args_list.h5, args_list.trace_seg, args_list.aux_x, args_list.aux_y)
-    if args_list.trace_val is not None:
+    if args.trace_seg is not None:
+        plot_trace(args.h5, args.trace_seg, args.Xname, args.Yname)
+    if args.trace_val is not None:
         # for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53° and 2.8A is alt minima = i173 s70
         # for demo: can use x = 53 and y = 2.7 or 2.6
-        iter, seg = search_aux_xy_nn(args_list.h5, args_list.aux_x, args_list.aux_y, 
+        iter, seg = search_aux_xy_nn(args.h5, args.Xname, args.Yname, 
                                     # TODO: update to aux_x aux_y tuple
-                                    args_list.trace_val[0], args_list.trace_val[1], args_list.last_iter)
-        plot_trace(args_list.h5, (iter,seg), args_list.aux_x, args_list.aux_y)
+                                    args.trace_val[0], args.trace_val[1], args.last_iter)
+        plot_trace(args.h5, (iter,seg), args.Xname, args.Yname)
 
     """
-    Plot formatting
+    Plot formatting (TODO; handle multiple cli args here via plot_options?)
     """
-    plt.xlabel(args_list.aux_x)
-    if args_list.aux_y:
-        plt.ylabel(args_list.aux_y)
-    if args_list.data_type == "evolution":
-        plt.ylabel("WE Iteration")
+    plot.ax.set_xlabel(args.Xname)
+    if args.Yname:
+        plot.ax.set_ylabel(args.Yname)
+    if args.data_type == "evolution":
+        plot.ax.set_ylabel("WE Iteration")
 
     """
     Show and/or save the final plot
     """
-    plt.tight_layout()
+    plt.style.use("default.mplstyle")
+    plot.fig.tight_layout()
     # TODO: the save fig option produces a choppy image
-    if args_list.output_path is not None:
-        plt.savefig(args_list.output_path, dpi=300, transparent=True)
-    if args_list.output_to_screen is True:
+    if args.output_path is not None:
+        plot.fig.savefig(args.output_path, dpi=300, transparent=True)
+    if args.output_to_screen is True:
         plt.show()
+        #plot.fig.show() # only for after event loop starts e.g. with plt.show()
