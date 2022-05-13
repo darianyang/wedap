@@ -18,7 +18,7 @@ This repository is currently under development.
 
 ### GUI
 
-wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `pythonw wedap.py` with no arguments. If you wish to use the command line interface instead include `--ignore-gooey`
+wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `pythonw wedap.py` (on MacOSX) or `python wedap.py` with no arguments. If you wish to use the command line interface instead include `--ignore-gooey`
 
 ### Contributing
 
