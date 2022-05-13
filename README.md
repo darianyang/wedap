@@ -41,9 +41,13 @@ $ source ~/.bashrc
 ### Examples
 
 To run the CLI version and view available options:
-`python3 wedap.py --ignore-gooey --help`
+``` Bash
+python3 wedap.py --ignore-gooey --help
+```
 If you have the alias set up:
-`wedap --ignore-gooey --help`
+``` Bash
+wedap --ignore-gooey --help
+```
 
 ### Contributing
 
