@@ -9,7 +9,7 @@ import sys
 from gooey import Gooey
 from gooey import GooeyParser
 
-@Gooey(optional_cols=4, default_size=(900, 700))
+@Gooey(optional_cols=4, default_size=(900, 600))
 def create_cmd_arguments(): 
     """
     Use the `argparse` module to make the optional and required command-line
@@ -30,11 +30,10 @@ def create_cmd_arguments():
 #         "Given an input west.h5 file from a successful WESTPA simulation, prepare "
 #         "probability distributions and plots.")
     parser = GooeyParser(description = 
-        "Weighted Ensemble data analysis and plotting (WE-dap). \n"
+        "Weighted Ensemble data analysis and plotting (wedap). \n"
         "Given an input west.h5 file from a successful WESTPA simulation, prepare "
         "probability distributions and plots.")
 
-    # TODO: put requried first
     ##########################################################
     ############### REQUIRED ARGUMENTS #######################
     ##########################################################
@@ -48,10 +47,10 @@ def create_cmd_arguments():
 #         dest = "h5", type=str) 
 
     # test out gooey specific widgets
-    required_args = parser.add_argument_group(description="Required Arguments")
-    required_args.add_argument("-h5", "--h5file", required = True, help = "The \
-          WESTPA west.h5 output file that will be analyzed.", action = "store",
-          dest = "h5", type=str, widget='FileChooser')
+    required = parser.add_argument_group(description="Required Arguments")
+    required.add_argument("-h5", "--h5file", required=True, help="The \
+          WESTPA west.h5 output file that will be analyzed.", action="store",
+          dest="h5", type=str, widget="FileChooser")
 
 
     ###########################################################
@@ -61,71 +60,89 @@ def create_cmd_arguments():
         # and produced as a single item. If no command-line argument is present, 
         # the value from default will be produced."
 
-    parser.add_argument("--first-iter", default=1, nargs="?",
+    optional = parser.add_argument_group(description="Optional Arguments")
+
+    optional.add_argument("--first-iter", default=1, nargs="?",
                         dest="first_iter",
                         help="Plot data starting at iteration FIRST_ITER."
                              "By default, plot data starting at the first"
                              "iteration in the specified west.h5 file.",
                         type=int)
-    parser.add_argument("--last-iter", default=None, nargs="?",
+    optional.add_argument("--last-iter", default=None, nargs="?",
                         dest="last_iter",
                         help="Plot data up to and including iteration LAST_ITER."
                              "By default, plot data up to and including the last "
                              "iteration in the specified w_pdist file.",
                         type=int)
-    parser.add_argument("--bins", default=100, nargs="?",
+    optional.add_argument("--bins", default=100, nargs="?",
                         dest="bins",
                         help="Use BINS number of bins for histogramming "
                              "Divide the range between the minimum and maximum "
                              "observed values into this many bins",
                         type=int)
-    parser.add_argument("--p_max", default=None, nargs="?",
+    optional.add_argument("--p_max", default=None, nargs="?",
                         dest="p_max",
                         help="The maximum probability limit value."
                              "This determines the cbar limits and contours levels.",
                         type=int)
-    parser.add_argument("--p_units", default="kT", nargs="?",
+    optional.add_argument("--p_units", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal"),
                         help="Can be 'kT' (default) or 'kcal'." # TODO: temp arg
                              "kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at 298K.",
                         type=str)
-    parser.add_argument("--data_type", default="evolution", nargs="?",
+    optional.add_argument("--data_type", default="evolution", nargs="?",
                         dest="data_type", choices=("evolution", "average", "instant"),
                         help="Type of pdist dataset to generate, options are"
                              "'evolution' (1 dataset);" 
                              "'average' or 'instance' (1 or 2 datasets)",
                         type=str) 
-    parser.add_argument("--plot_mode", default="hist2d", nargs="?",
+    optional.add_argument("--plot_mode", default="hist2d", nargs="?",
                         dest="plot_mode", choices=("hist2d", "contour", 
                                                    "line", "scatter3d"),
                         help="The type of plot desired, current options are"
                              "'heat' and 'contour'.",
                         type=str)
-    parser.add_argument("--cmap", default="viridis", nargs="?",
+    optional.add_argument("--cmap", default="viridis", nargs="?",
                         dest="cmap", choices=("viridis", "afmhot", "gnuplot_r"),
                         help="mpl colormap style.",
                         type=str)
     # TODO: could make choices tuple with the available aux values from the h5 file
-    parser.add_argument("--Xname", default="pcoord", nargs="?",
+    optional.add_argument("--Xname", default="pcoord", nargs="?",
                         dest="Xname", #choices=aux, TODO
                         help="Target data for x axis.",
                         type=str)
-    parser.add_argument("--Yname", default=None, nargs="?", #TODO: default to pcoord w/ none
+    optional.add_argument("--Yname", default=None, nargs="?",
                         dest="Yname", #choices=aux, TODO
                         help="Target data for y axis.",
                         type=str)
-    parser.add_argument("--Zname", default=None, nargs="?",
+    optional.add_argument("--Zname", default=None, nargs="?",
                         dest="Zname", #choices=aux, TODO
                         help="Target data for z axis. Must use scatter3d",
                         type=str)
-    parser.add_argument("--output", default=None,
+    optional.add_argument("--output", default=None,
                         dest="output_path",
                         help="The filename to which the plot will be saved."
                              "Various image formats are available.  You " 
                              "may choose one by specifying an extension",
                         type=str)
-    trace_group = parser.add_mutually_exclusive_group()
-    # type to float for val inside tuple, and nargs to 2 since it is interpreted as a 2 item tuple or list
+
+    # TODO
+    # parser.add_argument('--smooth-data', default = None, 
+    #                     dest='data_smoothing_level',
+    #                     help='Smooth data (plotted as histogram or contour'
+    #                             ' levels) using a gaussian filter with sigma='
+    #                             'DATA_SMOOTHING_LEVEL.',
+    #                     type=float)
+
+    # create optional flag to output everything to console screen
+    optional.add_argument("--outputToScreen", default=True,
+                        dest = "output_to_screen",
+                        help = "Outputs plot to screen", 
+                        action= "store_true") 
+
+    trace_group = optional.add_mutually_exclusive_group()
+    # type to float for val inside tuple, 
+    # and nargs to 2 since it is interpreted as a 2 item tuple or list
     trace_group.add_argument("--trace_seg", default=None, nargs=2,
                              dest="trace_seg",
                              help="Trace and plot a single continuous trajectory based"
@@ -137,19 +154,18 @@ def create_cmd_arguments():
                                   "off of 2 float : aux_x value and aux_y value",
                              type=float)
 
-    # TODO
-    # parser.add_argument('--smooth-data', default = None, 
-    #                     dest='data_smoothing_level',
-    #                     help='Smooth data (plotted as histogram or contour'
-    #                             ' levels) using a gaussian filter with sigma='
-    #                             'DATA_SMOOTHING_LEVEL.',
-    #                     type=float)
+    ##########################################################
+    ############### FORMATTING ARGUMENTS #####################
+    ##########################################################
 
-    # create optional flag to output everything to console screen
-    parser.add_argument("--outputToScreen", default=True,
-                        dest = "output_to_screen",
-                        help = "Outputs plot to screen", 
-                        action= "store_true") 
+    formatting = parser.add_argument_group("Plot Formatting Arguments") 
+
+    formatting.add_argument("--xlabel", dest="xlabel", type=str)
+    formatting.add_argument("--xlim", help="LB UB", dest="xlim", nargs=2, type=float)
+    formatting.add_argument("--ylabel", dest="ylabel", type=str)
+    formatting.add_argument("--ylim", help="LB UB", dest="ylim", nargs=2, type=float)
+    formatting.add_argument("--title", dest="title", type=str)
+    formatting.add_argument("--cbar_label", dest="cbar_label", type=str)
 
     # return the argument parser
     return parser 

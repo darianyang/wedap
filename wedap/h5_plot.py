@@ -158,6 +158,7 @@ class H5_Plot(H5_Pdist):
         # TODO: related, make a discrete colorbar/mapping for hist2d?
         #if lines:
         #    cbar.add_lines(lines)
+        # TODO: move labelpad here to style
         cbar.set_label(self.cbar_label, labelpad=14)
 
         # allow for cbar object manipulation (e.g. removal in movie)

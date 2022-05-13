@@ -69,6 +69,20 @@ if __name__ == '__main__':
     if args.data_type == "evolution":
         plot.ax.set_ylabel("WE Iteration")
 
+    # args formatting (note args is a namespace object)
+    if args.xlabel:
+        plot.ax.set_xlabel(args.xlabel)
+    if args.ylabel:
+        plot.ax.set_ylabel(args.ylabel)
+    if args.xlim:
+        plot.ax.set_xlim(args.xlim)
+    if args.ylim:
+        plot.ax.set_ylim(args.ylim)
+    if args.title:
+        plot.ax.set_title(args.title)
+    if args.cbar_label:
+        plot.cbar.set_label(args.cbar_label, labelpad=14)
+
     """
     Show and/or save the final plot
     """
