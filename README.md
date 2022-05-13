@@ -20,6 +20,19 @@ This repository is currently under development.
 
 wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `pythonw wedap.py` (on MacOSX) or `python wedap.py` with no arguments. If you wish to use the command line interface instead include `--ignore-gooey`
 
+### Installation
+First install the dependencies
+``` bash
+conda env create --name wedap --file requirements.txt
+conda activate wedap
+conda install -c conda-forge gooey
+```
+For now, instead of pip installing or using setup.py (these will be available later), you could try just setting an alias to `wedap/wedap.py`. This could be done with the following bash command from the main wedap directory containing this README.
+``` bash
+$ echo "alias wedap=\"python3 $PWD/wedap/wedap.py\"" >> ~/.bash_aliases 
+$ source ~/.bashrc
+```
+
 ### Contributing
 
 Features should be developed on branches. To create and switch to a branch, use the command:
