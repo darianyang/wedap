@@ -28,7 +28,8 @@ if __name__ == '__main__':
     Generate pdist and plot it
     """
     # formatting, TODO: can include this in args
-    plt.style.use("default.mplstyle")
+    # TODO: this path needs to be set when using wedap in other directories
+    #plt.style.use("default.mplstyle")
 
     # TODO: clean this
     #H5_Plot(args, h5=args.h5, data_type=args.data_type).plot()
