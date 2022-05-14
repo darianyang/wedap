@@ -29,7 +29,9 @@ conda install -c conda-forge gooey
 ```
 Or update an existing environmnent
 ``` bash
+conda activate ENV_NAME
 conda env update ENV_NAME --file requirements.txt
+conda install -c conda-forge gooey
 ```
 
 For now, instead of pip installing or using setup.py (these will be available later), you could try just setting an alias to `wedap/wedap.py`. This could be done with the following bash command from the main wedap directory containing this README.
