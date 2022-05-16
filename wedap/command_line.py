@@ -98,9 +98,14 @@ def create_cmd_arguments():
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p_unit'.",
                         type=int)
-    # TODO: not actually working
+    # TODO: is there a better way to do this?
     optional.add_argument("--weighted", default=True, action="store_true",
-                        dest="weighted", help="Use weights from WE.")
+                          help="Use weights from WE.")
+    optional.add_argument("--not-weighted", default=False,
+                          help="Check this to not use WE weights.",
+                          dest="weighted", action="store_false")
+    #optional.set_defaults(feature=True)
+
     optional.add_argument("--data_type", default="evolution", nargs="?",
                         dest="data_type", choices=("evolution", "average", "instant"),
                         help="Type of pdist dataset to generate, options are"
