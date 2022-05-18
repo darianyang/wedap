@@ -9,3 +9,4 @@
 __pycache__
 *.log
 *.h5
+wedap.egg-info

@@ -5,9 +5,9 @@ name: tests
 
 on:
   push:
-    branches: [ main, plot_class ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, plot_class ]
+    branches: [ main ]
 
 jobs:
   build:

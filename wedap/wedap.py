@@ -2,12 +2,12 @@
 Main call.
 """
 
-from command_line import *
-from h5_pdist import *
-from h5_plot import *
+from wedap.h5_pdist import *
+from wedap.h5_plot import *
+from wedap.command_line import *
 
-from search_aux import *
-from h5_plot_trace import *
+from wedap.search_aux import *
+from wedap.h5_plot_trace import *
 
 def main():
 
