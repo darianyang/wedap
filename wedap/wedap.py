@@ -2,7 +2,6 @@
 Main call.
 """
 
-from turtle import color
 from command_line import *
 from h5_pdist import *
 from h5_plot import *
@@ -10,12 +9,7 @@ from h5_plot import *
 from search_aux import *
 from h5_plot_trace import *
 
-# if python file is being used 
-if __name__ == '__main__': 
-    
-    # TODO: chicken and egg problem, when to initialize the parser?
-    #f = h5py.File("data/west.h5", mode="r")
-    #aux = list(f[f"iterations/iter_00000001/auxdata/"])
+def main():
 
     """
     Command line
@@ -104,3 +98,7 @@ if __name__ == '__main__':
     if args.output_to_screen is True:
         plt.show()
         #plot.fig.show() # only for after event loop starts e.g. with plt.show()
+
+# if python file is being used 
+if __name__ == '__main__': 
+    main()
