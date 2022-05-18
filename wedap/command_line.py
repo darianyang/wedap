@@ -101,10 +101,11 @@ def create_cmd_arguments():
     # TODO: is there a better way to do this?
     optional.add_argument("--weighted", default=True, action="store_true",
                           help="Use weights from WE.")
-    optional.add_argument("--not-weighted", default=False,
-                          help="Check this to not use WE weights.",
-                          dest="weighted", action="store_false")
-    #optional.set_defaults(feature=True)
+    # optional.add_argument("--not-weighted", default=False,
+    #                       help="Check this to not use WE weights.",
+    #                       dest="weighted", action="store_false")
+    # optional.add_argument("--weighted", default=True, 
+    #                       action=argparse.BooleanOptionalAction)
 
     optional.add_argument("--data_type", default="evolution", nargs="?",
                         dest="data_type", choices=("evolution", "average", "instant"),
@@ -113,7 +114,7 @@ def create_cmd_arguments():
                              "'average' or 'instance' (1 or 2 or 3 datasets)",
                         type=str) 
     optional.add_argument("--plot_mode", default="hist2d", nargs="?",
-                        dest="plot_mode", choices=("hist2d", "contour", 
+                        dest="plot_mode", choices=("hist2d", "contour", "bar", 
                                                    "line", "scatter3d"),
                         help="The type of plot desired, current options for: "
                              "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'",

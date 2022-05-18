@@ -11,9 +11,6 @@ TODO:
         of the same data.
 
 TODO: update docstrings
-TODO: option for unweighted output
-TODO: option for z as another aux dataset
-      and maybe show the trajectories as just dots
 """
 
 from turtle import shape
@@ -26,7 +23,7 @@ from warnings import warn
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
-class H5_Pdist:
+class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
     """
@@ -70,7 +67,7 @@ class H5_Pdist:
             Temperature if using kcal/mol.
         weighted : bool
             Default True, use WE segment weights in pdist calculation.
-        TODO: histrangexy args?
+        TODO: histrangexy args, maybe also binsfromexpression?
         """
         self.f = h5py.File(h5, mode="r")
         self.data_type = data_type

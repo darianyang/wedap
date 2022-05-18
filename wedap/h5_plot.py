@@ -8,7 +8,7 @@ Plot all of the datasets generated with h5_pdist.
         # 1D Evo, 1D and 2D instant and average
         # optional: diff max_iter and bins args
 
-TODO: add mpl style options
+TODO: make mpl style options path set up at install
 
 TODO: maybe make methods for the following plots:
         '``contourf``--plot contour levels. '
@@ -23,8 +23,7 @@ TODO: plot clustering centroids option
       can then grab the search_aux at the centroid
 
 TODO: bin visualizer
-TODO: option for z as another aux dataset
-      and maybe show the trajectories as just dots
+TODO: and maybe show the trajectories as just dots
 """
 
 import numpy as np
@@ -199,12 +198,14 @@ class H5_Plot(H5_Pdist):
         # recover the pdf from the -ln P
         # TODO: does this account for p_max naturally?
         self.ax.bar(self.X, np.exp(-self.Y), color=self.color)
+        #self.ax.bar(self.X, self.Y, color=self.color)
         self.ax.set_ylabel("P(x)")
 
     def plot_hist1d(self):
-        # 1D data
+        # 1D data : TODO: not working currently
         # recover the pdf from the -ln P
         # TODO: does this account for p_max naturally?
+        # TODO: I can get the raw data and then get the counts right from XYZ functions
         self.ax.hist(self.X, self.Y)
         self.ax.set_ylabel("P(x)")
 
@@ -284,7 +285,7 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "bar":
             self.plot_bar()
-            self.ax.set_ylabel(self.cbar_label)
+            #self.ax.set_ylabel(self.cbar_label)
 
         elif self.plot_mode == "line":
             self.plot_line()
