@@ -171,3 +171,11 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.napoleon',
+]
+
+autosummary_generate = True
