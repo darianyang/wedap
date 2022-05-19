@@ -1,2 +1,0 @@
-include versioneer.py
-include wedap/_version.py
