@@ -100,5 +100,5 @@ def main():
         #plot.fig.show() # only for after event loop starts e.g. with plt.show()
 
 # if python file is being used 
-if __name__ == '__main__': 
+if __name__ == "__main__": 
     main()

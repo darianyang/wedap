@@ -32,7 +32,7 @@ import scipy.ndimage
 from warnings import warn
 from numpy import inf
 
-from wedap import H5_Pdist
+from .h5_pdist import *
 
 # TODO: add search aux as a class method with seperate args?
     # have trace options in args for trace iter,wlk and x,y vals 
