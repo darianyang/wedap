@@ -21,9 +21,9 @@ setup(
     project_urls={'Documentation' : 'https://darianyang.github.io/wedap'},
     license=lic,
     #packages = find_packages(where = 'src'),
-    Packages=find_packages(exclude="docs"),
-    #packages=find_packages(exclude="docs"),
-    #package_data={"wedap": ["data/*"]},
+    #Packages=find_packages(exclude="docs"),
+    packages=find_packages(exclude="docs"),
+    package_data={"wedap": ["styles/*"]},
     #py_modules=["wedap"],
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -2,12 +2,17 @@
 Main call.
 """
 
+from matplotlib.pyplot import style
 from wedap.h5_pdist import *
 from wedap.h5_plot import *
 from wedap.command_line import *
 
 from wedap.search_aux import *
 from wedap.h5_plot_trace import *
+
+# for accessing package data: mpl styles
+import pkgutil 
+import os
 
 def main():
 
@@ -23,8 +28,15 @@ def main():
     Generate pdist and plot it
     """
     # formatting, TODO: can include this in args
-    # TODO: this path needs to be set when using wedap in other directories
-    #plt.style.use("default.mplstyle")
+    # get the style parameters from package data
+    # currently writes into temp file, could be more efficient (TODO)
+    style = pkgutil.get_data(__name__, "styles/default.mplstyle")
+    # pkgutil returns binary string, decode it first and make temp file
+    with open("style.temp", "w+") as f:
+        f.write(style.decode())
+    plt.style.use("style.temp")
+    # clean up temp style file
+    os.remove("style.temp")
 
     # TODO: clean this
     #H5_Plot(args, h5=args.h5, data_type=args.data_type).plot()
