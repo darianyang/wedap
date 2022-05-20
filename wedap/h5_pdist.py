@@ -13,10 +13,10 @@ TODO:
 TODO: update docstrings
 """
 
-from turtle import shape
 import h5py
 import numpy as np
 from numpy import inf
+from tqdm.auto import tqdm
 
 from warnings import warn
 
@@ -311,7 +311,7 @@ class H5_Pdist():
         evolution_x = np.zeros(shape=(self.last_iter, self.bins))
         positions_x = np.zeros(shape=(self.last_iter, self.bins))
 
-        for iter in range(self.first_iter, self.last_iter + 1):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # generate evolution x data
             center_x, counts_total_x = self.aux_to_pdist_1d(iter)
             evolution_x[iter - 1] = counts_total_x
@@ -378,7 +378,7 @@ class H5_Pdist():
         evolution_x = np.zeros(shape=(self.last_iter, self.bins))
         positions_x = np.zeros(shape=(self.last_iter, self.bins))
 
-        for iter in range(self.first_iter, self.last_iter + 1):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # generate evolution x data
             center_x, counts_total_x = self.aux_to_pdist_1d(iter)
             evolution_x[iter - 1] = counts_total_x
@@ -403,7 +403,7 @@ class H5_Pdist():
         average_xy = np.zeros(shape=(self.bins, self.bins))
 
         # 2D avg pdist data generation
-        for iter in range(self.first_iter, self.last_iter + 1):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
 
@@ -440,7 +440,7 @@ class H5_Pdist():
 
         # loop each iteration
         seg_start = 0
-        for iter in range(self.first_iter, self.last_iter + 1):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # then go through and add all segments/walkers in the iteration
             X[seg_start:seg_start + seg_totals[iter - 1]] = \
                 self._get_data_array(self.Xname, self.Xindex, iter)

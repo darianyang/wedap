@@ -55,7 +55,7 @@ def main():
                        last_iter=args.last_iter, bins=args.bins, T=args.T,
                        weighted=args.weighted, p_units=args.p_units).pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, 
-                   p_max=args.p_max, cbar_label=cbar_label, color=args.color)
+                   p_max=args.p_max, cbar_label=cbar_label)#, color=args.color)
     plot.plot()
 
     """
