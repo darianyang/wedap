@@ -127,9 +127,9 @@ def create_cmd_arguments():
                         dest="cmap", choices=("viridis", "afmhot", "gnuplot_r"),
                         help="mpl colormap name.",
                         type=str)
-    optional.add_argument("--color",
-                        dest="color", help="color for 1D plots",
-                        widget="ColourChooser")
+    # optional.add_argument("--color",
+    #                     dest="color", help="color for 1D plots",
+    #                     widget="ColourChooser")
     # TODO: could make choices tuple with the available aux values from the h5 file
     optional.add_argument("--Xname", "-X", default="pcoord", nargs="?",
                         dest="Xname", #choices=aux, TODO
