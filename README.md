@@ -1,10 +1,11 @@
 wedap
 ===========================
 ![tests](https://github.com/darianyang/fluorelax/actions/workflows/test.yml/badge.svg)
-
 [![PyPI version](https://badge.fury.io/py/wedap.svg)](https://badge.fury.io/py/wedap)
 
 Weighted Ensemble data analysis and plotting.
+
+This is used to plot H5 files produced from running [WESTPA](https://github.com/westpa/westpa).
 
 This repository is currently under development.
 
