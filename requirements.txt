@@ -3,5 +3,5 @@ matplotlib
 h5py
 scipy
 moviepy
-pandas
 gooey
+tqdm

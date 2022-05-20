@@ -46,7 +46,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov
         # gooey has extra dependencies not installed by pip so skip gooey
-        pip install numpy h5py matplotlib scipy pandas
+        pip install numpy h5py matplotlib scipy tqdm
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |

@@ -14,7 +14,7 @@ This repository is currently under development.
 - Moviepy
 - Scipy
 - Gooey
-- Pandas
+- tqdm
 
 ### GUI
 

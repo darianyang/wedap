@@ -16,7 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     author='Darian T. Yang',
     author_email='dty7@pitt.edu',
-    install_requires=['numpy', 'matplotlib', 'h5py', 'scipy', 'moviepy', 'pandas', 'gooey'],
+    install_requires=['numpy', 'matplotlib', 'h5py', 'scipy', 'moviepy', 'tqdm', 'gooey'],
     url='https://github.com/darianyang/wedap',
     project_urls={'Documentation' : 'https://darianyang.github.io/wedap'},
     license=lic,
