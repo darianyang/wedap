@@ -18,17 +18,18 @@ setup(
     author_email='dty7@pitt.edu',
     install_requires=['numpy', 'matplotlib', 'h5py', 'scipy', 'moviepy', 'pandas', 'gooey'],
     url='https://github.com/darianyang/wedap',
+    project_urls={'Documentation' : 'https://darianyang.github.io/wedap'},
     license=lic,
     #packages = find_packages(where = 'src'),
     Packages=find_packages(exclude="docs"),
+    #packages=find_packages(exclude="docs"),
     #package_data={"wedap": ["data/*"]},
+    #py_modules=["wedap"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD 3 License",
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering :: Chemistry"
     ],
-    entry_points={"console_scripts" : ["wedap=wedap.wedap:main"],
-                  "gui_scripts" : ["wedap-gui=wedap.wedap:main"]
-                  }
+    entry_points={"console_scripts" : ["wedap=wedap.__main__:main"]}
 )
