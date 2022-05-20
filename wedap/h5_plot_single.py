@@ -1,10 +1,14 @@
 """
-Eventually incorporate into tests.
+Eventually put this in an example directory.
+
 
 TODO: add styles for 1 col, 2 col, and poster figures.
 """
-from h5_pdist import *
-from h5_plot import *
+# from h5_pdist import *
+# from h5_plot import *
+
+import wedap
+import matplotlib.pyplot as plt
 
 # formatting
 plt.style.use("default.mplstyle")
@@ -88,7 +92,7 @@ start = timeit.default_timer()
 #H5_Plot(plot_options=plot_options, **data_options).plot_contour()
 
 #plt.xkcd()
-wedap = H5_Plot(plot_options=plot_options, **data_options).plot()
+wedap = wedap.H5_Plot(plot_options=plot_options, **data_options).plot()
 
 # wedap = H5_Pdist(**data_options)
 # X, Y, Z = wedap.pdist()
