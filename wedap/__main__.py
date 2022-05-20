@@ -27,16 +27,18 @@ def main():
     """
     Generate pdist and plot it
     """
-    # formatting, TODO: can include this in args
-    # get the style parameters from package data
-    # currently writes into temp file, could be more efficient (TODO)
-    style = pkgutil.get_data(__name__, "styles/default.mplstyle")
-    # pkgutil returns binary string, decode it first and make temp file
-    with open("style.temp", "w+") as f:
-        f.write(style.decode())
-    plt.style.use("style.temp")
-    # clean up temp style file
-    os.remove("style.temp")
+    if args.style == "default":
+        # get the style parameters from package data
+        # currently writes into temp file, could be more efficient (TODO)
+        style = pkgutil.get_data(__name__, "styles/default.mplstyle")
+        # pkgutil returns binary string, decode it first and make temp file
+        with open("style.temp", "w+") as f:
+            f.write(style.decode())
+        plt.style.use("style.temp")
+        # clean up temp style file
+        os.remove("style.temp")
+    elif args.style != "default" and args.style != "None":
+        plt.style.use(args.style)
 
     # TODO: clean this
     #H5_Plot(args, h5=args.h5, data_type=args.data_type).plot()

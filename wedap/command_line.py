@@ -119,6 +119,10 @@ def create_cmd_arguments():
                         help="The type of plot desired, current options for: "
                              "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'",
                         type=str)
+    optional.add_argument("--style", default="default", nargs="?",
+                        dest="style",
+                        help="mpl style, can use default, None, or custom",
+                        type=str)
     optional.add_argument("--cmap", default="viridis", nargs="?",
                         dest="cmap", choices=("viridis", "afmhot", "gnuplot_r"),
                         help="mpl colormap name.",
