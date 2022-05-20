@@ -2,6 +2,8 @@ wedap
 ===========================
 ![tests](https://github.com/darianyang/fluorelax/actions/workflows/test.yml/badge.svg)
 
+[![PyPI version](https://badge.fury.io/py/wedap.svg)](https://badge.fury.io/py/wedap)
+
 Weighted Ensemble data analysis and plotting.
 
 This repository is currently under development.
