@@ -18,39 +18,59 @@ This repository is currently under development.
 
 ### GUI
 
-wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `pythonw wedap.py` (on MacOSX) or `python wedap.py` with no arguments. If you wish to use the command line interface instead include `--ignore-gooey`
+wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `pythonw wedap.py` (on MacOSX) or `python wedap.py` with no arguments. If you wish to use the command line interface instead include the `--ignore-gooey` flag.
 
 ### Installation
-First install the dependencies
+I recommend first installing dependencies via conda, especially gooey.
+To install the dependencies into your python env via pip or conda:
 ``` bash
 conda env create --name wedap --file requirements.txt
 conda activate wedap
 conda install -c conda-forge gooey
+pip install wedap
 ```
-Or update an existing environmnent
+Or update an existing environmnent:
 ``` bash
 conda activate ENV_NAME
 conda env update ENV_NAME --file requirements.txt
 conda install -c conda-forge gooey
+pip install wedap
+```
+Or pip install (you may have issues pip installing wxPython):
+``` bash
+pip install gooey
+pip install wedap
+```
+If you have the repository cloned, go into the main wedap directory:
+``` bash
+pip install gooey
+pip install .
 ```
 
-For now, instead of pip installing or using setup.py (these will be available later), you could try just setting an alias to `wedap/wedap.py`. This could be done with the following bash command from the main wedap directory containing this README.
-``` bash
-$ echo "alias wedap=\"python3 $PWD/wedap/wedap.py\"" >> ~/.bash_aliases 
-$ source ~/.bashrc
-```
+Note that gooey is kindof troublesome to pip install in some systems, which is why it's not included in the requirements (although it is required). I am trying to fix this but for now I reccomend conda installing gooey.
 
 ### Examples
 
-To run the CLI version and view available options:
-``` Bash
-python3 wedap.py --ignore-gooey --help
-```
-If you have the alias set up:
-``` Bash
+After installation, to run the CLI version and view available options:
+``` bash
 wedap --ignore-gooey --help
 ```
+To start the GUI simply input:
+``` bash
+wedap
+```
+To visualize the evolution of the pcoord for the example p53.h5 file via CLI:
+``` bash
+wedap --ignore-gooey -h5 /path/to/h5/p53.h5
+```
+To do the same with the API:
+``` Python
+import wedap
+import matplotlib.pyplot as plt
 
+wedap.H5_Plot(h5="/path/to/h5/p53.h5", data_type="evolution").plot()
+plt.show()
+```
 ### Contributing
 
 Features should be developed on branches. To create and switch to a branch, use the command:
