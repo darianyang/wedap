@@ -18,7 +18,7 @@ This repository is currently under development.
 
 ### GUI
 
-wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `pythonw wedap.py` (on MacOSX) or `python wedap.py` with no arguments. If you wish to use the command line interface instead include the `--ignore-gooey` flag.
+wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `wedap` or `python wedap` if you're in the main wedap directory of this repository. If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. If you pip install (instead of conda isntall) wxPython and Gooey on Mac you may be able to just run `wedap`. If you wish to use the command line interface instead include the `--ignore-gooey` flag.
 
 ### Installation
 I recommend first installing dependencies via conda, especially gooey.
