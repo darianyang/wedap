@@ -239,7 +239,7 @@ class H5_Plot(H5_Pdist):
                 self.ax.set_ylim(item)
             if key == "title":
                 self.ax.set_title(item)
-            if key == "grid" and key is True:
+            if key == "grid" and item is True:
                 self.ax.grid(item, alpha=0.5)
             if key == "minima": # TODO: this is essentially bstate, also put maxima?
                 # reorient transposed hist matrix
