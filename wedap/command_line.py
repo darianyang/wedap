@@ -123,8 +123,9 @@ def create_cmd_arguments():
                         dest="style",
                         help="mpl style, can use default, None, or custom",
                         type=str)
+    # TODO: prob cant use custom outside of list
     optional.add_argument("--cmap", default="viridis", nargs="?",
-                        dest="cmap", choices=("viridis", "afmhot", "gnuplot_r"),
+                        dest="cmap",
                         help="mpl colormap name.",
                         type=str)
     # optional.add_argument("--color",

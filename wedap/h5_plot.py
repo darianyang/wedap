@@ -41,7 +41,7 @@ from .h5_pdist import *
 class H5_Plot(H5_Pdist):
 
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", 
-        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, cbar_label="kT",
+        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, cbar_label=None,
         data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
@@ -108,14 +108,17 @@ class H5_Plot(H5_Pdist):
         self.color = color # 1D color
         self.plot_options = plot_options
 
+        # TODO: not compatible if inputing data instead of running pdist
         # if self.p_units == "kT":
-        #     self.cbar_label = "$-\ln\,P(x)\ [kT^{-1}]$"
+        #     self.cbar_label = "$-\ln\,P(x)$"
         # elif self.p_units == "kcal":
         #     self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
-        
+
         # user override None cbar_label TODO
         if cbar_label:
             self.cbar_label = cbar_label
+        else:
+            self.cbar_label = "-ln P(x)"
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -309,5 +312,6 @@ class H5_Plot(H5_Pdist):
         # if self.Yname == "pcoord":
         #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
-        #self._unpack_plot_options()         # TODO
+        if self.plot_options is not None:
+            self._unpack_plot_options()         # TODO
         self.fig.tight_layout()
