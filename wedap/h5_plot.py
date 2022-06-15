@@ -222,6 +222,12 @@ class H5_Plot(H5_Pdist):
     def plot_scatter3d(self):
         self.plot = self.ax.scatter(self.X, self.Y, c=self.Z, cmap=self.cmap)
 
+    def plot_hexbin3d(self):
+        # TODO
+        self.plot = self.ax.hexbin(self.X, self.Y, C=self.Z, 
+                                   reduce_C_function=np.mean,
+                                   cmap=self.cmap)
+
     def _unpack_plot_options(self):
         """
         Unpack the plot_options kwarg dictionary.
@@ -300,6 +306,10 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "scatter3d":
             self.plot_scatter3d()
+            self.add_cbar()
+
+        elif self.plot_mode == "hexbin3d":
+            self.plot_hexbin3d()
             self.add_cbar()
 
         # error if unknown plot_mode

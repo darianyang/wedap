@@ -118,8 +118,9 @@ class H5_Pdist():
         # TODO: split into x and y bins
         self.bins = bins
 
-        # save the available aux dataset names
-        self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
+        # save the available aux dataset names]
+        # TODO: dosen't work if you don't have an aux dataset dir in h5
+        #self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
 
     def _get_data_array(self, name, index, iteration):
         """

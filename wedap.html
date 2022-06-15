@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>wedap</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <py-env>
+      - gooey
+      - wedap
+      - matplotlib
+    </py-env>
+    </head>
+    <body>
+      <div id="mpl"></div>
+      <py-script output="mpl">
+import wedap
+import matplotlib.pyplot as plt
+
+wedap.H5_Plot(h5="wedap/data/p53.h5", data_type="evolution").plot()
+plt.show()
+
+      </py-script>
+    </body>
+</html>
