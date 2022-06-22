@@ -76,6 +76,8 @@ import matplotlib.pyplot as plt
 wedap.H5_Plot(h5="/path/to/h5/p53.h5", data_type="evolution").plot()
 plt.show()
 ```
+See the examples directory for more realistic applications using the Python API.
+
 ### Contributing
 
 Features should be developed on branches. To create and switch to a branch, use the command:
