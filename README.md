@@ -1,8 +1,9 @@
 wedap
 ===========================
 ![tests](https://github.com/darianyang/wedap/actions/workflows/tests.yml/badge.svg)
-[![Documentation https://darianyang.github.io/wedap](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://darianyang.github.io/wedap)
 [![PyPI version](https://badge.fury.io/py/wedap.svg)](https://badge.fury.io/py/wedap)
+[![Downloads](https://pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
+[![GitHub license](https://img.shields.io/github/license/darianyang/wedap)](https://github.com/darianyang/wedap/blob/master/LICENSE)
 
 Weighted Ensemble data analysis and plotting.
 
