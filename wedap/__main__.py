@@ -1,8 +1,6 @@
 """
 Main call.
 """
-
-from matplotlib.pyplot import style
 from wedap.h5_pdist import *
 from wedap.h5_plot import *
 from wedap.command_line import *

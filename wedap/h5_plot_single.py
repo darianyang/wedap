@@ -1,11 +1,10 @@
 """
-Eventually put this in an example directory.
 
 TODO: new plot option to exclude certain basis states in pdist
+      weight those with parent to basis state n as zero weight
+TODO: options for custom weights just like Sinan's PR for w_pdist
 TODO: add styles for 1 col, 2 col, and poster figures.
 """
-# from h5_pdist import *
-# from h5_plot import *
 
 import wedap
 import matplotlib.pyplot as plt
@@ -19,7 +18,7 @@ data_options = {"h5" : "data/west_c2x.h5",
                 #"h5" : "data/2kod_v03.02.h5",
                 #"h5" : "data/p53.h5",
                 "Xname" : "1_75_39_c2",
-                "Yname" : "rms_m2_xtal",
+                "Yname" : "rms_bb_xtal",
                 #"Xname" : "dihedral_3",
                 #"Yname" : "dihedral_4",
                 #"Xname" : "pcoord",
@@ -43,12 +42,12 @@ data_options = {"h5" : "data/west_c2x.h5",
                 #"p_min" : 15,
                 "p_max" : 30, # not working for 1D line plot (can use ylim)
                 "p_units" : "kcal",
-                "first_iter" : 490, # TODO: cant use with evolution (can use ylim)
-                #"last_iter" : 400, 
+                #"first_iter" : 500, # TODO: cant use with evolution (can use ylim)
+                "last_iter" : 500, 
                 #"bins" : 100, # note bins affects contour quality
                 "plot_mode" : "contour",
                 #"plot_mode" : "hexbin3d",
-                "cmap" : "gnuplot_r",
+                #"cmap" : "gnuplot_r",
                 #"cbar_label" : "RMSD ($\AA$)",
                 "cbar_label" : "$-RT\ \ln\, P\ (kcal\ mol^{-1})$",
                 #"cbar_label" : "$-\ln\,P(x)$",
@@ -70,7 +69,7 @@ plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)",
                 #"xlabel" : "E175 $\chi_1$",
                 #"ylabel" : "E175 $\chi_2$",
                 #"title" : "2KOD 20-100° WE i1-400",
-                "title" : "1A43 20-100° WE i490-500",
+                #"title" : "1A43 20-100° WE i490-500",
                 #"title" : "2KOD 10µs RMSD WE",
                 #"xlim" : (1,7),
                 #"ylim" : (470,500),
