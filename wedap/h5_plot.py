@@ -55,8 +55,6 @@ class H5_Plot(H5_Pdist):
             A good value is around 0.4.
         x, y : ndarray
             x and y axis values, and if using aux_y or evolution (with only aux_x), also must input Z.
-        args_list : argparse.Namespace
-            Contains command line arguments passed in by user.
         Z : ndarray
             Z is a 2-D matrix of the normalized histogram values.
         ax : mpl axes object

@@ -11,6 +11,21 @@ TODO:
         of the same data.
 
 TODO: update docstrings
+
+TODO: add option for a list of equivalent h5 files, alternative to w_multi_west.
+
+TODO: have a way to add an arg as an intercepting function to carry out some operation
+      on the raw data drom h5, like math or make interval every 10 frames
+
+TODO: working now on only plotting select basis states
+      maybe I can make a seperate array that assigns each frame to a basis state?
+      This might be less overhead than my first idea, adding an search basis function
+      into the weighting function, which would zero the weight if from certain basis.
+      Then I can use that as basically a lookup table when weighting.
+      Might be easier to try this other method first tho, remember MVP.
+      Ideally the other method is best since it dosen't scale as much in complexity.
+      Because of different size arrays for weights, need to make a new temp h5 file 
+      and zero the weights in that first.
 """
 
 import h5py
@@ -30,12 +45,13 @@ class H5_Pdist():
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
                  Zname=None, Zindex=0, first_iter=1, last_iter=None, bins=100, 
-                 p_units='kT', T=298, weighted=True):
+                 p_units='kT', T=298, weighted=True, skip_basis=None,):
         """
         Parameters
         ----------
         h5 : str
             path to west.h5 file
+            TODO: list of h5 files.
         data_type : str
             'evolution' (1 dataset); 'average' or 'instant' (1 or 2 datasets)
         Xname : str
@@ -67,6 +83,10 @@ class H5_Pdist():
             Temperature if using kcal/mol.
         weighted : bool
             Default True, use WE segment weights in pdist calculation.
+        skip_basis : list
+            List of binaries for each basis state to determine if it is skipped.
+            e.g. [0, 0, 1] would only consider the trajectory data from basis 
+            states 1 and 2 but would skip basis state 3, applying zero weights.
         TODO: histrangexy args, maybe also binsfromexpression?
         """
         self.f = h5py.File(h5, mode="r")
@@ -122,18 +142,29 @@ class H5_Pdist():
         # TODO: dosen't work if you don't have an aux dataset dir in h5
         #self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
 
+        # build the whole weight array now, use as reference during weighting
+        # note this is problematic since each iter weight array is a different size
+        # one solution is to make a new temp h5 file and zero the weights in that
+        # for iter in range(self.first_iter, self.last_iter + 1):
+        #     seg_weights = np.array(self.f[f"iterations/iter_{iter:08d}/seg_index"])
+
+        self.skip_basis = skip_basis
+
     def _get_data_array(self, name, index, iteration):
         """
         Extract, index, and return the aux/data array of interest.
         """
         data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
 
-        # TODO: should work for 1D and 2D pcoords
+        # should work for 1D and 2D pcoords (where 2D is 3D array)
         if data.ndim > 2:
             # get properly indexed dataset
             data = data[:,:,index]
 
-        return data
+        # add arg for X Y Z and then add Xfun,Yfun,Zfun to init
+        # if axis_direction == "X" and self.Xfun (is True):
+            # data = Xfun(data)
+        return data # TODO: take this and apply the extra function
 
     # TODO: this does add a little overhead at high iteration ranges
         # ~0.5s from 100i to 400i
@@ -200,6 +231,62 @@ class H5_Pdist():
             raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
         return hist
 
+    def _weight(self, iteration, seg, counts, seg_index):
+        """
+        Apply the appropriate weight to an input array.
+
+        Parameters
+        ----------
+        iteration : int
+            Current WE iteration. Only needed for skip_basis.
+        seg : int
+            Current WE segment.
+        counts : ndarray
+            1D or 2D array of histogram counts.
+        seg_index : 1d-array of tuples
+            Each tuple has the following values: 
+            'weight', 'parent_id', 'wtg_n_parents', 'wtg_offset', 
+            'cputime', 'walltime', 'endpoint_type', 'status'.
+
+        Returns
+        -------
+        counts_w : ndarray
+            1D or 2D array of weighted histogram counts.
+        """
+        # determine if from a basis of interest
+        if self.skip_basis is not None:
+            # trace back to iter 1, then the seg_index parent id's are negative
+            while iteration > 1: 
+                seg = self.f[f"iterations/iter_{iteration:08d}/seg_index"]["parent_id"][seg]
+                iteration -= 1
+            # final traced value (should be iteration 1 value)
+            traced_pcoord_val = self.f[f"iterations/iter_{iteration:08d}/pcoord"][seg][0]
+
+            # TODO: how does this handle 2D+ pcoord?
+            bs_coord = self.f[f"iterations/iter_{iteration:08d}/ibstates/bstate_pcoord"][:]
+            it_coord = self.f[f"iterations/iter_{iteration:08d}/pcoord"][:,0]
+            # need to first get the unique indexes
+            it_unique_indexes = np.unique(it_coord, return_index=True)[1]
+            # then sort to the original bstate ordering
+            it_unique_coord = [it_coord[index] for index in sorted(it_unique_indexes)]
+            # make sure that traced unique pcoord elements match the basis state values
+            if np.array_equal(bs_coord, it_unique_coord):
+                warn(f"The traced pcoord {it_unique_coord} does not equal " +
+                     f"the basis state coordinates {bs_coord}.")
+
+            # is the traced basis state to be skipped?            
+            # with the value of the traced pcoord, get the basis state index number
+            # if that basis state index number is a 1 in skip_basis, use weight 0
+            skip = self.skip_basis[it_unique_coord.index(traced_pcoord_val)]
+            if skip == 1:
+                # array of zeros of the same shape as counts
+                counts = np.zeros_like(counts)
+                return counts
+            
+        # multiply counts vector by weight scalar from seg index
+        counts = np.multiply(counts, seg_index["weight"][seg])
+        return counts
+
     def aux_to_pdist_1d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
@@ -220,21 +307,21 @@ class H5_Pdist():
             Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).
         """
         # each row is walker with 1 column that is a tuple of values
-        # the first being the seg weight (TODO: weighting internal method?)
-        seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
+        # the first being the seg weight
+        seg_index = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # return 1D aux data: 1D array for histogram and midpoint values
         aux = self._get_data_array(self.Xname, self.Xindex, iteration)
 
-        # make an 1-D array to fit the hist values based off of bin count
+        # make an 1D array to fit the hist values based off of bin count
         histogram = np.zeros(shape=(self.bins))
         for seg in range(0, aux.shape[0]):
             counts, bins = np.histogram(aux[seg], bins=self.bins, range=self.histrange_x)
 
-            # TODO: these parts would also be in the weighting internal method
+            # selectively apply weights
             if self.weighted is True:
-                # multiply counts vector by weight scalar from seg index 
-                counts = np.multiply(counts, seg_weights[seg][0])
+                # multiply counts vector by weight scalar from seg index
+                counts = self._weight(iteration, seg, counts, seg_index)
 
             # add all of the weighted walkers to total array for the 
             # resulting linear combination
@@ -267,7 +354,7 @@ class H5_Pdist():
         """
         # each row is walker with 1 column that is a tuple of values
         # the first being the seg weight
-        seg_weights = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
+        seg_index = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
 
         # 2D instant histogram and midpoint values for a single specified WE iteration
         X = self._get_data_array(self.Xname, self.Xindex, iteration)
@@ -284,7 +371,7 @@ class H5_Pdist():
 
             if self.weighted is True:
                 # multiply counts vector by weight scalar from seg index 
-                counts = np.multiply(counts, seg_weights[seg][0])
+                counts = self._weight(iteration, seg, counts, seg_index)
 
             # add all of the weighted walkers to total array for 
             # the resulting linear combination
@@ -296,6 +383,7 @@ class H5_Pdist():
 
         # TODO: save these as instance attributes
         # this will make it easier to save into a text pdist file later
+
         # save midpoints and transposed histogram (corrected for plotting)
         return midpoints_x, midpoints_y, histogram.T
 
