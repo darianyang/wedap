@@ -3,6 +3,9 @@ from h5_plot import *
 from moviepy.editor import VideoClip
 from moviepy.video.io.bindings import mplfig_to_npimage
 
+# TODO: try a plot of 100 iteration moving average
+# see AJD: https://github.com/westpa/westpa/wiki/User-Submitted-Plug-Ins-and-Scripts
+
 plt.style.use("default.mplstyle")
 
 # iterations is about 100*duration with 20 fps and iteration = (t + 0.01) * 100

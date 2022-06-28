@@ -145,8 +145,16 @@ class H5_Pdist():
         # build the whole weight array now, use as reference during weighting
         # note this is problematic since each iter weight array is a different size
         # one solution is to make a new temp h5 file and zero the weights in that
-        # for iter in range(self.first_iter, self.last_iter + 1):
-        #     seg_weights = np.array(self.f[f"iterations/iter_{iter:08d}/seg_index"])
+        # actually, can make an object dtype array of arrays with different sizes
+
+        # first make a list for each iteration weight array
+        weights = []
+        #for iter in range(self.first_iter, self.last_iter + 1):
+        # have to make array start from iteration 1 to index well during weighting
+        for iter in range(1, self.last_iter + 1):
+            weights.append(self.f[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
+        # 1D array of differently shaped arrays
+        self.weights = np.array(weights, dtype=object)
 
         self.skip_basis = skip_basis
 
@@ -231,61 +239,101 @@ class H5_Pdist():
             raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
         return hist
 
-    def _weight(self, iteration, seg, counts, seg_index):
+    def _get_children_indices(self, parent):
         """
-        Apply the appropriate weight to an input array.
+        For a (iter, seg) pair, look for and return all iter + 1 segment indices.
 
         Parameters
         ----------
-        iteration : int
-            Current WE iteration. Only needed for skip_basis.
-        seg : int
-            Current WE segment.
-        counts : ndarray
-            1D or 2D array of histogram counts.
-        seg_index : 1d-array of tuples
-            Each tuple has the following values: 
-            'weight', 'parent_id', 'wtg_n_parents', 'wtg_offset', 
-            'cputime', 'walltime', 'endpoint_type', 'status'.
+        parent : tuple
+            (iteration, segment).
 
         Returns
         -------
-        counts_w : ndarray
-            1D or 2D array of weighted histogram counts.
+        children : tuple
+            The indices of all child segments from the input parent segment.
         """
-        # determine if from a basis of interest
-        if self.skip_basis is not None:
-            # trace back to iter 1, then the seg_index parent id's are negative
-            while iteration > 1: 
-                seg = self.f[f"iterations/iter_{iteration:08d}/seg_index"]["parent_id"][seg]
-                iteration -= 1
-            # final traced value (should be iteration 1 value)
-            traced_pcoord_val = self.f[f"iterations/iter_{iteration:08d}/pcoord"][seg][0]
+        children = []
+        p_iter, p_seg = parent
+        # for all parent_id values of the iter + 1 iteration
+        for idx, seg in enumerate(
+        self.f[f"iterations/iter_{p_iter+1:08d}/seg_index"]["parent_id"]):
+            # match with input parent segment
+            if seg == p_seg:
+                # put all the parent segment children's indices into list
+                children.append(idx)
+                
+        return children
 
-            # TODO: how does this handle 2D+ pcoord?
-            bs_coord = self.f[f"iterations/iter_{iteration:08d}/ibstates/bstate_pcoord"][:]
-            it_coord = self.f[f"iterations/iter_{iteration:08d}/pcoord"][:,0]
-            # need to first get the unique indexes
-            it_unique_indexes = np.unique(it_coord, return_index=True)[1]
-            # then sort to the original bstate ordering
-            it_unique_coord = [it_coord[index] for index in sorted(it_unique_indexes)]
-            # make sure that traced unique pcoord elements match the basis state values
-            if np.array_equal(bs_coord, it_unique_coord):
-                warn(f"The traced pcoord {it_unique_coord} does not equal " +
-                     f"the basis state coordinates {bs_coord}.")
+    def _new_weights_from_skip_basis(self):
+        """
+        Make a new temp h5 file with zero weights for skipped basis state walkers.
 
-            # is the traced basis state to be skipped?            
-            # with the value of the traced pcoord, get the basis state index number
-            # if that basis state index number is a 1 in skip_basis, use weight 0
-            skip = self.skip_basis[it_unique_coord.index(traced_pcoord_val)]
+        Returns
+        -------
+        self.weights : array
+            Updated weight array with zero values for skipped basis states.
+        """
+        # find the basis states that are to be skipped
+        # TODO: how does this handle 2D+ pcoord? 
+        # or does it not matter since data is same?
+        # TODO: I think this isn't needed
+            # I can just target a certain bstate pcoord value and run for all
+            # starting segs in iter 1 that have that value for pcoord
+
+        # setup a warning for h5 files that have incorrectly recorded bstate pcoords
+        bs_coords = self.f[f"ibstates/0/bstate_pcoord"][:]
+        it1_coords = self.f[f"iterations/iter_00000001/pcoord"][:,0]
+        # need to first get the unique indices
+        it1_unique_indices = np.unique(it1_coords, return_index=True)[1]
+        # then sort to the original bstate ordering
+        it1_unique_coords = np.array([it1_coords[index] \
+                            for index in sorted(it1_unique_indices)])
+        # make sure that traced unique pcoord elements match the basis state values
+        if np.isclose(bs_coords, it1_unique_coords, rtol=1e-04) is False:
+            message = f"The traced pcoord \n{it1_unique_coords} \ndoes not equal " + \
+                      f"the basis state coordinates \n{bs_coords}"
+            warn(message)
+
+        # if the basis state binary is a 1 in skip_basis, use weight 0 
+        for basis, skip in enumerate(self.skip_basis):
+            # essentially goes through all initial segments for each skipped basis
             if skip == 1:
-                # array of zeros of the same shape as counts
-                counts = np.zeros_like(counts)
-                return counts
-            
-        # multiply counts vector by weight scalar from seg index
-        counts = np.multiply(counts, seg_index["weight"][seg])
-        return counts
+                # loop of each initial pcoord value from iteration 1
+                # TODO : nd pcoords compatibility
+                for it1_idx, it1_val in enumerate(
+                self.f[f"iterations/iter_00000001/pcoord"][:,0]):
+                    # so if the pcoord value matches the bstate value to be skipped
+                    # needs to both be at the same precision
+                    if np.isclose(it1_val, 
+                    self.f[f"iterations/iter_00000001/ibstates/bstate_pcoord"][basis], 
+                    rtol=1e-04):
+                        # search forward to look for children of basis state 
+                        # then zero out weights
+
+                        # start at it1_idx, make weight zero 
+                        self.weights[0][it1_idx] = 0
+
+                        # list for parent_ids of the current segment skip basis lineage
+                        skip_parents_c = [it1_idx]
+                        # list for storing the indices to skip for the next iteration
+                        skip_parents_n = []
+
+                        # zero the next iteration's children until last_iter
+                        for iter in range(1, self.last_iter + 1):
+                            
+                            for idx in skip_parents_c:
+                                # make zero for each child of skip_basis
+                                self.weights[iter-1][idx] = 0
+                                # then make new skip_parents tuple to loop for next iter
+                                skip_parents_n += self._get_children_indices((iter, idx))
+
+                            # make new empty list to store the iteration's skipped
+                            skip_parents_c.clear()
+                            skip_parents_c += skip_parents_n
+                            skip_parents_n.clear()
+                        
+        return self.weights                                
 
     def aux_to_pdist_1d(self, iteration):
         """
@@ -306,10 +354,6 @@ class H5_Pdist():
         histogram : ndarray
             Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).
         """
-        # each row is walker with 1 column that is a tuple of values
-        # the first being the seg weight
-        seg_index = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
-
         # return 1D aux data: 1D array for histogram and midpoint values
         aux = self._get_data_array(self.Xname, self.Xindex, iteration)
 
@@ -320,8 +364,8 @@ class H5_Pdist():
 
             # selectively apply weights
             if self.weighted is True:
-                # multiply counts vector by weight scalar from seg index
-                counts = self._weight(iteration, seg, counts, seg_index)
+                # multiply counts vector by weight scalar from weight array
+                counts = np.multiply(counts, self.weights[iteration - 1][seg])
 
             # add all of the weighted walkers to total array for the 
             # resulting linear combination
@@ -352,10 +396,6 @@ class H5_Pdist():
         histogram : ndarray
             Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).
         """
-        # each row is walker with 1 column that is a tuple of values
-        # the first being the seg weight
-        seg_index = np.array(self.f[f"iterations/iter_{iteration:08d}/seg_index"])
-
         # 2D instant histogram and midpoint values for a single specified WE iteration
         X = self._get_data_array(self.Xname, self.Xindex, iteration)
         Y = self._get_data_array(self.Yname, self.Yindex, iteration)
@@ -370,8 +410,8 @@ class H5_Pdist():
                                                     )
 
             if self.weighted is True:
-                # multiply counts vector by weight scalar from seg index 
-                counts = self._weight(iteration, seg, counts, seg_index)
+                # multiply counts vector by weight scalar from weight array
+                counts = np.multiply(counts, self.weights[iteration - 1][seg])
 
             # add all of the weighted walkers to total array for 
             # the resulting linear combination
@@ -550,6 +590,12 @@ class H5_Pdist():
 
         # TODO: maybe make interval for all returns? nah, hist prob doesn't need it?
         """ 
+        # option to zero weight out specific basis states
+        if self.skip_basis is not None:
+            self.weights = self._new_weights_from_skip_basis()
+
+        #print(self.weights)
+
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
         # TODO: only if histrange is None

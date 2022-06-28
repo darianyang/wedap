@@ -12,13 +12,13 @@ import matplotlib.pyplot as plt
 plt.style.use("styles/default.mplstyle")
 
 # TODO: auto ignore auxy when using 1d
-data_options = {"h5" : "data/west_c2x.h5",
+data_options = {"h5" : "data/west_c2x_up.h5",
                 #"h5" : "data/multi_2kod.h5",
                 #"h5" : "data/multi_1a43.h5",
                 #"h5" : "data/2kod_v03.02.h5",
                 #"h5" : "data/p53.h5",
                 "Xname" : "1_75_39_c2",
-                #"Yname" : "rms_bb_xtal",
+                "Yname" : "rms_bb_xtal",
                 #"Xname" : "dihedral_3",
                 #"Yname" : "dihedral_4",
                 #"Xname" : "pcoord",
@@ -37,13 +37,13 @@ data_options = {"h5" : "data/west_c2x.h5",
                 #"Yname" : "M1M2_COM",
                 #"Xname" : "M2_E175_chi1",
                 #"Yname" : "M2_E175_chi2",
-                "data_type" : "evolution",
+                "data_type" : "average",
                 #"weighted" : True,
                 #"p_min" : 15,
                 #"p_max" : 30, # not working for 1D line plot (can use ylim)
                 "p_units" : "kcal",
                 "first_iter" : 1, # TODO: cant use with evolution (can use ylim)
-                "last_iter" : 50, 
+                "last_iter" : 100, 
                 #"bins" : 100, # note bins affects contour quality
                 #"plot_mode" : "contour",
                 #"plot_mode" : "hexbin3d",
