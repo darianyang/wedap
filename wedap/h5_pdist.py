@@ -296,6 +296,7 @@ class H5_Pdist():
             warn(message)
 
         # if the basis state binary is a 1 in skip_basis, use weight 0 
+        print("First run skip_basis processing from each initial segment: ")
         for basis, skip in enumerate(self.skip_basis):
             # essentially goes through all initial segments for each skipped basis
             if skip == 1:
@@ -306,7 +307,7 @@ class H5_Pdist():
                     # so if the pcoord value matches the bstate value to be skipped
                     # needs to both be at the same precision
                     if np.isclose(it1_val, 
-                    self.f[f"iterations/iter_00000001/ibstates/bstate_pcoord"][basis], 
+                    self.f[f"ibstates/0/bstate_pcoord"][basis], 
                     rtol=1e-04):
                         # search forward to look for children of basis state 
                         # then zero out weights
@@ -320,8 +321,7 @@ class H5_Pdist():
                         skip_parents_n = []
 
                         # zero the next iteration's children until last_iter
-                        for iter in range(1, self.last_iter + 1):
-                            
+                        for iter in tqdm(range(1, self.last_iter + 1)):
                             for idx in skip_parents_c:
                                 # make zero for each child of skip_basis
                                 self.weights[iter-1][idx] = 0
@@ -332,7 +332,9 @@ class H5_Pdist():
                             skip_parents_c.clear()
                             skip_parents_c += skip_parents_n
                             skip_parents_n.clear()
-                        
+
+        # TODO: prob can do better than these print statements
+        print("Then run pdist calculation per iteration: ")
         return self.weights                                
 
     def aux_to_pdist_1d(self, iteration):
