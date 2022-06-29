@@ -24,15 +24,17 @@ def trace_walker(walker_tuple, h5_file):
         path.append((it,wlk))
     return np.array(sorted(path, key=lambda x: x[0]))
 
-def get_aux(path, h5_file, aux_name):
+def get_coords(path, h5_file, aux_name):
     # Initialize a list for the pcoords
-    aux_coords = []
+    coords = []
     # Loop over the path and get the pcoords for each walker
     for it, wlk in path:
-        # Here we are taking every 10 time points, feel free to adjust to see what that does
-        aux_coords.append(h5_file[f'iterations/iter_{it:08d}/auxdata/{str(aux_name)}'][wlk][::10])
-        #pcoords.append(h5_file[f'iterations/iter_{it:08d}']['pcoord'][wlk][::10,:])
-    return np.array(aux_coords)
+        if aux_name == "pcoord":
+            coords.append(h5_file[f'iterations/iter_{it:08d}']['pcoord'][wlk][::10,:])
+        else:
+            # Here we are taking every 10 time points, feel free to adjust to see what that does
+            coords.append(h5_file[f'iterations/iter_{it:08d}/auxdata/{str(aux_name)}'][wlk][::10])
+    return np.array(coords)
 
 def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False, ax=None):
     """
@@ -58,8 +60,8 @@ def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False, ax=None):
         path = trace_walker((it, wlk), w)
 
         # And pull aux_coords for the path calculated
-        aux_x = get_aux(path, w, aux_x)
-        aux_y = get_aux(path, w, aux_y)
+        aux_x = get_coords(path, w, aux_x)
+        aux_y = get_coords(path, w, aux_y)
 
         ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=2)
         ax.plot(aux_x[:,0], aux_y[:,0], c="cyan", lw=1)

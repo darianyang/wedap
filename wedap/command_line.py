@@ -62,13 +62,13 @@ def create_cmd_arguments():
 
     optional = parser.add_argument_group(description="Optional Arguments")
 
-    optional.add_argument("--first-iter", default=1, nargs="?",
+    optional.add_argument("--first_iter", default=1, nargs="?",
                         dest="first_iter",
                         help="Plot data starting at iteration FIRST_ITER."
                              "By default, plot data starting at the first"
                              "iteration in the specified west.h5 file.",
                         type=int)
-    optional.add_argument("--last-iter", default=None, nargs="?",
+    optional.add_argument("--last_iter", default=None, nargs="?",
                         dest="last_iter",
                         help="Plot data up to and including iteration LAST_ITER."
                              "By default, plot data up to and including the last "

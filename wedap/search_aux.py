@@ -7,8 +7,28 @@ import numpy
 import h5py
 from scipy.spatial import KDTree
 
-# TODO: update for pcoord
-def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter=None, first_iter=1):
+from wedap.h5_plot_trace import get_coords
+
+def find_h5_data(h5, name, iteration, index=0):
+    """
+    For a iteration, find the dataset by name and properly index it.
+    """
+    # account for pcoord or aux names
+    if name == "pcoord":
+        data = h5['iterations'][iteration]['pcoord']
+    else:
+        data = h5['iterations'][iteration]['auxdata'][name]
+
+    # account for > 2D arrays such as a 2D+ pcoord
+    if data.ndim > 2:
+        data = data[:,-1,index]
+    else:
+        data = data[:,-1]
+
+    return data
+
+# TODO: update for pcoord (do this better)
+def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, Xindex=0, Yindex=0, last_iter=None, first_iter=1):
     """
     Parameters
     ----------
@@ -48,8 +68,8 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter=None, first_iter=
         iteration = "iter_" + str(numpy.char.zfill(i,8))
 
         # These are the auxillary coordinates you're looking for
-        r1 = f['iterations'][iteration]['auxdata'][aux_x][:,-1] 
-        r2 = f['iterations'][iteration]['auxdata'][aux_y][:,-1]
+        r1 = find_h5_data(f, aux_x, iteration, index=Xindex)
+        r2 = find_h5_data(f, aux_y, iteration, index=Yindex)
 
         small_array = []
         for j in range(0,len(r1)):
@@ -68,8 +88,8 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, last_iter=None, first_iter=
     wheretolook = f"iter_{iter_num:08d}"
 
     # These are the auxillary coordinates you're looking for
-    r1 = f['iterations'][wheretolook]['auxdata'][aux_x][:,-1]
-    r2 = f['iterations'][wheretolook]['auxdata'][aux_y][:,-1]
+    r1 = find_h5_data(f, aux_x, wheretolook, index=Xindex)
+    r2 = find_h5_data(f, aux_y, wheretolook, index=Yindex)
 
     small_array2 = []
     for j in range(0,len(r1)):

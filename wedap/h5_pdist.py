@@ -274,23 +274,18 @@ class H5_Pdist():
         self.weights : array
             Updated weight array with zero values for skipped basis states.
         """
-        # find the basis states that are to be skipped
-        # TODO: how does this handle 2D+ pcoord? 
-        # or does it not matter since data is same?
-        # TODO: I think this isn't needed
-            # I can just target a certain bstate pcoord value and run for all
-            # starting segs in iter 1 that have that value for pcoord
-
         # setup a warning for h5 files that have incorrectly recorded bstate pcoords
-        bs_coords = self.f[f"ibstates/0/bstate_pcoord"][:]
-        it1_coords = self.f[f"iterations/iter_00000001/pcoord"][:,0]
-        # need to first get the unique indices
+        # this will all be based off of the first pcoord array (Z index 0)
+        # correspondingly, the bstate_pcoord will be the first column
+        bs_coords = self.f[f"ibstates/0/bstate_pcoord"]
+        it1_coords = self.f[f"iterations/iter_00000001/pcoord"][:,0,0]
+        # need to second element get the unique indices
         it1_unique_indices = np.unique(it1_coords, return_index=True)[1]
         # then sort to the original bstate ordering
         it1_unique_coords = np.array([it1_coords[index] \
                             for index in sorted(it1_unique_indices)])
         # make sure that traced unique pcoord elements match the basis state values
-        if np.isclose(bs_coords, it1_unique_coords, rtol=1e-04) is False:
+        if np.isclose(bs_coords[:,0], it1_unique_coords, rtol=1e-04) is False:
             message = f"The traced pcoord \n{it1_unique_coords} \ndoes not equal " + \
                       f"the basis state coordinates \n{bs_coords}"
             warn(message)
@@ -301,17 +296,11 @@ class H5_Pdist():
             # essentially goes through all initial segments for each skipped basis
             if skip == 1:
                 # loop of each initial pcoord value from iteration 1
-                # TODO : nd pcoords compatibility
-                for it1_idx, it1_val in enumerate(
-                self.f[f"iterations/iter_00000001/pcoord"][:,0]):
+                for it1_idx, it1_val in enumerate(it1_coords):
                     # so if the pcoord value matches the bstate value to be skipped
                     # needs to both be at the same precision
-                    if np.isclose(it1_val, 
-                    self.f[f"ibstates/0/bstate_pcoord"][basis], 
-                    rtol=1e-04):
+                    if np.isclose(it1_val, bs_coords[basis,0], rtol=1e-04):
                         # search forward to look for children of basis state 
-                        # then zero out weights
-
                         # start at it1_idx, make weight zero 
                         self.weights[0][it1_idx] = 0
 
@@ -335,6 +324,7 @@ class H5_Pdist():
 
         # TODO: prob can do better than these print statements
         print("Then run pdist calculation per iteration: ")
+        # TODO: h5_out method, put new weights and write h5 file
         return self.weights                                
 
     def aux_to_pdist_1d(self, iteration):

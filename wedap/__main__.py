@@ -68,12 +68,10 @@ def main():
     if args.trace_val is not None:
         # for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53deg and 2.8A is alt minima = i173 s70
         # for demo: can use x = 53 and y = 2.7 or 2.6
-        print(args.h5, args.Xname, args.Yname, 
-                                    # TODO: update to aux_x aux_y tuple
-                                    args.trace_val[0], args.trace_val[1], args.last_iter)
         iter, seg = search_aux_xy_nn(args.h5, args.Xname, args.Yname, 
                                     # TODO: update to aux_x aux_y tuple
                                     args.trace_val[0], args.trace_val[1], 
+                                    Xindex=args.Xindex, Yindex=args.Yindex,
                                     last_iter=args.last_iter)
         plot_trace(args.h5, (iter,seg), args.Xname, args.Yname, ax=plot.ax, evolution=evo)
 

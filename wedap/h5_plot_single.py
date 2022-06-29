@@ -18,7 +18,7 @@ data_options = {"h5" : "data/west_c2x_up.h5",
                 #"h5" : "data/2kod_v03.02.h5",
                 #"h5" : "data/p53.h5",
                 "Xname" : "1_75_39_c2",
-                "Yname" : "rms_bb_xtal",
+                "Yname" : "rms_bb_nmr",
                 #"Xname" : "dihedral_3",
                 #"Yname" : "dihedral_4",
                 #"Xname" : "pcoord",
@@ -40,10 +40,10 @@ data_options = {"h5" : "data/west_c2x_up.h5",
                 "data_type" : "average",
                 #"weighted" : True,
                 #"p_min" : 15,
-                #"p_max" : 30, # not working for 1D line plot (can use ylim)
+                "p_max" : 30, # not working for 1D line plot (can use ylim)
                 "p_units" : "kcal",
-                "first_iter" : 1, # TODO: cant use with evolution (can use ylim)
-                "last_iter" : 100, 
+                "first_iter" : 500, # TODO: cant use with evolution (can use ylim)
+                "last_iter" : 750, 
                 #"bins" : 100, # note bins affects contour quality
                 #"plot_mode" : "contour",
                 #"plot_mode" : "hexbin3d",
@@ -56,14 +56,15 @@ data_options = {"h5" : "data/west_c2x_up.h5",
                 #"plot_mode" : "line",
                 #"data_smoothing_level" : 0.4,
                 #"curve_smoothing_level" : 0.4,
-                "skip_basis" : [0, 0, 0, 0, 1],
+                #"skip_basis" : [0, 0, 0, 0, 1],
+                #"skip_basis" : [1, 1, 1, 1, 0],
                 }
 
 # TODO: default to aux for labels if available or pcoord dim if None
 plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
                 #"ylabel" : "RMSD ($\AA$)", 
                 #"ylabel" : "WE Iteration", 
-                "ylabel" : "RMSD to Xtal ($\AA$)",
+                "ylabel" : "RMSD to NMR ($\AA$)",
                 #"ylabel" : "$-RT\ \ln\, P\ (kcal\ mol^{-1})$", 
                 "xlabel" : "Helical Angle (°)",
                 #"ylabel" : "3 Point Angle (°)",
