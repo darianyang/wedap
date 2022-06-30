@@ -66,6 +66,7 @@ def plot_trace(h5, walker_tuple, aux_x, aux_y=None, evolution=False, ax=None):
         ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=2)
         ax.plot(aux_x[:,0], aux_y[:,0], c="cyan", lw=1)
 
+# TODO: integrate this into somewhere, maybe split into pdist and plotting classes
 
 # from h5_plot_main import *
 # data_options = {"data_type" : "average",

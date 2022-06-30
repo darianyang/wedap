@@ -5,7 +5,7 @@ from wedap.h5_pdist import *
 from wedap.h5_plot import *
 from wedap.command_line import *
 
-from wedap.search_aux import *
+#from wedap.search_aux import *
 from wedap.h5_plot_trace import *
 
 # for accessing package data: mpl styles
@@ -47,11 +47,12 @@ def main():
         cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
 
     # always output XYZ with fake Z for 1D, makes this part easier/less verbose
-    X, Y, Z = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Xindex=args.Xindex, 
-                       Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
-                       Zindex=args.Zindex, first_iter=args.first_iter, 
-                       last_iter=args.last_iter, bins=args.bins, T=args.T,
-                       weighted=args.weighted, p_units=args.p_units).pdist()
+    pdist = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Xindex=args.Xindex, 
+                    Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
+                    Zindex=args.Zindex, first_iter=args.first_iter, 
+                    last_iter=args.last_iter, bins=args.bins, T=args.T,
+                    weighted=args.weighted, p_units=args.p_units)
+    X, Y, Z = pdist.pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, 
                    p_max=args.p_max, cbar_label=cbar_label)#, color=args.color)
     plot.plot()
@@ -64,16 +65,10 @@ def main():
     else:
         evo = False
     if args.trace_seg is not None:
-        plot_trace(args.h5, args.trace_seg, args.Xname, args.Yname, ax=plot.ax, evolution=evo)
+        pdist.plot_trace(args.trace_seg, ax=plot.ax)
     if args.trace_val is not None:
-        # for 1A43 V02: C2 and Dist M2-M1 - minima at val = 53deg and 2.8A is alt minima = i173 s70
-        # for demo: can use x = 53 and y = 2.7 or 2.6
-        iter, seg = search_aux_xy_nn(args.h5, args.Xname, args.Yname, 
-                                    # TODO: update to aux_x aux_y tuple
-                                    args.trace_val[0], args.trace_val[1], 
-                                    Xindex=args.Xindex, Yindex=args.Yindex,
-                                    last_iter=args.last_iter)
-        plot_trace(args.h5, (iter,seg), args.Xname, args.Yname, ax=plot.ax, evolution=evo)
+        iter, seg = pdist.search_aux_xy_nn(args.trace_val[0], args.trace_val[1])
+        pdist.plot_trace((iter,seg), ax=plot.ax)
 
     """
     Plot formatting (TODO; handle multiple cli args here via plot_options?)

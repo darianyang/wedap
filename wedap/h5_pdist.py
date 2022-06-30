@@ -28,15 +28,24 @@ TODO: working now on only plotting select basis states
       and zero the weights in that first.
 """
 
+# TEMP
+import matplotlib.pyplot as plt
+######
+
 import h5py
 import numpy as np
 from numpy import inf
 from tqdm.auto import tqdm
 
+from scipy.spatial import KDTree
+
 from warnings import warn
 
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
+
+# TODO: maybe can have the plot class take a pdist object as the input
+# then if I want to use a loaded pdist, easy to swap it
 
 class H5_Pdist():
     """
@@ -89,6 +98,7 @@ class H5_Pdist():
             states 1 and 2 but would skip basis state 3, applying zero weights.
         TODO: histrangexy args, maybe also binsfromexpression?
         """
+        # TODO: maybe change self.f to self.h5?
         self.f = h5py.File(h5, mode="r")
         self.data_type = data_type
         self.p_units = p_units
@@ -326,6 +336,116 @@ class H5_Pdist():
         print("Then run pdist calculation per iteration: ")
         # TODO: h5_out method, put new weights and write h5 file
         return self.weights                                
+
+    # TODO: update for pcoord (do this better)
+    # also dosen't work for 2 pcoords, just 1 now
+    def search_aux_xy_nn(self, val_x, val_y):
+        """
+        Parameters
+        ----------
+        # TODO: add step size for searching, right now gets the last frame
+        val_x : int or float
+        val_y : int or float
+        """
+        # phase 1: finding iteration number
+        distances = []
+        indices = []
+
+        # change indices to number of iteration
+        for i in range(self.first_iter, self.last_iter + 1): 
+
+            # These are the auxillary coordinates you're looking for
+            r1 = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
+            r2 = self._get_data_array(self.Yname, self.Yindex, i)[:,-1]
+
+            small_array = []
+            for j in range(0,len(r1)):
+                small_array.append([r1[j],r2[j]])
+            tree = KDTree(small_array)
+
+            # Outputs are distance from neighbour (dd) and indices of output (ii)
+            dd, ii = tree.query([val_x, val_y],k=1) 
+            distances.append(dd) 
+            indices.append(ii)
+
+        minimum = np.argmin(distances)
+        iter_num = int(minimum+1)
+
+        # phase 2: finding seg number
+
+        # These are the auxillary coordinates you're looking for
+        r1 = self._get_data_array(self.Xname, self.Xindex, iter_num)[:,-1]
+        r2 = self._get_data_array(self.Yname, self.Yindex, iter_num)[:,-1]
+
+        # TODO: numpy array this
+        small_array2 = []
+        for j in range(0,len(r1)):
+            small_array2.append([r1[j],r2[j]])
+        tree2 = KDTree(small_array2)
+
+        # TODO: these can be multiple points, maybe can parse these and filter later
+        d2, i2 = tree2.query([val_x, val_y],k=1)
+        seg_num = int(i2)
+
+        #print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))
+        print(f"Go to ITERATION: {iter_num} and SEGMENT: {seg_num}")
+        return iter_num, seg_num
+
+    ##################### TODO: update or organize this #############################
+    def get_parents(self, walker_tuple):
+        it, wlk = walker_tuple
+        parent = self.f[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
+        return it-1, parent
+
+    def trace_walker(self, walker_tuple):
+        # Unroll the tuple into iteration/walker 
+        it, wlk = walker_tuple
+        # Initialize our path
+        path = [(it,wlk)]
+        # And trace it
+        while it > 1: 
+            it, wlk = self.get_parents((it, wlk))
+            path.append((it,wlk))
+        return np.array(sorted(path, key=lambda x: x[0]))
+
+    def get_coords(self, path, data_name, data_index):
+        # Initialize a list for the pcoords
+        coords = []
+        # Loop over the path and get the pcoords for each walker
+        for it, wlk in path:
+            coords.append(self._get_data_array(data_name, data_index, it)[wlk][::10])
+        return np.array(coords)
+
+    def plot_trace(self, walker_tuple, ax=None):
+        """
+        Plot trace.
+        """
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(7,5))
+        else:
+            fig = plt.gcf()
+
+        it, wlk = walker_tuple
+        # adjustments for plothist evolution of only aux_x data
+        if self.data_type == "evolution":
+            # split iterations up to provide y-values for each x-value (pcoord)
+            iter_split = [i + (j/self.Xname.shape[1]) 
+                        for i in range(0, it) 
+                        for j in range(0, self.Xname.shape[1])]
+            ax.plot(self.Xname[:,0], iter_split, c="black", lw=2)
+            ax.plot(self.Xname[:,0], iter_split, c="white", lw=1)
+            return
+
+        path = self.trace_walker((it, wlk))
+
+        # And pull aux_coords for the path calculated
+        aux_x = self.get_coords(path, self.Xname, self.Xindex)
+        aux_y = self.get_coords(path, self.Yname, self.Yindex)
+
+        ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=2)
+        ax.plot(aux_x[:,0], aux_y[:,0], c="cyan", lw=1)
+
+    ###############################################################################
 
     def aux_to_pdist_1d(self, iteration):
         """

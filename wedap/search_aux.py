@@ -1,13 +1,16 @@
 """
 Python script that uses the KDTree algorithm to search for the nearest neightbor 
 to a target 2D coordinate and outputs the segment and iteration numbers.
+
+Adapted from script from JML.
 """
 
 import numpy
 import h5py
 from scipy.spatial import KDTree
 
-from wedap.h5_plot_trace import get_coords
+# TODO: eventually put this into main wedap class
+# should first reorganize it and essentially re-code it
 
 def find_h5_data(h5, name, iteration, index=0):
     """
@@ -15,20 +18,24 @@ def find_h5_data(h5, name, iteration, index=0):
     """
     # account for pcoord or aux names
     if name == "pcoord":
-        data = h5['iterations'][iteration]['pcoord']
+        data = h5["iterations"][iteration]["pcoord"]
     else:
-        data = h5['iterations'][iteration]['auxdata'][name]
+        data = h5["iterations"][iteration]["auxdata"][name]
 
     # account for > 2D arrays such as a 2D+ pcoord
     if data.ndim > 2:
         data = data[:,-1,index]
+        #print(data)
+        
     else:
         data = data[:,-1]
+        #print(data)
 
     return data
 
 # TODO: update for pcoord (do this better)
-def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, Xindex=0, Yindex=0, last_iter=None, first_iter=1):
+# also dosen't work for 2 pcoords, just 1 now
+def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, Xindex=0, Yindex=1, last_iter=None, first_iter=1):
     """
     Parameters
     ----------
@@ -48,19 +55,16 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, Xindex=0, Yindex=0, last_it
         default start at 1.
     """
 
-    f = h5py.File(h5, 'r')
-
-    # This is the target value you want to look for 
-    target = [val_x, val_y]
+    f = h5py.File(h5, "r")
 
     if last_iter:
         max_iter = last_iter
     elif last_iter is None:
-        max_iter = h5py.File(h5, mode="r").attrs["west_current_iteration"] - 1
+        max_iter = f.attrs["west_current_iteration"] - 1
 
     # phase 1: finding iteration number
-    array1 = []
-    array2 = []
+    distances = []
+    indices = []
 
     # change indices to number of iteration
     for i in range(first_iter, max_iter + 1): 
@@ -77,11 +81,11 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, Xindex=0, Yindex=0, last_it
         tree = KDTree(small_array)
 
         # Outputs are distance from neighbour (dd) and indices of output (ii)
-        dd, ii = tree.query(target,k=1) 
-        array1.append(dd) 
-        array2.append(ii)
+        dd, ii = tree.query([val_x, val_y],k=1) 
+        distances.append(dd) 
+        indices.append(ii)
 
-    minimum = numpy.argmin(array1)
+    minimum = numpy.argmin(distances)
     iter_num = int(minimum+1)
 
     # phase 2: finding seg number
@@ -97,7 +101,7 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, Xindex=0, Yindex=0, last_it
     tree2 = KDTree(small_array2)
 
     # TODO: these can be multiple points, maybe can parse these and filter later
-    d2, i2 = tree2.query(target,k=1)
+    d2, i2 = tree2.query([val_x, val_y],k=1)
     seg_num = int(i2)
 
     #print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))
@@ -105,17 +109,8 @@ def search_aux_xy_nn(h5, aux_x, aux_y, val_x, val_y, Xindex=0, Yindex=0, last_it
     return iter_num, seg_num
 
 
-#TODO: def get_search_pdb_from_external(ex_path):
-# idea is to copy over the seg.nc file and then get pdb and then delete
-"""
-bashCommand = "echo hello"
-import subprocess
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, error = process.communicate()
-"""
 
-
-if __name__ == '__main__': 
+if __name__ == "__main__": 
     #iter, seg = search_aux_xy_nn("1a43_v02/wcrawl/west_i200_crawled.h5", "1_75_39_c2", "M2Oe_M1He1", 53, 2.8, 200)
 
     # iter, seg = search_aux_xy_nn("data/west_c2.h5", "1_75_39_c2", "rms_bb_xtal", 80, 6.5, 
