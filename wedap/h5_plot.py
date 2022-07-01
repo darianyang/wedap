@@ -38,6 +38,11 @@ from .h5_pdist import *
     # have trace options in args for trace iter,wlk and x,y vals 
 # TODO: method for each type of plot
 # TODO: could subclass the H5_Pdist class, then use this as the main in wedap.py
+
+# TODO: maybe put the pdist object into the plot class and have this object be flexible
+    # so it could just be a pdist.h5 file from westpa or make your own
+    # or read in a pdist.h5 and create pdist object using that dataset
+
 class H5_Plot(H5_Pdist):
 
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", 

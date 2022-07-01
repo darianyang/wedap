@@ -425,18 +425,15 @@ class H5_Pdist():
         else:
             fig = plt.gcf()
 
-        it, wlk = walker_tuple
+        path = self.trace_walker(walker_tuple)
         # adjustments for plothist evolution of only aux_x data
         if self.data_type == "evolution":
             # split iterations up to provide y-values for each x-value (pcoord)
-            iter_split = [i + (j/self.Xname.shape[1]) 
-                        for i in range(0, it) 
-                        for j in range(0, self.Xname.shape[1])]
-            ax.plot(self.Xname[:,0], iter_split, c="black", lw=2)
-            ax.plot(self.Xname[:,0], iter_split, c="white", lw=1)
+            aux = self.get_coords(path, self.Xname, self.Xindex)
+            iters = np.arange(1, len(aux)+1)
+            ax.plot(aux[:,0], iters, c="black", lw=2)
+            ax.plot(aux[:,0], iters, c="white", lw=1)
             return
-
-        path = self.trace_walker((it, wlk))
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
