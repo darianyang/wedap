@@ -13,6 +13,7 @@ plt.style.use("styles/default.mplstyle")
 
 # TODO: auto ignore auxy when using 1d
 data_options = {"h5" : "data/west_c2x_up.h5",
+                #"h5" : "data/skip_basis.h5",
                 #"h5" : "data/multi_2kod.h5",
                 #"h5" : "data/multi_1a43.h5",
                 #"h5" : "data/2kod_v03.02.h5",
@@ -43,7 +44,7 @@ data_options = {"h5" : "data/west_c2x_up.h5",
                 "p_max" : 30, # not working for 1D line plot (can use ylim)
                 "p_units" : "kcal",
                 "first_iter" : 500, # TODO: cant use with evolution (can use ylim)
-                "last_iter" : 750, 
+                #"last_iter" : 750, 
                 #"bins" : 100, # note bins affects contour quality
                 #"plot_mode" : "contour",
                 #"plot_mode" : "hexbin3d",
@@ -57,6 +58,7 @@ data_options = {"h5" : "data/west_c2x_up.h5",
                 #"data_smoothing_level" : 0.4,
                 #"curve_smoothing_level" : 0.4,
                 #"skip_basis" : [0, 0, 0, 0, 1],
+                #"skip_basis_out" : "skip_basis.h5",
                 #"skip_basis" : [1, 1, 1, 1, 0],
                 #"histrange_x" : (10, 120),
                 #"histrange_y" : (2, 7.5),

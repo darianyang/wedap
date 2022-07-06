@@ -36,6 +36,9 @@ from scipy.spatial import KDTree
 
 from warnings import warn
 
+# for copying h5 file
+import shutil
+
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -49,7 +52,7 @@ class H5_Pdist():
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
                  Zname=None, Zindex=0, first_iter=1, last_iter=None, bins=100, 
-                 p_units='kT', T=298, weighted=True, skip_basis=None,
+                 p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None):
         """
         Parameters
@@ -95,6 +98,7 @@ class H5_Pdist():
         TODO: histrangexy args and docstring, maybe also binsfromexpression?
         """
         # TODO: maybe change self.f to self.h5?
+        self.h5 = h5
         self.f = h5py.File(h5, mode="r")
         self.data_type = data_type
         self.p_units = p_units
@@ -148,21 +152,22 @@ class H5_Pdist():
         # TODO: dosen't work if you don't have an aux dataset dir in h5
         #self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
 
-        # build the whole weight array now, use as reference during weighting
-        # note this is problematic since each iter weight array is a different size
-        # one solution is to make a new temp h5 file and zero the weights in that
-        # actually, can make an object dtype array of arrays with different sizes
-
         # first make a list for each iteration weight array
         weights = []
         #for iter in range(self.first_iter, self.last_iter + 1):
         # have to make array start from iteration 1 to index well during weighting
-        for iter in range(1, self.last_iter + 1):
+        # but only for using skipping basis
+        if skip_basis is None:
+            weight_start = self.first_iter
+        elif skip_basis:
+            weight_start = 1
+        for iter in range(weight_start, self.last_iter + 1):
             weights.append(self.f[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
-        # 1D array of differently shaped arrays
+        # 1D array of variably shaped arrays
         self.weights = np.array(weights, dtype=object)
 
         self.skip_basis = skip_basis
+        self.skip_basis_out = skip_basis_out
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
 
@@ -332,7 +337,13 @@ class H5_Pdist():
 
         # TODO: prob can do better than these print statements
         print("Then run pdist calculation per iteration: ")
-        # TODO: h5_out method, put new weights and write h5 file
+        # write new weights into skip_basis_out h5 file
+        if self.skip_basis_out is not None:
+            shutil.copyfile(self.h5, self.skip_basis_out)
+            h5_skip_basis = h5py.File(self.skip_basis_out, "r+")
+            for idx, weight in enumerate(self.weights):
+                h5_skip_basis[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
+            
         return self.weights                                
 
     # TODO: update for pcoord (do this better)
@@ -472,7 +483,7 @@ class H5_Pdist():
             # selectively apply weights
             if self.weighted is True:
                 # multiply counts vector by weight scalar from weight array
-                counts = np.multiply(counts, self.weights[iteration - 1][seg])
+                counts = np.multiply(counts, self.weights[iteration - self.first_iter][seg])
 
             # add all of the weighted walkers to total array for the 
             # resulting linear combination
@@ -518,7 +529,7 @@ class H5_Pdist():
 
             if self.weighted is True:
                 # multiply counts vector by weight scalar from weight array
-                counts = np.multiply(counts, self.weights[iteration - 1][seg])
+                counts = np.multiply(counts, self.weights[iteration - self.first_iter][seg])
 
             # add all of the weighted walkers to total array for 
             # the resulting linear combination

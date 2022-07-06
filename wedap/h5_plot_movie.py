@@ -11,7 +11,7 @@ plt.style.use("styles/default.mplstyle")
 
 # iterations is about 100*duration with 20 fps and iteration = (t + 0.01) * 100
 # seconds
-duration = 4
+duration = 6.5
 # frames per second
 fps = 30
 
@@ -28,7 +28,8 @@ def make_frame(t):
     iteration = (t + 0.01) * 100
 
           
-    data_options = {"h5" : "data/west_c2.h5",
+    data_options = {#"h5" : "data/west_c2x.h5",
+                    "h5" : "data/skip_basis.h5",
                     "Xname" : "1_75_39_c2",
                     #"Yname" : "angle_3pt",
                     "Yname" : "rms_bb_xtal",
@@ -36,7 +37,7 @@ def make_frame(t):
                     #"Yname" : "rms_bb_xtal",
                     #"Xname" : "M1_E175_chi2",
                     #"Yname" : "M2_E175_chi2",
-                    "data_type" : "instant",
+                    "data_type" : "average",
                     "p_max" : 30,
                     "p_units" : "kcal",
                     "first_iter" : int(iteration),
@@ -58,9 +59,9 @@ def make_frame(t):
                     "xlabel" : "Helical Angle (°)",
                     #"title" : "2KOD C2 100i WE",
                     "title" : f"WE Iteration {int(iteration)} - {int(iteration) + 100}",
-                    "ylim" : (2, 8),
+                    "ylim" : (1, 7),
                     #"xlim" : (10, 110),
-                    "xlim" : (20, 100),
+                    "xlim" : (10, 80),
                     #"xlim" : (-180,180),
                     #"ylim" : (-180,180),
                     #"xlim" : (80,120),
@@ -75,4 +76,4 @@ def make_frame(t):
     return mplfig_to_npimage(fig)
 
 animation = VideoClip(make_frame, duration=duration)
-animation.write_gif('west_c2x.gif', fps=fps)
+animation.write_gif('west_c2x_skb.gif', fps=fps)

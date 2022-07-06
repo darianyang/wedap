@@ -1,5 +1,10 @@
 """
 Functions for handling command-line input using argparse module.
+
+TODO: add option to split pdist and plot once the pdist to txt feature is done
+      so the pdist txt file could be: X_column, Y_column, Z_matrix_columns.
+      This would be something like pdist.dap default and option to check and 
+      read in a wedap or westpa pdist file for pdist function.
 """
 
 import argparse
