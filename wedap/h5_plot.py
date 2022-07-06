@@ -17,7 +17,12 @@ TODO: maybe make methods for the following plots:
         '``contourf_l``--plot contour levels and lines. '
         '``histogram_l``--plot histogram and contour lines. ',
         option - with and without side histograms
-        mpl mosaic options
+            mpl mosaic options
+            see mpl scatter hist: https://matplotlib.org/stable/gallery/lines_bars_and_markers/scatter_hist.html
+        maybe a ridgeline plot?
+            This would be maybe for 1D avg of every 100 iterations
+            https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/
+                
 
 TODO: plot clustering centroids option
       can then grab the search_aux at the centroid

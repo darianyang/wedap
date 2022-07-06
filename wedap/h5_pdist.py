@@ -15,20 +15,15 @@ TODO: update docstrings
 TODO: add option for a list of equivalent h5 files, alternative to w_multi_west.
 
 TODO: have a way to add an arg as an intercepting function to carry out some operation
-      on the raw data drom h5, like math or make interval every 10 frames
+      on the raw data drom h5, like math or make interval every 10 frames, in _get_data
 
 TODO: working now on only plotting select basis states
-      maybe I can make a seperate array that assigns each frame to a basis state?
-      This might be less overhead than my first idea, adding an search basis function
-      into the weighting function, which would zero the weight if from certain basis.
-      Then I can use that as basically a lookup table when weighting.
-      Might be easier to try this other method first tho, remember MVP.
-      Ideally the other method is best since it dosen't scale as much in complexity.
-      Because of different size arrays for weights, need to make a new temp h5 file 
-      and zero the weights in that first.
+      this is done, but need option for output of new h5 file with updated weights
+      this will speed up future calculations. In this same line of thought, I should 
+      finish the option to output the pdist and use it for plotting instead.
 """
 
-# TEMP
+# TEMP for trace plot (TODO)
 import matplotlib.pyplot as plt
 ######
 
@@ -54,7 +49,8 @@ class H5_Pdist():
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
                  Zname=None, Zindex=0, first_iter=1, last_iter=None, bins=100, 
-                 p_units='kT', T=298, weighted=True, skip_basis=None,):
+                 p_units='kT', T=298, weighted=True, skip_basis=None,
+                 histrange_x=None, histrange_y=None):
         """
         Parameters
         ----------
@@ -96,7 +92,7 @@ class H5_Pdist():
             List of binaries for each basis state to determine if it is skipped.
             e.g. [0, 0, 1] would only consider the trajectory data from basis 
             states 1 and 2 but would skip basis state 3, applying zero weights.
-        TODO: histrangexy args, maybe also binsfromexpression?
+        TODO: histrangexy args and docstring, maybe also binsfromexpression?
         """
         # TODO: maybe change self.f to self.h5?
         self.f = h5py.File(h5, mode="r")
@@ -167,6 +163,8 @@ class H5_Pdist():
         self.weights = np.array(weights, dtype=object)
 
         self.skip_basis = skip_basis
+        self.histrange_x = histrange_x
+        self.histrange_y = histrange_y
 
     def _get_data_array(self, name, index, iteration):
         """
@@ -707,12 +705,14 @@ class H5_Pdist():
 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
-        # TODO: only if histrange is None
         # TODO: if I can get rid of this or optimize it, I can then use the 
             # original methods of each pdist by themselves
-        # get the optimal histrange
-        self.histrange_x = self._get_histrange(self.Xname, self.Xindex)
-        if self.Yname:
+        # TODO: only if histrange is None
+        if self.histrange_x is None:
+            # get the optimal histrange
+            self.histrange_x = self._get_histrange(self.Xname, self.Xindex)
+        # if using 2D pdist
+        if self.Yname and self.histrange_y is None:
             self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
 
         # TODO: need a better way to always return XYZ
