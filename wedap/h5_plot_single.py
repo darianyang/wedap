@@ -1,8 +1,5 @@
 """
-
-TODO: new plot option to exclude certain basis states in pdist
-      weight those with parent to basis state n as zero weight
-TODO: options for custom weights just like Sinan's PR for w_pdist
+TODO: options for custom weights just like Sinan's PR for w_pdist?
 TODO: add styles for 1 col, 2 col, and poster figures.
 """
 
