@@ -162,8 +162,8 @@ class H5_Plot(H5_Pdist):
     #     if self.axis_list[0] > self.axis_list[1]:
     #         self.H = self.H.transpose()
 
-    def add_cbar(self):
-        cbar = self.fig.colorbar(self.plot)
+    def add_cbar(self, cax=None):
+        cbar = self.fig.colorbar(self.plot, cax=cax)
         # TODO: lines on colorbar?
         # TODO: related, make a discrete colorbar/mapping for hist2d?
         #if lines:
@@ -279,7 +279,7 @@ class H5_Plot(H5_Pdist):
         #self.Z_curves[np.isinf(self.Z_curves)] = np.max(self.Z)*2
         # TODO: are any of these needed, the Z_curve seems to not change much
 
-    def plot(self):
+    def plot(self, cbar=True):
         """
         Main public method.
         master plotting run function
@@ -293,12 +293,12 @@ class H5_Plot(H5_Pdist):
             self.Z_curves = np.copy(self.Z)
             self._smooth()
             self.plot_contour()
-            self.add_cbar()
+            #self.add_cbar()
 
         # TODO: auto label WE iterations on evolution?
         elif self.plot_mode == "hist2d":
             self.plot_hist2d()
-            self.add_cbar()
+            #self.add_cbar()
 
         elif self.plot_mode == "bar":
             self.plot_bar()
@@ -314,11 +314,11 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "scatter3d":
             self.plot_scatter3d()
-            self.add_cbar()
+            #self.add_cbar()
 
         elif self.plot_mode == "hexbin3d":
             self.plot_hexbin3d()
-            self.add_cbar()
+            #self.add_cbar()
 
         # error if unknown plot_mode
         else:
@@ -329,6 +329,9 @@ class H5_Plot(H5_Pdist):
         #     self.ax.set_xlabel(f"Progress Coordinate {self.Xindex}")
         # if self.Yname == "pcoord":
         #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
+
+        if cbar:
+            self.add_cbar()
 
         if self.plot_options is not None:
             self._unpack_plot_options()         # TODO

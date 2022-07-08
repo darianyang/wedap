@@ -1,35 +1,40 @@
 
+from turtle import width
+from matplotlib.transforms import Bbox
 import wedap
 import matplotlib.pyplot as plt
 from moviepy.editor import VideoClip
 from moviepy.video.io.bindings import mplfig_to_npimage
-
-# TODO: try a plot of 100 iteration moving average
-# see AJD: https://github.com/westpa/westpa/wiki/User-Submitted-Plug-Ins-and-Scripts
 
 plt.style.use("styles/default.mplstyle")
 
 # iterations is about 100*duration with 20 fps and iteration = (t + 0.01) * 100
 # seconds
 duration = 6.5
+#duration = 0.5
 # frames per second
 fps = 30
 
-fig, ax = plt.subplots()
+fig, axes = plt.subplots(1, 2, gridspec_kw={"width_ratios":[1,0.05]})
+
+
 def make_frame(t):
     """
     Returns an image of the frame for time t.
     """
-    ax.clear()
+    axes[0].clear()
+    axes[1].clear()
+
     #plt.clf()
+    #plt.cla()
 
     #print(t)
 
     iteration = (t + 0.01) * 100
-
+    #print(iteration)
           
-    data_options = {#"h5" : "data/west_c2x.h5",
-                    "h5" : "data/skip_basis.h5",
+    data_options = {"h5" : "data/west_c2x.h5",
+                    #"h5" : "data/skip_basis.h5",
                     "Xname" : "1_75_39_c2",
                     #"Yname" : "angle_3pt",
                     "Yname" : "rms_bb_xtal",
@@ -44,9 +49,9 @@ def make_frame(t):
                     "last_iter" : int(iteration) + 100,
                     #"last_iter" : int(iteration),
                     "bins" : 100,
-                    "plot_mode" : "contour",
-                    "cmap" : "gnuplot_r",
-                    "ax" : ax,
+                    #"plot_mode" : "contour",
+                    #"cmap" : "gnuplot_r",
+                    "ax" : axes[0],
                     #"plot_mode" : "hist2d",
                     #"data_smoothing_level" : 0.4,
                     #"curve_smoothing_level" : 0.4,
@@ -58,10 +63,10 @@ def make_frame(t):
                     #"ylabel" : "WE Iteration", 
                     "xlabel" : "Helical Angle (°)",
                     #"title" : "2KOD C2 100i WE",
-                    "title" : f"WE Iteration {int(iteration)} - {int(iteration) + 100}",
+                    "title" : f"WE Iteration {int(iteration)} to {int(iteration) + 100}",
                     "ylim" : (1, 7),
                     #"xlim" : (10, 110),
-                    "xlim" : (10, 80),
+                    "xlim" : (10, 120),
                     #"xlim" : (-180,180),
                     #"ylim" : (-180,180),
                     #"xlim" : (80,120),
@@ -70,10 +75,14 @@ def make_frame(t):
                     }
     
     we = wedap.H5_Plot(plot_options=plot_options, **data_options)
-    we.plot()
-    we.cbar.remove()
+    # TODO: is this the best option? maybe it is, need to update
+        # so if Yname, use cbar?
+    we.plot(cbar=False)
+    #we.cbar.remove()
+    we.add_cbar(cax=axes[1])
+    fig.tight_layout()
 
     return mplfig_to_npimage(fig)
 
 animation = VideoClip(make_frame, duration=duration)
-animation.write_gif('west_c2x_skb.gif', fps=fps)
+animation.write_gif('west_c2x.gif', fps=fps)

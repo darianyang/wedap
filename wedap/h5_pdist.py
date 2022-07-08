@@ -29,7 +29,6 @@ import matplotlib.pyplot as plt
 
 import h5py
 import numpy as np
-from numpy import inf
 from tqdm.auto import tqdm
 
 from scipy.spatial import KDTree
@@ -187,18 +186,12 @@ class H5_Pdist():
             # data = Xfun(data)
         return data # TODO: take this and apply the extra function
 
-    # TODO: this does add a little overhead at high iteration ranges
-        # ~0.5s from 100i to 400i
-        # maybe can find a more efficient way
-        # before I just took the max of the last iteration but this lead to some 
-            # issues with not catching the entire dist (hence bin_ext)
-            # how does w_pdist/plothist do this? how about AJD?
-        # need to add option for custom, then make limits plug into histranges?
+    # this does add a little overhead at high iteration ranges
+    # ~0.5s from 100i to 400i
+    # alternatively, can put histrange_x and histrange_y args to skip this
     def _get_histrange(self, name, index):
         """
         Get the histrange considering the min/max of all iterations considered.
-        TODO: this is currently done before the pdist gen, but maybe better during
-            the pdist gen loop for efficiency, but problem is, need histrange for pdist.
 
         Parameters
         ----------
@@ -657,7 +650,7 @@ class H5_Pdist():
         average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
-    def average_datasets_3d(self, interval=10):
+    def average_datasets_3d(self, interval=1):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
         """
@@ -702,10 +695,11 @@ class H5_Pdist():
         # 3D average datasets using all available data can more managable with interval
         return X[::interval], Y[::interval], Z[::interval]
 
-    def pdist(self, avg3dint=10):
+    def pdist(self, avg3dint=1):
         """
         Main public method with pdist generation controls.
 
+        # TODO: interval may not be needed if I use function arg (Xfun, etc)
         # TODO: maybe make interval for all returns? nah, hist prob doesn't need it?
         """ 
         # option to zero weight out specific basis states
