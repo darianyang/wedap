@@ -31,6 +31,9 @@ import h5py
 import numpy as np
 from tqdm.auto import tqdm
 
+# sklearn built on top of scipy but maybe update to only
+# have sklearn as dependency (TODO)
+#from sklearn.neighbors import KDTree
 from scipy.spatial import KDTree
 
 from warnings import warn
