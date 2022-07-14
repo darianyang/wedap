@@ -25,11 +25,18 @@ This repository is currently under development.
 
 wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `wedap` or `python wedap` if you're in the main wedap directory of this repository. If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. If you pip install (instead of conda isntall) wxPython and Gooey on Mac you may be able to just run `wedap`. If you wish to use the command line interface instead include the `--ignore-gooey` flag.
 
+For MacOSX, you can set up an alias in your `.bash_profile` by running the following:
+```
+echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profile
+```
+Then simply type `wedap` on the terminal to run the wedap GUI.
+
 ### Installation
 I recommend first installing dependencies via conda, especially gooey.
-To install the dependencies into your python env via pip or conda:
+
+Install into a new conda env:
 ``` bash
-conda env create --name wedap --file requirements.txt
+conda env create --name wedap python=3.7+
 conda activate wedap
 conda install -c conda-forge gooey
 pip install wedap
@@ -37,28 +44,16 @@ pip install wedap
 Or update an existing environmnent:
 ``` bash
 conda activate ENV_NAME
-conda env update ENV_NAME --file requirements.txt
 conda install -c conda-forge gooey
 pip install wedap
 ```
-Or pip install (you may have issues pip installing wxPython):
-``` bash
-pip install gooey
-pip install wedap
-```
-If you have the repository cloned, go into the main wedap directory:
+Or, if you have the repository cloned, go into the main wedap directory (may have more up to date features):
 ``` bash
 conda install -c conda-forge gooey
 pip install .
 ```
 
 Note that gooey is kindof troublesome to pip install in some systems, which is why it's not included in the requirements (although it is required). I am trying to fix this but for now I reccomend conda installing gooey.
-
-For MacOSX, you can set up an alias in your `.bash_profile` by running the following:
-```
-echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profile
-```
-Then simply type `wedap` on the terminal to run the wedap GUI.
 
 ### Examples
 
