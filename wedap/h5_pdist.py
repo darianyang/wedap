@@ -352,45 +352,65 @@ class H5_Pdist():
         val_x : int or float
         val_y : int or float
         """
-        # phase 1: finding iteration number
-        distances = []
-        indices = []
+        # iter is already known when searching evo data
+        if self.data_type == "evolution":
+            iter_num = int(val_y)
+            
+            # These are the auxillary coordinates you're looking for
+            r1 = self._get_data_array(self.Xname, self.Xindex, iter_num)[:,-1]
 
-        # change indices to number of iteration
-        for i in range(self.first_iter, self.last_iter + 1): 
+            # phase 2: finding seg number
+
+            # TODO: numpy array this
+            small_array2 = []
+            for j in range(0,len(r1)):
+                small_array2.append([r1[j]])
+            tree2 = KDTree(small_array2)
+
+            # TODO: these can be multiple points, maybe can parse these and filter later
+            d2, i2 = tree2.query([val_x],k=1)
+            seg_num = int(i2)
+
+        else:
+            # phase 1: finding iteration number
+            distances = []
+            indices = []
+
+            # change indices to number of iteration
+            for i in range(self.first_iter, self.last_iter + 1): 
+
+                # These are the auxillary coordinates you're looking for
+                r1 = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
+                r2 = self._get_data_array(self.Yname, self.Yindex, i)[:,-1]
+
+                small_array = []
+                for j in range(0,len(r1)):
+                    small_array.append([r1[j],r2[j]])
+                tree = KDTree(small_array)
+
+                # Outputs are distance from neighbour (dd) and indices of output (ii)
+                dd, ii = tree.query([val_x, val_y],k=1) 
+                distances.append(dd) 
+                indices.append(ii)
+
+            minimum = np.argmin(distances)
+            iter_num = int(minimum+1)
 
             # These are the auxillary coordinates you're looking for
-            r1 = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
-            r2 = self._get_data_array(self.Yname, self.Yindex, i)[:,-1]
+            r1 = self._get_data_array(self.Xname, self.Xindex, iter_num)[:,-1]
+            r2 = self._get_data_array(self.Yname, self.Yindex, iter_num)[:,-1]
 
-            small_array = []
+            # phase 2: finding seg number
+
+            # TODO: numpy array this
+            small_array2 = []
             for j in range(0,len(r1)):
-                small_array.append([r1[j],r2[j]])
-            tree = KDTree(small_array)
+                small_array2.append([r1[j],r2[j]])
+            tree2 = KDTree(small_array2)
 
-            # Outputs are distance from neighbour (dd) and indices of output (ii)
-            dd, ii = tree.query([val_x, val_y],k=1) 
-            distances.append(dd) 
-            indices.append(ii)
-
-        minimum = np.argmin(distances)
-        iter_num = int(minimum+1)
-
-        # phase 2: finding seg number
-
-        # These are the auxillary coordinates you're looking for
-        r1 = self._get_data_array(self.Xname, self.Xindex, iter_num)[:,-1]
-        r2 = self._get_data_array(self.Yname, self.Yindex, iter_num)[:,-1]
-
-        # TODO: numpy array this
-        small_array2 = []
-        for j in range(0,len(r1)):
-            small_array2.append([r1[j],r2[j]])
-        tree2 = KDTree(small_array2)
-
-        # TODO: these can be multiple points, maybe can parse these and filter later
-        d2, i2 = tree2.query([val_x, val_y],k=1)
-        seg_num = int(i2)
+            # TODO: these can be multiple points, maybe can parse these and filter later
+            d2, i2 = tree2.query([val_x, val_y],k=1)
+            seg_num = int(i2)
 
         #print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))
         print(f"Go to ITERATION: {iter_num} and SEGMENT: {seg_num}")
