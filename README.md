@@ -48,11 +48,17 @@ pip install wedap
 ```
 If you have the repository cloned, go into the main wedap directory:
 ``` bash
-pip install gooey
+conda install -c conda-forge gooey
 pip install .
 ```
 
 Note that gooey is kindof troublesome to pip install in some systems, which is why it's not included in the requirements (although it is required). I am trying to fix this but for now I reccomend conda installing gooey.
+
+For MacOSX, you can set up an alias in your `.bash_profile` by running the following:
+```
+echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profile
+```
+Then simply type `wedap` on the terminal to run the wedap GUI.
 
 ### Examples
 
@@ -63,6 +69,10 @@ wedap --ignore-gooey --help
 To start the GUI simply input:
 ``` bash
 wedap
+```
+To start the GUI on MacOSX:
+``` bash
+pythonw /Path/to/wedap/git/repo/wedap/wedap
 ```
 To visualize the evolution of the pcoord for the example p53.h5 file via CLI:
 ``` bash
