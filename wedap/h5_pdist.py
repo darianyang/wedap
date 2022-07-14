@@ -342,8 +342,7 @@ class H5_Pdist():
             
         return self.weights                                
 
-    # TODO: update for pcoord (do this better)
-    # also dosen't work for 2 pcoords, just 1 now
+    # TODO: clean up and optimize
     def search_aux_xy_nn(self, val_x, val_y):
         """
         Parameters
