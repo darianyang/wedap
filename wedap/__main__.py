@@ -38,9 +38,6 @@ def main():
     elif args.style != "default" and args.style != "None":
         plt.style.use(args.style)
 
-    # TODO: clean this
-    #H5_Plot(args, h5=args.h5, data_type=args.data_type).plot()
-
     if args.p_units == "kT":
         cbar_label = "$-\ln\,P(x)$"
     elif args.p_units == "kcal":
@@ -58,12 +55,8 @@ def main():
     plot.plot()
 
     """
-    Trace (Optional Argument) TODO: does not work with pcoord or evolution well
+    Trace (Optional Argument)
     """
-    if args.data_type == "evolution": # TODO; this isn't the best
-        evo = True
-    else:
-        evo = False
     if args.trace_seg is not None:
         pdist.plot_trace(args.trace_seg, ax=plot.ax)
     if args.trace_val is not None:
@@ -97,7 +90,6 @@ def main():
     Show and/or save the final plot
     """
     plot.fig.tight_layout()
-    # TODO: the save fig option produces a choppy image
     if args.output_path is not None:
         plot.fig.savefig(args.output_path, dpi=300, transparent=True)
     if args.output_to_screen is True:
