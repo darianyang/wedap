@@ -570,14 +570,16 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # make array to store hist (-lnP) values for n iterations of X
-        evolution_x = np.zeros(shape=(self.last_iter, self.bins))
-        positions_x = np.zeros(shape=(self.last_iter, self.bins))
+        evolution_x = np.zeros(shape=(self.last_iter - self.first_iter + 1, self.bins))
+        positions_x = np.zeros(shape=(self.last_iter - self.first_iter + 1, self.bins))
 
         for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
+            # account for first_iter arg for array indexing
+            iter_index = iter - self.first_iter + 1
             # generate evolution x data
             center_x, counts_total_x = self.aux_to_pdist_1d(iter)
-            evolution_x[iter - 1] = counts_total_x
-            positions_x[iter - 1] = center_x
+            evolution_x[iter_index - 1] = counts_total_x
+            positions_x[iter_index - 1] = center_x
 
         # 2D evolution plot of X (Y not used if provided) per iteration        
         evolution_x = self._normalize(evolution_x)

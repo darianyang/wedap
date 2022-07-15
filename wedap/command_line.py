@@ -50,6 +50,7 @@ else:
     )
 
 # TODO: make tabs
+# then push new pip version
 @gui_decorator
 def create_cmd_arguments(): 
     """
