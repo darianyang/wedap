@@ -5,7 +5,7 @@ wedap
 [![Downloads](https://pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
 [![GitHub license](https://img.shields.io/github/license/darianyang/wedap)](https://github.com/darianyang/wedap/blob/master/LICENSE)
 
-Weighted Ensemble data analysis and plotting.
+weighted ensemble data analysis and plotting (wedap)
 
 This is used to plot H5 files produced from running [WESTPA](https://github.com/westpa/westpa).
 
@@ -21,7 +21,7 @@ This repository is currently under development.
 - tqdm
 - Gooey (optional for GUI)
 
-### GUI
+## GUI
 
 wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `wedap` or `python wedap` if you're in the main wedap directory of this repository. If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. 
 If you pip install (instead of conda installing) wxPython and Gooey on Mac you may be able to just run `wedap`. 
@@ -33,7 +33,7 @@ echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profil
 ```
 Then simply type `wedap` on the terminal to run the wedap GUI.
 
-### Installation
+## Installation
 
 Install into a new conda env:
 ``` bash
@@ -57,7 +57,7 @@ If you don't need the GUI, then installing gooey is not required
 
 Note that gooey is kindof troublesome to pip install in some systems, which is also why it's not included in the requirements (although it is required for the GUI). I am trying to fix this but for now I reccomend conda installing gooey.
 
-### Examples
+## Examples
 
 After installation, to run the CLI version and view available options:
 ``` bash
@@ -77,19 +77,24 @@ pythonw /Path/to/wedap/git/repo/wedap/wedap
 ```
 To visualize the evolution of the pcoord for the example p53.h5 file via CLI:
 ``` bash
-wedap -h5 /path/to/h5/p53.h5
+wedap -h5 wedap/data/p53.h5
 ```
 To do the same with the API:
 ``` Python
 import wedap
 import matplotlib.pyplot as plt
 
-wedap.H5_Plot(h5="/path/to/h5/p53.h5", data_type="evolution").plot()
+wedap.H5_Plot(h5="wedap/data/p53.h5", data_type="evolution").plot()
 plt.show()
 ```
+The resulting `p53.h5` file evolution plot will look like this:
+<p align="left">
+    <img src="examples/p53_evo.png" alt="p53 evo plot" width="500">
+</p>
+
 See the examples directory for more realistic applications using the Python API.
 
-### Contributing
+## Contributing
 
 Features should be developed on branches. To create and switch to a branch, use the command:
 
@@ -101,6 +106,6 @@ To switch to an existing branch, use:
 
 To submit your feature to be incorporated into the main branch, you should submit a `Pull Request`. The repository maintainers will review your pull request before accepting your changes.
 
-### Copyright
+## Copyright
 
 Copyright (c) 2021, Darian Yang
