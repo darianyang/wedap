@@ -31,6 +31,7 @@ TODO: bin visualizer
 TODO: and maybe show the trajectories as just dots
 """
 
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.ndimage
@@ -297,7 +298,14 @@ class H5_Plot(H5_Pdist):
 
         # TODO: auto label WE iterations on evolution?
         elif self.plot_mode == "hist2d":
-            self.plot_hist2d()
+            # I run into this error when I run something like instant with 
+            # the h5 but didn't adjust the plot mode to something like line
+            try:
+                self.plot_hist2d()
+            except TypeError:
+                print("ERROR: Did you mean to use the default 'hist2d' plot mode?")
+                print("Perhaps you need to define another dimension via '--Yname'?")
+                sys.exit()
             #self.add_cbar()
 
         elif self.plot_mode == "bar":

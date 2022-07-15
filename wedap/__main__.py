@@ -52,7 +52,13 @@ def main():
     X, Y, Z = pdist.pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, 
                    p_max=args.p_max, cbar_label=cbar_label, color=args.color)
-    plot.plot()
+    # 2D plot with cbar
+    # TODO: can this be done better?
+    if args.Yname:
+        plot.plot(cbar=True)
+    # 1D plot
+    elif args.Yname is None and args.Zname is None:
+        plot.plot(cbar=False)
 
     """
     Trace (Optional Argument)

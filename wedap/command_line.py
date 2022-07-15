@@ -125,7 +125,7 @@ def create_cmd_arguments():
                              "'evolution' (1 dataset);" 
                              "'average' or 'instance' (1 or 2 or 3 datasets)",
                         type=str) 
-    main.add_argument("--plot_mode", default="hist2d", nargs="?",
+    main.add_argument("-pm", "--plot_mode", default="hist2d", nargs="?",
                         dest="plot_mode", choices=("hist2d", "contour", "bar", 
                                                    "line", "scatter3d"),
                         help="The type of plot desired, current options for: "
