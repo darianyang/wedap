@@ -162,7 +162,9 @@ def create_cmd_arguments():
                         type=str)
     optional.add_argument("--style", default="default", nargs="?",
                         dest="style",
-                        help="mpl style, can use default, None, or custom",
+                        help="mpl style, can use default, None, or custom. "
+                             "Edit the wedap/styles/default.mplstyle file to "
+                             "change default wedap plotting style options.",
                         type=str)
     # TODO: prob cant use custom outside of list
     optional.add_argument("--cmap", default="viridis", nargs="?",
@@ -185,13 +187,13 @@ def create_cmd_arguments():
                         dest="Zname", #choices=aux, TODO
                         help="Target data name for z axis. Must use 'scatter3d'.",
                         type=str)
-    optional.add_argument("--Xindex", default=0, nargs="?", type=int,
+    optional.add_argument("--Xindex", "-Xi", default=0, nargs="?", type=int,
                         dest="Xindex", help="Index in third dimension for >2D datasets.")
-    optional.add_argument("--Yindex", default=0, nargs="?", type=int,
+    optional.add_argument("--Yindex", "-Yi", default=0, nargs="?", type=int,
                         dest="Yindex", help="Index in third dimension for >2D datasets.")
-    optional.add_argument("--Zindex", default=0, nargs="?", type=int,
+    optional.add_argument("--Zindex", "-Zi", default=0, nargs="?", type=int,
                         dest="Zindex", help="Index in third dimension for >2D datasets.")
-    optional.add_argument("--output", default=None,
+    optional.add_argument("-o", "--output", default=None,
                         dest="output_path",
                         help="The filename to which the plot will be saved."
                              "Various image formats are available.  You " 
@@ -207,7 +209,7 @@ def create_cmd_arguments():
     #                     type=float)
 
     # create optional flag to output everything to console screen
-    optional.add_argument("--outputToScreen", default=True,
+    optional.add_argument("-ots", "--output_to_screen", default=True,
                         dest = "output_to_screen",
                         help = "Outputs plot to screen", 
                         action= "store_true") 

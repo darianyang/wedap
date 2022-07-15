@@ -91,7 +91,7 @@ def main():
     """
     plot.fig.tight_layout()
     if args.output_path is not None:
-        plot.fig.savefig(args.output_path, dpi=300, transparent=True)
+        plot.fig.savefig(args.output_path)
     if args.output_to_screen is True:
         plt.show()
         #plot.fig.show() # only for after event loop starts e.g. with plt.show()

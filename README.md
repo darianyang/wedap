@@ -89,7 +89,7 @@ plt.show()
 ```
 The resulting `p53.h5` file evolution plot will look like this:
 <p align="left">
-    <img src="examples/p53_evo.png" alt="p53 evo plot" width="500">
+    <img src="examples/p53_evo.png" alt="p53 evo plot" width="400">
 </p>
 
 See the examples directory for more realistic applications using the Python API.
