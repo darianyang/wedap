@@ -11,10 +11,46 @@ import argparse
 import os
 import sys
 
-from gooey import Gooey
-from gooey import GooeyParser
+# import and use gooey conditionally
+# adapted from https://github.com/chriskiehl/Gooey/issues/296
+try:
+    import gooey
+    #from gooey import Gooey
+    #from gooey import GooeyParser
+except ImportError:
+    gooey = None
 
-@Gooey(optional_cols=6, default_size=(1000, 600))
+def flex_add_argument(f):
+    '''Make the add_argument accept (and ignore) the widget option.'''
+
+    def f_decorated(*args, **kwargs):
+        kwargs.pop('widget', None)
+        return f(*args, **kwargs)
+
+    return f_decorated
+
+# Monkey-patching a private class…
+argparse._ActionsContainer.add_argument = \
+    flex_add_argument(argparse.ArgumentParser.add_argument)
+
+# Do not run GUI if it is not available or if command-line arguments are given.
+if gooey is None or len(sys.argv) > 1:
+    ArgumentParser = argparse.ArgumentParser
+
+    def gui_decorator(f):
+        return f
+else:
+    ArgumentParser = gooey.GooeyParser
+    gui_decorator = gooey.Gooey(
+        program_name='wedap',
+        navigation='TABBED',
+        suppress_gooey_flag=True,
+        optional_cols=6, 
+        default_size=(1000, 600)
+    )
+
+# TODO: make tabs
+@gui_decorator
 def create_cmd_arguments(): 
     """
     Use the `argparse` module to make the optional and required command-line
@@ -29,15 +65,15 @@ def create_cmd_arguments():
         An ArgumentParser that is used to retrieve command line arguments. 
     """
 
-    # create argument parser 
-#     parser = argparse.ArgumentParser(description = 
-#         "Weighted Ensemble data analysis and plotting (WE-dap). \n"
-#         "Given an input west.h5 file from a successful WESTPA simulation, prepare "
-#         "probability distributions and plots.")
-    parser = GooeyParser(description = 
-        "Weighted Ensemble data analysis and plotting (wedap). \n"
-        "Given an input west.h5 file from a successful WESTPA simulation, prepare "
-        "probability distributions and plots.")
+    # create argument parser (gooey based if available)
+    if gooey is None:
+        parser = argparse.ArgumentParser(description = 
+            "Weighted Ensemble data analysis and plotting (wedap). \n"
+            "Given an input west.h5 file from a successful WESTPA simulation, \n" "prepare probability distributions and plots.")
+    else:
+        parser = gooey.GooeyParser(description = 
+            "Weighted Ensemble data analysis and plotting (wedap). \n"
+            "Given an input west.h5 file from a successful WESTPA simulation, \n" "prepare probability distributions and plots.")
 
     ##########################################################
     ############### REQUIRED ARGUMENTS #######################
