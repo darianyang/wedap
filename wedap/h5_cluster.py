@@ -1,3 +1,8 @@
+"""
+Cluster the data from west.h5 and get the iter,seg,frame for the cluster(s).
+
+TODO: 
+"""
 
 import wedap
 import numpy as np
@@ -9,7 +14,6 @@ from sklearn.neighbors import KDTree
 
 plt.style.use("styles/default.mplstyle")
 
-# TODO: auto ignore auxy when using 1d
 pdist_options = {"h5" : "data/west_c2.h5",
                 #"h5" : "data/skip_basis.h5",
                 "Xname" : "1_75_39_c2",
@@ -31,7 +35,7 @@ plot_args = {#"plot_mode" : "contour",
             "cbar_label" : "$-RT\ \ln\, P\ (kcal\ mol^{-1})$",
             #"cbar_label" : "$-\ln\,P(x)$",
             #"p_min" : 15,
-            #"p_max" : 10, # not working for 1D line plot (can use ylim)
+            #"p_max" : 50, # not working for 1D line plot (can use ylim)
             "plot_mode" : "hist2d",
             #"plot_mode" : "scatter3d",
             #"plot_mode" : "line",
@@ -86,16 +90,19 @@ for seg in weights:
 # put X and Y together column wise
 XY = np.hstack((X,Y))
 
+#weights_expanded = -np.log(weights_expanded)
+#weights_expanded = 1 / weights_expanded
+
 # cluster pdist
-km = KMeans(n_clusters=5, random_state=0).fit(XY)
+#km = KMeans(n_clusters=5, random_state=0).fit(XY)
 # can use weighted k-means but only clusters in high weight region (<10kT)
-#km = KMeans(n_clusters=5, random_state=0).fit(XY, sample_weight=weights_expanded)
+km = KMeans(n_clusters=5, random_state=0).fit(XY, sample_weight=weights_expanded)
 cent = km.cluster_centers_
 print("Cluster Centers:\n", cent)
-print("Sorted Cluster Centers:\n", np.sort(cent))
+#print("Sorted Cluster Centers:\n", np.sort(cent))
 
 labels = km.labels_
-print("Cluster Labels:\n", labels)
+#print("Cluster Labels:\n", labels)
 #np.savetxt("test.txt", labels)
 
 # make pdist plot

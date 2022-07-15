@@ -51,17 +51,20 @@ def main():
                     weighted=args.weighted, p_units=args.p_units)
     X, Y, Z = pdist.pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, 
-                   p_max=args.p_max, cbar_label=cbar_label)#, color=args.color)
+                   p_max=args.p_max, cbar_label=cbar_label, color=args.color)
     plot.plot()
 
     """
     Trace (Optional Argument)
     """
+    # default to white if no color provided
+    if args.color is None:
+        args.color = "white"
     if args.trace_seg is not None:
-        pdist.plot_trace(args.trace_seg, ax=plot.ax)
+        pdist.plot_trace(args.trace_seg, color=args.color, ax=plot.ax)
     if args.trace_val is not None:
         iter, seg = pdist.search_aux_xy_nn(args.trace_val[0], args.trace_val[1])
-        pdist.plot_trace((iter,seg), ax=plot.ax)
+        pdist.plot_trace((iter,seg), color=args.color, ax=plot.ax)
 
     """
     Plot formatting (TODO; handle multiple cli args here via plot_options?)

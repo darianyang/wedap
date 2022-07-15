@@ -8,8 +8,11 @@ TODO: add option to split pdist and plot once the pdist to txt feature is done
 """
 
 import argparse
+from inspect import trace
 import os
 import sys
+
+from pip import main
 
 # import and use gooey conditionally
 # adapted from https://github.com/chriskiehl/Gooey/issues/296
@@ -43,10 +46,12 @@ else:
     ArgumentParser = gooey.GooeyParser
     gui_decorator = gooey.Gooey(
         program_name='wedap',
-        navigation='TABBED',
+        #navigation='TABBED',
+        #advanced=True,
         suppress_gooey_flag=True,
-        optional_cols=6, 
-        default_size=(1000, 600)
+        optional_cols=4, 
+        default_size=(1000, 600),
+        #tabbed_groups=True,
     )
 
 # TODO: make tabs
@@ -65,16 +70,14 @@ def create_cmd_arguments():
     argparse.ArgumentParser: 
         An ArgumentParser that is used to retrieve command line arguments. 
     """
+    wedap_desc = """Weighted Ensemble data analysis and plotting (wedap): \n
+                 Given an input west.h5 file from a successful WESTPA simulation, prepare probability distributions and plots."""
 
     # create argument parser (gooey based if available)
     if gooey is None:
-        parser = argparse.ArgumentParser(description = 
-            "Weighted Ensemble data analysis and plotting (wedap). \n"
-            "Given an input west.h5 file from a successful WESTPA simulation, \n" "prepare probability distributions and plots.")
+        parser = argparse.ArgumentParser(description = wedap_desc)
     else:
-        parser = gooey.GooeyParser(description = 
-            "Weighted Ensemble data analysis and plotting (wedap). \n"
-            "Given an input west.h5 file from a successful WESTPA simulation, \n" "prepare probability distributions and plots.")
+        parser = gooey.GooeyParser(description = wedap_desc)
 
     ##########################################################
     ############### REQUIRED ARGUMENTS #######################
@@ -88,12 +91,21 @@ def create_cmd_arguments():
 #         WESTPA west.h5 output file that will be analyzed.", action = "store", 
 #         dest = "h5", type=str) 
 
-    # test out gooey specific widgets
-    required = parser.add_argument_group(description="Required Arguments")
-    required.add_argument("-h5", "--h5file", required=True, help="The \
-          WESTPA west.h5 output file that will be analyzed.", action="store",
-          dest="h5", type=str, widget="FileChooser")
+    # specify the main group of args needed and shown on initial page
+    # note that these are positional arguments to parser
+    # so like $ plothist average
+    # good for different tools, maybe good for movie
+    #main = parser.add_subparsers(help="Main Arguments", dest="Main")
+    # sub_main = main.add_parser('option1')
+    # sub_main.add_argument("test")
+    # sub_main2 = main.add_parser('option2')
+    # sub_main2.add_argument("test")
 
+    # test out gooey specific widgets
+    required = parser.add_argument_group("Required Arguments")
+    required.add_argument("-h5", "--h5file", required=True, 
+        help="The WESTPA west.h5 output file that will be analyzed.", 
+        action="store", dest="h5", type=str, widget="FileChooser")
 
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
@@ -102,7 +114,51 @@ def create_cmd_arguments():
         # and produced as a single item. If no command-line argument is present, 
         # the value from default will be produced."
 
-    optional = parser.add_argument_group(description="Optional Arguments")
+    # TODO: I should add histrange_x and histrange_y
+
+    main = parser.add_argument_group("Main Arguments")
+    optional = parser.add_argument_group("Optional Extra Arguments")
+
+    main.add_argument("-dt", "--data_type", default="evolution", nargs="?",
+                        dest="data_type", choices=("evolution", "average", "instant"),
+                        help="Type of pdist dataset to generate, options are"
+                             "'evolution' (1 dataset);" 
+                             "'average' or 'instance' (1 or 2 or 3 datasets)",
+                        type=str) 
+    main.add_argument("--plot_mode", default="hist2d", nargs="?",
+                        dest="plot_mode", choices=("hist2d", "contour", "bar", 
+                                                   "line", "scatter3d"),
+                        help="The type of plot desired, current options for: "
+                             "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'",
+                        type=str)
+    # TODO: could make choices tuple with the available aux values from the h5 file
+    main.add_argument("-X", "--Xname", default="pcoord", nargs="?",
+                        dest="Xname", #choices=aux, TODO
+                        help="Target data name for x axis. Default 'pcoord'",
+                        type=str)
+    main.add_argument("-Y", "--Yname", default=None, nargs="?",
+                        dest="Yname", #choices=aux, TODO
+                        help="Target data name for y axis. Default 'None'",
+                        type=str)
+    main.add_argument("-Z", "--Zname", default=None, nargs="?",
+                        dest="Zname", #choices=aux, TODO
+                        help="Target data name for z axis. Must use 'scatter3d' "
+                             "for 'plot_mode'.",
+                        type=str)
+    main.add_argument("-Xi", "--Xindex", default=0, nargs="?", type=int,
+                        dest="Xindex", help="Index in third dimension for >2D datasets.")
+    main.add_argument("-Yi", "--Yindex", default=0, nargs="?", type=int,
+                        dest="Yindex", help="Index in third dimension for >2D datasets.")
+    main.add_argument("-Zi", "--Zindex", default=0, nargs="?", type=int,
+                        dest="Zindex", help="Index in third dimension for >2D datasets.")
+    main.add_argument("-o", "--output", default=None,
+                        dest="output_path",
+                        help="The filename to which the plot will be saved. "
+                             "Various image formats are available. You " 
+                             "may choose one by specifying an extension. "
+                             "\nLeave this empty if you don't want to save "
+                             "the plot to a serperate file",
+                        type=str)
 
     optional.add_argument("--first_iter", default=1, nargs="?",
                         dest="first_iter",
@@ -134,13 +190,14 @@ def create_cmd_arguments():
                         type=int)
     optional.add_argument("--p_units", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal"),
-                        help="Can be 'kT' (default) or 'kcal'." # TODO: temp arg
+                        help="Can be 'kT' (default) or 'kcal'."
                              "kT = -lnP, kcal/mol = -RT(lnP), where RT=0.5922 at T(298K).",
                         type=str)
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p_unit'.",
                         type=int)
     # TODO: is there a better way to do this?
+    # TODO: not sure if this works properly
     optional.add_argument("--weighted", default=True, action="store_true",
                           help="Use weights from WE.")
     # optional.add_argument("--not-weighted", default=False,
@@ -149,18 +206,6 @@ def create_cmd_arguments():
     # optional.add_argument("--weighted", default=True, 
     #                       action=argparse.BooleanOptionalAction)
 
-    optional.add_argument("--data_type", default="evolution", nargs="?",
-                        dest="data_type", choices=("evolution", "average", "instant"),
-                        help="Type of pdist dataset to generate, options are"
-                             "'evolution' (1 dataset);" 
-                             "'average' or 'instance' (1 or 2 or 3 datasets)",
-                        type=str) 
-    optional.add_argument("--plot_mode", default="hist2d", nargs="?",
-                        dest="plot_mode", choices=("hist2d", "contour", "bar", 
-                                                   "line", "scatter3d"),
-                        help="The type of plot desired, current options for: "
-                             "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'",
-                        type=str)
     optional.add_argument("--style", default="default", nargs="?",
                         dest="style",
                         help="mpl style, can use default, None, or custom. "
@@ -172,34 +217,9 @@ def create_cmd_arguments():
                         dest="cmap",
                         help="mpl colormap name.",
                         type=str)
-    # optional.add_argument("--color",
-    #                     dest="color", help="color for 1D plots",
-    #                     widget="ColourChooser")
-    # TODO: could make choices tuple with the available aux values from the h5 file
-    optional.add_argument("--Xname", "-X", default="pcoord", nargs="?",
-                        dest="Xname", #choices=aux, TODO
-                        help="Target data name for x axis.",
-                        type=str)
-    optional.add_argument("--Yname", "-Y", default=None, nargs="?",
-                        dest="Yname", #choices=aux, TODO
-                        help="Target data name for y axis.",
-                        type=str)
-    optional.add_argument("--Zname", "-Z", default=None, nargs="?",
-                        dest="Zname", #choices=aux, TODO
-                        help="Target data name for z axis. Must use 'scatter3d'.",
-                        type=str)
-    optional.add_argument("--Xindex", "-Xi", default=0, nargs="?", type=int,
-                        dest="Xindex", help="Index in third dimension for >2D datasets.")
-    optional.add_argument("--Yindex", "-Yi", default=0, nargs="?", type=int,
-                        dest="Yindex", help="Index in third dimension for >2D datasets.")
-    optional.add_argument("--Zindex", "-Zi", default=0, nargs="?", type=int,
-                        dest="Zindex", help="Index in third dimension for >2D datasets.")
-    optional.add_argument("-o", "--output", default=None,
-                        dest="output_path",
-                        help="The filename to which the plot will be saved."
-                             "Various image formats are available.  You " 
-                             "may choose one by specifying an extension",
-                        type=str)
+    optional.add_argument("--color",
+                        dest="color", help="color for 1D plots and trace plots",
+                        widget="ColourChooser")
 
     # TODO
     # parser.add_argument('--smooth-data', default = None, 
@@ -210,12 +230,15 @@ def create_cmd_arguments():
     #                     type=float)
 
     # create optional flag to output everything to console screen
+    # TODO: not sure if this works properly
     optional.add_argument("-ots", "--output_to_screen", default=True,
                         dest = "output_to_screen",
-                        help = "Outputs plot to screen", 
+                        help = "Outputs plot to screen. True (default) or False", 
                         action= "store_true") 
 
-    trace_group = optional.add_mutually_exclusive_group()
+    trace = parser.add_argument_group("Optional Plot Tracing", 
+                                       description="Plot a trace on top of the pdist.")
+    trace_group = trace.add_mutually_exclusive_group()
     # type to float for val inside tuple, 
     # and nargs to 2 since it is interpreted as a 2 item tuple or list
     trace_group.add_argument("--trace_seg", default=None, nargs=2,
@@ -228,6 +251,7 @@ def create_cmd_arguments():
                              help="Trace and plot a single continuous trajectory based"
                                   "off of 2 space-seprated floats : Xvalue Yvalue",
                              type=float)
+    # TODO: add color option
 
     ##########################################################
     ############### FORMATTING ARGUMENTS #####################
