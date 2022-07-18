@@ -8,6 +8,9 @@ from wedap.command_line import *
 #from wedap.search_aux import *
 from wedap.h5_plot_trace import *
 
+# TODO: change to logging style instead of stdout
+#import logging
+
 # for accessing package data: mpl styles
 import pkgutil 
 import os
@@ -87,9 +90,9 @@ def main():
     """
     Plot formatting (TODO; handle multiple cli args here via plot_options?)
     """
-    plot.ax.set_xlabel(args.Xname)
+    plot.ax.set_xlabel(args.Xname + " i" + str(args.Xindex))
     if args.Yname:
-        plot.ax.set_ylabel(args.Yname)
+        plot.ax.set_ylabel(args.Yname + " i" + str(args.Yindex))
     if args.data_type == "evolution":
         plot.ax.set_ylabel("WE Iteration")
 
@@ -113,6 +116,8 @@ def main():
     plot.fig.tight_layout()
     if args.output_path is not None:
         plot.fig.savefig(args.output_path)
+        #logging.info(f"Plot was saved to {args.output_path}")
+        print(f"Plot was saved to {args.output_path}")
     if args.no_output_to_screen:
         pass
     else:
