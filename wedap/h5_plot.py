@@ -302,8 +302,8 @@ class H5_Plot(H5_Pdist):
             # the h5 but didn't adjust the plot mode to something like line
             try:
                 self.plot_hist2d()
-            except TypeError:
-                # TODO: put the text integrated into sys.exit?
+            except (TypeError,ValueError):
+                # TODO: put the text into logger?
                 print("ERROR: Did you mean to use the default 'hist2d' plot mode?")
                 print("Perhaps you need to define another dimension via '--Yname'?")
                 sys.exit()
@@ -311,6 +311,7 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "bar":
             self.plot_bar()
+            Warning("'bar' plot_mode is still under development")
             #self.ax.set_ylabel(self.cbar_label)
 
         elif self.plot_mode == "line":
