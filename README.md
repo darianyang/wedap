@@ -126,9 +126,46 @@ The resulting `p53.h5` file average plot of the pcoord datasets will look like t
     <img src="examples/p53_avg_pcoord.png" alt="p53 avg pcoord plot" width="400">
 </p>
 
+## Motivation
+WESTPA already comes with some excellent analysis tools for generating probability distributions, so why is wedap needed?
+
+wedap was originally built as a way to simplify the original WESTPA plotting pipeline:
+
+Native WESTPA CLI-based Analysis Tools:
+
+    ┌───────┐       w_pdist        ┌────────┐        plothist         ┌────────┐
+    │west.h5├─────────────────────►│pdist.h5├────────────────────────►│plot.pdf│
+    └───────┘ --construct-dataset  └────────┘ --postprocess-function  └────────┘
+                   module.py                      plot_settings.py
+
+
+Analysis using wedap:
+
+    ┌───────┐     wedap       ┌────────┐
+    │west.h5├────────────────►│plot.pdf│
+    └───────┘ CLI/GUI/Python  └────────┘
+
+So wedap can generate plots with more flexibilty and less intermediate files, providing an especially useful way to plot aux datasets and explore your h5 file. 
+* The Python interface allows for advanced users to quickly generate a plot as a matplotlib axes object which can be further customized all in one Python script.
+    * For example, the moviepy package can be used with wedap to easily create a gif of your h5 file (see an example of this in `wedap/h5_movie.py`).
+    * The actual data can also be easily extracted and then analyzed (see `wedap/h5_cluster.py` for an example of k-means clustering using the data from a WESTPA west.h5 file). 
+* The GUI allows for users who may not be comfortable with command line tools or Python to be able to quickly analyze their simulation results.
+* A CLI is also available if using wedap on a system without access to a display.
+
+Since the original implementation of wedap, many more features have been added that are not available using the WESTPA `w_pdist` and `plothist` tools, these include the following:
+* Easy WE tracing and plotting by inputing an iteration and segment, or by inputing the X and Y value to then query and trace.
+* 3D plots that replace the probability with another pcoord or aux dataset (`plot_mode="scatter3d"`).
+* Selective basis states (if you have multiple basis states, only plot the probability contributions from specific states).
+    * See the `skip_basis` argument (available through the Python API only currently).
+* More to come!
+
+Note that the WESTPA analysis tools have features not available in wedap and may still be of interest to you.
+
 ## Contributing
 
-Features should be developed on branches. To create and switch to a branch, use the command:
+Have an idea for a feature to add to wedap? Let me know and I may be able to incorporate it (dty7@pitt.edu).
+
+Or feel free to try developing it yourself! Features should be developed on branches. To create and switch to a branch, use the command:
 
 `git checkout -b new_branch_name`
 
