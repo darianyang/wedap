@@ -134,16 +134,19 @@ def create_cmd_arguments():
     # TODO: could make choices tuple with the available aux values from the h5 file
     main.add_argument("-X", "--Xname", default="pcoord", nargs="?",
                         dest="Xname", #choices=aux, TODO
-                        help="Target data name for x axis. Default 'pcoord'",
+                        help="Target data name for x axis. Default 'pcoord', "
+                        "can also be any aux dataset name in your h5 file.",
                         type=str)
     main.add_argument("-Y", "--Yname", default=None, nargs="?",
                         dest="Yname", #choices=aux, TODO
-                        help="Target data name for y axis. Default 'None'",
+                        help="Target data name for y axis. Default 'None', "
+                        "can be 'pcoord' or any aux dataset name in your h5 file.",
                         type=str)
     main.add_argument("-Z", "--Zname", default=None, nargs="?",
                         dest="Zname", #choices=aux, TODO
                         help="Target data name for z axis. Must use 'scatter3d' "
-                             "for 'plot_mode'.",
+                        "for 'plot_mode'. Can be 'pcoord' or any aux dataset name "
+                        "in your h5 file.",
                         type=str)
     main.add_argument("-Xi", "--Xindex", default=0, nargs="?", type=int,
                         dest="Xindex", help="Index in third dimension for >2D datasets.")
@@ -159,7 +162,7 @@ def create_cmd_arguments():
                              "\nLeave this empty if you don't want to save "
                              "the plot to a serperate file",
                         type=str)
-
+    # begin optional arg group
     optional.add_argument("--first_iter", default=1, nargs="?",
                         dest="first_iter",
                         help="Plot data starting at iteration FIRST_ITER."
@@ -191,18 +194,19 @@ def create_cmd_arguments():
     optional.add_argument("--p_units", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal"),
                         help="Can be 'kT' (default) or 'kcal'."
-                             "kT = -lnP, kcal/mol = -RT(lnP), where RT=0.5922 at T(298K).",
+                             "kT = -lnP, kcal/mol = -RT(lnP), "
+                             "where RT=0.5922 at T(298K).",
                         type=str)
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p_unit'.",
                         type=int)
     # TODO: is there a better way to do this?
     # TODO: not sure if this works properly
-    optional.add_argument("--weighted", default=True, action="store_true",
-                          help="Use weights from WE.")
-    # optional.add_argument("--not-weighted", default=False,
-    #                       help="Check this to not use WE weights.",
-    #                       dest="weighted", action="store_false")
+    #optional.add_argument("--weighted", default=True, action="store_true",
+    #                      help="Use weights from WE.")
+    optional.add_argument("-nw", "--not_weighted",
+                          help="Include this to not use WE weights.",
+                          dest="not_weighted", action="store_true")
     # optional.add_argument("--weighted", default=True, 
     #                       action=argparse.BooleanOptionalAction)
 
@@ -231,11 +235,17 @@ def create_cmd_arguments():
 
     # create optional flag to output everything to console screen
     # TODO: not sure if this works properly
-    optional.add_argument("-ots", "--output_to_screen", default=True,
-                        dest = "output_to_screen",
-                        help = "Outputs plot to screen. True (default) or False", 
+    # optional.add_argument("-ots", "--output_to_screen", default=True,
+    #                     dest = "output_to_screen",
+    #                     help = "Outputs plot to screen. True (default) or False", 
+    #                     action= "store_true") 
+    optional.add_argument("-nots", "--no_output_to_screen",
+                        dest = "no_output_to_screen",
+                        help = "Include this argument to not output the plot to "
+                        "your display.", 
                         action= "store_true") 
 
+    # plot tracing arg group
     trace = parser.add_argument_group("Optional Plot Tracing", 
                                        description="Plot a trace on top of the pdist.")
     trace_group = trace.add_mutually_exclusive_group()

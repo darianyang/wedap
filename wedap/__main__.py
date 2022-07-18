@@ -43,21 +43,33 @@ def main():
     elif args.p_units == "kcal":
         cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
 
+    # a poor workaround for now for the weighted arg
+    # this is only to make the gooey formatting look nicer in terms of the checkbox
+    if args.not_weighted is True:
+        weighted = False
+    elif args.not_weighted is False:
+        weighted = True
+
     # always output XYZ with fake Z for 1D, makes this part easier/less verbose
     pdist = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Xindex=args.Xindex, 
                     Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
                     Zindex=args.Zindex, first_iter=args.first_iter, 
                     last_iter=args.last_iter, bins=args.bins, T=args.T,
-                    weighted=args.weighted, p_units=args.p_units)
+                    weighted=weighted, p_units=args.p_units)
     X, Y, Z = pdist.pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, 
                    p_max=args.p_max, cbar_label=cbar_label, color=args.color)
     # 2D plot with cbar
     # TODO: can this be done better?
-    if args.Yname:
-        plot.plot(cbar=True)
-    # 1D plot
-    elif args.Yname is None and args.Zname is None:
+    if args.Yname or args.data_type == "evolution":
+        try:
+            plot.plot(cbar=True)
+        except AttributeError:
+            print(f"ERROR: Attempting to plot an {args.data_type} dataset using ")
+            print(f"a {args.plot_mode} type plot. Is this what you meant to do?")
+            sys.exit()
+    # 1D plot that isn't evolution
+    elif args.Yname is None and args.Zname is None and args.data_type != "evolution":
         plot.plot(cbar=False)
 
     """
@@ -101,7 +113,9 @@ def main():
     plot.fig.tight_layout()
     if args.output_path is not None:
         plot.fig.savefig(args.output_path)
-    if args.output_to_screen is True:
+    if args.no_output_to_screen:
+        pass
+    else:
         plt.show()
         #plot.fig.show() # only for after event loop starts e.g. with plt.show()
 

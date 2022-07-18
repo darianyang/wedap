@@ -296,13 +296,14 @@ class H5_Plot(H5_Pdist):
             self.plot_contour()
             #self.add_cbar()
 
-        # TODO: auto label WE iterations on evolution?
+        # TODO: auto label WE iterations on evolution? (done via __main__ right now)
         elif self.plot_mode == "hist2d":
             # I run into this error when I run something like instant with 
             # the h5 but didn't adjust the plot mode to something like line
             try:
                 self.plot_hist2d()
             except TypeError:
+                # TODO: put the text integrated into sys.exit?
                 print("ERROR: Did you mean to use the default 'hist2d' plot mode?")
                 print("Perhaps you need to define another dimension via '--Yname'?")
                 sys.exit()
