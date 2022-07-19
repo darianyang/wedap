@@ -223,8 +223,8 @@ class H5_Plot(H5_Pdist):
 
     def plot_line(self):
         # 1D data
-        #if self.p_max:
-        #    self.Y[self.Y > self.p_max] = inf
+        if self.p_max:
+            self.Y[self.Y > self.p_max] = inf
         self.ax.plot(self.X, self.Y, color=self.color)
         self.ax.set_ylabel(self.cbar_label)
     
