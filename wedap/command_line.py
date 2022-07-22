@@ -70,7 +70,7 @@ def create_cmd_arguments():
     argparse.ArgumentParser: 
         An ArgumentParser that is used to retrieve command line arguments. 
     """
-    wedap_desc = """Weighted Ensemble data analysis and plotting (wedap): \n
+    wedap_desc = """weighted ensemble data analysis and plotting (wedap): \n
                  Given an input west.h5 file from a successful WESTPA simulation, prepare probability distributions and plots."""
 
     # create argument parser (gooey based if available)
@@ -123,15 +123,15 @@ def create_cmd_arguments():
 
     main.add_argument("-dt", "--data-type", default="evolution", nargs="?",
                         dest="data_type", choices=("evolution", "average", "instant"),
-                        help="Type of pdist dataset to generate, options are"
-                             "'evolution' (1 dataset);" 
-                             "'average' or 'instance' (1 or 2 or 3 datasets)",
+                        help="Type of pdist dataset to generate, options are "
+                             "'evolution' (1 dataset); " 
+                             "'average' or 'instance' (1 or 2 or 3 datasets).",
                         type=str) 
     main.add_argument("-pm", "--plot-mode", default="hist2d", nargs="?",
                         dest="plot_mode", choices=("hist2d", "contour", "bar", 
                                                    "line", "scatter3d"),
                         help="The type of plot desired, current options for: "
-                             "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'",
+                             "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'.",
                         type=str)
     # TODO: could make choices tuple with the available aux values from the h5 file
     main.add_argument("-X", "--Xname", default="pcoord", nargs="?",
@@ -162,51 +162,51 @@ def create_cmd_arguments():
                              "Various image formats are available. You " 
                              "may choose one by specifying an extension. "
                              "\nLeave this empty if you don't want to save "
-                             "the plot to a serperate file",
+                             "the plot to a serperate file.",
                         type=str)
     # begin optional arg group
     optional.add_argument("--first-iter", default=1, nargs="?",
                         dest="first_iter",
-                        help="Plot data starting at iteration FIRST_ITER."
-                             "By default, plot data starting at the first"
+                        help="Plot data starting at iteration FIRST_ITER. "
+                             "By default, plot data starting at the first "
                              "iteration in the specified west.h5 file.",
                         type=int)
     optional.add_argument("--last-iter", default=None, nargs="?",
                         dest="last_iter",
-                        help="Plot data up to and including iteration LAST_ITER."
+                        help="Plot data up to and including iteration LAST_ITER. "
                              "By default, plot data up to and including the last "
                              "iteration in the specified H5 file.",
                         type=int)
     optional.add_argument("--bins", default=100, nargs="?",
                         dest="bins",
-                        help="Use BINS number of bins for histogramming "
+                        help="Use BINS number of bins for histogramming. "
                              "Divide the range between the minimum and maximum "
-                             "observed values into this many bins",
+                             "observed values into this many bins.",
                         type=int)
     optional.add_argument("--pmin", default=0, nargs="?",
                         dest="p_min",
-                        help="The minimum probability value limit."
+                        help="The minimum probability value limit. "
                              "This determines the cbar limits and contour levels.",
                         type=int)
     optional.add_argument("--pmax", default=None, nargs="?",
                         dest="p_max",
-                        help="The maximum probability limit value."
+                        help="The maximum probability limit value. "
                              "This determines the cbar limits and contour levels.",
                         type=int)
-    optional.add_argument("--punits", default="kT", nargs="?",
+    optional.add_argument("-pu", "--p-units", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal"),
-                        help="Can be 'kT' (default) or 'kcal'."
+                        help="Can be 'kT' (default) or 'kcal'. "
                              "kT = -lnP, kcal/mol = -RT(lnP), "
                              "where RT=0.5922 at T(298K).",
                         type=str)
     optional.add_argument("-T", "--temp", default=298, nargs="?",
-                        dest="T", help="Used with kcal/mol 'p_unit'.",
+                        dest="T", help="Used with kcal/mol 'p-units'.",
                         type=int)
     # TODO: is there a better way to do this?
     # TODO: not sure if this works properly
     #optional.add_argument("--weighted", default=True, action="store_true",
     #                      help="Use weights from WE.")
-    optional.add_argument("-nw", "--not_weighted",
+    optional.add_argument("-nw", "--not-weighted",
                           help="Include this to not use WE weights.",
                           dest="not_weighted", action="store_true")
     # optional.add_argument("--weighted", default=True, 
@@ -224,7 +224,7 @@ def create_cmd_arguments():
                         help="mpl colormap name.",
                         type=str)
     optional.add_argument("--color",
-                        dest="color", help="color for 1D plots and trace plots",
+                        dest="color", help="Color for 1D plots and trace plots.",
                         widget="ColourChooser")
 
     # TODO
@@ -241,7 +241,7 @@ def create_cmd_arguments():
     #                     dest = "output_to_screen",
     #                     help = "Outputs plot to screen. True (default) or False", 
     #                     action= "store_true") 
-    optional.add_argument("-nots", "--no_output_to_screen",
+    optional.add_argument("-nots", "--no-output-to-screen",
                         dest = "no_output_to_screen",
                         help = "Include this argument to not output the plot to "
                         "your display.", 
@@ -253,14 +253,14 @@ def create_cmd_arguments():
     trace_group = trace.add_mutually_exclusive_group()
     # type to float for val inside tuple, 
     # and nargs to 2 since it is interpreted as a 2 item tuple or list
-    trace_group.add_argument("--trace_seg", default=None, nargs=2,
+    trace_group.add_argument("--trace-seg", default=None, nargs=2,
                              dest="trace_seg",
-                             help="Trace and plot a single continuous trajectory based"
+                             help="Trace and plot a single continuous trajectory based "
                                  "off of 2 space-seperated ints : iteration segment",
                              type=int)
-    trace_group.add_argument("--trace_val", default=None, nargs=2,
+    trace_group.add_argument("--trace-val", default=None, nargs=2,
                              dest="trace_val",
-                             help="Trace and plot a single continuous trajectory based"
+                             help="Trace and plot a single continuous trajectory based "
                                   "off of 2 space-seprated floats : Xvalue Yvalue",
                              type=float)
     # TODO: add color option
@@ -276,7 +276,7 @@ def create_cmd_arguments():
     formatting.add_argument("--ylabel", dest="ylabel", type=str)
     formatting.add_argument("--ylim", help="LB UB", dest="ylim", nargs=2, type=float)
     formatting.add_argument("--title", dest="title", type=str)
-    formatting.add_argument("--cbar_label", dest="cbar_label", type=str)
+    formatting.add_argument("--cbar-label", dest="cbar_label", type=str)
 
     # return the argument parser
     return parser 
