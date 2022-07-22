@@ -103,9 +103,11 @@ def create_cmd_arguments():
 
     # test out gooey specific widgets
     required = parser.add_argument_group("Required Arguments")
-    required.add_argument("-h5", "--h5file", required=True, 
-        help="The WESTPA west.h5 output file that will be analyzed.", 
-        action="store", dest="h5", type=str, widget="FileChooser")
+    required.add_argument("-h5", "--h5file", #required=True, nargs="?",
+        default="west.h5", action="store", dest="h5", type=str,
+        help="The WESTPA west.h5 output file that will be analyzed. "
+             "Default 'west.h5'.", 
+        widget="FileChooser")
 
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
@@ -119,13 +121,13 @@ def create_cmd_arguments():
     main = parser.add_argument_group("Main Arguments")
     optional = parser.add_argument_group("Optional Extra Arguments")
 
-    main.add_argument("-dt", "--data_type", default="evolution", nargs="?",
+    main.add_argument("-dt", "--data-type", default="evolution", nargs="?",
                         dest="data_type", choices=("evolution", "average", "instant"),
                         help="Type of pdist dataset to generate, options are"
                              "'evolution' (1 dataset);" 
                              "'average' or 'instance' (1 or 2 or 3 datasets)",
                         type=str) 
-    main.add_argument("-pm", "--plot_mode", default="hist2d", nargs="?",
+    main.add_argument("-pm", "--plot-mode", default="hist2d", nargs="?",
                         dest="plot_mode", choices=("hist2d", "contour", "bar", 
                                                    "line", "scatter3d"),
                         help="The type of plot desired, current options for: "
@@ -163,13 +165,13 @@ def create_cmd_arguments():
                              "the plot to a serperate file",
                         type=str)
     # begin optional arg group
-    optional.add_argument("--first_iter", default=1, nargs="?",
+    optional.add_argument("--first-iter", default=1, nargs="?",
                         dest="first_iter",
                         help="Plot data starting at iteration FIRST_ITER."
                              "By default, plot data starting at the first"
                              "iteration in the specified west.h5 file.",
                         type=int)
-    optional.add_argument("--last_iter", default=None, nargs="?",
+    optional.add_argument("--last-iter", default=None, nargs="?",
                         dest="last_iter",
                         help="Plot data up to and including iteration LAST_ITER."
                              "By default, plot data up to and including the last "
@@ -181,17 +183,17 @@ def create_cmd_arguments():
                              "Divide the range between the minimum and maximum "
                              "observed values into this many bins",
                         type=int)
-    optional.add_argument("--p_min", default=0, nargs="?",
+    optional.add_argument("--pmin", default=0, nargs="?",
                         dest="p_min",
                         help="The minimum probability value limit."
                              "This determines the cbar limits and contour levels.",
                         type=int)
-    optional.add_argument("--p_max", default=None, nargs="?",
+    optional.add_argument("--pmax", default=None, nargs="?",
                         dest="p_max",
                         help="The maximum probability limit value."
                              "This determines the cbar limits and contour levels.",
                         type=int)
-    optional.add_argument("--p_units", default="kT", nargs="?",
+    optional.add_argument("--punits", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal"),
                         help="Can be 'kT' (default) or 'kcal'."
                              "kT = -lnP, kcal/mol = -RT(lnP), "
