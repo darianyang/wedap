@@ -24,7 +24,7 @@ except ImportError:
     gooey = None
 
 def flex_add_argument(f):
-    '''Make the add_argument accept (and ignore) the widget option.'''
+    """Make the add_argument accept (and ignore) the widget option."""
 
     def f_decorated(*args, **kwargs):
         kwargs.pop('widget', None)

@@ -36,7 +36,7 @@ plot_args = {#"plot_mode" : "contour",
             #"cbar_label" : "$-\ln\,P(x)$",
             #"p_min" : 15,
             #"p_max" : 50, # not working for 1D line plot (can use ylim)
-            #"plot_mode" : "hist2d",
+            "plot_mode" : "hist2d",
             #"plot_mode" : "scatter3d",
             #"plot_mode" : "line",
             }
@@ -61,7 +61,7 @@ start = timeit.default_timer()
 
 # generate raw data arrays
 data = wedap.H5_Pdist(**pdist_options, Zname="pcoord")
-Xo, Yo, Zo = data.pdist()
+X, Y, Z = data.pdist()
 weights = data.weights
 #print("weights shape pre: ", weights.shape)
 #weights = weights.reshape(-1,1)
@@ -71,8 +71,8 @@ weights = np.concatenate(weights)
 # turn array of arrays into 1D array column
 # before this, they held value for each tau of each segment
 #print("X pre: ", X.shape)
-X = Xo.reshape(-1,1)
-Y = Yo.reshape(-1,1)
+X = X.reshape(-1,1)
+Y = Y.reshape(-1,1)
 #print("X post reshape: ", X.shape)
 
 # need each weight value to be repeated for each tau (100 + 1) 
@@ -81,7 +81,7 @@ weights_expanded = np.zeros(shape=(X.shape[0]))
 # loop over all ps intervals up to tau in each segment
 weight_index = 0
 for seg in weights:
-    for tau in range(0, Zo.shape[1]):
+    for tau in range(0, Z.shape[1]):
         weights_expanded[weight_index] = seg
         weight_index += 1
 
@@ -92,74 +92,32 @@ XY = np.hstack((X,Y))
 
 #weights_expanded = -np.log(weights_expanded)
 #weights_expanded = 1 / weights_expanded
-weights_expanded = -np.log(weights_expanded/np.max(weights_expanded))
+#weights_expanded = -np.log(weights_expanded/np.max(weights_expanded))
 
-
-from sklearn import cluster, mixture
-n_clusters = 5
-
-interval = 1000
-
-# spectral clustering
-#clust = cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver="arpack", affinity="rbf").fit(XY[::interval,:])
-
-# gmm clustering
-clust = mixture.GaussianMixture(n_components=n_clusters, covariance_type="full").fit(XY[::interval,:])
-
-# DBSCAN
-#clust = cluster.DBSCAN().fit(XY[::interval,:])
-
-# HDBSCAN
-#import hdbscan
-#clust = hdbscan.HDBSCAN().fit(XY[::interval,:])
-#print(clust.labels_.max())
-#clust.condensed_tree_.plot(select_clusters=True)
-# import sys
-# sys.exit()
-
-# km cluster pdist
-#clust = KMeans(n_clusters=n_clusters, random_state=0).fit(XY)
+# cluster pdist
+km = KMeans(n_clusters=5, random_state=0).fit(XY)
 # can use weighted k-means but only clusters in high weight region (<10kT)
-#clust = KMeans(n_clusters=n_clusters, random_state=0).fit(XY, sample_weight=weights_expanded)
+#km = KMeans(n_clusters=5, random_state=0).fit(XY, sample_weight=weights_expanded)
+cent = km.cluster_centers_
+print("Cluster Centers:\n", cent)
+#print("Sorted Cluster Centers:\n", np.sort(cent))
 
-if hasattr(clust, "labels_"):
-    #cent = clust.cluster_centers_
-    #print("Cluster Centers:\n", cent)
-    #print("Sorted Cluster Centers:\n", np.sort(cent))
-    labels = clust.labels_.astype(int)
-    # plot km centers
-    #plt.scatter(cent[:,0], cent[:,1], color="k")
-else:
-    labels = clust.predict(XY[::interval,:])
-#labels = clust.labels_
+labels = km.labels_
 #print("Cluster Labels:\n", labels)
 #np.savetxt("test.txt", labels)
 
 # make pdist plot
-# plot = wedap.H5_Plot(plot_options=plot_options, plot_mode="hist2d", **plot_args, **pdist_options)
-# plot.plot()
+plot = wedap.H5_Plot(plot_options=plot_options, **plot_args, **pdist_options)
+plot.plot()
 
-# plot the cluster labels for each point
-# need a custom cmap
-# import matplotlib.cm as cm
-# from matplotlib.colors import Normalize
-# cmap = cm.tab10
-# norm = Normalize(vmin=0, vmax=10)     
+# plot km centers
+plt.scatter(cent[:,0], cent[:,1], color="red")
 
-# make colors array for each datapoint cluster label
-#colors = [cmap(norm(label)) for label in labels] # too slow
-cmap = np.array(["#377eb8", "#ff7f00", "#4daf4a", "#f781bf", "#a65628",
-                 "#984ea3", "#999999", "#e41a1c", "#dede00", "#a65328"])
-colors = [cmap[label] for label in labels]
-                    
-plot = wedap.H5_Plot(XY[::interval,0], XY[::interval,1], colors, plot_options=plot_options, cmap=cmap, plot_mode="scatter3d", **plot_args)
-plot.plot(cbar=False)
-
-plot.ax.set_title("GMM")
-plt.tight_layout()
-
-# TODO: filter by cluster
-
+# find frame from WE closest to cluster center using kdtree query
+tree = KDTree(XY, leaf_size=10)
+# distances and indices of the k closest neighbors
+dist, ind = tree.query([cent[2]], k=3)
+print("DIST and INDX:\n", dist, ind)
 
 def find_frame_from_index(index):
     """
@@ -182,10 +140,10 @@ def find_frame_from_index(index):
     """
     we_index = 0
     found = False
-    for iter in range(data.first_iter, data.last_iter + 1):
-        for seg in range(0, len(data.f[f"iterations/iter_{iter:08d}/seg_index"][:])):
+    for iter in range(plot.first_iter, plot.last_iter + 1):
+        for seg in range(0, len(plot.f[f"iterations/iter_{iter:08d}/seg_index"][:])):
             # shape of XYZ is originally (all n segs, per every n tau)
-            for tau in range(0, Zo.shape[1]):
+            for tau in range(0, Z.shape[1]):
                 # check for the index of interest from tree
                 if we_index == index:
                     #print(f"See ITER:{iter}, SEG:{seg}, FRAME:{tau}")
@@ -200,15 +158,9 @@ def find_frame_from_index(index):
 
     return iter, seg, tau
 
-# find frame from WE closest to cluster center using kdtree query
-# tree = KDTree(XY, leaf_size=10)
-# # distances and indices of the k closest neighbors
-# dist, ind = tree.query([cent[2]], k=3)
-# print("DIST and INDX:\n", dist, ind)
-
 # closest point to cluster of interest from tree query = ind[0,0]
-# i, s, t = find_frame_from_index(ind[0,1])
-# print(f"See ITER:{i}, SEG:{s}, FRAME:{t}")
+i, s, t = find_frame_from_index(ind[0,1])
+print(f"See ITER:{i}, SEG:{s}, FRAME:{t}")
 
 stop = timeit.default_timer()
 execution_time = stop - start
