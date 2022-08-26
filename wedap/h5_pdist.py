@@ -180,6 +180,8 @@ class H5_Pdist():
         data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
 
         # should work for 1D and 2D pcoords (where 2D is 3D array)
+        # TODO: maybe use atleast_2d or 3d instead 
+        # https://numpy.org/doc/stable/reference/generated/numpy.atleast_3d.html
         if data.ndim > 2:
             # get properly indexed dataset
             data = data[:,:,index]

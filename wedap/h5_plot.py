@@ -228,11 +228,12 @@ class H5_Plot(H5_Pdist):
         self.ax.plot(self.X, self.Y, color=self.color)
         self.ax.set_ylabel(self.cbar_label)
     
-    def plot_scatter3d(self, interval=1, s=10):
+    def plot_scatter3d(self, interval=10, s=10):
         self.plot = self.ax.scatter(self.X[::interval], 
                                     self.Y[::interval], 
                                     c=self.Z[::interval], 
-                                    cmap=self.cmap, s=10)
+                                    cmap=self.cmap, s=s,
+                                    vmin=self.p_min, vmax=self.p_max)
 
     def plot_hexbin3d(self):
         # TODO
