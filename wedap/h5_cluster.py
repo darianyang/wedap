@@ -67,8 +67,9 @@ Xo, Yo, Zo = data.pdist()
 # turn array of arrays into 1D array column
 # before this, they held value for each tau of each segment
 #print("X pre: ", X.shape)
-X = Xo.reshape(-1,1)
-Y = Yo.reshape(-1,1)
+# X = Xo.reshape(-1,1)
+# Y = Yo.reshape(-1,1)
+#print(Y.shape)
 #print("X post reshape: ", X.shape)
 
 # old way of getting weight array
@@ -94,6 +95,12 @@ weights_expanded = data.get_all_weights()
 #np.savetxt("new_weights_expanded.txt", weights_expanded)
 
 #print("new weight shape: ", weights_expanded.shape)
+
+# can get the raw data arrays using this method now
+X = data.get_total_data_array("auxdata/" + pdist_options["Xname"])
+Y = data.get_total_data_array("auxdata/" + pdist_options["Yname"])
+
+#np.testing.assert_array_equal(Y, Y2)
 
 # put X and Y together column wise
 XY = np.hstack((X,Y))

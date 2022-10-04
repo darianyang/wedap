@@ -45,8 +45,11 @@ import shutil
 np.seterr(divide='ignore', invalid='ignore')
 
 # TODO: maybe can have the plot class take a pdist object as the input
-# then if I want to use a loaded pdist, easy to swap it
+#       then if I want to use a loaded pdist, easy to swap it
 
+# TODO: have option to input a 1d array with per seg per iter values in increasing order
+#       then reshape and make pdist, then have option to make updated H5 file with new values
+#       Do something like, if Xname is not str and Xname is 1d array
 class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
@@ -168,6 +171,12 @@ class H5_Pdist():
         # 1D array of variably shaped arrays
         self.weights = np.array(weights, dtype=object)
 
+        # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
+        self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
+
+        # the sum of n segments in all specified iterations
+        self.total_particles = np.sum(self.f["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+
         self.skip_basis = skip_basis
         self.skip_basis_out = skip_basis_out
         self.histrange_x = histrange_x
@@ -180,16 +189,18 @@ class H5_Pdist():
         data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
 
         # should work for 1D and 2D pcoords (where 2D is 3D array)
-        # TODO: maybe use atleast_2d or 3d instead 
-        # https://numpy.org/doc/stable/reference/generated/numpy.atleast_3d.html
-        if data.ndim > 2:
-            # get properly indexed dataset
-            data = data[:,:,index]
+        # if data.ndim > 2:
+        #     # get properly indexed dataset
+        #     data = data[:,:,index]
+
+        # this is cleaner
+        # standardize the data dimensions to allow 3d indexing
+        data = np.atleast_3d(data)
 
         # add arg for X Y Z and then add Xfun,Yfun,Zfun to init
         # if axis_direction == "X" and self.Xfun (is True):
             # data = Xfun(data)
-        return data # TODO: take this and apply the extra function
+        return data[:,:,index] # TODO: take this and apply the extra function
 
     # this does add a little overhead at high iteration ranges
     # ~0.5s from 100i to 400i
@@ -676,6 +687,8 @@ class H5_Pdist():
         average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
+    # TODO: maybe change this to a general function that can give data array for any aux name
+    # then run it 3 times for 3d data return in pdist (might not be as efficient tho)
     def average_datasets_3d(self, interval=1):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
@@ -684,27 +697,29 @@ class H5_Pdist():
             warn("`Zname` is defined but not `Yname`, using Yname=`pcoord`")
             self.Yname = "pcoord"
 
-        # get length of each segment
-        seg_length = np.array(self.f[f"iterations/iter_{self.first_iter:08d}/pcoord"])
-        seg_length = np.shape(seg_length)[1]
+        # # get length of each segment
+        # seg_length = np.array(self.f[f"iterations/iter_{self.first_iter:08d}/pcoord"])
+        # seg_length = np.shape(seg_length)[1]
     
-        # get the total amount of segments in each iteration
-        # column 0 of summary is the particles/segments per iteration
-        # each row from H5 is a single item that is a tuple of multiple items
+        # # get the total amount of segments in each iteration
+        # # column 0 of summary is the particles/segments per iteration
+        # # each row from H5 is a single item that is a tuple of multiple items
         seg_totals = np.array(self.f[f"summary"])
         seg_totals = np.array([i[0] for i in seg_totals])
 
-        # sum only for the iterations considered
-        # note that the last_iter attribute is already -1 adjusted
-        seg_total = np.sum(seg_totals[self.first_iter - 1:self.last_iter])
+        # # sum only for the iterations considered
+        # # note that the last_iter attribute is already -1 adjusted
+        # seg_total = np.sum(seg_totals[self.first_iter - 1:self.last_iter])
 
         # arrays to be filled with values from each iteration
         # rows are for all segments, columns are each segment datapoint
-        X = np.zeros(shape=(seg_total, seg_length))
-        Y = np.zeros(shape=(seg_total, seg_length))
-        Z = np.zeros(shape=(seg_total, seg_length))
+        X = np.zeros((self.total_particles, self.tau))
+        Y = np.zeros((self.total_particles, self.tau))
+        Z = np.zeros((self.total_particles, self.tau))
 
         # loop each iteration
+        # TODO: for now I need to use seg_totals to parse all iterations
+        # but eventually I should be able to update this to use total_particles and tau
         seg_start = 0
         for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # then go through and add all segments/walkers in the iteration
@@ -718,7 +733,7 @@ class H5_Pdist():
             # keeps track of position in the seg_total length based arrays
             seg_start += seg_totals[iter - 1]
 
-        # 3D average datasets using all available data can more managable with interval
+        # 3D average datasets using all available data (can more managable with interval)
         return X[::interval], Y[::interval], Z[::interval]
 
     def get_all_weights(self):
@@ -729,28 +744,67 @@ class H5_Pdist():
         # weights per seg of each iter, but need for each frame
         weights_1d = np.concatenate(self.weights)
 
-        # integer for the amount of frames saved per tau (e.g. 101 for 100 ps tau)
-        tau = self._get_data_array("pcoord", 0, 1).shape[1]
-
-        # the sum of n segments in all specified iterations
-        total_particles = np.sum(self.f["summary"]["n_particles"][self.first_iter-1:self.last_iter])
-
         # need each weight value to be repeated for each tau (e.g. 100 + 1) 
         # will be same shape as X or Y made into 1d shape
-        weights_expanded = np.zeros(tau * total_particles)
+        weights_expanded = np.zeros(self.tau * self.total_particles)
 
         # loop over all ps intervals up to tau in each segment
         weight_index = 0
         for seg in weights_1d:
             # TODO: can I do this without the unused loop?
-            for frame in range(tau):
+            for frame in range(self.tau):
                 weights_expanded[weight_index] = seg
                 weight_index += 1
 
         return weights_expanded
 
-    def get_1d_data_array(self):
-        pass
+    def get_total_data_array(self, name, index=0, interval=1, reshape=True):
+        """
+        Loop through all iterations specified and get a 1d raw data array.
+        # TODO: this could be organized better with my other methods
+                maybe I can separate the helper functions into another class
+                for extracting and moving data around, this pdist class could
+                be used strictly for making pdists from a nice and standard data
+                array input that is handled by the H5_Processing class
+
+        Parameters
+        ----------
+        data_name : str
+            Name of data from h5 file such as `pcoord` or an aux dataset.
+        interval : int
+            If more sparse data is needed for efficiency.
+        reshape : bool
+            Option to reshape into 1d array instead of each seg for all tau values.
+
+        Returns
+        -------
+        data : 1d array
+            Raw (unweighted) data array for the data_name specified.
+        """
+        data = np.zeros((self.total_particles, self.tau))
+    
+        # # get the total amount of segments in each iteration
+        # # column 0 of summary is the particles/segments per iteration
+        # # each row from H5 is a single item that is a tuple of multiple items
+        seg_totals = np.array(self.f[f"summary"])
+        seg_totals = np.array([i[0] for i in seg_totals])
+
+        # loop each iteration
+        # TODO: for now I need to use seg_totals to parse all iterations
+        # but eventually I should be able to update this to use total_particles and tau
+        seg_start = 0
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
+            # then go through and add all segments/walkers in the iteration
+            data[seg_start:seg_start + seg_totals[iter - 1]] = \
+                self._get_data_array(name, index, iter)
+            
+            # keeps track of position in the seg_total length based arrays
+            seg_start += seg_totals[iter - 1]
+
+        if reshape:
+            return data[::interval].reshape(-1,1)
+        else:
+            return data[::interval]
 
     def pdist(self, avg3dint=1):
         """
