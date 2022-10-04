@@ -806,6 +806,19 @@ class H5_Pdist():
         else:
             return data[::interval]
 
+    def reshape_total_data_array(self, array):
+        """
+        Take an input 1d array of the data values at every segment for each
+        iteration, and reshape them to make pdists.
+
+        Parameters
+        ----------
+        array : 1d array
+        """
+        array = array.reshape(self.total_particles, self.tau)
+        return array
+        
+
     def pdist(self, avg3dint=1):
         """
         Main public method with pdist generation controls.
@@ -855,3 +868,12 @@ class H5_Pdist():
             else:
                 X, Y = self.average_pdist_1d()
                 return X, Y, np.ones(shape=(self.first_iter, self.last_iter))
+
+if __name__ == "__main__":
+    total_array_out = np.loadtxt("p53_X_array.txt")
+    original_array = np.loadtxt("p53_X_array_noreshape.txt")
+    
+    h5 = H5_Pdist("data/p53.h5", data_type="average")
+    h5.reshape_total_data_array(total_array_out)
+
+    # TODO: allow user to load in a 1d array of data, then use this to make pdist
