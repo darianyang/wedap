@@ -33,8 +33,6 @@ data = wedap.H5_Pdist(**pdist_options, Zname="pcoord")
 Xo, Yo, Zo = data.pdist()
 
 # turn array of arrays into 1D array column
-# before this, they held value for each tau of each segment
-#print("X pre: ", X.shape)
 X = Xo.reshape(-1,1)
 Y = Yo.reshape(-1,1)
 
@@ -44,7 +42,7 @@ XY = np.hstack((X,Y))
 ##################### add some cluster labels #####################
 from sklearn.cluster import KMeans
 clust = KMeans(n_clusters=4, random_state=0).fit(XY)
-##################################################################
+###################################################################
 
 # joint plot
 df = pd.DataFrame(XY)

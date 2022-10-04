@@ -721,9 +721,45 @@ class H5_Pdist():
         # 3D average datasets using all available data can more managable with interval
         return X[::interval], Y[::interval], Z[::interval]
 
+    def get_all_weights(self):
+        """
+        Returns an 1D array of the weight for every frame of each tau 
+        for all segments of all iterations specified.
+        """
+        # weights per seg of each iter, but need for each frame
+        weights_1d = np.concatenate(self.weights)
+
+        # integer for the amount of frames saved per tau (e.g. 101 for 100 ps tau)
+        tau = self._get_data_array("pcoord", 0, 1).shape[1]
+
+        # the sum of n segments in all specified iterations
+        total_particles = np.sum(self.f["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+
+        # need each weight value to be repeated for each tau (e.g. 100 + 1) 
+        # will be same shape as X or Y made into 1d shape
+        weights_expanded = np.zeros(tau * total_particles)
+
+        # loop over all ps intervals up to tau in each segment
+        weight_index = 0
+        for seg in weights_1d:
+            # TODO: can I do this without the unused loop?
+            for frame in range(tau):
+                weights_expanded[weight_index] = seg
+                weight_index += 1
+
+        return weights_expanded
+
+    def get_1d_data_array(self):
+        pass
+
     def pdist(self, avg3dint=1):
         """
         Main public method with pdist generation controls.
+
+        Parameters
+        ----------
+        avg3dint : int
+            for average 3d plots, sometimes scatter needs a sparser dataset.
 
         # TODO: interval may not be needed if I use function arg (Xfun, etc)
         # TODO: maybe make interval for all returns? nah, hist prob doesn't need it?
@@ -746,7 +782,7 @@ class H5_Pdist():
         if self.Yname and self.histrange_y is None:
             self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
 
-        # TODO: need a better way to always return XYZ
+        # TODO: need a better way to always return XYZ (currently using ones)
         if self.data_type == "evolution":
             return self.evolution_pdist()
         elif self.data_type == "instant":

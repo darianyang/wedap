@@ -7,6 +7,7 @@ TODO:
 import wedap
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 from sklearn.cluster import KMeans
 #from sklearn_extra.cluster import KMedoids
@@ -62,11 +63,6 @@ start = timeit.default_timer()
 # generate raw data arrays
 data = wedap.H5_Pdist(**pdist_options, Zname="pcoord")
 Xo, Yo, Zo = data.pdist()
-weights = data.weights
-#print("weights shape pre: ", weights.shape)
-#weights = weights.reshape(-1,1)
-weights = np.concatenate(weights)
-#print("weights shape post: ", weights.shape)
 
 # turn array of arrays into 1D array column
 # before this, they held value for each tau of each segment
@@ -75,15 +71,27 @@ X = Xo.reshape(-1,1)
 Y = Yo.reshape(-1,1)
 #print("X post reshape: ", X.shape)
 
+# old way of getting weight array
+#weights = data.weights
+#print("weights shape pre: ", weights.shape)
+##weights = weights.reshape(-1,1)
+#weights = np.concatenate(weights)
+#print("weights shape post: ", weights.shape)
 # need each weight value to be repeated for each tau (100 + 1) 
 # to be same shape as X and Y
-weights_expanded = np.zeros(shape=(X.shape[0]))
-# loop over all ps intervals up to tau in each segment
-weight_index = 0
-for seg in weights:
-    for tau in range(0, Zo.shape[1]):
-        weights_expanded[weight_index] = seg
-        weight_index += 1
+# weights_expanded = np.zeros(shape=(X.shape[0]))
+# # loop over all ps intervals up to tau in each segment
+# weight_index = 0
+# for seg in weights:
+#     for tau in range(0, Zo.shape[1]):
+#         weights_expanded[weight_index] = seg
+#         weight_index += 1
+
+# now condensed into method
+weights_expanded = data.get_all_weights()
+
+# can use as basis for the method test
+#np.savetxt("new_weights_expanded.txt", weights_expanded)
 
 #print("new weight shape: ", weights_expanded.shape)
 
