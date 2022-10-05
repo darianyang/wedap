@@ -14,13 +14,8 @@ TODO: update docstrings
 
 TODO: add option for a list of equivalent h5 files, alternative to w_multi_west.
 
-TODO: have a way to add an arg as an intercepting function to carry out some operation
-      on the raw data drom h5, like math or make interval every 10 frames, in _get_data
 
-TODO: working now on only plotting select basis states
-      this is done, but need option for output of new h5 file with updated weights
-      this will speed up future calculations. In this same line of thought, I should 
-      finish the option to output the pdist and use it for plotting instead.
+TODO: I should finish the option to output the pdist and use it for plotting instead.
 """
 
 # TEMP for trace plot (TODO)
@@ -56,7 +51,7 @@ class H5_Pdist():
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
-                 Zname=None, Zindex=0, first_iter=1, last_iter=None, bins=100, 
+                 Zname=None, Zindex=0, data_proc=None, first_iter=1, last_iter=None, bins=100, 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None):
         """
@@ -87,7 +82,10 @@ class H5_Pdist():
             Default start plot at iteration 1 data.
         last_iter : int
             Last iteration data to include, default is the last recorded iteration in the west.h5 file. Note that `instant` type pdists only depend on last_iter.
-        bins : int TODO: x and y?
+        data_proc : function or tuple of functions
+            Of the form f(data) where data has rows=segments, columns=frames until tau, depth=data dims.
+            The input function must return a processed array of the same shape and formatting.
+        bins : int TODO: seperate into x and y?
             amount of histogram bins in pdist data to be generated, default 100.
         p_units : str
             Can be 'kT' (default) or 'kcal'. 
@@ -111,9 +109,13 @@ class H5_Pdist():
         self.weighted = weighted
 
         # TODO: Default pcoord for either dim
-        # add auxdata prefix if not using pcoord
-        if Xname != "pcoord":
-            Xname = "auxdata/" + Xname
+        # TODO: clean up and condense this name processing section
+        # add auxdata prefix if not using pcoord and not using array input
+        # doing it in two conditional blocks since numpy as warning with comparing array to string
+        # this way it only does the string comparison if Xname is a string
+        if isinstance(Xname, str):
+            if Xname != "pcoord":
+                Xname = "auxdata/" + Xname
         self.Xname = Xname
         # TODO: set this up as an arg to be able to process 3D+ arrays form aux
         # need to define the index if pcoord is 3D+ array, index is ndim - 1
@@ -123,9 +125,10 @@ class H5_Pdist():
         if Yname is None:
             self.Yname = Yname
         else:
-            # add auxdata prefix if not using pcoord
-            if Yname != "pcoord":
-                Yname = "auxdata/" + Yname
+            if isinstance(Xname, str):
+                # add auxdata prefix if not using pcoord and not using array input
+                if Yname != "pcoord":
+                    Yname = "auxdata/" + Yname
             self.Yname = Yname
             self.Yindex = Yindex
 
@@ -133,11 +136,16 @@ class H5_Pdist():
         if Zname is None:
             self.Zname = Zname
         else:
-            # add auxdata prefix if not using pcoord
-            if Zname != "pcoord":
-                Zname = "auxdata/" + Zname
+            if isinstance(Xname, str):
+                # add auxdata prefix if not using pcoord and not using array input
+                if Zname != "pcoord":
+                    Zname = "auxdata/" + Zname
         self.Zname = Zname
         self.Zindex = Zindex
+
+        # raw data processing function
+        # TODO: allow for 2-3 functions as tuple input, right now one function only
+        self.data_proc = data_proc
 
         # default to last
         if last_iter is not None:
@@ -174,6 +182,9 @@ class H5_Pdist():
         # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
         self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
 
+        # n_particles for each iteration
+        self.n_particles = self.f["summary"]["n_particles"]#[self.first_iter-1:self.last_iter]
+
         # the sum of n segments in all specified iterations
         self.total_particles = np.sum(self.f["summary"]["n_particles"][self.first_iter-1:self.last_iter])
 
@@ -185,22 +196,34 @@ class H5_Pdist():
     def _get_data_array(self, name, index, iteration):
         """
         Extract, index, and return the aux/data array of interest.
+        Rows are segments, columns are frames until tau, depth is ndimensional datasets.
         """
-        data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
+        # if the user puts in an array object instead of a string dataset name
+        if isinstance(name, np.ndarray):
+            # first reshape 1d input raw data array into 3d array
+            # currently, this is done during pdist method
+            #data = self.reshape_total_data_array(name)
+            
+            # need to parse data for segments only in current iteration
+            # segments are each row, but in input they are all concatenated
+            n_segs_up_to_iter = np.sum(self.n_particles[self.first_iter-1:iteration-1])
+            n_segs_including_iter = np.sum(self.n_particles[self.first_iter-1:iteration])
+            data = name[n_segs_up_to_iter:n_segs_including_iter,:,:]
+            # TODO: maybe put option to fill out new h5 file with dataset included here
+        # name should be a string for the h5 file dataset name
+        elif isinstance(name, str):
+            data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
+        else:
+            raise ValueError("Xname Yname and Zname arguments must be either a string or an array.")
 
-        # should work for 1D and 2D pcoords (where 2D is 3D array)
-        # if data.ndim > 2:
-        #     # get properly indexed dataset
-        #     data = data[:,:,index]
-
-        # this is cleaner
         # standardize the data dimensions to allow 3d indexing
         data = np.atleast_3d(data)
 
-        # add arg for X Y Z and then add Xfun,Yfun,Zfun to init
-        # if axis_direction == "X" and self.Xfun (is True):
-            # data = Xfun(data)
-        return data[:,:,index] # TODO: take this and apply the extra function
+        # run data processing function on raw data if available
+        if self.data_proc is not None:
+            data = self.data_proc(data)
+
+        return data[:,:,index]
 
     # this does add a little overhead at high iteration ranges
     # ~0.5s from 100i to 400i
@@ -814,8 +837,19 @@ class H5_Pdist():
         Parameters
         ----------
         array : 1d array
+
+        Returns
+        -------
+        array : ndarray
+            Now rows = segments, columns = frame until tau, depth = data dimensions.
         """
-        array = array.reshape(self.total_particles, self.tau)
+        # adding -1 in z dim for extra depth dimension compatibility
+        array = array.reshape(self.total_particles, self.tau, -1)
+        
+        # alternatively can use atleast_3d
+        #array = array.reshape(self.total_particles, self.tau)
+        # standardize the data dimensions to allow 3d indexing
+        #array = np.atleast_3d(array)
         return array
         
 
@@ -835,7 +869,13 @@ class H5_Pdist():
         if self.skip_basis is not None:
             self.weights = self._new_weights_from_skip_basis()
 
-        #print(self.weights)
+        # reshape 1d input raw data array (if given) into 3d array
+        if isinstance(self.Xname, np.ndarray):
+            self.Xname = self.reshape_total_data_array(self.Xname)
+        if isinstance(self.Yname, np.ndarray):
+            self.Yname = self.reshape_total_data_array(self.Yname)
+        if isinstance(self.Zname, np.ndarray):
+            self.Zname = self.reshape_total_data_array(self.Zname)
 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
@@ -873,7 +913,11 @@ if __name__ == "__main__":
     total_array_out = np.loadtxt("p53_X_array.txt")
     original_array = np.loadtxt("p53_X_array_noreshape.txt")
     
-    h5 = H5_Pdist("data/p53.h5", data_type="average")
-    h5.reshape_total_data_array(total_array_out)
+    h5 = H5_Pdist("data/p53.h5", data_type="evolution")
+    
+    #h5.reshape_total_data_array(total_array_out)
 
     # TODO: allow user to load in a 1d array of data, then use this to make pdist
+    # maybe have some way to allow for intervaled input data to be compatible
+    # so if user ran analysis every 10 frames, wedap can still work with it
+    # could add this to the reshape method functionality 
