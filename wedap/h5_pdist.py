@@ -51,7 +51,9 @@ class H5_Pdist():
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
-                 Zname=None, Zindex=0, data_proc=None, first_iter=1, last_iter=None, bins=100, 
+                 Zname=None, Zindex=0, Xsave_out=None, Xsave_name=None, Ysave_out=None, 
+                 Ysave_name=None, Zsave_out=None, Zsave_name=None, data_proc=None, 
+                 first_iter=1, last_iter=None, bins=100, 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None):
         """
@@ -78,6 +80,14 @@ class H5_Pdist():
             This is becasue the weights/pdist isn't considered.
         Zindex : int
             If Z.ndim > 2, use this to index.
+        Xsave_out, Ysave_out, Zsave_out : str
+            Paths to save a new H5 file with this dataset name.
+            Right now it saves the requested X Y or Z data into a new aux_name.
+            Note if you use this feature the input data must be the same shape and formatting as the other
+            H5 file datasets. Eventually I can adjust it adaptively but this is good for now.
+            TODO: maybe there is a better way to do / organize this.
+        Xsave_name, Ysave_name, Zsave_name : str
+            Respective names to call the new dataset saved into the new H5 file.
         first_iter : int
             Default start plot at iteration 1 data.
         last_iter : int
@@ -143,6 +153,25 @@ class H5_Pdist():
         self.Zname = Zname
         self.Zindex = Zindex
 
+        # XYZ save into new h5 file options
+        self.Xsave_out = Xsave_out
+        self.Xsave_name = Xsave_name
+        if Xsave_out is not None:
+            shutil.copyfile(self.h5, Xsave_out)
+            self.h5_Xsave = h5py.File(Xsave_out, "r+")
+
+        self.Ysave_out = Ysave_out
+        self.Ysave_name = Ysave_name
+        if Ysave_out is not None:
+            shutil.copyfile(self.h5, Ysave_out)
+            self.h5_Ysave = h5py.File(Ysave_out, "r+")
+        
+        self.Zsave_out = Zsave_out
+        self.Zsave_name = Zsave_name
+        if Zsave_out is not None:
+            shutil.copyfile(self.h5, Zsave_out)
+            self.h5_Zsave = h5py.File(Zsave_out, "r+")
+        
         # raw data processing function
         # TODO: allow for 2-3 functions as tuple input, right now one function only
         self.data_proc = data_proc
@@ -193,7 +222,7 @@ class H5_Pdist():
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
 
-    def _get_data_array(self, name, index, iteration):
+    def _get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
         """
         Extract, index, and return the aux/data array of interest.
         Rows are segments, columns are frames until tau, depth is ndimensional datasets.
@@ -203,13 +232,12 @@ class H5_Pdist():
             # first reshape 1d input raw data array into 3d array
             # currently, this is done during pdist method
             #data = self.reshape_total_data_array(name)
-            
+
             # need to parse data for segments only in current iteration
             # segments are each row, but in input they are all concatenated
             n_segs_up_to_iter = np.sum(self.n_particles[self.first_iter-1:iteration-1])
             n_segs_including_iter = np.sum(self.n_particles[self.first_iter-1:iteration])
             data = name[n_segs_up_to_iter:n_segs_including_iter,:,:]
-            # TODO: maybe put option to fill out new h5 file with dataset included here
         # name should be a string for the h5 file dataset name
         elif isinstance(name, str):
             data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
@@ -222,6 +250,13 @@ class H5_Pdist():
         # run data processing function on raw data if available
         if self.data_proc is not None:
             data = self.data_proc(data)
+
+        # option to fill out new h5 file with dataset included here
+        # using westpa style compression and scaleoffset 
+        # could round to 4 decimal places with data=np.around(data, 4)
+        if h5_create:
+            h5_create.create_dataset(f"iterations/iter_{iteration:08d}/auxdata/{h5_create_name}", 
+                                     data=data, compression=4, scaleoffset=6, chunks=True)
 
         return data[:,:,index]
 
@@ -876,6 +911,16 @@ class H5_Pdist():
             self.Yname = self.reshape_total_data_array(self.Yname)
         if isinstance(self.Zname, np.ndarray):
             self.Zname = self.reshape_total_data_array(self.Zname)
+
+        # TODO: could make this it's own method
+        # if requested, save out a new H5 file with the input data array in new aux name
+        for iter in range(self.first_iter, self.last_iter + 1):
+            if self.Xsave_out:
+                self._get_data_array(self.Xname, self.Xindex, iter, self.h5_Xsave, self.Xsave_name)
+            if self.Ysave_out:
+                self._get_data_array(self.Yname, self.Yindex, iter, self.h5_Ysave, self.Ysave_name)
+            if self.Zsave_out:
+                self._get_data_array(self.Zname, self.Zindex, iter, self.h5_Zsave, self.Zsave_name)
 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
