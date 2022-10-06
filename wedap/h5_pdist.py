@@ -841,23 +841,15 @@ class H5_Pdist():
         """
         data = np.zeros((self.total_particles, self.tau))
     
-        # # get the total amount of segments in each iteration
-        # # column 0 of summary is the particles/segments per iteration
-        # # each row from H5 is a single item that is a tuple of multiple items
-        seg_totals = np.array(self.f[f"summary"])
-        seg_totals = np.array([i[0] for i in seg_totals])
-
         # loop each iteration
-        # TODO: for now I need to use seg_totals to parse all iterations
-        # but eventually I should be able to update this to use total_particles and tau
         seg_start = 0
         for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # then go through and add all segments/walkers in the iteration
-            data[seg_start:seg_start + seg_totals[iter - 1]] = \
+            data[seg_start : seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(name, index, iter)
             
             # keeps track of position in the seg_total length based arrays
-            seg_start += seg_totals[iter - 1]
+            seg_start += self.n_particles[iter - 1]
 
         if reshape:
             return data[::interval].reshape(-1,1)
@@ -878,13 +870,26 @@ class H5_Pdist():
         array : ndarray
             Now rows = segments, columns = frame until tau, depth = data dimensions.
         """
+        # try except block for input from data array
+        # which can be the correct shape if pulled from westpa (e.g. 100 ps + 1)
+        # or if from agg MD sim, will just be (e.g. 100 ps)
         # adding -1 in z dim for extra depth dimension compatibility
-        array = array.reshape(self.total_particles, self.tau, -1)
+        try:
+            array = array.reshape(self.total_particles, self.tau, -1)
+        # e.g. ValueError: cannot reshape array of size 303000 into shape (3000,100,newaxis)
+        # TODO: what if there is a further error?
+        except ValueError:
+            array = array.reshape(self.total_particles, self.tau - 1, -1)
+
+
+        # TODO: the above works to solve the shape issue but if I wanted to fill out a new dataset in
+        # the h5 file, it would be missing the first value, which links walkers
+        # maybe I can use the parent IDs to link it manually, but note I would have to
+        # go through and parse by my self.n_particles array to separate iterations.
+        # put conditional if shape[1] = tau vs tau - 1 for creating dataset (to add parent data point)
+        # note that the first iteration I need to pull from somewhere else?
+        # how does JML do this?
         
-        # alternatively can use atleast_3d
-        #array = array.reshape(self.total_particles, self.tau)
-        # standardize the data dimensions to allow 3d indexing
-        #array = np.atleast_3d(array)
         return array
         
 

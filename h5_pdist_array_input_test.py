@@ -2,25 +2,37 @@ import wedap
 import numpy as np
 import matplotlib.pyplot as plt
 
-total_array_out = np.loadtxt("p53_X_array.txt")
-original_array = np.loadtxt("p53_X_array_noreshape.txt")
+#total_array_out = np.loadtxt("p53_X_array.txt")
+total_array_out = np.loadtxt("p53_X_array_i15.txt")
+# original_array = np.loadtxt("p53_X_array_noreshape.txt")
 
 def test_func(data):
-    """
-    Take every 10 frames.
-    """
     #return data[:,::10,:]    
     return data + 100
 
 #h5 = wedap.H5_Plot(h5="data/p53.h5", data_type="evolution")
 #print(h5.reshape_total_data_array(total_array_out).shape)
+#print(total_array_out[::1].shape)
 
-print(total_array_out[::1].shape)
-
+# test of p53 output data as input
+# note that this dataset is not correct since I took it from the truncated p53.h5 file which shouldn't have 
+# the last /west_current_iter filled out but does
 #pdist = wedap.H5_Pdist("data/p53.h5", "evolution", data_proc=lambda data : data[:,::10,:])
 # pdist = wedap.H5_Pdist("data/p53.h5", "evolution", Xname=total_array_out, data_proc=test_func, 
-#                        Xsave_out="Xsave_p53_test.h5", Xsave_name="pcoord_plus_ten")
-pdist = wedap.H5_Pdist("Xsave_p53_test.h5", "evolution", Xname="pcoord_plus_ten")
+#                        Xsave_out="Xsave_p53_test.h5", Xsave_name="pcoord_plus_ten", last_iter=15)
+#pdist = wedap.H5_Pdist("Xsave_p53_test.h5", "evolution", Xname="pcoord_plus_ten")
+
+# pdist = wedap.H5_Pdist("data/p53.h5", "evolution", last_iter=15, Xname=total_array_out)
+# X, Y, Z = pdist.pdist()
+# wedap.H5_Plot(X, Y, Z).plot()
+# plt.show()
+
+# now instead of testing p53.h5, using a real rmsd based 2kod v02 we dataset
+o_angle = np.loadtxt("data/2kod_rms_v02_o_angle_10i.dat")[:,1]
+# since the dataset being used is 10i, need to also do this to h5 data, hence the data_proc arg
+pdist = wedap.H5_Pdist("data/2kod_rms_we_v02.h5", "evolution", Xname=o_angle, data_proc=lambda data : data[:,::10,:])
+# this should have an error (need to make both input and h5 data 10 intervaled)
+#pdist = wedap.H5_Pdist("data/2kod_rms_we_v02.h5", "evolution", Xname=o_angle)
 X, Y, Z = pdist.pdist()
 #print(X.shape)
 wedap.H5_Plot(X, Y, Z).plot()
