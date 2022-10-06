@@ -14,7 +14,6 @@ TODO: update docstrings
 
 TODO: add option for a list of equivalent h5 files, alternative to w_multi_west.
 
-
 TODO: I should finish the option to output the pdist and use it for plotting instead.
 """
 
@@ -51,9 +50,8 @@ class H5_Pdist():
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
-                 Zname=None, Zindex=0, Xsave_out=None, Xsave_name=None, Ysave_out=None, 
-                 Ysave_name=None, Zsave_out=None, Zsave_name=None, data_proc=None, 
-                 first_iter=1, last_iter=None, bins=100, 
+                 Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
+                 Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=100, 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None):
         """
@@ -80,12 +78,11 @@ class H5_Pdist():
             This is becasue the weights/pdist isn't considered.
         Zindex : int
             If Z.ndim > 2, use this to index.
-        Xsave_out, Ysave_out, Zsave_out : str
+        H5save_out : str
             Paths to save a new H5 file with this dataset name.
             Right now it saves the requested X Y or Z data into a new aux_name.
             Note if you use this feature the input data must be the same shape and formatting as the other
-            H5 file datasets. Eventually I can adjust it adaptively but this is good for now.
-            TODO: maybe there is a better way to do / organize this.
+            H5 file datasets. (TODO: organization?)
         Xsave_name, Ysave_name, Zsave_name : str
             Respective names to call the new dataset saved into the new H5 file.
         first_iter : int
@@ -154,23 +151,13 @@ class H5_Pdist():
         self.Zindex = Zindex
 
         # XYZ save into new h5 file options
-        self.Xsave_out = Xsave_out
+        self.H5save_out = H5save_out
         self.Xsave_name = Xsave_name
-        if Xsave_out is not None:
-            shutil.copyfile(self.h5, Xsave_out)
-            self.h5_Xsave = h5py.File(Xsave_out, "r+")
-
-        self.Ysave_out = Ysave_out
         self.Ysave_name = Ysave_name
-        if Ysave_out is not None:
-            shutil.copyfile(self.h5, Ysave_out)
-            self.h5_Ysave = h5py.File(Ysave_out, "r+")
-        
-        self.Zsave_out = Zsave_out
         self.Zsave_name = Zsave_name
-        if Zsave_out is not None:
-            shutil.copyfile(self.h5, Zsave_out)
-            self.h5_Zsave = h5py.File(Zsave_out, "r+")
+        if H5save_out is not None:
+            shutil.copyfile(self.h5, H5save_out)
+            self.H5save_out = h5py.File(H5save_out, "r+")
         
         # raw data processing function
         # TODO: allow for 2-3 functions as tuple input, right now one function only
@@ -248,7 +235,8 @@ class H5_Pdist():
         data = np.atleast_3d(data)
 
         # run data processing function on raw data if available
-        if self.data_proc is not None:
+        # don't do this for input array data
+        if self.data_proc is not None and not isinstance(name, np.ndarray):
             data = self.data_proc(data)
 
         # option to fill out new h5 file with dataset included here
@@ -755,20 +743,6 @@ class H5_Pdist():
             warn("`Zname` is defined but not `Yname`, using Yname=`pcoord`")
             self.Yname = "pcoord"
 
-        # # get length of each segment
-        # seg_length = np.array(self.f[f"iterations/iter_{self.first_iter:08d}/pcoord"])
-        # seg_length = np.shape(seg_length)[1]
-    
-        # # get the total amount of segments in each iteration
-        # # column 0 of summary is the particles/segments per iteration
-        # # each row from H5 is a single item that is a tuple of multiple items
-        seg_totals = np.array(self.f[f"summary"])
-        seg_totals = np.array([i[0] for i in seg_totals])
-
-        # # sum only for the iterations considered
-        # # note that the last_iter attribute is already -1 adjusted
-        # seg_total = np.sum(seg_totals[self.first_iter - 1:self.last_iter])
-
         # arrays to be filled with values from each iteration
         # rows are for all segments, columns are each segment datapoint
         X = np.zeros((self.total_particles, self.tau))
@@ -776,20 +750,18 @@ class H5_Pdist():
         Z = np.zeros((self.total_particles, self.tau))
 
         # loop each iteration
-        # TODO: for now I need to use seg_totals to parse all iterations
-        # but eventually I should be able to update this to use total_particles and tau
         seg_start = 0
         for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # then go through and add all segments/walkers in the iteration
-            X[seg_start:seg_start + seg_totals[iter - 1]] = \
+            X[seg_start:seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(self.Xname, self.Xindex, iter)
-            Y[seg_start:seg_start + seg_totals[iter - 1]] = \
+            Y[seg_start:seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(self.Yname, self.Yindex, iter)
-            Z[seg_start:seg_start + seg_totals[iter - 1]] = \
+            Z[seg_start:seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(self.Zname, self.Zindex, iter)
 
             # keeps track of position in the seg_total length based arrays
-            seg_start += seg_totals[iter - 1]
+            seg_start += self.n_particles[iter - 1]
 
         # 3D average datasets using all available data (can more managable with interval)
         return X[::interval], Y[::interval], Z[::interval]
@@ -873,22 +845,24 @@ class H5_Pdist():
         # try except block for input from data array
         # which can be the correct shape if pulled from westpa (e.g. 100 ps + 1)
         # or if from agg MD sim, will just be (e.g. 100 ps)
-        # adding -1 in z dim for extra depth dimension compatibility
+        # also adding -1 in z dim for extra depth dimension compatibility
         try:
             array = array.reshape(self.total_particles, self.tau, -1)
         # e.g. ValueError: cannot reshape array of size 303000 into shape (3000,100,newaxis)
-        # TODO: what if there is a further error?
         except ValueError:
             array = array.reshape(self.total_particles, self.tau - 1, -1)
-
+            warn("Using an input data array which did not include the rst file datapoints. " +
+                 "This is fine, but note that you shouldn't create a new H5 file using this array.")
 
         # TODO: the above works to solve the shape issue but if I wanted to fill out a new dataset in
-        # the h5 file, it would be missing the first value, which links walkers
+        # the h5 file, it would be missing the first value, which links walkers.
         # maybe I can use the parent IDs to link it manually, but note I would have to
         # go through and parse by my self.n_particles array to separate iterations.
         # put conditional if shape[1] = tau vs tau - 1 for creating dataset (to add parent data point)
-        # note that the first iteration I need to pull from somewhere else?
-        # how does JML do this?
+        # note that the first iteration I need to pull from somewhere else? It's calculated from the
+        # original bstate file
+
+        # Note, if the user includes the rst files like WESTPA does, it should look and process fine
         
         return array
         
@@ -919,13 +893,14 @@ class H5_Pdist():
 
         # TODO: could make this it's own method
         # if requested, save out a new H5 file with the input data array in new aux name
-        for iter in range(self.first_iter, self.last_iter + 1):
-            if self.Xsave_out:
-                self._get_data_array(self.Xname, self.Xindex, iter, self.h5_Xsave, self.Xsave_name)
-            if self.Ysave_out:
-                self._get_data_array(self.Yname, self.Yindex, iter, self.h5_Ysave, self.Ysave_name)
-            if self.Zsave_out:
-                self._get_data_array(self.Zname, self.Zindex, iter, self.h5_Zsave, self.Zsave_name)
+        if self.H5save_out is not None:
+            for iter in range(self.first_iter, self.last_iter + 1):
+                if self.Xsave_name:
+                    self._get_data_array(self.Xname, self.Xindex, iter, self.H5save_out, self.Xsave_name)
+                if self.Ysave_name:
+                    self._get_data_array(self.Yname, self.Yindex, iter, self.H5save_out, self.Ysave_name)
+                if self.Zsave_name:
+                    self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 

@@ -20,7 +20,7 @@ data = wedap.H5_Pdist("data/p53.h5", data_type="average", last_iter=15)
 weights_expanded = data.get_all_weights()
 
 # can get the raw data arrays using this method now
-X = data.get_total_data_array("pcoord", 0, reshape=False)
+X = data.get_total_data_array("pcoord", 0)
 Y = data.get_total_data_array("pcoord", 1)
 
 print(X)
