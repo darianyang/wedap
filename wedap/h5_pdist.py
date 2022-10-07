@@ -122,6 +122,12 @@ class H5_Pdist():
         # need to define the index if pcoord is 3D+ array, index is ndim - 1
         self.Xindex = Xindex
 
+        # for common case of evolution with extra Yname input
+        if Yname and data_type == "evolution":
+            message = "\nDefaulting to evolution plot for --data-type, since you put a --Yname arg, " + \
+                      "\nDid you mean to use --data-type of `average` or `instant`?"
+            warn(message)
+
         # for 1D plots, but could be better (TODO)
         if Yname is None:
             self.Yname = Yname
@@ -131,7 +137,14 @@ class H5_Pdist():
                 if Yname != "pcoord":
                     Yname = "auxdata/" + Yname
             self.Yname = Yname
-            self.Yindex = Yindex
+            # for the common case where one plots pcoord/aux 0 and pcoord/aux 1
+            if Xname == Yname and Xindex == 0 and Yindex == 0:
+                self.Yindex = 1
+                message = "\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname " + \
+                          "and Xindex/Yindex were the same."
+                warn(message)
+            else:
+                self.Yindex = Yindex
 
         # for replacing the Z axis pdist with a dataset
         if Zname is None:
@@ -845,8 +858,9 @@ class H5_Pdist():
         # e.g. ValueError: cannot reshape array of size 303000 into shape (3000,100,newaxis)
         except ValueError:
             array = array.reshape(self.total_particles, self.tau - 1, -1)
-            warn("Using an input data array which did not include the rst file datapoints. " +
-                 "This is fine, but note that you shouldn't create a new H5 file using this array.")
+            message = "\nUsing an input data array which did not include the rst file datapoints. " + \
+                      "\nThis is fine, but note that you shouldn't create a new H5 file using this array."
+            warn(message)
 
         # TODO: the above works to solve the shape issue but if I wanted to fill out a new dataset in
         # the h5 file, it would be missing the first value, which links walkers.

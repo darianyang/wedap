@@ -91,9 +91,9 @@ def main():
     """
     Plot formatting (TODO; handle multiple cli args here via plot_options?)
     """
-    plot.ax.set_xlabel(args.Xname + " i" + str(args.Xindex))
+    plot.ax.set_xlabel(args.Xname + " i" + str(pdist.Xindex))
     if args.Yname:
-        plot.ax.set_ylabel(args.Yname + " i" + str(args.Yindex))
+        plot.ax.set_ylabel(args.Yname + " i" + str(pdist.Yindex))
     if args.data_type == "evolution":
         plot.ax.set_ylabel("WE Iteration")
 
