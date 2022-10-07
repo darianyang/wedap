@@ -187,18 +187,23 @@ def create_cmd_arguments():
                         dest="p_min",
                         help="The minimum probability value limit. "
                              "This determines the cbar limits and contour levels.",
-                        type=int)
+                        type=float)
     optional.add_argument("--pmax", default=None, nargs="?",
                         dest="p_max",
                         help="The maximum probability limit value. "
                              "This determines the cbar limits and contour levels.",
-                        type=int)
+                        type=float)
     optional.add_argument("-pu", "--p-units", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal"),
                         help="Can be 'kT' (default) or 'kcal'. "
                              "kT = -lnP, kcal/mol = -RT(lnP), "
                              "where RT=0.5922 at T(298K).",
                         type=str)
+    optional.add_argument("-ci", "--contour-interval", default=1, nargs="?",
+                        dest="contour_interval",
+                        help="If using plot-mode contour, "
+                             "This sets the interval of contour level.",
+                        type=float)
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p-units'.",
                         type=int)

@@ -52,8 +52,8 @@ from .h5_pdist import *
 class H5_Plot(H5_Pdist):
 
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", 
-        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, cbar_label=None,
-        data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
+        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, contour_interval=1,
+        cbar_label=None, data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
 
@@ -111,6 +111,7 @@ class H5_Plot(H5_Pdist):
 
         self.p_min = p_min
         self.p_max = p_max
+        self.contour_interval = contour_interval
 
         self.plot_mode = plot_mode
         self.cmap = cmap
@@ -191,9 +192,10 @@ class H5_Plot(H5_Pdist):
             warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
             levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), 1)
         elif self.p_max <= 1:
-            levels = np.arange(self.p_min, self.p_max + 0.2, 0.2)
+            warn("You may want to change the `contour_interval` argument to be < 1")
+            levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
         else:
-            levels = np.arange(self.p_min, self.p_max + 1, 1)
+            levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
 
         # TODO: better implementation of this
         if self.curve_smoothing_level:

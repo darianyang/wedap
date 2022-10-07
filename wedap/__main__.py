@@ -60,7 +60,8 @@ def main():
                     last_iter=args.last_iter, bins=args.bins, T=args.T,
                     weighted=weighted, p_units=args.p_units)
     X, Y, Z = pdist.pdist()
-    plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap, 
+    plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
+                   contour_interval=args.contour_interval, p_min=args.p_min,
                    p_max=args.p_max, cbar_label=cbar_label, color=args.color)
     # 2D plot with cbar
     # TODO: can this be done better?

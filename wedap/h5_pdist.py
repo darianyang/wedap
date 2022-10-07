@@ -13,8 +13,6 @@ TODO:
 TODO: update docstrings
 
 TODO: add option for a list of equivalent h5 files, alternative to w_multi_west.
-
-TODO: I should finish the option to output the pdist and use it for plotting instead.
 """
 
 # TEMP for trace plot (TODO)
@@ -40,10 +38,6 @@ np.seterr(divide='ignore', invalid='ignore')
 
 # TODO: maybe can have the plot class take a pdist object as the input
 #       then if I want to use a loaded pdist, easy to swap it
-
-# TODO: have option to input a 1d array with per seg per iter values in increasing order
-#       then reshape and make pdist, then have option to make updated H5 file with new values
-#       Do something like, if Xname is not str and Xname is 1d array
 class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
@@ -550,7 +544,7 @@ class H5_Pdist():
         aux = self._get_data_array(self.Xname, self.Xindex, iteration)
 
         # make an 1D array to fit the hist values based off of bin count
-        histogram = np.zeros(shape=(self.bins))
+        histogram = np.zeros((self.bins))
         for seg in range(0, aux.shape[0]):
             counts, bins = np.histogram(aux[seg], bins=self.bins, range=self.histrange_x)
 
@@ -593,7 +587,7 @@ class H5_Pdist():
         Y = self._get_data_array(self.Yname, self.Yindex, iteration)
 
         # 2D array to store hist counts for each timepoint in both dimensions
-        histogram = np.zeros(shape=(self.bins, self.bins))
+        histogram = np.zeros((self.bins, self.bins))
         for seg in range(0, X.shape[0]):
             counts, bins_x, bins_y = np.histogram2d(X[seg], Y[seg], 
                                                     bins=self.bins, 
@@ -629,8 +623,8 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # make array to store hist (-lnP) values for n iterations of X
-        evolution_x = np.zeros(shape=(self.last_iter - self.first_iter + 1, self.bins))
-        positions_x = np.zeros(shape=(self.last_iter - self.first_iter + 1, self.bins))
+        evolution_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
+        positions_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
 
         for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # account for first_iter arg for array indexing
@@ -698,8 +692,8 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # make array to store hist (-lnP) values for n iterations of X
-        evolution_x = np.zeros(shape=(self.last_iter, self.bins))
-        positions_x = np.zeros(shape=(self.last_iter, self.bins))
+        evolution_x = np.zeros((self.last_iter, self.bins))
+        positions_x = np.zeros((self.last_iter, self.bins))
 
         for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
             # generate evolution x data
@@ -723,7 +717,7 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # empty array for 2D pdist
-        average_xy = np.zeros(shape=(self.bins, self.bins))
+        average_xy = np.zeros((self.bins, self.bins))
 
         # 2D avg pdist data generation
         for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
@@ -924,7 +918,7 @@ class H5_Pdist():
                 return self.instant_pdist_2d()
             else:
                 X, Y = self.instant_pdist_1d()
-                return X, Y, np.ones(shape=(self.first_iter, self.last_iter))
+                return X, Y, np.ones((self.first_iter, self.last_iter))
         elif self.data_type == "average":
             if self.Yname and self.Zname:
                 return self.average_datasets_3d(interval=avg3dint)
@@ -932,7 +926,7 @@ class H5_Pdist():
                 return self.average_pdist_2d()
             else:
                 X, Y = self.average_pdist_1d()
-                return X, Y, np.ones(shape=(self.first_iter, self.last_iter))
+                return X, Y, np.ones((self.first_iter, self.last_iter))
 
 if __name__ == "__main__":
     total_array_out = np.loadtxt("p53_X_array.txt")
@@ -940,9 +934,3 @@ if __name__ == "__main__":
     
     h5 = H5_Pdist("data/p53.h5", data_type="evolution")
     
-    #h5.reshape_total_data_array(total_array_out)
-
-    # TODO: allow user to load in a 1d array of data, then use this to make pdist
-    # maybe have some way to allow for intervaled input data to be compatible
-    # so if user ran analysis every 10 frames, wedap can still work with it
-    # could add this to the reshape method functionality 
