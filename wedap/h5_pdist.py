@@ -234,7 +234,20 @@ class H5_Pdist():
             data = name[n_segs_up_to_iter:n_segs_including_iter,:,:]
         # name should be a string for the h5 file dataset name
         elif isinstance(name, str):
-            data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
+            # this t/e block is to catch non-existent aux data names
+            try:
+                data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
+            except KeyError:
+                message = f"{name} is not a valid object in the h5 file. \n" + \
+                          f"Available datasets are: 'pcoord' "
+                # this t/e block is to catch the case where there are no aux datasets at all
+                try:
+                    auxnames = list(self.f[f"iterations/iter_{self.first_iter:08d}/auxdata"])
+                    message += f"and the following aux datasets {auxnames}"
+                except KeyError:
+                    message += "and no aux datasets were found"
+                raise ValueError(message)
+                
         else:
             raise ValueError("Xname Yname and Zname arguments must be either a string or an array.")
 
