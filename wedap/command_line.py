@@ -10,11 +10,8 @@ TODO: make the args consistent in cli and api
 """
 
 import argparse
-from inspect import trace
 import os
 import sys
-
-from pip import main
 
 # import and use gooey conditionally
 # adapted from https://github.com/chriskiehl/Gooey/issues/296
