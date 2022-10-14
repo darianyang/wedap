@@ -18,12 +18,13 @@ def test_func(data):
 # note that this dataset is not correct since I took it from the truncated p53.h5 file which shouldn't have 
 # the last /west_current_iter filled out but does
 #pdist = wedap.H5_Pdist("data/p53.h5", "evolution", data_proc=lambda data : data[:,::10,:])
-pdist = wedap.H5_Pdist("data/p53.h5", "evolution", Xname=total_array_out, data_proc=test_func, 
-                       H5save_out="Xsave_p53_test_15i.h5", Xsave_name="pcoord_plus_ten", last_iter=15)
+#pdist = wedap.H5_Pdist("data/p53.h5", "evolution", Xname=, data_proc=lambda data : data[:,::10,:])
+# pdist = wedap.H5_Pdist("data/p53.h5", "evolution", Xname=total_array_out, data_proc=test_func, 
+#                        H5save_out="Xsave_p53_test_15i.h5", Xsave_name="pcoord_plus_ten", last_iter=15)
 #pdist = wedap.H5_Pdist("Xsave_p53_test.h5", "evolution", Xname="pcoord_plus_ten")
 
 # pdist = wedap.H5_Pdist("data/p53.h5", "evolution", last_iter=15, Xname=total_array_out)
-X, Y, Z = pdist.pdist()
+# X, Y, Z = pdist.pdist()
 # wedap.H5_Plot(X, Y, Z).plot()
 # plt.show()
 
@@ -42,6 +43,10 @@ rog = np.loadtxt("data/2kod_rms_v02_rog_10i.dat")[:,1]
 #               Xname="RoG", data_proc=lambda data : data[:,::10,:]).plot()
 # wedap.H5_Plot(h5="data/2kod_rms_we_v02.h5", data_type="evolution", histrange_x=[16,20],
 #               Xname=rog, data_proc=lambda data : data[:,::10,:]).plot()
+
+# average and instant
+wedap.H5_Plot(h5="data/2kod_rms_we_v02.h5", data_type="average", 
+              Yname=o_angle, data_proc=lambda data : data[:,::10,:]).plot()
 
 plt.show()
 

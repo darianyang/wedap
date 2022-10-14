@@ -19,16 +19,12 @@ data = wedap.H5_Pdist("data/p53.h5", data_type="average", last_iter=15)
 # now condensed into method
 weights_expanded = data.get_all_weights()
 
-# can get the raw data arrays using this method now
+# can get the raw data arrays
 X = data.get_total_data_array("pcoord", 0)
 Y = data.get_total_data_array("pcoord", 1)
 
-print(X)
-
 # goal is to now load it in and reshape it
-np.savetxt("p53_X_array_i15.txt", X)
-
-sys.exit(0)
+#np.savetxt("p53_X_array_i15.txt", X)
 
 # put X and Y together column wise
 XY = np.hstack((X,Y))

@@ -122,38 +122,32 @@ class H5_Pdist():
         # need to define the index if pcoord is 3D+ array, index is ndim - 1
         self.Xindex = Xindex
 
-        # for common case of evolution with extra Yname input
-        if Yname and data_type == "evolution":
-            message = "\nDefaulting to evolution plot for --data-type, since you put a --Yname arg, " + \
-                      "\nDid you mean to use --data-type of `average` or `instant`?"
-            warn(message)
-
         # for 1D plots, but could be better (TODO)
-        if Yname is None:
-            self.Yname = Yname
-        else:
-            if isinstance(Xname, str):
-                # add auxdata prefix if not using pcoord and not using array input
-                if Yname != "pcoord":
-                    Yname = "auxdata/" + Yname
-            self.Yname = Yname
-            # for the common case where one plots pcoord/aux 0 and pcoord/aux 1
-            if Xname == Yname and Xindex == 0 and Yindex == 0:
-                self.Yindex = 1
-                message = "\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname " + \
-                          "and Xindex/Yindex were the same."
+        if Yname is not None and isinstance(Yname, str):
+            # for common case of evolution with extra Yname input
+            if Yname and data_type == "evolution":
+                message = "\nDefaulting to evolution plot for --data-type, since you put a --Yname arg, " + \
+                        "\nDid you mean to use --data-type of `average` or `instant`?"
                 warn(message)
-            else:
-                self.Yindex = Yindex
+            # add auxdata prefix if not using pcoord and not using array input
+            if Yname != "pcoord":
+                Yname = "auxdata/" + Yname
+            # before comparing X and Y, make sure they are both strings
+            if isinstance(Xname, str):
+                # for the common case where one plots pcoord/aux 0 and pcoord/aux 1
+                if Xname == Yname and Xindex == 0 and Yindex == 0:
+                    Yindex = 1
+                    message = "\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname " + \
+                            "and Xindex/Yindex were the same."
+                    warn(message)
+        self.Yname = Yname
+        self.Yindex = Yindex
 
         # for replacing the Z axis pdist with a dataset
-        if Zname is None:
-            self.Zname = Zname
-        else:
-            if isinstance(Xname, str):
-                # add auxdata prefix if not using pcoord and not using array input
-                if Zname != "pcoord":
-                    Zname = "auxdata/" + Zname
+        if Zname is not None and isinstance(Zname, str):
+            # add auxdata prefix if not using pcoord and not using array input
+            if Zname != "pcoord":
+                Zname = "auxdata/" + Zname
         self.Zname = Zname
         self.Zindex = Zindex
 
@@ -232,6 +226,14 @@ class H5_Pdist():
             n_segs_up_to_iter = np.sum(self.n_particles[self.first_iter-1:iteration-1])
             n_segs_including_iter = np.sum(self.n_particles[self.first_iter-1:iteration])
             data = name[n_segs_up_to_iter:n_segs_including_iter,:,:]
+            # the case where the array does not have rst data included
+            if self.norst_array:
+                # put the new first column as the first value of each row (segment)
+                # TODO: this is a temp hack for the no rst shape data
+                # noting that both arrays must have same ndims for hstack
+                #print(f"original shape: {data.shape}")
+                data = np.hstack((np.atleast_3d(np.atleast_3d(data[:,0,:])), np.atleast_3d(data)))
+                #print(f"new shape: {data.shape}")
         # name should be a string for the h5 file dataset name
         elif isinstance(name, str):
             # this t/e block is to catch non-existent aux data names
@@ -808,6 +810,8 @@ class H5_Pdist():
 
         return weights_expanded
 
+    # TODO: option for data and weight output for a single iteration (iteration=None)
+    # wait, isn't that already available in _get_data_array?
     def get_total_data_array(self, name, index=0, interval=1, reshape=True):
         """
         Loop through all iterations specified and get a 1d raw data array.
@@ -832,6 +836,9 @@ class H5_Pdist():
             Raw (unweighted) data array for the data_name specified.
         """
         data = np.zeros((self.total_particles, self.tau))
+        # account for non-pcoord input strings
+        if name != "pcoord":
+            name = "auxdata/" + name
     
         # loop each iteration
         seg_start = 0
@@ -871,9 +878,11 @@ class H5_Pdist():
         # e.g. ValueError: cannot reshape array of size 303000 into shape (3000,100,newaxis)
         except ValueError:
             array = array.reshape(self.total_particles, self.tau - 1, -1)
-            message = "\nUsing an input data array which did not include the rst file datapoints. " + \
-                      "\nThis is fine, but note that you shouldn't create a new H5 file using this array."
+            message = "\nYou may be using an input data array which did not include the rst file datapoints. " + \
+                      "\nThis may be fine, but note that you shouldn't create a new H5 file using this array."
             warn(message)
+            # TODO: this is a temp solution
+            self.norst_array = True
 
         # TODO: the above works to solve the shape issue but if I wanted to fill out a new dataset in
         # the h5 file, it would be missing the first value, which links walkers.
@@ -887,7 +896,7 @@ class H5_Pdist():
         
         return array
         
-
+    # TODO: this avg3dint option is not needed, can use a data proc function instead
     def pdist(self, avg3dint=1):
         """
         Main public method with pdist generation controls.
@@ -932,7 +941,8 @@ class H5_Pdist():
             # get the optimal histrange
             self.histrange_x = self._get_histrange(self.Xname, self.Xindex)
         # if using 2D pdist
-        if self.Yname and self.histrange_y is None:
+        # TODO: needs to handle array input or None input
+        if isinstance(self.Yname, (str, np.ndarray)) and self.histrange_y is None:
             self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
 
         # TODO: need a better way to always return XYZ (currently using ones)
@@ -947,9 +957,10 @@ class H5_Pdist():
                 X, Y = self.instant_pdist_1d()
                 return X, Y, np.ones((self.first_iter, self.last_iter))
         elif self.data_type == "average":
-            if self.Yname and self.Zname:
+            # attemts to say, if not None, but has to be compatible with str and arrays
+            if isinstance(self.Yname, (str, np.ndarray)) and isinstance(self.Zname, (str, np.ndarray)):
                 return self.average_datasets_3d(interval=avg3dint)
-            elif self.Yname:
+            elif isinstance(self.Yname, (str, np.ndarray)):
                 return self.average_pdist_2d()
             else:
                 X, Y = self.average_pdist_1d()

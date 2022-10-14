@@ -28,21 +28,22 @@ plot_options = {"ylabel" : "RMSD to Xtal ($\AA$)",
                 "xlabel" : "Helical Angle (°)",
                 }
 
-# generate raw data arrays
-data = wedap.H5_Pdist(**pdist_options, Zname="pcoord")
-Xo, Yo, Zo = data.pdist()
+# instantiate wedap pdist class object
+data = wedap.H5_Pdist("data/west_c2x_4b.h5", "average", first_iter=400)
 
-# turn array of arrays into 1D array column
-X = Xo.reshape(-1,1)
-Y = Yo.reshape(-1,1)
+# grab 1d weight per frame and scale
+weights = data.get_all_weights()
+
+# get the raw data arrays
+X = data.get_total_data_array("1_75_39_c2")
+Y = data.get_total_data_array("rms_bb_nmr")
 
 # put X and Y together column wise
 XY = np.hstack((X,Y))
 
-##################### add some cluster labels #####################
+# do some clustering
 from sklearn.cluster import KMeans
-clust = KMeans(n_clusters=4, random_state=0).fit(XY)
-###################################################################
+clust = KMeans(n_clusters=4).fit(XY, sample_weight=weights)
 
 # joint plot
 df = pd.DataFrame(XY)
