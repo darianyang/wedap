@@ -45,7 +45,7 @@ rog = np.loadtxt("data/2kod_rms_v02_rog_10i.dat")[:,1]
 #               Xname=rog, data_proc=lambda data : data[:,::10,:]).plot()
 
 # average and instant
-wedap.H5_Plot(h5="data/2kod_rms_we_v02.h5", data_type="average", 
+wedap.H5_Plot(h5="data/2kod_rms_we_v02.h5", data_type="average", first_iter=100,
               Yname=o_angle, data_proc=lambda data : data[:,::10,:]).plot()
 
 plt.show()

@@ -202,8 +202,12 @@ class H5_Pdist():
         # n_particles for each iteration
         self.n_particles = self.f["summary"]["n_particles"]#[self.first_iter-1:self.last_iter]
 
-        # the sum of n segments in all specified iterations
-        self.total_particles = np.sum(self.f["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+        # TODO: I wonder if both of these attributes are needed (total only used by reshape data array)
+        #       I should note somewhere that data array must be for the same length/iters as the west.h5 file
+        # the sum of n segments in all specified iterations and all iterations overall
+        self.current_particles = np.sum(self.f["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+        # do not include the final (empty) iteration
+        self.total_particles = np.sum(self.f["summary"]["n_particles"][:-1])
 
         self.skip_basis = skip_basis
         self.skip_basis_out = skip_basis_out
@@ -226,14 +230,6 @@ class H5_Pdist():
             n_segs_up_to_iter = np.sum(self.n_particles[self.first_iter-1:iteration-1])
             n_segs_including_iter = np.sum(self.n_particles[self.first_iter-1:iteration])
             data = name[n_segs_up_to_iter:n_segs_including_iter,:,:]
-            # the case where the array does not have rst data included
-            if self.norst_array:
-                # put the new first column as the first value of each row (segment)
-                # TODO: this is a temp hack for the no rst shape data
-                # noting that both arrays must have same ndims for hstack
-                #print(f"original shape: {data.shape}")
-                data = np.hstack((np.atleast_3d(np.atleast_3d(data[:,0,:])), np.atleast_3d(data)))
-                #print(f"new shape: {data.shape}")
         # name should be a string for the h5 file dataset name
         elif isinstance(name, str):
             # this t/e block is to catch non-existent aux data names
@@ -767,9 +763,9 @@ class H5_Pdist():
 
         # arrays to be filled with values from each iteration
         # rows are for all segments, columns are each segment datapoint
-        X = np.zeros((self.total_particles, self.tau))
-        Y = np.zeros((self.total_particles, self.tau))
-        Z = np.zeros((self.total_particles, self.tau))
+        X = np.zeros((self.current_particles, self.tau))
+        Y = np.zeros((self.current_particles, self.tau))
+        Z = np.zeros((self.current_particles, self.tau))
 
         # loop each iteration
         seg_start = 0
@@ -798,7 +794,7 @@ class H5_Pdist():
 
         # need each weight value to be repeated for each tau (e.g. 100 + 1) 
         # will be same shape as X or Y made into 1d shape
-        weights_expanded = np.zeros(self.tau * self.total_particles)
+        weights_expanded = np.zeros(self.tau * self.current_particles)
 
         # loop over all ps intervals up to tau in each segment
         weight_index = 0
@@ -835,7 +831,7 @@ class H5_Pdist():
         data : 1d array
             Raw (unweighted) data array for the data_name specified.
         """
-        data = np.zeros((self.total_particles, self.tau))
+        data = np.zeros((self.current_particles, self.tau))
         # account for non-pcoord input strings
         if name != "pcoord":
             name = "auxdata/" + name
@@ -873,6 +869,9 @@ class H5_Pdist():
         # which can be the correct shape if pulled from westpa (e.g. 100 ps + 1)
         # or if from agg MD sim, will just be (e.g. 100 ps)
         # also adding -1 in z dim for extra depth dimension compatibility
+
+        # TODO: change total particles to iteration range to be able to use iter args with data arrays
+
         try:
             array = array.reshape(self.total_particles, self.tau, -1)
         # e.g. ValueError: cannot reshape array of size 303000 into shape (3000,100,newaxis)
@@ -881,8 +880,15 @@ class H5_Pdist():
             message = "\nYou may be using an input data array which did not include the rst file datapoints. " + \
                       "\nThis may be fine, but note that you shouldn't create a new H5 file using this array."
             warn(message)
-            # TODO: this is a temp solution
-            self.norst_array = True
+            # TODO: does this work?
+            # the case where the array does not have rst data included
+            # put the new first column as the first value of each row (segment)
+            # TODO: this is a temp hack for the no rst shape data
+            # noting that both arrays must have same ndims for hstack
+            #print(f"original shape: {data.shape}")
+            #print(f"to stack shape: {data[:,0,:]}")
+            array = np.hstack((np.atleast_3d(array[:,0,:]), array)) # TODO: test this
+            #print(f"new shape: {data.shape}")
 
         # TODO: the above works to solve the shape issue but if I wanted to fill out a new dataset in
         # the h5 file, it would be missing the first value, which links walkers.
@@ -893,7 +899,7 @@ class H5_Pdist():
         # original bstate file
 
         # Note, if the user includes the rst files like WESTPA does, it should look and process fine
-        
+
         return array
         
     # TODO: this avg3dint option is not needed, can use a data proc function instead
@@ -971,4 +977,5 @@ if __name__ == "__main__":
     original_array = np.loadtxt("p53_X_array_noreshape.txt")
     
     h5 = H5_Pdist("data/p53.h5", data_type="evolution")
+    # TODO: test Zname with data_array
     
