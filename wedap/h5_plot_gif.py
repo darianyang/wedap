@@ -51,7 +51,7 @@ def plot(iteration, avg_plus=100):
 # having at least 100 frames makes for a good length gif
 frames = []
 # set the range to be the iterations at a specified interval
-for i in tqdm(range(1, 350, 10), desc="GIF Progress"):
+for i in tqdm(range(1, 350, 5), desc="GIF Progress"):
     frame = plot(i)
     frames.append(frame)
 

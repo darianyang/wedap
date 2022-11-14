@@ -230,7 +230,7 @@ class H5_Plot(H5_Pdist):
         self.ax.plot(self.X, self.Y, color=self.color)
         self.ax.set_ylabel(self.cbar_label)
     
-    def plot_scatter3d(self, interval=10, s=10):
+    def plot_scatter3d(self, interval=10, s=1):
         self.plot = self.ax.scatter(self.X[::interval], 
                                     self.Y[::interval], 
                                     c=self.Z[::interval], 

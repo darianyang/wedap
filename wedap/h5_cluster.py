@@ -1,7 +1,5 @@
 """
 Cluster the data from west.h5 and get the iter,seg,frame for the cluster(s).
-
-TODO: 
 """
 
 import wedap
@@ -15,15 +13,15 @@ from sklearn.neighbors import KDTree
 
 plt.style.use("styles/default.mplstyle")
 
-pdist_options = {"h5" : "data/west_c2x_4b.h5",
+pdist_options = {"h5" : "data/2kod_oa_v00.h5",
                 #"h5" : "data/skip_basis.h5",
-                "Xname" : "1_75_39_c2",
-                "Yname" : "rms_bb_nmr",
+                "Xname" : "pcoord",
+                "Yname" : "c2_angle",
                 #"Zname" : "rms_bb_nmr",
                 "data_type" : "average",
                 "weighted" : True,
                 "p_units" : "kcal",
-                "first_iter" : 400,
+                "first_iter" : 300,
                 #"last_iter" : 425,
                 #"last_iter" : 750, 
                 #"bins" : 100, # note bins affects contour quality
@@ -46,9 +44,9 @@ plot_args = {#"plot_mode" : "contour",
 plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
                 #"ylabel" : "RMSD ($\AA$)", 
                 #"ylabel" : "WE Iteration", 
-                "ylabel" : "RMSD to Xtal ($\AA$)",
+                "ylabel" : "X Angle (°)",
                 #"ylabel" : "$-RT\ \ln\, P\ (kcal\ mol^{-1})$", 
-                "xlabel" : "Helical Angle (°)",
+                "xlabel" : "Y Angle (°)",
                 #"ylabel" : "3 Point Angle (°)",
                 "grid" : True,
                 #"minima" : True, 
@@ -61,7 +59,8 @@ import timeit
 start = timeit.default_timer()
 
 # generate raw data arrays
-data = wedap.H5_Pdist(**pdist_options, Zname="pcoord")
+data = wedap.H5_Pdist(**pdist_options)
+# have to run this?
 Xo, Yo, Zo = data.pdist()
 
 # turn array of arrays into 1D array column
@@ -97,8 +96,8 @@ weights_expanded = data.get_all_weights()
 #print("new weight shape: ", weights_expanded.shape)
 
 # can get the raw data arrays using this method now
-X = data.get_total_data_array("auxdata/" + pdist_options["Xname"])
-Y = data.get_total_data_array("auxdata/" + pdist_options["Yname"])
+X = data.get_total_data_array(pdist_options["Xname"])
+Y = data.get_total_data_array(pdist_options["Yname"])
 
 #np.testing.assert_array_equal(Y, Y2)
 
@@ -111,15 +110,15 @@ weights_expanded = -np.log(weights_expanded/np.max(weights_expanded))
 
 
 from sklearn import cluster, mixture
-n_clusters = 5
-
-interval = 1000
+n_clusters = 7
+interval = 10
 
 # spectral clustering
 #clust = cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver="arpack", affinity="rbf").fit(XY[::interval,:])
 
 # gmm clustering
-clust = mixture.GaussianMixture(n_components=n_clusters, covariance_type="full").fit(XY[::interval,:])
+clust = mixture.GaussianMixture(n_components=n_clusters, covariance_type="full", random_state=0).fit(XY[::interval,:])
+print(clust.means_)
 
 # DBSCAN
 #clust = cluster.DBSCAN().fit(XY[::interval,:])
@@ -133,15 +132,21 @@ clust = mixture.GaussianMixture(n_components=n_clusters, covariance_type="full")
 # sys.exit()
 
 # km cluster pdist
-#clust = KMeans(n_clusters=n_clusters, random_state=0).fit(XY)
+#clust = KMeans(n_clusters=n_clusters).fit(XY)
 # can use weighted k-means but only clusters in high weight region (<10kT)
 #clust = KMeans(n_clusters=n_clusters, random_state=0).fit(XY, sample_weight=weights_expanded)
 
+# inertia opt (k = 3 is best)
+# inertia = [KMeans(n_clusters=i).fit(XY).inertia_ for i in range(2, 11)]
+# plt.plot(inertia)
+# plt.show()
+# sys.exit(0)
+
 if hasattr(clust, "labels_"):
+    labels = clust.labels_.astype(int)[::interval]
     #cent = clust.cluster_centers_
     #print("Cluster Centers:\n", cent)
     #print("Sorted Cluster Centers:\n", np.sort(cent))
-    labels = clust.labels_.astype(int)
     # plot km centers
     #plt.scatter(cent[:,0], cent[:,1], color="k")
 else:
@@ -170,11 +175,13 @@ colors = [cmap[label] for label in labels]
 plot = wedap.H5_Plot(XY[::interval,0], XY[::interval,1], colors, plot_options=plot_options, cmap=cmap, plot_mode="scatter3d", **plot_args)
 plot.plot(cbar=False)
 
+#plt.scatter(clust.cluster_centers_[:,0], clust.cluster_centers_[:,1], color="k")
+plt.scatter(clust.means_[:,0], clust.means_[:,1], color="k")
+
 plot.ax.set_title("GMM")
 plt.tight_layout()
 
 # TODO: filter by cluster
-
 
 def find_frame_from_index(index):
     """
@@ -216,14 +223,33 @@ def find_frame_from_index(index):
     return iter, seg, tau
 
 # find frame from WE closest to cluster center using kdtree query
-# tree = KDTree(XY, leaf_size=10)
-# # distances and indices of the k closest neighbors
-# dist, ind = tree.query([cent[2]], k=3)
-# print("DIST and INDX:\n", dist, ind)
+tree = KDTree(XY, leaf_size=10)
+# distances and indices of the k closest neighbors
+#dist, ind = tree.query([cent[2]], k=3)
+# GMM
+dist, ind = tree.query([clust.means_[2]], k=3)
+#dist, ind = tree.query([[54, 72]], k=3)
+print("DIST and INDX:\n", dist, ind)
+print(f"Looking for {clust.means_[6]}")
 
 # closest point to cluster of interest from tree query = ind[0,0]
-# i, s, t = find_frame_from_index(ind[0,1])
-# print(f"See ITER:{i}, SEG:{s}, FRAME:{t}")
+i, s, t = find_frame_from_index(ind[0,1])
+print(f"See ITER:{i}, SEG:{s}, FRAME:{t}")
+
+# for GMM: find the actual data point of maximal density to represent the mean cluster value
+# https://stackoverflow.com/questions/47412749/how-can-i-get-a-representative-point-of-a-gmm-cluster
+# import scipy.stats 
+# centers = np.empty(shape=(clust.n_components, XY[::interval,:].shape[1]))
+# for i in range(clust.n_components):
+#     density = scipy.stats.multivariate_normal(cov=clust.covariances_[i], 
+#               mean=clust.means_[i]).logpdf(XY[::interval,:])
+#     centers[i, :] = XY[::interval,:][np.argmax(density)]
+#     print(centers)
+# plt.scatter(centers[:, 0], centers[:, 1], s=10, color="red")
+
+# closest point to cluster of interest from density identification
+#i, s, t = find_frame_from_index(ind[0,1])
+#print(f"See ITER:{i}, SEG:{s}, FRAME:{t}")
 
 stop = timeit.default_timer()
 execution_time = stop - start
