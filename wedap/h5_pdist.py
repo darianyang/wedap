@@ -377,7 +377,7 @@ class H5_Pdist():
             warn(message)
 
         # if the basis state binary is a 1 in skip_basis, use weight 0 
-        print("First run skip_basis processing from each initial segment: ")
+        #print("First run skip_basis processing from each initial segment: ")
         for basis, skip in enumerate(self.skip_basis):
             # essentially goes through all initial segments for each skipped basis
             if skip == 1:
@@ -396,7 +396,7 @@ class H5_Pdist():
                         skip_parents_n = []
 
                         # zero the next iteration's children until last_iter
-                        for iter in tqdm(range(1, self.last_iter + 1)):
+                        for iter in tqdm(range(1, self.last_iter + 1), desc="skip_basis"):
                             for idx in skip_parents_c:
                                 # make zero for each child of skip_basis
                                 self.weights[iter-1][idx] = 0
@@ -650,7 +650,7 @@ class H5_Pdist():
         evolution_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
         positions_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
 
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Evolution"):
             # account for first_iter arg for array indexing
             iter_index = iter - self.first_iter + 1
             # generate evolution x data
@@ -719,7 +719,7 @@ class H5_Pdist():
         evolution_x = np.zeros((self.last_iter, self.bins))
         positions_x = np.zeros((self.last_iter, self.bins))
 
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Average 1D"):
             # generate evolution x data
             center_x, counts_total_x = self.aux_to_pdist_1d(iter)
             evolution_x[iter - 1] = counts_total_x
@@ -744,7 +744,7 @@ class H5_Pdist():
         average_xy = np.zeros((self.bins, self.bins))
 
         # 2D avg pdist data generation
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Average 2D"):
             center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
 
@@ -769,7 +769,7 @@ class H5_Pdist():
 
         # loop each iteration
         seg_start = 0
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Average 3D"):
             # then go through and add all segments/walkers in the iteration
             X[seg_start:seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(self.Xname, self.Xindex, iter)
@@ -838,7 +838,7 @@ class H5_Pdist():
     
         # loop each iteration
         seg_start = 0
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1)):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Getting Data Array"):
             # then go through and add all segments/walkers in the iteration
             data[seg_start : seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(name, index, iter)
