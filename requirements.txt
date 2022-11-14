@@ -2,6 +2,5 @@ numpy
 matplotlib
 h5py
 scipy
-moviepy
-gooey
+gif
 tqdm
