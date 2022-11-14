@@ -13,13 +13,13 @@ This repository is currently under development.
 
 ### Requirements
 
-- Numpy
-- Matplotlib
-- H5py
-- Moviepy
-- Scipy
+- numpy
+- matplotlib
+- h5py
+- scipy
 - tqdm
-- Gooey (optional for GUI)
+- gif (optional for making gifs)
+- gooey (optional for GUI)
 
 ## GUI
 
