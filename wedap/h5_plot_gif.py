@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import gif
 from tqdm.auto import tqdm
 
+# (optional) use a custom defined mpl style
 plt.style.use("styles/default.mplstyle")
 
 # (optional) set the dots per inch resolution to 300:
@@ -34,6 +35,7 @@ def plot(iteration, avg_plus=100):
                     "bins" : 100,
                     "plot_mode" : "contour",
                     #"cmap" : "gnuplot_r",
+                    "cbar_label" : "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
                     }
 
     plot_options = {"ylabel" : "C2 Angle (°)",
@@ -51,7 +53,9 @@ def plot(iteration, avg_plus=100):
 # having at least 100 frames makes for a good length gif
 frames = []
 # set the range to be the iterations at a specified interval
-for i in tqdm(range(1, 350, 5), desc="GIF Progress"):
+# so here I am looking at every 5 iterations from 1-350
+# noting that avg_plus is 100 so it goes up to 450 iterations
+for i in tqdm(range(1, 355, 5), desc="GIF Progress"):
     frame = plot(i)
     frames.append(frame)
 

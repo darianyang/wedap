@@ -1,3 +1,7 @@
+"""
+To make a gif, using the gif package is much easier, but to make other formats,
+moviepy is prob the way to go.
+"""
 
 import wedap
 import matplotlib.pyplot as plt
