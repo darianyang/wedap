@@ -47,7 +47,7 @@ class H5_Pdist():
                  Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
                  Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=100, 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
-                 histrange_x=None, histrange_y=None):
+                 histrange_x=None, histrange_y=None, no_pbar=False):
         """
         Parameters
         ----------
@@ -213,6 +213,7 @@ class H5_Pdist():
         self.skip_basis_out = skip_basis_out
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
+        self.no_pbar = no_pbar
 
     def _get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
         """
@@ -396,7 +397,8 @@ class H5_Pdist():
                         skip_parents_n = []
 
                         # zero the next iteration's children until last_iter
-                        for iter in tqdm(range(1, self.last_iter + 1), desc="skip_basis"):
+                        for iter in tqdm(range(1, self.last_iter + 1), 
+                                         desc="skip_basis", disable=self.no_pbar):
                             for idx in skip_parents_c:
                                 # make zero for each child of skip_basis
                                 self.weights[iter-1][idx] = 0
@@ -650,7 +652,8 @@ class H5_Pdist():
         evolution_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
         positions_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
 
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Evolution"):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+                         desc="Evolution", disable=self.no_pbar):
             # account for first_iter arg for array indexing
             iter_index = iter - self.first_iter + 1
             # generate evolution x data
@@ -719,7 +722,8 @@ class H5_Pdist():
         evolution_x = np.zeros((self.last_iter, self.bins))
         positions_x = np.zeros((self.last_iter, self.bins))
 
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Average 1D"):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+                         desc="Average 1D", disable=self.no_pbar):
             # generate evolution x data
             center_x, counts_total_x = self.aux_to_pdist_1d(iter)
             evolution_x[iter - 1] = counts_total_x
@@ -744,7 +748,8 @@ class H5_Pdist():
         average_xy = np.zeros((self.bins, self.bins))
 
         # 2D avg pdist data generation
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Average 2D"):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+                         desc="Average 2D", disable=self.no_pbar):
             center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
 
@@ -769,7 +774,8 @@ class H5_Pdist():
 
         # loop each iteration
         seg_start = 0
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Average 3D"):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+                         desc="Average 3D", disable=self.no_pbar):
             # then go through and add all segments/walkers in the iteration
             X[seg_start:seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(self.Xname, self.Xindex, iter)
@@ -838,7 +844,8 @@ class H5_Pdist():
     
         # loop each iteration
         seg_start = 0
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), desc="Getting Data Array"):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+                         desc="Getting Data Array", disable=self.no_pbar):
             # then go through and add all segments/walkers in the iteration
             data[seg_start : seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(name, index, iter)

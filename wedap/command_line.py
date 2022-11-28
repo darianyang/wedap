@@ -250,6 +250,10 @@ def create_cmd_arguments():
                         help = "Include this argument to not output the plot to "
                         "your display.", 
                         action= "store_true") 
+    optional.add_argument("-npb", "--no-progress-bar",
+                        dest = "no_pbar",
+                        help = "Include this argument to not output the tqdm progress bar.",
+                        action= "store_true")
 
     # plot tracing arg group
     trace = parser.add_argument_group("Optional Plot Tracing", 

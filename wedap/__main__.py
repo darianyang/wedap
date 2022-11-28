@@ -58,7 +58,7 @@ def main():
                     Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
                     Zindex=args.Zindex, first_iter=args.first_iter, 
                     last_iter=args.last_iter, bins=args.bins, T=args.T,
-                    weighted=weighted, p_units=args.p_units)
+                    weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar)
     X, Y, Z = pdist.pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
                    contour_interval=args.contour_interval, p_min=args.p_min,
