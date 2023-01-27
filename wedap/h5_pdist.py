@@ -43,8 +43,8 @@ class H5_Pdist():
     These class methods generate probability distributions from a WESTPA H5 file.
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
-    def __init__(self, h5, data_type, Xname="pcoord", Xindex=0, Yname=None, Yindex=0,
-                 Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
+    def __init__(self, h5="west.h5", data_type="evolution", Xname="pcoord", Xindex=0, Yname=None, 
+                 Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
                  Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=100, 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None, no_pbar=False):
@@ -545,6 +545,29 @@ class H5_Pdist():
         ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=2)
         ax.plot(aux_x[:,0], aux_y[:,0], c=color, lw=1)
 
+    def w_succ(self):
+        """
+        Find and return all successfully recycled (iter, seg) pairs.
+        TODO: eventually can use this to plot pdist of succ only trajs
+              note that I would have to norm by the overall pmax (not just succ pmax)
+              Could have this be an optional feature.
+        """
+        succ = []
+        for iter in range(self.last_iter):
+            # if the new_weights group exists in the h5 file
+            if f"iterations/iter_{iter:08d}/new_weights" in self.h5:
+                prev_segs = self.f[f"iterations/iter_{iter:08d}/new_weights/index"]["prev_seg_id"]
+                # append the previous iter and previous seg id recycled
+                for seg in prev_segs:
+                    succ.append((iter-1, seg))
+        # TODO: order this by iter and seg vals? currently segs not sorted but is iter ordered
+        return succ
+    def succ_pdist(self):
+        """
+        Filter weights to be zero for all non successfull trajectories.
+        Make an array of zero weights and fill out weights for succ trajs only.
+        """
+        pass
     ###############################################################################
 
     def aux_to_pdist_1d(self, iteration):

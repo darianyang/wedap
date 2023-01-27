@@ -22,7 +22,7 @@ TODO: maybe make methods for the following plots:
         maybe a ridgeline plot?
             This would be maybe for 1D avg of every 100 iterations
             https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/
-                
+        Option to overlay different datasets, could be done easily with python but maybe a cli option?                
 
 TODO: plot clustering centroids option
       can then grab the search_aux at the centroid
@@ -51,19 +51,16 @@ from .h5_pdist import *
 
 class H5_Plot(H5_Pdist):
 
-    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", 
-        color="tab:blue", ax=None, plot_options=None, p_min=0, p_max=None, contour_interval=1,
-        cbar_label=None, data_smoothing_level=None, curve_smoothing_level=None, *args, **kwargs):
+    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", smoothing_level=None,
+        color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,
+        cbar_label=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.TODO: update docstrings
 
         Parameters
         ----------
-        # TODO: add/fix data smoothing
-        data_smoothing_level : float
-            A good value is around 0.4.
-        curve_smoothing_level : float
-            A good value is around 0.4.
+        smoothing_level : float
+            Optionally add gaussian noise to smooth Z data. A good value is around 0.4 to 1.0.
         x, y : ndarray
             x and y axis values, and if using aux_y or evolution (with only aux_x), also must input Z.
         Z : ndarray
@@ -94,8 +91,7 @@ class H5_Plot(H5_Pdist):
             self.fig = plt.gcf()
             self.ax = ax
 
-        self.data_smoothing_level = data_smoothing_level
-        self.curve_smoothing_level = curve_smoothing_level
+        self.smoothing_level = smoothing_level
 
         # TODO: option if you want to generate pdist
         # also need option of just using the input X Y Z args
@@ -187,24 +183,20 @@ class H5_Plot(H5_Pdist):
     def plot_contour(self):
         # TODO: seperate functions for contourf and contourl?
             # then can use hist and contourl
+        # TODO: could clean up this logic better
+        if self.p_min is None:
+            self.p_min = np.min(self.Z)
         # 2D contour plots
         if self.p_max is None:
             warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
-            levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), 1)
+            levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), self.contour_interval)
         elif self.p_max <= 1:
             warn("You may want to change the `contour_interval` argument to be < 1")
             levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
         else:
             levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
 
-        # TODO: better implementation of this
-        if self.curve_smoothing_level:
-            # TODO: gets rid of nan, I don't think needed here since _smooth does this
-            #self.Z_curves[np.isnan(self.Z_curves)] = np.max(self.Z)*2
-            self.lines = self.ax.contour(self.X, self.Y, self.Z_curves, levels=levels, colors="black", linewidths=1)
-        else:
-            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
-
+        self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
         self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
 
     def plot_bar(self):
@@ -273,18 +265,9 @@ class H5_Plot(H5_Pdist):
 
     # TODO: i think the data smoothing works but not the curve
     def _smooth(self):
-        if self.data_smoothing_level is not None:
-            self.Z[np.isnan(self.Z)] = np.nanmax(self.Z)
-            self.Z = scipy.ndimage.filters.gaussian_filter(self.Z, 
-                                self.data_smoothing_level)
-        if self.curve_smoothing_level is not None:
-            self.Z_curves[np.isnan(self.Z_curves)] = np.nanmax(self.Z_curves)
-            self.Z_curves = scipy.ndimage.filters.gaussian_filter(self.Z_curves, 
-                                self.curve_smoothing_level)
-        self.Z[np.isnan(self.Z)] = np.nan 
-        #self.Z_curves[np.isnan(self.Z)] = np.nan 
-        #self.Z_curves[np.isinf(self.Z_curves)] = np.max(self.Z)*2
-        # TODO: are any of these needed, the Z_curve seems to not change much
+        # TODO: this works well smoothing, try it
+        if self.smoothing is False:
+            self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=1.0)
 
     def plot(self, cbar=True):
         """
@@ -294,13 +277,12 @@ class H5_Plot(H5_Pdist):
 
         TODO: some kind 1d vs 2d indicator, then if not 1d plot cbar
         """
+        # smooth the data if specified
+        if self.smoothing_level:
+            self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=self.smoothing_level)
+
         if self.plot_mode == "contour":
-            # Do data smoothing. We have to make copies of the array so that
-            # the data and curves can have different smoothing levels.
-            self.Z_curves = np.copy(self.Z)
-            self._smooth()
             self.plot_contour()
-            #self.add_cbar()
 
         # TODO: auto label WE iterations on evolution? (done via __main__ right now)
         elif self.plot_mode == "hist2d":
@@ -330,11 +312,9 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "scatter3d":
             self.plot_scatter3d()
-            #self.add_cbar()
 
         elif self.plot_mode == "hexbin3d":
             self.plot_hexbin3d()
-            #self.add_cbar()
 
         # error if unknown plot_mode
         else:

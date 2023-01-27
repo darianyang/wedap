@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
     <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
     <py-env>
-      - gooey
       - wedap
       - matplotlib
     </py-env>
@@ -17,9 +16,9 @@
 import wedap
 import matplotlib.pyplot as plt
 
-wedap.H5_Plot(h5="wedap/data/p53.h5", data_type="evolution").plot()
-plt.show()
-
+plot = wedap.H5_Plot(h5="wedap/data/p53.h5", data_type="evolution").plot()
+#plt.show()
+plot.fig
       </py-script>
     </body>
 </html>

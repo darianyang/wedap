@@ -203,6 +203,12 @@ def create_cmd_arguments():
                         help="If using plot-mode contour, "
                              "This sets the interval of contour level.",
                         type=float)
+    optional.add_argument("-sd", "--smooth-data", default=None, 
+                        dest="smoothing_level",
+                        help="Smooth data (plotted as histogram or contour"
+                             " levels) using a gaussian filter with sigma="
+                             "SMOOTHING_LEVEL.",
+                        type=float)
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p-units'.",
                         type=int)
@@ -230,14 +236,6 @@ def create_cmd_arguments():
     optional.add_argument("--color",
                         dest="color", help="Color for 1D plots and trace plots.",
                         widget="ColourChooser")
-
-    # TODO
-    # parser.add_argument('--smooth-data', default = None, 
-    #                     dest='data_smoothing_level',
-    #                     help='Smooth data (plotted as histogram or contour'
-    #                             ' levels) using a gaussian filter with sigma='
-    #                             'DATA_SMOOTHING_LEVEL.',
-    #                     type=float)
 
     # create optional flag to output everything to console screen
     # TODO: not sure if this works properly
