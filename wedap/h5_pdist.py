@@ -371,10 +371,14 @@ class H5_Pdist():
         # then sort to the original bstate ordering
         it1_unique_coords = np.array([it1_coords[index] \
                             for index in sorted(it1_unique_indices)])
-        # make sure that traced unique pcoord elements match the basis state values
-        if np.isclose(bs_coords[:,0], it1_unique_coords, rtol=1e-04) is False:
-            message = f"The traced pcoord \n{it1_unique_coords} \ndoes not equal " + \
-                      f"the basis state coordinates \n{bs_coords}"
+        try:
+            # make sure that traced unique pcoord elements match the basis state values
+            if np.isclose(bs_coords[:,0], it1_unique_coords, rtol=1e-04) is False:
+                message = f"The traced pcoord \n{it1_unique_coords} \ndoes not equal " + \
+                        f"the basis state coordinates \n{bs_coords}"
+                warn(message)
+        except ValueError:
+            message = "Not all bstates may have been used in iteration 1."
             warn(message)
 
         # if the basis state binary is a 1 in skip_basis, use weight 0 
