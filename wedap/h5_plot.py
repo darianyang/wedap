@@ -207,13 +207,13 @@ class H5_Plot(H5_Pdist):
         #self.ax.bar(self.X, self.Y, color=self.color)
         self.ax.set_ylabel("P(x)")
 
-    def plot_hist1d(self):
-        # 1D data : TODO: not working currently
-        # recover the pdf from the -ln P
-        # TODO: does this account for p_max naturally?
-        # TODO: I can get the raw data and then get the counts right from XYZ functions
-        self.ax.hist(self.X, self.Y)
-        self.ax.set_ylabel("P(x)")
+    # def plot_hist1d(self):
+    #     # 1D data : TODO: not working currently
+    #     # recover the pdf from the -ln P
+    #     # TODO: does this account for p_max naturally?
+    #     # TODO: I can get the raw data and then get the counts right from XYZ functions
+    #     self.ax.hist(self.X, self.Y)
+    #     self.ax.set_ylabel("P(x)")
 
     def plot_line(self):
         # 1D data
@@ -307,10 +307,6 @@ class H5_Plot(H5_Pdist):
             self.plot_line()
             self.ax.set_ylabel(self.cbar_label)
 
-        elif self.plot_mode == "hist1d":
-            self.plot_hist1d()
-            self.ax.set_ylabel("Counts")
-
         elif self.plot_mode == "scatter3d":
             self.plot_scatter3d()
 
@@ -327,8 +323,8 @@ class H5_Plot(H5_Pdist):
         # if self.Yname == "pcoord":
         #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
-        # don't add cbar if not specified or if using a 1D plot
-        if cbar and self.plot_mode not in ["hist1d", "line", "bar"]:
+        # don't add cbar if not specified or if using a 1D plot (TODO: test this)
+        if cbar and self.plot_mode not in ["line", "bar"]:
             self.add_cbar()
 
         if self.plot_options is not None:
