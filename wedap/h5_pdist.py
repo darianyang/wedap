@@ -89,8 +89,9 @@ class H5_Pdist():
         bins : int TODO: seperate into x and y?
             amount of histogram bins in pdist data to be generated, default 100.
         p_units : str
-            Can be 'kT' (default) or 'kcal'. 
+            Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
+            'raw' is the raw probabilities and 'raw_norm' is the raw probabilities P(max) normalized.
         T : int
             Temperature if using kcal/mol.
         weighted : bool
@@ -322,8 +323,14 @@ class H5_Pdist():
         elif self.p_units == "kcal":
             # Gas constant R = 1.9872 cal/K*mol or 0.0019872 kcal/K*mol
             hist = -0.0019872 * self.T * np.log(hist / np.max(hist))
+        # raw probability
+        elif self.p_units == "raw":
+            hist = hist
+        # raw normalized probability (P(x)/P(max))
+        elif self.p_units == "raw_norm":
+            hist = hist / np.max(hist)
         else:
-            raise ValueError("Invalid p_units value, must be 'kT' or 'kcal'.")
+            raise ValueError("Invalid p_units value, must be 'kT', 'kcal', 'raw', or 'raw_norm'.")
         return hist
 
     def _get_children_indices(self, parent):
@@ -428,6 +435,8 @@ class H5_Pdist():
     # TODO: clean up and optimize
     def search_aux_xy_nn(self, val_x, val_y):
         """
+        Originally adapted from code by Jeremy Leung.
+
         Parameters
         ----------
         # TODO: add step size for searching, right now gets the last frame
@@ -1006,10 +1015,10 @@ class H5_Pdist():
                 X, Y = self.average_pdist_1d()
                 return X, Y, np.ones((self.first_iter, self.last_iter))
 
-if __name__ == "__main__":
-    total_array_out = np.loadtxt("p53_X_array.txt")
-    original_array = np.loadtxt("p53_X_array_noreshape.txt")
+#if __name__ == "__main__":
+    # total_array_out = np.loadtxt("p53_X_array.txt")
+    # original_array = np.loadtxt("p53_X_array_noreshape.txt")
     
-    h5 = H5_Pdist("data/p53.h5", data_type="evolution")
+    # h5 = H5_Pdist("data/p53.h5", data_type="evolution")
     # TODO: test Zname with data_array
     

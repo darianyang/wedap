@@ -45,6 +45,10 @@ def main():
         cbar_label = "$-\ln\,P(x)$"
     elif args.p_units == "kcal":
         cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+    elif args.p_units == "raw":
+        cbar_label = "Counts"
+    elif args.p_units == "raw_norm":
+        cbar_label = "Normalized Counts"
 
     # a poor workaround for now for the weighted arg
     # this is only to make the gooey formatting look nicer in terms of the checkbox
