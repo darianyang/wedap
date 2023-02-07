@@ -269,6 +269,7 @@ class H5_Plot(H5_Pdist):
         if self.smoothing is False:
             self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=1.0)
 
+    # TODO: cbar issues with
     def plot(self, cbar=True):
         """
         Main public method.
@@ -326,7 +327,8 @@ class H5_Plot(H5_Pdist):
         # if self.Yname == "pcoord":
         #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
-        if cbar:
+        # don't add cbar if not specified or if using a 1D plot
+        if cbar and self.plot_mode not in ["hist1d", "line", "bar"]:
             self.add_cbar()
 
         if self.plot_options is not None:
