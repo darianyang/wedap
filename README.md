@@ -54,8 +54,11 @@ conda install -c conda-forge gooey
 pip install .
 ```
 If you don't need the GUI, then installing gooey is not required
+``` bash
+pip install wedap
+```
 
-Note that gooey is kindof troublesome to pip install in some systems, which is also why it's not included in the requirements (although it is required for the GUI). I am trying to fix this but for now I reccomend conda installing gooey.
+Note that gooey is kindof troublesome to pip install in some systems, which is also why it's not included in the requirements (although it is required for the GUI). For now I reccomend conda installing gooey.
 
 ## Examples
 
