@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quickstart Guide &mdash; wedap  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -10,10 +11,10 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -26,11 +27,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> wedap
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            wedap
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -39,10 +44,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#subheader">Subheader</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
@@ -61,8 +64,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Quickstart Guide</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart Guide</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -72,19 +75,72 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="quickstart-guide">
-<h1>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Permalink to this headline"></a></h1>
-<p>To do a developmental install, type</p>
-<p><cite>pip install -e .</cite></p>
-<div class="section" id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
-<p>You need to install <cite>numpy</cite></p>
-<div class="section" id="subheader">
-<h3>Subheader<a class="headerlink" href="#subheader" title="Permalink to this headline"></a></h3>
-<p>Sample subheader</p>
+  <section id="quickstart-guide">
+<h1>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Permalink to this heading"></a></h1>
+<p>To install with the GUI:</p>
+<p><code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">gooey</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">wedap</span></code></p>
+<p>If you don’t need the GUI, then you can just pip install.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">wedap</span></code></p>
+<p>To do a developmental install, clone the github repo and run:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/darianyang/wedap.git</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">wedap</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code></p>
+<p>in the cloned wedap directory.</p>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>numpy</p></li>
+<li><p>matplotlib</p></li>
+<li><p>h5py</p></li>
+<li><p>scipy</p></li>
+<li><p>tqdm</p></li>
+<li><p>gif (optional for making gifs)</p></li>
+<li><p>gooey (optional for GUI)</p></li>
+</ul>
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Permalink to this heading"></a></h2>
+<p>After installation, to run the CLI version and view available options:</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">--help</span></code></p>
+<p>Or:</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h</span></code></p>
+<p>To start the GUI simply input:</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span></code></p>
+<p>To start the GUI on MacOSX:</p>
+<p><code class="docutils literal notranslate"><span class="pre">pythonw</span> <span class="pre">/Path/to/wedap/git/repo/wedap/wedap</span></code></p>
+<p>To visualize the evolution of the pcoord for the example p53.h5 file via CLI:</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h5</span> <span class="pre">wedap/data/p53.h5</span></code></p>
+<p>To do the same with the API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">wedap</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;wedap/data/p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;evolution&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
-</div>
-</div>
+<p>The resulting <code class="docutils literal notranslate"><span class="pre">p53.h5</span></code> file evolution plot will look like this:</p>
+<p align="left">
+<img src="https://github.com/darianyang/wedap/blob/main/examples/p53_evo.png?raw=true" alt="p53 evo plot" width="400">
+</p><p>See the examples directory for more realistic applications using the Python API.</p>
+<p>Evolution plots are created by default using the CLI and GUI but average and instant probability distribution options are also available. To use one of your auxiliary datasets instead of the progress coordinate, just include the name of the aux dataset from your h5 file in the <code class="docutils literal notranslate"><span class="pre">--Xname</span></code> or <code class="docutils literal notranslate"><span class="pre">--Yname</span></code> fields:</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h5</span> <span class="pre">wedap/data/p53.h5</span> <span class="pre">--data_type</span> <span class="pre">average</span> <span class="pre">--Xname</span> <span class="pre">dihedral_10</span> <span class="pre">--Yname</span> <span class="pre">dihedral_11</span></code></p>
+<p>Or:</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h5</span> <span class="pre">wedap/data/p53.h5</span> <span class="pre">-dt</span> <span class="pre">average</span> <span class="pre">-X</span> <span class="pre">dihedral_10</span> <span class="pre">-Y</span> <span class="pre">dihedral_11</span></code></p>
+<p>The resulting <code class="docutils literal notranslate"><span class="pre">p53.h5</span></code> file average plot of the dihedral aux datasets will look like this:</p>
+<p align="left">
+<img src="https://github.com/darianyang/wedap/blob/main/examples/p53_avg_aux.png?raw=true" alt="p53 avg aux plot" width="400">
+</p><p>If you used a multi-dimensional progress coordinate and you want to use your pcoord for both the X and Y dimensions in a 2D average or instant plot, just use <code class="docutils literal notranslate"><span class="pre">pcoord</span></code> with the corresponding index set to the appropriate dimension (this also works with aux datasets which may have an additional dimension):</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h5</span> <span class="pre">wedap/data/p53.h5</span> <span class="pre">--data_type</span> <span class="pre">average</span> <span class="pre">--Xname</span> <span class="pre">pcoord</span> <span class="pre">--Xindex</span> <span class="pre">0</span> <span class="pre">--Yname</span> <span class="pre">pcoord</span> <span class="pre">--Yindex</span> <span class="pre">1</span></code></p>
+<p>Or:</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h5</span> <span class="pre">wedap/data/p53.h5</span> <span class="pre">-dt</span> <span class="pre">average</span> <span class="pre">-X</span> <span class="pre">pcoord</span> <span class="pre">-Xi</span> <span class="pre">0</span> <span class="pre">-Y</span> <span class="pre">pcoord</span> <span class="pre">-Yi</span> <span class="pre">1</span></code></p>
+<p>Or (since the default X options are the first pcoord, only the second pcoord needs to be specified):</p>
+<p><code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h5</span> <span class="pre">wedap/data/p53.h5</span> <span class="pre">-dt</span> <span class="pre">average</span> <span class="pre">-Y</span> <span class="pre">pcoord</span> <span class="pre">-Yi</span> <span class="pre">1</span></code></p>
+<p>The resulting <code class="docutils literal notranslate"><span class="pre">p53.h5</span></code> file average plot of the pcoord datasets will look like this:</p>
+<p align="left">
+<img src="https://github.com/darianyang/wedap/blob/main/examples/p53_avg_pcoord.png?raw=true" alt="p53 avg pcoord plot" width="400">
+</p></section>
+</section>
 
 
            </div>

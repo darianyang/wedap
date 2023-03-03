@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>wedap.H5_Pdist &mdash; wedap  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -10,10 +11,10 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -26,11 +27,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> wedap
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wedap
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -40,7 +45,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">wedap.H5_Pdist</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">wedap.H5_Pdist</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wedap.H5_Pdist"><code class="docutils literal notranslate"><span class="pre">H5_Pdist</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.H5_Pdist.__init__"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wedap.H5_Plot.html">wedap.H5_Plot</a></li>
 </ul>
 </li>
@@ -59,9 +70,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">API Documentation</a> &raquo;</li>
-      <li>wedap.H5_Pdist</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">wedap.H5_Pdist</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/autosummary/wedap.H5_Pdist.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -71,19 +82,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="wedap-h5-pdist">
-<h1>wedap.H5_Pdist<a class="headerlink" href="#wedap-h5-pdist" title="Permalink to this headline"></a></h1>
+  <section id="wedap-h5-pdist">
+<h1>wedap.H5_Pdist<a class="headerlink" href="#wedap-h5-pdist" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="wedap.H5_Pdist">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.</span></span><span class="sig-name descname"><span class="pre">H5_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.H5_Pdist" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.</span></span><span class="sig-name descname"><span class="pre">H5_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'west.h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'evolution'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H5save_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ysave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.H5_Pdist" title="Permalink to this definition"></a></dt>
 <dd><p>These class methods generate probability distributions from a WESTPA H5 file.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.H5_Pdist.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.H5_Pdist.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'west.h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'evolution'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H5save_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ysave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.H5_Pdist.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>h5</strong> (<em>str</em>) – path to west.h5 file</p></li>
+<li><p><strong>h5</strong> (<em>str</em>) – path to west.h5 file
+TODO: list of h5 files.</p></li>
 <li><p><strong>data_type</strong> (<em>str</em>) – ‘evolution’ (1 dataset); ‘average’ or ‘instant’ (1 or 2 datasets)</p></li>
 <li><p><strong>Xname</strong> (<em>str</em>) – target data for x axis, default pcoord.</p></li>
 <li><p><strong>Xindex</strong> (<em>int</em>) – If X.ndim &gt; 2, use this to index.</p></li>
@@ -95,14 +107,25 @@ This will be best plotted as a scatter plot with Z as the marker color.
 Instead of returning the pdist, only the XYZ datasets will be returned.
 This is becasue the weights/pdist isn’t considered.</p></li>
 <li><p><strong>Zindex</strong> (<em>int</em>) – If Z.ndim &gt; 2, use this to index.</p></li>
+<li><p><strong>H5save_out</strong> (<em>str</em>) – Paths to save a new H5 file with this dataset name.
+Right now it saves the requested X Y or Z data into a new aux_name.
+Note if you use this feature the input data must be the same shape and formatting as the other
+H5 file datasets. (TODO: organization?)</p></li>
+<li><p><strong>Xsave_name, Ysave_name, Zsave_name</strong> (<em>str</em>) – Respective names to call the new dataset saved into the new H5 file.</p></li>
 <li><p><strong>first_iter</strong> (<em>int</em>) – Default start plot at iteration 1 data.</p></li>
 <li><p><strong>last_iter</strong> (<em>int</em>) – Last iteration data to include, default is the last recorded iteration in the west.h5 file. Note that <cite>instant</cite> type pdists only depend on last_iter.</p></li>
-<li><p><strong>bins</strong> (<em>int TODO: x and y?</em>) – amount of histogram bins in pdist data to be generated, default 100.</p></li>
-<li><p><strong>p_units</strong> (<em>str</em>) – Can be ‘kT’ (default) or ‘kcal’.
-kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.</p></li>
+<li><p><strong>data_proc</strong> (<em>function or tuple of functions</em>) – Of the form f(data) where data has rows=segments, columns=frames until tau, depth=data dims.
+The input function must return a processed array of the same shape and formatting.</p></li>
+<li><p><strong>bins</strong> (<em>int TODO: seperate into x and y?</em>) – amount of histogram bins in pdist data to be generated, default 100.</p></li>
+<li><p><strong>p_units</strong> (<em>str</em>) – Can be ‘kT’ (default), ‘kcal’, ‘raw’, or ‘raw_norm’.
+kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.
+‘raw’ is the raw probabilities and ‘raw_norm’ is the raw probabilities P(max) normalized.</p></li>
 <li><p><strong>T</strong> (<em>int</em>) – Temperature if using kcal/mol.</p></li>
 <li><p><strong>weighted</strong> (<em>bool</em>) – Default True, use WE segment weights in pdist calculation.</p></li>
-<li><p><strong>TODO</strong> (<em>histrangexy args, maybe also binsfromexpression?</em>)</p></li>
+<li><p><strong>skip_basis</strong> (<em>list</em>) – List of binaries for each basis state to determine if it is skipped.
+e.g. [0, 0, 1] would only consider the trajectory data from basis
+states 1 and 2 but would skip basis state 3, applying zero weights.</p></li>
+<li><p><strong>TODO</strong> (<em>histrangexy args and docstring, maybe also binsfromexpression?</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -110,14 +133,10 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.</p><
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#wedap.H5_Pdist.__init__" title="wedap.H5_Pdist.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(h5, data_type[, Xname, Xindex, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#wedap.H5_Pdist.__init__" title="wedap.H5_Pdist.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([h5, data_type, Xname, Xindex, ...])</p></td>
 <td><p><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>h5</strong> (<em>str</em>) -- path to west.h5 file</p></li>
 </ul>
@@ -136,7 +155,7 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.</p><
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_1d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
-<dt class="field-odd">returns</dt>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
 </dd>
 </dl>
@@ -144,7 +163,7 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.</p><
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_2d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
-<dt class="field-odd">returns</dt>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.</p>
 </dd>
 </dl>
@@ -164,12 +183,24 @@ x and y axis values, and if using Y or evolution (with only X),
 also returns norm_hist.
 norm_hist is a 2-D matrix of the normalized histogram values.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_weights</span></code>()</p></td>
+<td><p>Returns an 1D array of the weight for every frame of each tau for all segments of all iterations specified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coords</span></code>(path, data_name, data_index)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parents</span></code>(walker_tuple)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_total_data_array</span></code>(name[, index, ...])</p></td>
+<td><p>Loop through all iterations specified and get a 1d raw data array. # TODO: this could be organized better with my other methods         maybe I can separate the helper functions into another class         for extracting and moving data around, this pdist class could         be used strictly for making pdists from a nice and standard data         array input that is handled by the H5_Processing class.</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_datasets_3d</span></code>()</p></td>
 <td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_1d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
-<dt class="field-odd">returns</dt>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
 </dd>
 </dl>
@@ -177,7 +208,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_2d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
-<dt class="field-odd">returns</dt>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
 </dd>
 </dl>
@@ -186,11 +217,29 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p></td>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist</span></code>([avg3dint])</p></td>
 <td><p>Main public method with pdist generation controls.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code>(walker_tuple[, color, ax])</p></td>
+<td><p>Plot trace.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshape_total_data_array</span></code>(array)</p></td>
+<td><p>Take an input 1d array of the data values at every segment for each iteration, and reshape them to make pdists.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_aux_xy_nn</span></code>(val_x, val_y)</p></td>
+<td><p>Originally adapted from code by Jeremy Leung.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">succ_pdist</span></code>()</p></td>
+<td><p>Filter weights to be zero for all non successfull trajectories.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_walker</span></code>(walker_tuple)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">w_succ</span></code>()</p></td>
+<td><p>Find and return all successfully recycled (iter, seg) pairs. TODO: eventually can use this to plot pdist of succ only trajs       note that I would have to norm by the overall pmax (not just succ pmax)       Could have this be an optional feature.</p></td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
