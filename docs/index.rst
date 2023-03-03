@@ -13,3 +13,5 @@ Welcome to wedap's documentation!
    api
 
 * :ref:`genindex`
+
+`Github Repository <http://github.com/darianyang/wedap>`_
