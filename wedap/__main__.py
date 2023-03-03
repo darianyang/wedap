@@ -6,7 +6,7 @@ from wedap.h5_plot import *
 from wedap.command_line import *
 
 #from wedap.search_aux import *
-from wedap.h5_plot_trace import *
+#from wedap.h5_plot_trace import *
 
 # TODO: change to logging style instead of stdout
 #import logging
