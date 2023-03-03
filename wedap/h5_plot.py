@@ -50,6 +50,9 @@ from .h5_pdist import *
     # or read in a pdist.h5 and create pdist object using that dataset
 
 class H5_Plot(H5_Pdist):
+    """
+    These methods provide various plotting options for pdist data.
+    """
 
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", smoothing_level=None,
         color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,

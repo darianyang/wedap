@@ -9,10 +9,7 @@ pdist.h5 --plothist(with --postprocess-functions hist_settings.py)--> plot.pdf
 TODO: 
     - maybe add option to output pdist as file, this would speed up subsequent plotting
         of the same data.
-
-TODO: update docstrings
-
-TODO: add option for a list of equivalent h5 files, alternative to w_multi_west.
+    - add option for a list of equivalent h5 files, alternative to w_multi_west.
 """
 
 # TEMP for trace plot (TODO)
@@ -46,15 +43,14 @@ class H5_Pdist():
     # TODO: add step-iter
     def __init__(self, h5="west.h5", data_type="evolution", Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
-                 Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=100, 
+                 Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None, no_pbar=False):
         """
         Parameters
         ----------
         h5 : str
-            path to west.h5 file
-            TODO: list of h5 files.
+            path to west.h5 file.
         data_type : str
             'evolution' (1 dataset); 'average' or 'instant' (1 or 2 datasets)
         Xname : str
@@ -80,15 +76,16 @@ class H5_Pdist():
             H5 file datasets. (TODO: organization?)
         Xsave_name, Ysave_name, Zsave_name : str
             Respective names to call the new dataset saved into the new H5 file.
-        first_iter : int
-            Default start plot at iteration 1 data.
-        last_iter : int
-            Last iteration data to include, default is the last recorded iteration in the west.h5 file. Note that `instant` type pdists only depend on last_iter.
         data_proc : function or tuple of functions
             Of the form f(data) where data has rows=segments, columns=frames until tau, depth=data dims.
             The input function must return a processed array of the same shape and formatting.
-        bins : int TODO: seperate into x and y?
-            amount of histogram bins in pdist data to be generated, default 100.
+        first_iter : int
+            Default start plot at iteration 1 data.
+        last_iter : int
+            Last iteration data to include, default is the last recorded iteration in the west.h5 file. 
+            Note that `instant` type pdists only depend on last_iter.
+        bins : int
+            Histogram bins in pdist data to be generated for x and y datasets, default both 100.
         p_units : str
             Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
@@ -101,7 +98,13 @@ class H5_Pdist():
             List of binaries for each basis state to determine if it is skipped.
             e.g. [0, 0, 1] would only consider the trajectory data from basis 
             states 1 and 2 but would skip basis state 3, applying zero weights.
-        TODO: histrangexy args and docstring, maybe also binsfromexpression?
+        skip_basis_out : str
+            Name of the outfile h5 file for optionally outputting new skipped basis h5 dataset.
+        histrange_x, histrange_y : list or tuple of 2 floats or ints
+            Optionally put custom bin ranges.
+        no_pbar : bool
+            Optionally do not include the progress bar for pdist generation.
+        TODO: maybe also binsfromexpression?
         """
         # TODO: maybe change self.f to self.h5?
         self.h5 = h5
@@ -177,7 +180,6 @@ class H5_Pdist():
         else:
             self.first_iter = first_iter
 
-        # TODO: split into x and y bins
         self.bins = bins
 
         # save the available aux dataset names]
@@ -221,6 +223,24 @@ class H5_Pdist():
         """
         Extract, index, and return the aux/data array of interest.
         Rows are segments, columns are frames until tau, depth is ndimensional datasets.
+
+        Parameters
+        ----------
+        name : str
+            Dataset name.
+        index : int
+            Dataset index.
+        iteration : int
+            WE iteration.
+        h5_create : str
+            Name of the h5 file to add the dataset to.
+        h5_create_name : str
+            Name of the dataset that is being placed into the h5 file.
+
+        Returns
+        -------
+        data : ndarray
+            Dataset of interest from the H5 file.
         """
         # if the user puts in an array object instead of a string dataset name
         if isinstance(name, np.ndarray):
@@ -278,8 +298,10 @@ class H5_Pdist():
 
         Parameters
         ----------
-        aux : str
-            target auxillary data for range calculation
+        name : str
+            Target auxillary data name for range calculation.
+        index : int
+            Target auxillary data index for range calculation.
 
         Returns
         -------
@@ -437,12 +459,15 @@ class H5_Pdist():
     def search_aux_xy_nn(self, val_x, val_y):
         """
         Originally adapted from code by Jeremy Leung.
+        Tree search to find closest datapoint to input data value(s).
 
         Parameters
         ----------
         # TODO: add step size for searching, right now gets the last frame
         val_x : int or float
+            X dataset value to search for.
         val_y : int or float
+            Y dataset value to search for.
         """
         # iter is already known when searching evo data
         if self.data_type == "evolution":
@@ -510,11 +535,36 @@ class H5_Pdist():
 
     ##################### TODO: update or organize this #############################
     def get_parents(self, walker_tuple):
+        """
+        Get parent of an input (iteration, walker).
+
+        Parameters
+        ----------
+        walker_tuple : tuple
+            (iteration, walker)
+
+        Returns
+        -------
+        parent : iteration, walker
+        """
         it, wlk = walker_tuple
         parent = self.f[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
         return it-1, parent
 
     def trace_walker(self, walker_tuple):
+        """
+        Get trace path of an input (iteration, walker).
+
+        Parameters
+        ----------
+        walker_tuple : tuple
+            (iteration, walker)
+
+        Returns
+        -------
+        trace : list of tuples
+            Tuples are (iteration, walker) traces.
+        """
         # Unroll the tuple into iteration/walker 
         it, wlk = walker_tuple
         # Initialize our path
@@ -526,6 +576,23 @@ class H5_Pdist():
         return np.array(sorted(path, key=lambda x: x[0]))
 
     def get_coords(self, path, data_name, data_index):
+        """
+        Get a list of data coordinates for plotting traces.
+
+        Parameters
+        ----------
+        path : list of tuples
+            Tuples are (iteration, walker) traces.
+        data_name : str
+            Name of dataset.
+        data_index : int
+            Index of dataset.
+
+        Returns
+        -------
+        coordinates : array
+            Array of coordinates from the list of (iteration, walker) tuples.
+        """
         # Initialize a list for the pcoords
         coords = []
         # Loop over the path and get the pcoords for each walker
@@ -536,7 +603,15 @@ class H5_Pdist():
     def plot_trace(self, walker_tuple, color="white", ax=None):
         """
         Plot trace.
+
+        Parameters
+        ----------
+        walker_tuple : tuple
+            (iteration, walker) start point to trace from.
+        color : str
+        ax : mpl axes object
         """
+        # TODO: update/streamline this
         if ax is None:
             fig, ax = plt.subplots(figsize=(7,5))
         else:
@@ -607,9 +682,9 @@ class H5_Pdist():
         aux = self._get_data_array(self.Xname, self.Xindex, iteration)
 
         # make an 1D array to fit the hist values based off of bin count
-        histogram = np.zeros((self.bins))
+        histogram = np.zeros((self.bins[0]))
         for seg in range(0, aux.shape[0]):
-            counts, bins = np.histogram(aux[seg], bins=self.bins, range=self.histrange_x)
+            counts, bins = np.histogram(aux[seg], bins=self.bins[0], range=self.histrange_x)
 
             # selectively apply weights
             if self.weighted is True:
@@ -650,7 +725,7 @@ class H5_Pdist():
         Y = self._get_data_array(self.Yname, self.Yindex, iteration)
 
         # 2D array to store hist counts for each timepoint in both dimensions
-        histogram = np.zeros((self.bins, self.bins))
+        histogram = np.zeros(self.bins)
         for seg in range(0, X.shape[0]):
             counts, bins_x, bins_y = np.histogram2d(X[seg], Y[seg], 
                                                     bins=self.bins, 
@@ -686,8 +761,8 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # make array to store hist (-lnP) values for n iterations of X
-        evolution_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
-        positions_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins))
+        evolution_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins[0]))
+        positions_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins[0]))
 
         for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
                          desc="Evolution", disable=self.no_pbar):
@@ -756,8 +831,8 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # make array to store hist (-lnP) values for n iterations of X
-        evolution_x = np.zeros((self.last_iter, self.bins))
-        positions_x = np.zeros((self.last_iter, self.bins))
+        evolution_x = np.zeros((self.last_iter, self.bins[0]))
+        positions_x = np.zeros((self.last_iter, self.bins[0]))
 
         for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
                          desc="Average 1D", disable=self.no_pbar):
@@ -782,7 +857,7 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         # empty array for 2D pdist
-        average_xy = np.zeros((self.bins, self.bins))
+        average_xy = np.zeros(self.bins)
 
         # 2D avg pdist data generation
         for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
@@ -862,8 +937,10 @@ class H5_Pdist():
 
         Parameters
         ----------
-        data_name : str
+        name : str
             Name of data from h5 file such as `pcoord` or an aux dataset.
+        index : int
+            Index of the data from h5 file.
         interval : int
             If more sparse data is needed for efficiency.
         reshape : bool
@@ -872,7 +949,7 @@ class H5_Pdist():
         Returns
         -------
         data : 1d array
-            Raw (unweighted) data array for the data_name specified.
+            Raw (unweighted) data array for the name specified.
         """
         data = np.zeros((self.current_particles, self.tau))
         # account for non-pcoord input strings
@@ -903,6 +980,7 @@ class H5_Pdist():
         Parameters
         ----------
         array : 1d array
+            Data values at every segment for each iteration.
 
         Returns
         -------
@@ -1022,4 +1100,3 @@ class H5_Pdist():
     
     # h5 = H5_Pdist("data/p53.h5", data_type="evolution")
     # TODO: test Zname with data_array
-    
