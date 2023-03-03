@@ -115,6 +115,8 @@ class H5_Plot(H5_Pdist):
         self.plot_options = plot_options
 
         # TODO: not compatible if inputing data instead of running pdist
+        # try checking for the variable first, could use a t/e block
+        #if self.p_units in locals():
         # if self.p_units == "kT":
         #     self.cbar_label = "$-\ln\,P(x)$"
         # elif self.p_units == "kcal":

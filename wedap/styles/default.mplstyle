@@ -14,5 +14,5 @@ ytick.major.width : 3
 ytick.minor.size : 4
 ytick.minor.width : 3
 savefig.dpi : 300
-#savefig.transparent : True
+savefig.transparent : True
 figure.figsize: 7, 5

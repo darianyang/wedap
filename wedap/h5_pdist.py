@@ -43,6 +43,7 @@ class H5_Pdist():
     These class methods generate probability distributions from a WESTPA H5 file.
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
+    # TODO: add step-iter
     def __init__(self, h5="west.h5", data_type="evolution", Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
                  Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=100, 
