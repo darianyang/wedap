@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wedap.command_line module &mdash; wedap  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="wedap" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            wedap
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">wedap</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">wedap.command_line module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wedap.command_line.create_cmd_arguments"><code class="docutils literal notranslate"><span class="pre">create_cmd_arguments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wedap.command_line.flex_add_argument"><code class="docutils literal notranslate"><span class="pre">flex_add_argument()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wedap.command_line.gui_decorator"><code class="docutils literal notranslate"><span class="pre">gui_decorator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wedap.command_line.handle_command_line"><code class="docutils literal notranslate"><span class="pre">handle_command_line()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wedap.h5_pdist">wedap.h5_pdist module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist"><code class="docutils literal notranslate"><span class="pre">H5_Pdist</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_1d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.aux_to_pdist_1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_2d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.aux_to_pdist_2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.average_datasets_3d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.average_datasets_3d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.average_pdist_1d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.average_pdist_1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.average_pdist_2d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.average_pdist_2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.evolution_pdist"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.evolution_pdist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.get_all_weights"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.get_all_weights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.get_coords"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.get_coords()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.get_parents"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.get_parents()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.get_total_data_array"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.get_total_data_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.instant_datasets_3d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.instant_datasets_3d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_1d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.instant_pdist_1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_2d"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.instant_pdist_2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.pdist"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.pdist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.plot_trace"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.plot_trace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.reshape_total_data_array"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.reshape_total_data_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.search_aux_xy_nn"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.search_aux_xy_nn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.succ_pdist"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.succ_pdist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.trace_walker"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.trace_walker()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_pdist.H5_Pdist.w_succ"><code class="docutils literal notranslate"><span class="pre">H5_Pdist.w_succ()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wedap.h5_plot">wedap.h5_plot module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wedap.h5_plot.H5_Plot"><code class="docutils literal notranslate"><span class="pre">H5_Plot</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.add_cbar"><code class="docutils literal notranslate"><span class="pre">H5_Plot.add_cbar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.plot"><code class="docutils literal notranslate"><span class="pre">H5_Plot.plot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.plot_bar"><code class="docutils literal notranslate"><span class="pre">H5_Plot.plot_bar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.plot_contour"><code class="docutils literal notranslate"><span class="pre">H5_Plot.plot_contour()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.plot_hexbin3d"><code class="docutils literal notranslate"><span class="pre">H5_Plot.plot_hexbin3d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.plot_hist2d"><code class="docutils literal notranslate"><span class="pre">H5_Plot.plot_hist2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.plot_line"><code class="docutils literal notranslate"><span class="pre">H5_Plot.plot_line()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wedap.h5_plot.H5_Plot.plot_scatter3d"><code class="docutils literal notranslate"><span class="pre">H5_Plot.plot_scatter3d()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">wedap</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">wedap</a></li>
+      <li class="breadcrumb-item active">wedap.command_line module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/wedap.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-wedap.command_line">
+<span id="wedap-command-line-module"></span><h1>wedap.command_line module<a class="headerlink" href="#module-wedap.command_line" title="Permalink to this heading"></a></h1>
+<p>Functions for handling command-line input using argparse module.</p>
+<dl class="simple">
+<dt>TODO: add option to split pdist and plot once the pdist to txt feature is done</dt><dd><p>so the pdist txt file could be: X_column, Y_column, Z_matrix_columns.
+This would be something like pdist.dap default and option to check and
+read in a wedap or westpa pdist file for pdist function.</p>
+</dd>
+</dl>
+<p>TODO: make the args consistent in cli and api</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="wedap.command_line.create_cmd_arguments">
+<span class="sig-prename descclassname"><span class="pre">wedap.command_line.</span></span><span class="sig-name descname"><span class="pre">create_cmd_arguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.command_line.create_cmd_arguments" title="Permalink to this definition"></a></dt>
+<dd><p>Use the <cite>argparse</cite> module to make the optional and required command-line
+arguments for the <cite>wedap</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An ArgumentParser that is used to retrieve command line arguments.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>argparse.ArgumentParser</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wedap.command_line.flex_add_argument">
+<span class="sig-prename descclassname"><span class="pre">wedap.command_line.</span></span><span class="sig-name descname"><span class="pre">flex_add_argument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.command_line.flex_add_argument" title="Permalink to this definition"></a></dt>
+<dd><p>Make the add_argument accept (and ignore) the widget option.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wedap.command_line.gui_decorator">
+<span class="sig-prename descclassname"><span class="pre">wedap.command_line.</span></span><span class="sig-name descname"><span class="pre">gui_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.command_line.gui_decorator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wedap.command_line.handle_command_line">
+<span class="sig-prename descclassname"><span class="pre">wedap.command_line.</span></span><span class="sig-name descname"><span class="pre">handle_command_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argument_parser</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.command_line.handle_command_line" title="Permalink to this definition"></a></dt>
+<dd><p>Take command line arguments, check for issues, return the arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>argument_parser</strong> (<em>argparse.ArgumentParser</em>) – The argument parser that is returned in <cite>create_cmd_arguments()</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contains all arguments passed into wedap.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>argparse.NameSpace</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Prints specific issues to terminal.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-wedap.h5_pdist">
+<span id="wedap-h5-pdist-module"></span><h1>wedap.h5_pdist module<a class="headerlink" href="#module-wedap.h5_pdist" title="Permalink to this heading"></a></h1>
+<p>Convert auxillary data recorded during WESTPA simulation and stored in west.h5 file
+to various probability density plots.</p>
+<p>This script effectively replaces the need to use the native WESTPA plotting pipeline:
+west.h5 –w_pdist(with –construct-dataset module.py)–&gt;
+pdist.h5 –plothist(with –postprocess-functions hist_settings.py)–&gt; plot.pdf</p>
+<dl class="simple">
+<dt>TODO:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>maybe add option to output pdist as file, this would speed up subsequent plotting</dt><dd><p>of the same data.</p>
+</dd>
+</dl>
+</li>
+<li><p>add option for a list of equivalent h5 files, alternative to w_multi_west.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_pdist.</span></span><span class="sig-name descname"><span class="pre">H5_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'west.h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'evolution'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H5save_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ysave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>These class methods generate probability distributions from a WESTPA H5 file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.aux_to_pdist_1d">
+<span class="sig-name descname"><span class="pre">aux_to_pdist_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_1d" title="Permalink to this definition"></a></dt>
+<dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
+1D probability distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>iteration</strong> (<em>int</em>) – Desired iteration to extract timeseries info from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>midpoints_x</strong> (<em>ndarray</em>) – Histogram midpoint bin values for target aux coordinate of dimension 0.</p></li>
+<li><p><strong>midpoints_y</strong> (<em>ndarray</em>) – Optional histogram midpoint bin values for target aux coordinate of dimension 1.</p></li>
+<li><p><strong>histogram</strong> (<em>ndarray</em>) – Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.aux_to_pdist_2d">
+<span class="sig-name descname"><span class="pre">aux_to_pdist_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_2d" title="Permalink to this definition"></a></dt>
+<dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
+2D probability distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>iteration</strong> (<em>int</em>) – Desired iteration to extract timeseries info from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>midpoints_x</strong> (<em>ndarray</em>) – Histogram midpoint bin values for target aux coordinate of dimension 0.</p></li>
+<li><p><strong>midpoints_y</strong> (<em>ndarray</em>) – Optional histogram midpoint bin values for target aux coordinate of dimension 1.</p></li>
+<li><p><strong>histogram</strong> (<em>ndarray</em>) – Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_datasets_3d">
+<span class="sig-name descname"><span class="pre">average_datasets_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_datasets_3d" title="Permalink to this definition"></a></dt>
+<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_pdist_1d">
+<span class="sig-name descname"><span class="pre">average_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_1d" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
+also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>x, y</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_pdist_2d">
+<span class="sig-name descname"><span class="pre">average_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_2d" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>x, y, norm_hist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.evolution_pdist">
+<span class="sig-name descname"><span class="pre">evolution_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.evolution_pdist" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
+also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>x, y, norm_hist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_all_weights">
+<span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_all_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an 1D array of the weight for every frame of each tau
+for all segments of all iterations specified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_coords">
+<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_coords" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of data coordinates for plotting traces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>list of tuples</em>) – Tuples are (iteration, walker) traces.</p></li>
+<li><p><strong>data_name</strong> (<em>str</em>) – Name of dataset.</p></li>
+<li><p><strong>data_index</strong> (<em>int</em>) – Index of dataset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>coordinates</strong> – Array of coordinates from the list of (iteration, walker) tuples.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_parents">
+<span class="sig-name descname"><span class="pre">get_parents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_parents" title="Permalink to this definition"></a></dt>
+<dd><p>Get parent of an input (iteration, walker).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>parent</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iteration, walker</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_total_data_array">
+<span class="sig-name descname"><span class="pre">get_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_total_data_array" title="Permalink to this definition"></a></dt>
+<dd><p>Loop through all iterations specified and get a 1d raw data array.
+# TODO: this could be organized better with my other methods
+maybe I can separate the helper functions into another class
+for extracting and moving data around, this pdist class could
+be used strictly for making pdists from a nice and standard data
+array input that is handled by the H5_Processing class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of data from h5 file such as <cite>pcoord</cite> or an aux dataset.</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – Index of the data from h5 file.</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – If more sparse data is needed for efficiency.</p></li>
+<li><p><strong>reshape</strong> (<em>bool</em>) – Option to reshape into 1d array instead of each seg for all tau values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – Raw (unweighted) data array for the name specified.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1d array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_datasets_3d">
+<span class="sig-name descname"><span class="pre">instant_datasets_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_datasets_3d" title="Permalink to this definition"></a></dt>
+<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_pdist_1d">
+<span class="sig-name descname"><span class="pre">instant_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_1d" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
+also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Xdata, y</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_pdist_2d">
+<span class="sig-name descname"><span class="pre">instant_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_2d" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
+also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>x, y, norm_hist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.pdist">
+<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">avg3dint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.pdist" title="Permalink to this definition"></a></dt>
+<dd><p>Main public method with pdist generation controls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>avg3dint</strong> (<em>int</em>) – for average 3d plots, sometimes scatter needs a sparser dataset.</p></li>
+<li><p><strong># TODO</strong> (<em>interval may not be needed if I use function arg (Xfun, etc)</em>)</p></li>
+<li><p><strong># TODO</strong> (<em>maybe make interval for all returns? nah, hist prob doesn’t need it?</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.plot_trace">
+<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
+<dd><p>Plot trace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker) start point to trace from.</p></li>
+<li><p><strong>color</strong> (<em>str</em>)</p></li>
+<li><p><strong>ax</strong> (<em>mpl axes object</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.reshape_total_data_array">
+<span class="sig-name descname"><span class="pre">reshape_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.reshape_total_data_array" title="Permalink to this definition"></a></dt>
+<dd><p>Take an input 1d array of the data values at every segment for each
+iteration, and reshape them to make pdists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>1d array</em>) – Data values at every segment for each iteration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>array</strong> – Now rows = segments, columns = frame until tau, depth = data dimensions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.search_aux_xy_nn">
+<span class="sig-name descname"><span class="pre">search_aux_xy_nn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.search_aux_xy_nn" title="Permalink to this definition"></a></dt>
+<dd><p>Originally adapted from code by Jeremy Leung.
+Tree search to find closest datapoint to input data value(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong># TODO</strong> (<em>add step size for searching, right now gets the last frame</em>)</p></li>
+<li><p><strong>val_x</strong> (<em>int or float</em>) – X dataset value to search for.</p></li>
+<li><p><strong>val_y</strong> (<em>int or float</em>) – Y dataset value to search for.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.succ_pdist">
+<span class="sig-name descname"><span class="pre">succ_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.succ_pdist" title="Permalink to this definition"></a></dt>
+<dd><p>Filter weights to be zero for all non successfull trajectories.
+Make an array of zero weights and fill out weights for succ trajs only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.trace_walker">
+<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.trace_walker" title="Permalink to this definition"></a></dt>
+<dd><p>Get trace path of an input (iteration, walker).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>trace</strong> – Tuples are (iteration, walker) traces.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of tuples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.w_succ">
+<span class="sig-name descname"><span class="pre">w_succ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.w_succ" title="Permalink to this definition"></a></dt>
+<dd><p>Find and return all successfully recycled (iter, seg) pairs.
+TODO eventually can use this to plot pdist of succ only trajs
+note that I would have to norm by the overall pmax (not just succ pmax)
+Could have this be an optional feature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-wedap.h5_plot">
+<span id="wedap-h5-plot-module"></span><h1>wedap.h5_plot module<a class="headerlink" href="#module-wedap.h5_plot" title="Permalink to this heading"></a></h1>
+<p>Main plotting class of wedap.
+Plot all of the datasets generated with h5_pdist.</p>
+<p># TODO: include trace and plot walker functionality with search_aux</p>
+<dl class="simple">
+<dt># TODO: all plotting options with test.h5, compare output</dt><dd><p># 1D Evo, 1D and 2D instant and average
+# optional: diff max_iter and bins args</p>
+</dd>
+</dl>
+<p>TODO: make mpl style options path set up at install</p>
+<p>TODO: maybe make methods for the following plots:
+contourf–plot contour levels
+histogram–plot histogram.
+lines–plot contour lines only.
+contourf_l–plot contour levels and lines.
+histogram_l–plot histogram and contour lines.
+option - with and without side histograms
+- mpl mosaic options
+- see mpl scatter hist: <a class="reference external" href="https://matplotlib.org/stable/gallery/lines_bars_and_markers/scatter_hist.html">https://matplotlib.org/stable/gallery/lines_bars_and_markers/scatter_hist.html</a>
+maybe a ridgeline plot?
+- This would be maybe for 1D avg of every 100 iterations
+- <a class="reference external" href="https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/">https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/</a>
+Option to overlay different datasets, could be done easily with python but maybe a cli option?</p>
+<dl class="simple">
+<dt>TODO: plot clustering centroids option</dt><dd><p>can then grab the search_aux at the centroid</p>
+</dd>
+</dl>
+<p>TODO: bin visualizer
+TODO: and maybe show the trajectories as just dots</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_plot.</span></span><span class="sig-name descname"><span class="pre">H5_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hist2d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tab:blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#wedap.h5_pdist.H5_Pdist" title="wedap.h5_pdist.H5_Pdist"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5_Pdist</span></code></a></p>
+<p>These methods provide various plotting options for pdist data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.add_cbar">
+<span class="sig-name descname"><span class="pre">add_cbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.add_cbar" title="Permalink to this definition"></a></dt>
+<dd><p>Add cbar.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Main public method.
+master plotting run function
+here can parse plot type and add cbars/tightlayout/plot_options/smoothing</p>
+<p>TODO: some kind 1d vs 2d indicator, then if not 1d plot cbar</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_bar">
+<span class="sig-name descname"><span class="pre">plot_bar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_bar" title="Permalink to this definition"></a></dt>
+<dd><p>Simple bar plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_contour">
+<span class="sig-name descname"><span class="pre">plot_contour</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_contour" title="Permalink to this definition"></a></dt>
+<dd><p>2d contour plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_hexbin3d">
+<span class="sig-name descname"><span class="pre">plot_hexbin3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_hexbin3d" title="Permalink to this definition"></a></dt>
+<dd><p>Hexbin plot?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_hist2d">
+<span class="sig-name descname"><span class="pre">plot_hist2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_hist2d" title="Permalink to this definition"></a></dt>
+<dd><p>2d hist plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_line">
+<span class="sig-name descname"><span class="pre">plot_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_line" title="Permalink to this definition"></a></dt>
+<dd><p>1d line plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_scatter3d">
+<span class="sig-name descname"><span class="pre">plot_scatter3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_scatter3d" title="Permalink to this definition"></a></dt>
+<dd><p>3d scatter plot.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="wedap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Darian Yang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

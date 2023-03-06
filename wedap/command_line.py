@@ -176,6 +176,7 @@ def create_cmd_arguments():
                              "By default, plot data up to and including the last "
                              "iteration in the specified H5 file.",
                         type=int)
+    # TODO: x and y bins? Already implemented in base H5_Pdist
     optional.add_argument("--bins", default=100, nargs="?",
                         dest="bins",
                         help="Use BINS number of bins for histogramming. "
@@ -301,7 +302,7 @@ def handle_command_line(argument_parser):
     Returns
     -------
     argparse.NameSpace
-        Contains all arguments passed into EnsembleOptimizer.
+        Contains all arguments passed into wedap.
     
     Raises
     ------  

@@ -4,25 +4,25 @@ Plot all of the datasets generated with h5_pdist.
 
 # TODO: include trace and plot walker functionality with search_aux
 
-    # TODO: all plotting options with test.h5, compare output
-        # 1D Evo, 1D and 2D instant and average
-        # optional: diff max_iter and bins args
+# TODO: all plotting options with test.h5, compare output
+    # 1D Evo, 1D and 2D instant and average
+    # optional: diff max_iter and bins args
 
 TODO: make mpl style options path set up at install
 
 TODO: maybe make methods for the following plots:
-        '``contourf``--plot contour levels. '
-        '``histogram``--plot histogram. '
-        '``lines``--plot contour lines only. '
-        '``contourf_l``--plot contour levels and lines. '
-        '``histogram_l``--plot histogram and contour lines. ',
-        option - with and without side histograms
-            mpl mosaic options
-            see mpl scatter hist: https://matplotlib.org/stable/gallery/lines_bars_and_markers/scatter_hist.html
-        maybe a ridgeline plot?
-            This would be maybe for 1D avg of every 100 iterations
-            https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/
-        Option to overlay different datasets, could be done easily with python but maybe a cli option?                
+contourf--plot contour levels
+histogram--plot histogram.
+lines--plot contour lines only.
+contourf_l--plot contour levels and lines.
+histogram_l--plot histogram and contour lines.
+option - with and without side histograms
+- mpl mosaic options
+- see mpl scatter hist: https://matplotlib.org/stable/gallery/lines_bars_and_markers/scatter_hist.html
+maybe a ridgeline plot?
+- This would be maybe for 1D avg of every 100 iterations
+- https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/
+Option to overlay different datasets, could be done easily with python but maybe a cli option?                
 
 TODO: plot clustering centroids option
       can then grab the search_aux at the centroid
@@ -41,19 +41,18 @@ from numpy import inf
 from .h5_pdist import *
 
 # TODO: add search aux as a class method with seperate args?
-    # have trace options in args for trace iter,wlk and x,y vals 
+# have trace options in args for trace iter,wlk and x,y vals 
 # TODO: method for each type of plot
 # TODO: could subclass the H5_Pdist class, then use this as the main in wedap.py
 
 # TODO: maybe put the pdist object into the plot class and have this object be flexible
-    # so it could just be a pdist.h5 file from westpa or make your own
-    # or read in a pdist.h5 and create pdist object using that dataset
+# so it could just be a pdist.h5 file from westpa or make your own
+# or read in a pdist.h5 and create pdist object using that dataset
 
 class H5_Plot(H5_Pdist):
     """
     These methods provide various plotting options for pdist data.
     """
-
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", smoothing_level=None,
         color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,
         cbar_label=None, *args, **kwargs):
@@ -69,20 +68,18 @@ class H5_Plot(H5_Pdist):
         Z : ndarray
             Z is a 2-D matrix of the normalized histogram values.
         ax : mpl axes object
-            args_list options
-            -----------------
-            plot_type: str
-                'heat' (default), or 'contour'. 
-            data_type : str
-                'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
-            p_max : int
-                The maximum probability limit value.
-            p_units : str
-                Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), 
-                where RT = 0.5922 at 298K.
-            cmap : str
-                Colormap option, default = viridis.
-            **plot_options : kwargs
+        plot_type: str
+            'heat' (default), or 'contour'. 
+        data_type : str
+            'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
+        p_max : int
+            The maximum probability limit value.
+        p_units : str
+            Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), 
+            where RT = 0.5922 at 298K.
+        cmap : str
+            Colormap option, default = viridis.
+        **plot_options : kwargs
         """
         # include the init args for H5_Pdist
         # TODO: how to make some of the args optional if I want to use classes seperately?
@@ -166,6 +163,9 @@ class H5_Plot(H5_Pdist):
     #         self.H = self.H.transpose()
 
     def add_cbar(self, cax=None):
+        """
+        Add cbar.
+        """
         cbar = self.fig.colorbar(self.plot, cax=cax)
         # TODO: lines on colorbar?
         # TODO: related, make a discrete colorbar/mapping for hist2d?
@@ -178,6 +178,9 @@ class H5_Plot(H5_Pdist):
         self.cbar = cbar
     
     def plot_hist2d(self):
+        """
+        2d hist plot.
+        """
         # 2D heatmaps
         # TODO: westpa makes these the max to keep the pdist shape
         # if self.p_max:
@@ -186,6 +189,9 @@ class H5_Plot(H5_Pdist):
                                        shading="auto", vmin=self.p_min, vmax=self.p_max)
 
     def plot_contour(self):
+        """
+        2d contour plot.
+        """
         # TODO: seperate functions for contourf and contourl?
             # then can use hist and contourl
         # TODO: could clean up this logic better
@@ -205,6 +211,9 @@ class H5_Plot(H5_Pdist):
         self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
 
     def plot_bar(self):
+        """
+        Simple bar plot.
+        """
         # 1D data
         # recover the pdf from the -ln P
         # TODO: does this account for p_max naturally?
@@ -221,6 +230,9 @@ class H5_Plot(H5_Pdist):
     #     self.ax.set_ylabel("P(x)")
 
     def plot_line(self):
+        """
+        1d line plot.
+        """
         # 1D data
         if self.p_max:
             self.Y[self.Y > self.p_max] = inf
@@ -228,6 +240,9 @@ class H5_Plot(H5_Pdist):
         self.ax.set_ylabel(self.cbar_label)
     
     def plot_scatter3d(self, interval=10, s=1):
+        """
+        3d scatter plot.
+        """
         self.plot = self.ax.scatter(self.X[::interval], 
                                     self.Y[::interval], 
                                     c=self.Z[::interval], 
@@ -235,6 +250,9 @@ class H5_Plot(H5_Pdist):
                                     vmin=self.p_min, vmax=self.p_max)
 
     def plot_hexbin3d(self):
+        """
+        Hexbin plot?
+        """
         # TODO
         self.plot = self.ax.hexbin(self.X, self.Y, C=self.Z, 
                                    reduce_C_function=np.mean,

@@ -637,9 +637,9 @@ class H5_Pdist():
     def w_succ(self):
         """
         Find and return all successfully recycled (iter, seg) pairs.
-        TODO: eventually can use this to plot pdist of succ only trajs
-              note that I would have to norm by the overall pmax (not just succ pmax)
-              Could have this be an optional feature.
+        TODO eventually can use this to plot pdist of succ only trajs
+        note that I would have to norm by the overall pmax (not just succ pmax)
+        Could have this be an optional feature.
         """
         succ = []
         for iter in range(self.last_iter):
@@ -753,7 +753,7 @@ class H5_Pdist():
 
     def evolution_pdist(self):
         """
-        Returns (TODO)
+        Returns
         -------
         x, y, norm_hist
             x and y axis values, and if using Y or evolution (with only X), 
@@ -930,10 +930,10 @@ class H5_Pdist():
         """
         Loop through all iterations specified and get a 1d raw data array.
         # TODO: this could be organized better with my other methods
-                maybe I can separate the helper functions into another class
-                for extracting and moving data around, this pdist class could
-                be used strictly for making pdists from a nice and standard data
-                array input that is handled by the H5_Processing class
+        maybe I can separate the helper functions into another class
+        for extracting and moving data around, this pdist class could
+        be used strictly for making pdists from a nice and standard data
+        array input that is handled by the H5_Processing class
 
         Parameters
         ----------

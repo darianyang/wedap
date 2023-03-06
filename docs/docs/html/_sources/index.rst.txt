@@ -11,6 +11,8 @@ Welcome to wedap's documentation!
 
    quickstart
    api
-   `Github Repository <http://github.com/darianyang/wedap>`_
+   modules
 
 * :ref:`genindex`
+
+`Github Repository <http://github.com/darianyang/wedap>`_

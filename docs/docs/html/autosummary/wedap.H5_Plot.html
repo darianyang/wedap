@@ -18,6 +18,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="wedap" href="../modules.html" />
     <link rel="prev" title="wedap.H5_Pdist" href="wedap.H5_Pdist.html" /> 
 </head>
 
@@ -54,6 +55,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">wedap</a></li>
 </ul>
 
         </div>
@@ -86,31 +88,25 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="wedap.H5_Plot">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.</span></span><span class="sig-name descname"><span class="pre">H5_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hist2d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tab:blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.H5_Plot" title="Permalink to this definition"></a></dt>
-<dd><dl class="py method">
+<dd><p>These methods provide various plotting options for pdist data.</p>
+<dl class="py method">
 <dt class="sig sig-object py" id="wedap.H5_Plot.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hist2d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tab:blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.H5_Plot.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Plotting of pdists generated from H5 datasets.TODO: update docstrings</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>smoothing_level</strong> (<em>float</em>) – Optionally add gaussian noise to smooth Z data. A good value is around 0.4 to 1.0.</p></li>
 <li><p><strong>x, y</strong> (<em>ndarray</em>) – x and y axis values, and if using aux_y or evolution (with only aux_x), also must input Z.</p></li>
 <li><p><strong>Z</strong> (<em>ndarray</em>) – Z is a 2-D matrix of the normalized histogram values.</p></li>
-<li><dl class="simple">
-<dt>plot_type: str</dt><dd><p>‘heat’ (default), or ‘contour’.</p>
-</dd>
-<dt>data_type<span class="classifier">str</span></dt><dd><p>‘evolution’ (1 dataset); ‘average’ or ‘instance’ (1 or 2 datasets)</p>
-</dd>
-<dt>p_max<span class="classifier">int</span></dt><dd><p>The maximum probability limit value.</p>
-</dd>
-<dt>p_units<span class="classifier">str</span></dt><dd><p>Can be ‘kT’ (default) or ‘kcal’. kT = -lnP, kcal/mol = -RT(lnP),
-where RT = 0.5922 at 298K.</p>
-</dd>
-<dt>cmap<span class="classifier">str</span></dt><dd><p>Colormap option, default = viridis.</p>
-</dd>
-</dl>
-<p><a href="#id1"><span class="problematic" id="id2">**</span></a>plot_options : kwargs</p>
-</li>
+<li><p><strong>ax</strong> (<em>mpl axes object</em>)</p></li>
+<li><p><strong>plot_type</strong> (<em>str</em>) – ‘heat’ (default), or ‘contour’.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) – ‘evolution’ (1 dataset); ‘average’ or ‘instance’ (1 or 2 datasets)</p></li>
+<li><p><strong>p_max</strong> (<em>int</em>) – The maximum probability limit value.</p></li>
+<li><p><strong>p_units</strong> (<em>str</em>) – Can be ‘kT’ (default) or ‘kcal’. kT = -lnP, kcal/mol = -RT(lnP),
+where RT = 0.5922 at 298K.</p></li>
+<li><p><strong>cmap</strong> (<em>str</em>) – Colormap option, default = viridis.</p></li>
+<li><p><strong>**plot_options</strong> (<em>kwargs</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -123,7 +119,7 @@ where RT = 0.5922 at 298K.</p>
 <td><p>Plotting of pdists generated from H5 datasets.TODO: update docstrings</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_cbar</span></code>([cax])</p></td>
-<td><p></p></td>
+<td><p>Add cbar.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aux_to_pdist_1d</span></code>(iteration)</p></td>
 <td><p>Take the auxiliary dataset for a single iteration and generate a weighted 1D probability distribution.</p></td>
@@ -151,30 +147,24 @@ where RT = 0.5922 at 298K.</p>
 </p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolution_pdist</span></code>()</p></td>
-<td><p>Returns (TODO)
-
-:2: (WARNING/2) Title underline too short.
-
-Returns (TODO)
--------
-
-x, y, norm_hist
-
-x and y axis values, and if using Y or evolution (with only X),
-also returns norm_hist.
-norm_hist is a 2-D matrix of the normalized histogram values.</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
+</dd>
+</dl>
+</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_weights</span></code>()</p></td>
 <td><p>Returns an 1D array of the weight for every frame of each tau for all segments of all iterations specified.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coords</span></code>(path, data_name, data_index)</p></td>
-<td><p></p></td>
+<td><p>Get a list of data coordinates for plotting traces.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parents</span></code>(walker_tuple)</p></td>
-<td><p></p></td>
+<td><p>Get parent of an input (iteration, walker).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_total_data_array</span></code>(name[, index, ...])</p></td>
-<td><p>Loop through all iterations specified and get a 1d raw data array. # TODO: this could be organized better with my other methods         maybe I can separate the helper functions into another class         for extracting and moving data around, this pdist class could         be used strictly for making pdists from a nice and standard data         array input that is handled by the H5_Processing class.</p></td>
+<td><p>Loop through all iterations specified and get a 1d raw data array.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_datasets_3d</span></code>()</p></td>
 <td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
@@ -202,22 +192,22 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p></td>
 <td><p>Main public method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_bar</span></code>()</p></td>
-<td><p></p></td>
+<td><p>Simple bar plot.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_contour</span></code>()</p></td>
-<td><p></p></td>
+<td><p>2d contour plot.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hexbin3d</span></code>()</p></td>
-<td><p></p></td>
+<td><p>Hexbin plot?</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hist2d</span></code>()</p></td>
-<td><p></p></td>
+<td><p>2d hist plot.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_line</span></code>()</p></td>
-<td><p></p></td>
+<td><p>1d line plot.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_scatter3d</span></code>([interval, s])</p></td>
-<td><p></p></td>
+<td><p>3d scatter plot.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code>(walker_tuple[, color, ax])</p></td>
 <td><p>Plot trace.</p></td>
@@ -232,10 +222,10 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p></td>
 <td><p>Filter weights to be zero for all non successfull trajectories.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_walker</span></code>(walker_tuple)</p></td>
-<td><p></p></td>
+<td><p>Get trace path of an input (iteration, walker).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">w_succ</span></code>()</p></td>
-<td><p>Find and return all successfully recycled (iter, seg) pairs. TODO: eventually can use this to plot pdist of succ only trajs       note that I would have to norm by the overall pmax (not just succ pmax)       Could have this be an optional feature.</p></td>
+<td><p>Find and return all successfully recycled (iter, seg) pairs.</p></td>
 </tr>
 </tbody>
 </table>
@@ -248,6 +238,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p></td>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="wedap.H5_Pdist.html" class="btn btn-neutral float-left" title="wedap.H5_Pdist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules.html" class="btn btn-neutral float-right" title="wedap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
