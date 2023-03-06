@@ -61,7 +61,7 @@ def main():
     pdist = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Xindex=args.Xindex, 
                     Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
                     Zindex=args.Zindex, first_iter=args.first_iter,
-                    last_iter=args.last_iter, bins=args.bins, T=args.T,
+                    last_iter=args.last_iter, bins=(args.bins, args.bins), T=args.T,
                     weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar)
     X, Y, Z = pdist.pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,

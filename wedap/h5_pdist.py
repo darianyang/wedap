@@ -84,7 +84,7 @@ class H5_Pdist():
         last_iter : int
             Last iteration data to include, default is the last recorded iteration in the west.h5 file. 
             Note that `instant` type pdists only depend on last_iter.
-        bins : int
+        bins : tuple of ints (TODO: maybe the tuple isn't user friendly for 1 dim?)
             Histogram bins in pdist data to be generated for x and y datasets, default both 100.
         p_units : str
             Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
