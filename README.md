@@ -3,6 +3,7 @@
 </p>
 
 ![tests](https://github.com/darianyang/wedap/actions/workflows/tests.yml/badge.svg)
+![docs](https://img.shields.io/website?label=docs&up_color=brightgreen&up_message=online&url=https%3A%2F%2Fdarianyang.github.io%2Fwedap%2Fdocs%2Fhtml%2Findex.html)
 [![PyPI version](https://badge.fury.io/py/wedap.svg)](https://badge.fury.io/py/wedap)
 [![Downloads](https://pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
 [![GitHub license](https://img.shields.io/github/license/darianyang/wedap)](https://github.com/darianyang/wedap/blob/master/LICENSE)
