@@ -1,5 +1,7 @@
-wedap
-===========================
+<p align="left">
+    <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/wedap-logo2.jpeg?raw=true" alt="p53 evo plot" width="400">
+</p>
+
 ![tests](https://github.com/darianyang/wedap/actions/workflows/tests.yml/badge.svg)
 [![PyPI version](https://badge.fury.io/py/wedap.svg)](https://badge.fury.io/py/wedap)
 [![Downloads](https://pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
