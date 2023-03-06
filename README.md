@@ -1,5 +1,5 @@
 <p align="left">
-    <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/wedap-logo2.jpeg?raw=true" alt="p53 evo plot" width="400">
+    <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/wedap.jpeg?raw=true" alt="wedap logo" width="400">
 </p>
 
 ![tests](https://github.com/darianyang/wedap/actions/workflows/tests.yml/badge.svg)
