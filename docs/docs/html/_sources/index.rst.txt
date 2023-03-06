@@ -4,6 +4,9 @@
 
 Welcome to wedap's documentation!
 =========================================================
+.. image:: _static/wedap.jpeg
+  :width: 400
+  :alt: wedap logo
 
 .. toctree::
    :maxdepth: 2
