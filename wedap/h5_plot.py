@@ -161,6 +161,11 @@ class H5_Plot(H5_Pdist):
     def add_cbar(self, cax=None):
         """
         Add cbar.
+
+        Parameters
+        ----------
+        cax : mpl cbar axis
+            Optionally specify the cbar axis.
         """
         cbar = self.fig.colorbar(self.plot, cax=cax)
         # TODO: lines on colorbar?
@@ -235,6 +240,13 @@ class H5_Plot(H5_Pdist):
     def plot_scatter3d(self, interval=10, s=1):
         """
         3d scatter plot.
+
+        Parameters
+        ----------
+        interval : int
+            Interval to consider the XYZ datasets, increase to use less data.
+        s : float
+            mpl scatter marker size.
         """
         self.plot = self.ax.scatter(self.X[::interval], 
                                     self.Y[::interval], 
