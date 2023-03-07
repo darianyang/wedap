@@ -1,14 +1,10 @@
 """
 Main plotting class of wedap.
-Plot all of the datasets generated with h5_pdist.
-
-# TODO: include trace and plot walker functionality with search_aux
+Plot all of the datasets generated with H5_Pdist.
 
 # TODO: all plotting options with test.h5, compare output
     # 1D Evo, 1D and 2D instant and average
     # optional: diff max_iter and bins args
-
-TODO: make mpl style options path set up at install
 
 TODO: maybe make methods for the following plots:
 contourf--plot contour levels
@@ -24,11 +20,10 @@ maybe a ridgeline plot?
 - https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/
 Option to overlay different datasets, could be done easily with python but maybe a cli option?                
 
-TODO: plot clustering centroids option
+TODO: plot clustering centroids option?
       can then grab the search_aux at the centroid
 
-TODO: bin visualizer
-TODO: and maybe show the trajectories as just dots
+TODO: bin visualizer? and maybe show the trajectories as just dots?
 """
 
 import sys
@@ -39,11 +34,6 @@ from warnings import warn
 from numpy import inf
 
 from .h5_pdist import *
-
-# TODO: add search aux as a class method with seperate args?
-# have trace options in args for trace iter,wlk and x,y vals 
-# TODO: method for each type of plot
-# TODO: could subclass the H5_Pdist class, then use this as the main in wedap.py
 
 # TODO: maybe put the pdist object into the plot class and have this object be flexible
 # so it could just be a pdist.h5 file from westpa or make your own
@@ -57,29 +47,35 @@ class H5_Plot(H5_Pdist):
         color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,
         cbar_label=None, *args, **kwargs):
         """
-        Plotting of pdists generated from H5 datasets.TODO: update docstrings
+        Plotting of pdists generated from H5 datasets.
 
         Parameters
         ----------
+        X, Y : arrays
+            x and y axis values, and if using aux_y or evolution (with only aux_x), also must input Z.
+        Z : 2darray
+            Z is a 2-D matrix of the normalized histogram values.
+        plot_mode : str
+            TODO: update and expand. Can be 'hist2d' (default), 'contour', 'line', 'scatter3d'.
+        cmap : str
+            Can be string or cmap to be input into mpl. Default = viridis.
         smoothing_level : float
             Optionally add gaussian noise to smooth Z data. A good value is around 0.4 to 1.0.
-        x, y : ndarray
-            x and y axis values, and if using aux_y or evolution (with only aux_x), also must input Z.
-        Z : ndarray
-            Z is a 2-D matrix of the normalized histogram values.
+        color : str
+            Color for 1D plots.
         ax : mpl axes object
-        plot_type: str
-            'heat' (default), or 'contour'. 
-        data_type : str
-            'evolution' (1 dataset); 'average' or 'instance' (1 or 2 datasets)
+        plot_options : kwargs dictionary
+            Include mpl based plot options (e.g. xlabel, ylabel, ylim, xlim, title).
+        p_min : int
+            The minimum probability limit value.
         p_max : int
             The maximum probability limit value.
-        p_units : str
-            Can be 'kT' (default) or 'kcal'. kT = -lnP, kcal/mol = -RT(lnP), 
-            where RT = 0.5922 at 298K.
-        cmap : str
-            Colormap option, default = viridis.
-        **plot_options : kwargs
+        contour_interval : int
+            Interval to put contour levels if using 'contour' plot_mode.
+        cbar_label : str
+            Label for the colorbar.
+        ** args
+        ** kwargs
         """
         # include the init args for H5_Pdist
         # TODO: how to make some of the args optional if I want to use classes seperately?
@@ -215,10 +211,7 @@ class H5_Plot(H5_Pdist):
         Simple bar plot.
         """
         # 1D data
-        # recover the pdf from the -ln P
-        # TODO: does this account for p_max naturally?
-        self.ax.bar(self.X, np.exp(-self.Y), color=self.color)
-        #self.ax.bar(self.X, self.Y, color=self.color)
+        self.ax.bar(self.X, self.Y, color=self.color)
         self.ax.set_ylabel("P(x)")
 
     # def plot_hist1d(self):
@@ -286,20 +279,19 @@ class H5_Plot(H5_Pdist):
                 self.ax.plot(self.X[maxima[0]], self.Y[maxima[1]], 'ko')
                 print(f"Minima: ({self.X[maxima[0]][0]}, {self.Y[maxima[1]][0]})")
 
-    # TODO: i think the data smoothing works but not the curve
-    def _smooth(self):
-        # TODO: this works well smoothing, try it
-        if self.smoothing is False:
-            self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=1.0)
-
-    # TODO: cbar issues with
+    # TODO: cbar issues with 1d plots
     def plot(self, cbar=True):
         """
         Main public method.
-        master plotting run function
-        here can parse plot type and add cbars/tightlayout/plot_options/smoothing
+        Master plotting run function
+        Parse plot type and add cbars/tightlayout/plot_options/smoothing
 
         TODO: some kind 1d vs 2d indicator, then if not 1d plot cbar
+
+        Parameters
+        ----------
+        cbar : bool
+            Whether or not to include a colorbar.
         """
         # smooth the data if specified
         if self.smoothing_level:
@@ -346,10 +338,10 @@ class H5_Plot(H5_Pdist):
         # if self.Yname == "pcoord":
         #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
-        # don't add cbar if not specified or if using a 1D plot (TODO: test this)
+        # don't add cbar if not specified or if using a 1D plot
         if cbar and self.plot_mode not in ["line", "bar"]:
             self.add_cbar()
 
         if self.plot_options is not None:
-            self._unpack_plot_options()         # TODO
+            self._unpack_plot_options()
         self.fig.tight_layout()

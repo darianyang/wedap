@@ -5,12 +5,9 @@ TODO: add option to split pdist and plot once the pdist to txt feature is done
       so the pdist txt file could be: X_column, Y_column, Z_matrix_columns.
       This would be something like pdist.dap default and option to check and 
       read in a wedap or westpa pdist file for pdist function.
-
-TODO: make the args consistent in cli and api
 """
 
 import argparse
-import os
 import sys
 
 # import and use gooey conditionally
@@ -53,7 +50,7 @@ else:
         #tabbed_groups=True,
     )
 
-# TODO: make tabs
+# TODO: make tabs?
 # then push new pip version
 @gui_decorator
 def create_cmd_arguments(): 
@@ -213,8 +210,7 @@ def create_cmd_arguments():
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p-units'.",
                         type=int)
-    # TODO: is there a better way to do this?
-    # TODO: not sure if this works properly
+    # TODO: is there a better way to do this? 
     #optional.add_argument("--weighted", default=True, action="store_true",
     #                      help="Use weights from WE.")
     optional.add_argument("-nw", "--not-weighted",
@@ -239,7 +235,6 @@ def create_cmd_arguments():
                         widget="ColourChooser")
 
     # create optional flag to output everything to console screen
-    # TODO: not sure if this works properly
     # optional.add_argument("-ots", "--output_to_screen", default=True,
     #                     dest = "output_to_screen",
     #                     help = "Outputs plot to screen. True (default) or False", 
@@ -270,7 +265,6 @@ def create_cmd_arguments():
                              help="Trace and plot a single continuous trajectory based "
                                   "off of 2 space-seprated floats : Xvalue Yvalue",
                              type=float)
-    # TODO: add color option
 
     ##########################################################
     ############### FORMATTING ARGUMENTS #####################

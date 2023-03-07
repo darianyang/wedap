@@ -1,6 +1,6 @@
 """
 Convert auxillary data recorded during WESTPA simulation and stored in west.h5 file
-to various probability density plots.
+to various probability density datasets.
 
 This script effectively replaces the need to use the native WESTPA plotting pipeline:
 west.h5 --w_pdist(with --construct-dataset module.py)--> 
@@ -20,9 +20,6 @@ import h5py
 import numpy as np
 from tqdm.auto import tqdm
 
-# sklearn built on top of scipy but maybe update to only
-# have sklearn as dependency (TODO)
-#from sklearn.neighbors import KDTree
 from scipy.spatial import KDTree
 
 from warnings import warn
@@ -329,6 +326,8 @@ class H5_Pdist():
 
     def _normalize(self, hist):
         """
+        Normalize or convert the probabilities.
+
         Parameters
         ----------
         hist : ndarray
@@ -461,9 +460,10 @@ class H5_Pdist():
         Originally adapted from code by Jeremy Leung.
         Tree search to find closest datapoint to input data value(s).
 
+        # TODO: add step size for searching, right now gets the last frame
+
         Parameters
         ----------
-        # TODO: add step size for searching, right now gets the last frame
         val_x : int or float
             X dataset value to search for.
         val_y : int or float
@@ -653,7 +653,7 @@ class H5_Pdist():
         return succ
     def succ_pdist(self):
         """
-        Filter weights to be zero for all non successfull trajectories.
+        TODO: Filter weights to be zero for all non successfull trajectories.
         Make an array of zero weights and fill out weights for succ trajs only.
         """
         pass
@@ -753,9 +753,11 @@ class H5_Pdist():
 
     def evolution_pdist(self):
         """
+        Returns the pdist for 1 coordinate for the range iterations specified.
+
         Returns
         -------
-        x, y, norm_hist
+        x, y, norm_hist : arrays
             x and y axis values, and if using Y or evolution (with only X), 
             also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
@@ -782,12 +784,12 @@ class H5_Pdist():
     # TODO: maybe don't need individual functions, maybe can handle in main
     def instant_pdist_1d(self):
         """
+        Returns the x and y pdist datasets for a single iteration.
+
         Returns
         -------
-        Xdata, y
-            x and y axis values, and if using Y or evolution (with only X), 
-            also returns norm_hist.
-            norm_hist is a 2-D matrix of the normalized histogram values.
+        Xdata, y : arrays
+            x (dataset) and y (pdist) axis values
         """
         center, counts_total = self.aux_to_pdist_1d(self.last_iter)
         counts_total = self._normalize(counts_total)
@@ -795,9 +797,11 @@ class H5_Pdist():
 
     def instant_pdist_2d(self):
         """
+        Returns the xyz pdist datasets for a single iteration.
+
         Returns
         -------
-        x, y, norm_hist
+        x, y, norm_hist : arrays
             x and y axis values, and if using Y or evolution (with only X), 
             also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
@@ -809,6 +813,12 @@ class H5_Pdist():
     def instant_datasets_3d(self):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
+        For single iteration.
+
+        Returns
+        -------
+        X, Y, Z : arrays 
+            Raw data for each named coordinate.
         """
         X = self._get_data_array(self.Xname, self.Xindex, self.last_iter)
         # for the case where Zname is specified but not Yname
@@ -823,6 +833,8 @@ class H5_Pdist():
 
     def average_pdist_1d(self):
         """
+        1 dataset: average pdist for a range of iterations.
+
         Returns
         -------
         x, y
@@ -850,6 +862,8 @@ class H5_Pdist():
 
     def average_pdist_2d(self):
         """
+        2 datasets: average pdist for a range of iterations.
+
         Returns
         -------
         x, y, norm_hist
@@ -868,11 +882,15 @@ class H5_Pdist():
         average_xy = self._normalize(average_xy)
         return center_x, center_y, average_xy
 
-    # TODO: maybe change this to a general function that can give data array for any aux name
-    # then run it 3 times for 3d data return in pdist (might not be as efficient tho)
     def average_datasets_3d(self, interval=1):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
+        Averaged over the iteration range.
+        
+        Returns
+        -------
+        X, Y, Z : arrays 
+            Raw data for each named coordinate.
         """
         if self.Yname is None:
             warn("`Zname` is defined but not `Yname`, using Yname=`pcoord`")
@@ -906,6 +924,10 @@ class H5_Pdist():
         """
         Returns an 1D array of the weight for every frame of each tau 
         for all segments of all iterations specified.
+
+        Returns
+        -------
+        weights_expanded : array
         """
         # weights per seg of each iter, but need for each frame
         weights_1d = np.concatenate(self.weights)
@@ -1024,18 +1046,9 @@ class H5_Pdist():
 
         return array
         
-    # TODO: this avg3dint option is not needed, can use a data proc function instead
-    def pdist(self, avg3dint=1):
+    def pdist(self):
         """
         Main public method with pdist generation controls.
-
-        Parameters
-        ----------
-        avg3dint : int
-            for average 3d plots, sometimes scatter needs a sparser dataset.
-
-        # TODO: interval may not be needed if I use function arg (Xfun, etc)
-        # TODO: maybe make interval for all returns? nah, hist prob doesn't need it?
         """ 
         # option to zero weight out specific basis states
         if self.skip_basis is not None:
@@ -1087,7 +1100,7 @@ class H5_Pdist():
         elif self.data_type == "average":
             # attemts to say, if not None, but has to be compatible with str and arrays
             if isinstance(self.Yname, (str, np.ndarray)) and isinstance(self.Zname, (str, np.ndarray)):
-                return self.average_datasets_3d(interval=avg3dint)
+                return self.average_datasets_3d()
             elif isinstance(self.Yname, (str, np.ndarray)):
                 return self.average_pdist_2d()
             else:
