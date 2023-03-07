@@ -60,8 +60,7 @@ class Test_H5_Plot():
         plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode="line", Xname=Xname)
 
         # compare to previously generated plot data
-        np.testing.assert_allclose(plotdata, np.load(f"wedap/data/plot_{data_type}_line_{Xname}.npy"),
-                                   rtol=1e-6, atol=1e-6)
+        np.testing.assert_allclose(plotdata, np.load(f"wedap/data/plot_{data_type}_line_{Xname}.npy"))
         
     @pytest.mark.parametrize("data_type", ["average", "instant"])
     @pytest.mark.parametrize("plot_mode", ["hist", "contour"])
@@ -73,8 +72,7 @@ class Test_H5_Plot():
 
         # compare to previously generated plot data
         np.testing.assert_allclose(plotdata, 
-                                   np.load(f"wedap/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}.npy"),
-                                   rtol=1e-6, atol=1e-6)
+                                   np.load(f"wedap/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}.npy"))
     
     @pytest.mark.parametrize("data_type", ["average", "instant"])
     @pytest.mark.parametrize("Xname, Yname, Zname", [["pcoord", "dihedral_2", "dihedral_3"], 
@@ -87,5 +85,4 @@ class Test_H5_Plot():
 
         # compare to previously generated plot data
         np.testing.assert_allclose(plotdata, 
-                                   np.load(f"wedap/data/plot_{data_type}_scatter3d_{Xname}_{Yname}_{Zname}.npy"),
-                                   rtol=1e-6, atol=1e-6)
+                                   np.load(f"wedap/data/plot_{data_type}_scatter3d_{Xname}_{Yname}_{Zname}.npy"))
