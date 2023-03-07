@@ -1,11 +1,3 @@
-wedap.command\_line module
---------------------------
-
-.. automodule:: wedap.command_line
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 wedap.h5\_pdist module
 ----------------------
 

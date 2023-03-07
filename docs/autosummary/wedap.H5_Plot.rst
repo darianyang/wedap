@@ -33,7 +33,7 @@
       ~H5_Plot.plot_bar
       ~H5_Plot.plot_contour
       ~H5_Plot.plot_hexbin3d
-      ~H5_Plot.plot_hist2d
+      ~H5_Plot.plot_hist
       ~H5_Plot.plot_line
       ~H5_Plot.plot_scatter3d
       ~H5_Plot.plot_trace
