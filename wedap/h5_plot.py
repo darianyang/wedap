@@ -43,7 +43,7 @@ class H5_Plot(H5_Pdist):
     """
     These methods provide various plotting options for pdist data.
     """
-    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist2d", cmap="viridis", smoothing_level=None,
+    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap="viridis", smoothing_level=None,
         color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,
         cbar_label=None, *args, **kwargs):
         """
@@ -56,7 +56,7 @@ class H5_Plot(H5_Pdist):
         Z : 2darray
             Z is a 2-D matrix of the normalized histogram values.
         plot_mode : str
-            TODO: update and expand. Can be 'hist2d' (default), 'contour', 'line', 'scatter3d'.
+            TODO: update and expand. Can be 'hist' (default), 'contour', 'line', 'scatter3d'.
         cmap : str
             Can be string or cmap to be input into mpl. Default = viridis.
         smoothing_level : float
@@ -178,7 +178,7 @@ class H5_Plot(H5_Pdist):
         # allow for cbar object manipulation (e.g. removal in movie)
         self.cbar = cbar
     
-    def plot_hist2d(self):
+    def plot_hist(self):
         """
         2d hist plot.
         """
@@ -219,14 +219,6 @@ class H5_Plot(H5_Pdist):
         self.ax.bar(self.X, self.Y, color=self.color)
         self.ax.set_ylabel("P(x)")
 
-    # def plot_hist1d(self):
-    #     # 1D data : TODO: not working currently
-    #     # recover the pdf from the -ln P
-    #     # TODO: does this account for p_max naturally?
-    #     # TODO: I can get the raw data and then get the counts right from XYZ functions
-    #     self.ax.hist(self.X, self.Y)
-    #     self.ax.set_ylabel("P(x)")
-
     def plot_line(self):
         """
         1d line plot.
@@ -258,10 +250,9 @@ class H5_Plot(H5_Pdist):
         """
         Hexbin plot?
         """
-        # TODO
-        self.plot = self.ax.hexbin(self.X, self.Y, C=self.Z, 
-                                   reduce_C_function=np.mean,
-                                   cmap=self.cmap)
+        # TODO: test this and add grid?
+        self.plot = self.ax.hexbin(self.X, self.Y, C=self.Z,
+                                   cmap=self.cmap, vmin=self.p_min, vmax=self.p_max)
 
     def _unpack_plot_options(self):
         """
@@ -313,14 +304,14 @@ class H5_Plot(H5_Pdist):
             self.plot_contour()
 
         # TODO: auto label WE iterations on evolution? (done via __main__ right now)
-        elif self.plot_mode == "hist2d":
+        elif self.plot_mode == "hist":
             # I run into this error when I run something like instant with 
             # the h5 but didn't adjust the plot mode to something like line
             try:
-                self.plot_hist2d()
+                self.plot_hist()
             except (TypeError,ValueError):
                 # TODO: put the text into logger?
-                print("ERROR: Did you mean to use the default 'hist2d' plot mode?")
+                print("ERROR: Did you mean to use the default 'hist' plot mode?")
                 print("Perhaps you need to define another dimension via '--Yname'?")
                 sys.exit()
             #self.add_cbar()

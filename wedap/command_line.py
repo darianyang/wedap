@@ -123,8 +123,8 @@ def create_cmd_arguments():
                              "'evolution' (1 dataset); " 
                              "'average' or 'instance' (1 or 2 or 3 datasets).",
                         type=str) 
-    main.add_argument("-pm", "--plot-mode", default="hist2d", nargs="?",
-                        dest="plot_mode", choices=("hist2d", "contour", "bar", 
+    main.add_argument("-pm", "--plot-mode", default="hist", nargs="?",
+                        dest="plot_mode", choices=("hist", "contour", "bar", 
                                                    "line", "scatter3d"),
                         help="The type of plot desired, current options for: "
                              "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'.",
@@ -180,7 +180,7 @@ def create_cmd_arguments():
                              "Divide the range between the minimum and maximum "
                              "observed values into this many bins.",
                         type=int)
-    optional.add_argument("--pmin", default=0, nargs="?",
+    optional.add_argument("--pmin", default=None, nargs="?",
                         dest="p_min",
                         help="The minimum probability value limit. "
                              "This determines the cbar limits and contour levels.",

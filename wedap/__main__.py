@@ -58,7 +58,7 @@ def main():
         weighted = True
 
     # always output XYZ with fake Z for 1D, makes this part easier/less verbose
-    pdist = H5_Pdist(args.h5, args.data_type, Xname=args.Xname, Xindex=args.Xindex, 
+    pdist = H5_Pdist(args.data_type, args.h5, Xname=args.Xname, Xindex=args.Xindex, 
                     Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
                     Zindex=args.Zindex, first_iter=args.first_iter,
                     last_iter=args.last_iter, bins=(args.bins, args.bins), T=args.T,
