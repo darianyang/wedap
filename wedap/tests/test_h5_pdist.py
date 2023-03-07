@@ -32,7 +32,7 @@ class Test_H5_Pdist():
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     #@pytest.mark.parametrize("weighted", [True, False])
     def test_evolution(self, Xname):
-        evolution = wedap.H5_Pdist(self.h5, "evolution", Xname=Xname)
+        evolution = wedap.H5_Pdist(h5=self.h5, data_type="evolution", Xname=Xname)
         X, Y, Z = evolution.pdist()
 
         # X data is the variably filled array of instance pdist x values
@@ -47,14 +47,14 @@ class Test_H5_Pdist():
 
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     def test_instant_1d(self, Xname):
-        X, Y, Z = wedap.H5_Pdist(self.h5, "instant", Xname=Xname).pdist()
+        X, Y, Z = wedap.H5_Pdist(h5=self.h5, data_type="instant", Xname=Xname).pdist()
         np.testing.assert_allclose(X, np.loadtxt(f"wedap/data/instant_{Xname}_X.txt"))
         np.testing.assert_allclose(Y, np.loadtxt(f"wedap/data/instant_{Xname}_Y.txt"))
         
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     @pytest.mark.parametrize("Yname", ["dihedral_3", "dihedral_4"])
     def test_instant_2d(self, Xname, Yname):
-        X, Y, Z = wedap.H5_Pdist(self.h5, "instant", Xname=Xname, Yname=Yname).pdist()
+        X, Y, Z = wedap.H5_Pdist(h5=self.h5, data_type="instant", Xname=Xname, Yname=Yname).pdist()
         np.testing.assert_allclose(X, 
             np.loadtxt(f"wedap/data/instant_{Xname}_{Yname}_X.txt"))
         np.testing.assert_allclose(Y, 
@@ -64,7 +64,7 @@ class Test_H5_Pdist():
     
     # TODO along with average
     # def test_instant_3d(self):
-    #     X, Y, Z = wedap.H5_Pdist(self.h5, "instant", Xname=Xname, Yname=Yname).pdist()
+    #     X, Y, Z = wedap.H5_Pdist(h5=self.h5, data_type="instant", Xname=Xname, Yname=Yname).pdist()
     #     np.testing.assert_allclose(X, 
     #         np.loadtxt(f"wedap/data/instant_{Xname}_{Yname}_X.txt"))
     #     np.testing.assert_allclose(Y, 
@@ -74,14 +74,14 @@ class Test_H5_Pdist():
 
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     def test_average_1d(self, Xname):
-        X, Y, Z = wedap.H5_Pdist(self.h5, "average", Xname=Xname).pdist()
+        X, Y, Z = wedap.H5_Pdist(h5=self.h5, data_type="average", Xname=Xname).pdist()
         np.testing.assert_allclose(X, np.loadtxt(f"wedap/data/average_{Xname}_X.txt"))
         np.testing.assert_allclose(Y, np.loadtxt(f"wedap/data/average_{Xname}_Y.txt"))
 
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     @pytest.mark.parametrize("Yname", ["dihedral_3", "dihedral_4"])
     def test_average_2d(self, Xname, Yname):
-        X, Y, Z = wedap.H5_Pdist(self.h5, "average", Xname=Xname, Yname=Yname).pdist()
+        X, Y, Z = wedap.H5_Pdist(h5=self.h5, data_type="average", Xname=Xname, Yname=Yname).pdist()
         np.testing.assert_allclose(X, 
             np.loadtxt(f"wedap/data/average_{Xname}_{Yname}_X.txt"))
         np.testing.assert_allclose(Y, 
