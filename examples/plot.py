@@ -35,8 +35,8 @@ plot_options = {"ylabel" : "RMSD to Xtal ($\AA$)",
                 }
 
 
-wedap = wedap.H5_Plot(plot_options=plot_options, **data_options)
-wedap.plot()
+plot = wedap.H5_Plot(plot_options=plot_options, **data_options)
+plot.plot()
 
 plt.show()
 
