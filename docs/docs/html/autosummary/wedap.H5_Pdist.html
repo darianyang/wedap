@@ -158,28 +158,13 @@ states 1 and 2 but would skip basis state 3, applying zero weights.</p></li>
 <td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_1d</span></code>()</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
-</dd>
-</dl>
-</p></td>
+<td><p>1 dataset: average pdist for a range of iterations.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_2d</span></code>()</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.</p>
-</dd>
-</dl>
-</p></td>
+<td><p>2 datasets: average pdist for a range of iterations.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolution_pdist</span></code>()</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
-</dd>
-</dl>
-</p></td>
+<td><p>Returns the pdist for 1 coordinate for the range iterations specified.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_weights</span></code>()</p></td>
 <td><p>Returns an 1D array of the weight for every frame of each tau for all segments of all iterations specified.</p></td>
@@ -197,22 +182,12 @@ states 1 and 2 but would skip basis state 3, applying zero weights.</p></li>
 <td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_1d</span></code>()</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
-</dd>
-</dl>
-</p></td>
+<td><p>Returns the x and y pdist datasets for a single iteration.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_2d</span></code>()</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),</p>
-</dd>
-</dl>
-</p></td>
+<td><p>Returns the xyz pdist datasets for a single iteration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist</span></code>([avg3dint])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist</span></code>()</p></td>
 <td><p>Main public method with pdist generation controls.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code>(walker_tuple[, color, ax])</p></td>
@@ -225,7 +200,7 @@ states 1 and 2 but would skip basis state 3, applying zero weights.</p></li>
 <td><p>Originally adapted from code by Jeremy Leung.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">succ_pdist</span></code>()</p></td>
-<td><p>Filter weights to be zero for all non successfull trajectories.</p></td>
+<td><p>TODO: Filter weights to be zero for all non successfull trajectories.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_walker</span></code>(walker_tuple)</p></td>
 <td><p>Get trace path of an input (iteration, walker).</p></td>

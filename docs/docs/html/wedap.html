@@ -130,7 +130,6 @@ This would be something like pdist.dap default and option to check and
 read in a wedap or westpa pdist file for pdist function.</p>
 </dd>
 </dl>
-<p>TODO: make the args consistent in cli and api</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="wedap.command_line.create_cmd_arguments">
 <span class="sig-prename descclassname"><span class="pre">wedap.command_line.</span></span><span class="sig-name descname"><span class="pre">create_cmd_arguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.command_line.create_cmd_arguments" title="Permalink to this definition"></a></dt>
@@ -181,7 +180,7 @@ arguments for the <cite>wedap</cite>.</p>
 <section id="module-wedap.h5_pdist">
 <span id="wedap-h5-pdist-module"></span><h1>wedap.h5_pdist module<a class="headerlink" href="#module-wedap.h5_pdist" title="Permalink to this heading"></a></h1>
 <p>Convert auxillary data recorded during WESTPA simulation and stored in west.h5 file
-to various probability density plots.</p>
+to various probability density datasets.</p>
 <p>This script effectively replaces the need to use the native WESTPA plotting pipeline:
 west.h5 –w_pdist(with –construct-dataset module.py)–&gt;
 pdist.h5 –plothist(with –postprocess-functions hist_settings.py)–&gt; plot.pdf</p>
@@ -244,13 +243,23 @@ pdist.h5 –plothist(with –postprocess-functions hist_settings.py)–&gt; plot
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_datasets_3d">
 <span class="sig-name descname"><span class="pre">average_datasets_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_datasets_3d" title="Permalink to this definition"></a></dt>
-<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p>
+<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
+Averaged over the iteration range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X, Y, Z</strong> – Raw data for each named coordinate.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_pdist_1d">
 <span class="sig-name descname"><span class="pre">average_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_1d" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>1 dataset: average pdist for a range of iterations.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
 also returns norm_hist.
@@ -265,7 +274,8 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_pdist_2d">
 <span class="sig-name descname"><span class="pre">average_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_2d" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>2 datasets: average pdist for a range of iterations.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
 norm_hist is a 2-D matrix of the normalized histogram values.</p>
@@ -279,14 +289,15 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.evolution_pdist">
 <span class="sig-name descname"><span class="pre">evolution_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.evolution_pdist" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Returns the pdist for 1 coordinate for the range iterations specified.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
+<dd class="field-odd"><p><strong>x, y, norm_hist</strong> – x and y axis values, and if using Y or evolution (with only X),
 also returns norm_hist.
 norm_hist is a 2-D matrix of the normalized histogram values.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>x, y, norm_hist</p>
+<dd class="field-even"><p>arrays</p>
 </dd>
 </dl>
 </dd></dl>
@@ -296,6 +307,14 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 <span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_all_weights" title="Permalink to this definition"></a></dt>
 <dd><p>Returns an 1D array of the weight for every frame of each tau
 for all segments of all iterations specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>weights_expanded</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -366,20 +385,28 @@ array input that is handled by the H5_Processing class</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_datasets_3d">
 <span class="sig-name descname"><span class="pre">instant_datasets_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_datasets_3d" title="Permalink to this definition"></a></dt>
-<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p>
+<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
+For single iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X, Y, Z</strong> – Raw data for each named coordinate.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_pdist_1d">
 <span class="sig-name descname"><span class="pre">instant_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_1d" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Returns the x and y pdist datasets for a single iteration.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
-also returns norm_hist.
-norm_hist is a 2-D matrix of the normalized histogram values.</p>
+<dd class="field-odd"><p><strong>Xdata, y</strong> – x (dataset) and y (pdist) axis values</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Xdata, y</p>
+<dd class="field-even"><p>arrays</p>
 </dd>
 </dl>
 </dd></dl>
@@ -387,31 +414,23 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_pdist_2d">
 <span class="sig-name descname"><span class="pre">instant_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_2d" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Returns the xyz pdist datasets for a single iteration.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
+<dd class="field-odd"><p><strong>x, y, norm_hist</strong> – x and y axis values, and if using Y or evolution (with only X),
 also returns norm_hist.
 norm_hist is a 2-D matrix of the normalized histogram values.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>x, y, norm_hist</p>
+<dd class="field-even"><p>arrays</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.pdist">
-<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">avg3dint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.pdist" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.pdist" title="Permalink to this definition"></a></dt>
 <dd><p>Main public method with pdist generation controls.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>avg3dint</strong> (<em>int</em>) – for average 3d plots, sometimes scatter needs a sparser dataset.</p></li>
-<li><p><strong># TODO</strong> (<em>interval may not be needed if I use function arg (Xfun, etc)</em>)</p></li>
-<li><p><strong># TODO</strong> (<em>maybe make interval for all returns? nah, hist prob doesn’t need it?</em>)</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -452,10 +471,10 @@ iteration, and reshape them to make pdists.</p>
 <span class="sig-name descname"><span class="pre">search_aux_xy_nn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.search_aux_xy_nn" title="Permalink to this definition"></a></dt>
 <dd><p>Originally adapted from code by Jeremy Leung.
 Tree search to find closest datapoint to input data value(s).</p>
+<p># TODO: add step size for searching, right now gets the last frame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong># TODO</strong> (<em>add step size for searching, right now gets the last frame</em>)</p></li>
 <li><p><strong>val_x</strong> (<em>int or float</em>) – X dataset value to search for.</p></li>
 <li><p><strong>val_y</strong> (<em>int or float</em>) – Y dataset value to search for.</p></li>
 </ul>
@@ -466,7 +485,7 @@ Tree search to find closest datapoint to input data value(s).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.succ_pdist">
 <span class="sig-name descname"><span class="pre">succ_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.succ_pdist" title="Permalink to this definition"></a></dt>
-<dd><p>Filter weights to be zero for all non successfull trajectories.
+<dd><p>TODO: Filter weights to be zero for all non successfull trajectories.
 Make an array of zero weights and fill out weights for succ trajs only.</p>
 </dd></dl>
 
@@ -502,14 +521,12 @@ Could have this be an optional feature.</p>
 <section id="module-wedap.h5_plot">
 <span id="wedap-h5-plot-module"></span><h1>wedap.h5_plot module<a class="headerlink" href="#module-wedap.h5_plot" title="Permalink to this heading"></a></h1>
 <p>Main plotting class of wedap.
-Plot all of the datasets generated with h5_pdist.</p>
-<p># TODO: include trace and plot walker functionality with search_aux</p>
+Plot all of the datasets generated with H5_Pdist.</p>
 <dl class="simple">
 <dt># TODO: all plotting options with test.h5, compare output</dt><dd><p># 1D Evo, 1D and 2D instant and average
 # optional: diff max_iter and bins args</p>
 </dd>
 </dl>
-<p>TODO: make mpl style options path set up at install</p>
 <p>TODO: maybe make methods for the following plots:
 contourf–plot contour levels
 histogram–plot histogram.
@@ -524,11 +541,10 @@ maybe a ridgeline plot?
 - <a class="reference external" href="https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/">https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/</a>
 Option to overlay different datasets, could be done easily with python but maybe a cli option?</p>
 <dl class="simple">
-<dt>TODO: plot clustering centroids option</dt><dd><p>can then grab the search_aux at the centroid</p>
+<dt>TODO: plot clustering centroids option?</dt><dd><p>can then grab the search_aux at the centroid</p>
 </dd>
 </dl>
-<p>TODO: bin visualizer
-TODO: and maybe show the trajectories as just dots</p>
+<p>TODO: bin visualizer? and maybe show the trajectories as just dots?</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_plot.</span></span><span class="sig-name descname"><span class="pre">H5_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hist2d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tab:blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot" title="Permalink to this definition"></a></dt>
@@ -544,9 +560,14 @@ TODO: and maybe show the trajectories as just dots</p>
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot">
 <span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot" title="Permalink to this definition"></a></dt>
 <dd><p>Main public method.
-master plotting run function
-here can parse plot type and add cbars/tightlayout/plot_options/smoothing</p>
+Master plotting run function
+Parse plot type and add cbars/tightlayout/plot_options/smoothing</p>
 <p>TODO: some kind 1d vs 2d indicator, then if not 1d plot cbar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cbar</strong> (<em>bool</em>) – Whether or not to include a colorbar.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
