@@ -21,6 +21,9 @@ This repository is currently under development.
 - h5py
 - scipy
 - tqdm
+
+### Optional
+
 - gif (optional for making gifs)
 - gooey (optional for GUI)
 

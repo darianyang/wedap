@@ -20,17 +20,17 @@ import pytest
 # decorator to skip in pytest
 #@pytest.mark.skip
 
+# TODO: test for trace, search_aux, skip_basis, get_total_data_array, get_all_weights
+# maybe test more args like first_iter, last_iter, step_iter, H5save_out, data_proc, bins, histrange, p_units
+# could also change to 1/2/3 dataset format
+
 class Test_H5_Pdist():
     """
     Test each method of the H5_Pdist class.
     """
     h5 = "wedap/data/p53.h5"
-
-    # TODO: seperate test for weighted method
-    # TODO: add tests for internal pdist methods
     
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
-    #@pytest.mark.parametrize("weighted", [True, False])
     def test_evolution(self, Xname):
         evolution = wedap.H5_Pdist(h5=self.h5, data_type="evolution", Xname=Xname)
         X, Y, Z = evolution.pdist()
