@@ -112,8 +112,6 @@ def create_cmd_arguments():
         # and produced as a single item. If no command-line argument is present, 
         # the value from default will be produced."
 
-    # TODO: I should add histrange_x and histrange_y
-
     main = parser.add_argument_group("Main Arguments")
     optional = parser.add_argument_group("Optional Extra Arguments")
 
@@ -152,6 +150,16 @@ def create_cmd_arguments():
                         dest="Yindex", help="Index in third dimension for >2D datasets.")
     main.add_argument("-Zi", "--Zindex", default=0, nargs="?", type=int,
                         dest="Zindex", help="Index in third dimension for >2D datasets.")
+    main.add_argument("-hrx", "--histrange-x", default=None, nargs=2,
+                      dest="histrange_x",
+                      help="Ranges to consider for the x-axis, input "
+                           "2 space-seperated floats : LB UB",
+                      type=float)
+    main.add_argument("-hry", "--histrange-y", default=None, nargs=2,
+                      dest="histrange_y",
+                      help="Ranges to consider for the y-axis, input "
+                           "2 space-seperated floats : LB UB",
+                      type=float)
     main.add_argument("-o", "--output", default=None,
                         dest="output_path",
                         help="The filename to which the plot will be saved. "
