@@ -179,10 +179,6 @@ class H5_Pdist():
 
         self.bins = bins
 
-        # save the available aux dataset names]
-        # TODO: dosen't work if you don't have an aux dataset dir in h5
-        #self.auxnames = list(self.f[f"iterations/iter_{first_iter:08d}/auxdata"])
-
         # first make a list for each iteration weight array
         weights = []
         #for iter in range(self.first_iter, self.last_iter + 1):
@@ -212,6 +208,7 @@ class H5_Pdist():
 
         self.skip_basis = skip_basis
         self.skip_basis_out = skip_basis_out
+        self.n_bstates = self.f["ibstates/index"]["n_bstates"]
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
@@ -390,6 +387,11 @@ class H5_Pdist():
         self.weights : array
             Updated weight array with zero values for skipped basis states.
         """
+        # TODO: doesn't work with --first-iter
+        
+        # copy of weights to edit
+        new_weights = self.weights
+
         # setup a warning for h5 files that have incorrectly recorded bstate pcoords
         # this will all be based off of the first pcoord array (Z index 0)
         # correspondingly, the bstate_pcoord will be the first column
@@ -404,11 +406,16 @@ class H5_Pdist():
             # make sure that traced unique pcoord elements match the basis state values
             if np.isclose(bs_coords[:,0], it1_unique_coords, rtol=1e-04) is False:
                 message = f"The traced pcoord \n{it1_unique_coords} \ndoes not equal " + \
-                        f"the basis state coordinates \n{bs_coords}"
+                          f"the basis state coordinates \n{bs_coords}"
                 warn(message)
         except ValueError:
             message = "Not all bstates may have been used in iteration 1."
             warn(message)
+
+        # TODO: print bstate pcoords
+        #print(bs_coords[:,0])
+        print(f"bstates: {it1_unique_coords}")
+        #import sys ; sys.exit(0)
 
         # if the basis state binary is a 1 in skip_basis, use weight 0 
         #print("First run skip_basis processing from each initial segment: ")
@@ -422,7 +429,7 @@ class H5_Pdist():
                     if np.isclose(it1_val, bs_coords[basis,0], rtol=1e-04):
                         # search forward to look for children of basis state 
                         # start at it1_idx, make weight zero 
-                        self.weights[0][it1_idx] = 0
+                        new_weights[0][it1_idx] = 0
 
                         # list for parent_ids of the current segment skip basis lineage
                         skip_parents_c = [it1_idx]
@@ -434,7 +441,7 @@ class H5_Pdist():
                                          desc="skip_basis", disable=self.no_pbar):
                             for idx in skip_parents_c:
                                 # make zero for each child of skip_basis
-                                self.weights[iter-1][idx] = 0
+                                new_weights[iter-1][idx] = 0
                                 # then make new skip_parents tuple to loop for next iter
                                 skip_parents_n += self._get_children_indices((iter, idx))
 
@@ -444,15 +451,16 @@ class H5_Pdist():
                             skip_parents_n.clear()
 
         # TODO: prob can do better than these print statements
-        print("Then run pdist calculation per iteration: ")
+        print("pdist calculation: ")
         # write new weights into skip_basis_out h5 file
         if self.skip_basis_out is not None:
             shutil.copyfile(self.h5, self.skip_basis_out)
             h5_skip_basis = h5py.File(self.skip_basis_out, "r+")
-            for idx, weight in enumerate(self.weights):
+            for idx, weight in enumerate(new_weights):
                 h5_skip_basis[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
             
-        return self.weights                                
+        # only return portion of weights requested by user
+        return new_weights[self.first_iter-1:self.last_iter]
 
     # TODO: clean up and optimize
     def search_aux_xy_nn(self, val_x, val_y):
@@ -1052,7 +1060,13 @@ class H5_Pdist():
         """ 
         # option to zero weight out specific basis states
         if self.skip_basis is not None:
-            self.weights = self._new_weights_from_skip_basis()
+            try: 
+                self.weights = self._new_weights_from_skip_basis()
+            # if the wrong amount of args are input and != n_bstates
+            except IndexError:
+                message = f"IndexError for bstate input ({self.skip_basis}): " + \
+                          f"Did you use the correct amount of bstates {self.n_bstates}?"
+                warn(message)
 
         # reshape 1d input raw data array (if given) into 3d array
         if isinstance(self.Xname, np.ndarray):

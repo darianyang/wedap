@@ -226,6 +226,12 @@ def create_cmd_arguments():
                           dest="not_weighted", action="store_true")
     # optional.add_argument("--weighted", default=True, 
     #                       action=argparse.BooleanOptionalAction)
+    # * args is flexible number of values, which will be gathered into a list
+    optional.add_argument("-sb", "--skip-basis", default=None, nargs="*",
+                          dest="skip_basis",
+                          help="List of binary values for skipping basis states, "
+                               "e.g. 0 1 1 to skip all bstates except for first.",
+                          type=int)
 
     optional.add_argument("--style", default="default", nargs="?",
                         dest="style",
