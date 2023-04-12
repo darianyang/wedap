@@ -413,8 +413,8 @@ class H5_Pdist():
             warn(message)
 
         # TODO: print bstate pcoords
-        #print(bs_coords[:,0])
-        print(f"bstates: {it1_unique_coords}")
+        print(f"bstates: {bs_coords[:,0]}")
+        print(f"bstates from pcoord: {it1_unique_coords}")
         #import sys ; sys.exit(0)
 
         # if the basis state binary is a 1 in skip_basis, use weight 0 
@@ -502,7 +502,9 @@ class H5_Pdist():
             indices = []
 
             # change indices to number of iteration
-            for i in range(self.first_iter, self.last_iter + 1): 
+            #for i in range(self.first_iter, self.last_iter + 1): 
+            # always use iteration 1 to get full trace path
+            for i in range(1, self.last_iter + 1): 
 
                 # These are the auxillary coordinates you're looking for
                 r1 = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
