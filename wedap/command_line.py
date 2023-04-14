@@ -128,27 +128,27 @@ def create_cmd_arguments():
                              "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'.",
                         type=str)
     # TODO: could make choices tuple with the available aux values from the h5 file
-    main.add_argument("-X", "--Xname", default="pcoord", nargs="?",
+    main.add_argument("-X", "-x", "--Xname", "--xname", default="pcoord", nargs="?",
                         dest="Xname", #choices=aux, TODO
                         help="Target data name for x axis. Default 'pcoord', "
                         "can also be any aux dataset name in your h5 file.",
                         type=str)
-    main.add_argument("-Y", "--Yname", default=None, nargs="?",
+    main.add_argument("-Y", "-y", "--Yname", "--yname", default=None, nargs="?",
                         dest="Yname", #choices=aux, TODO
                         help="Target data name for y axis. Default 'None', "
                         "can be 'pcoord' or any aux dataset name in your h5 file.",
                         type=str)
-    main.add_argument("-Z", "--Zname", default=None, nargs="?",
+    main.add_argument("-Z", "-z", "--Zname", "--zname", default=None, nargs="?",
                         dest="Zname", #choices=aux, TODO
                         help="Target data name for z axis. Must use 'scatter3d' "
                         "for 'plot_mode'. Can be 'pcoord' or any aux dataset name "
                         "in your h5 file.",
                         type=str)
-    main.add_argument("-Xi", "--Xindex", default=0, nargs="?", type=int,
+    main.add_argument("-Xi", "-xi", "--Xindex", "--xindex", default=0, nargs="?", type=int,
                         dest="Xindex", help="Index in third dimension for >2D datasets.")
-    main.add_argument("-Yi", "--Yindex", default=0, nargs="?", type=int,
+    main.add_argument("-Yi", "-yi", "--Yindex", "--yindex", default=0, nargs="?", type=int,
                         dest="Yindex", help="Index in third dimension for >2D datasets.")
-    main.add_argument("-Zi", "--Zindex", default=0, nargs="?", type=int,
+    main.add_argument("-Zi", "-zi", "--Zindex", "--zindex", default=0, nargs="?", type=int,
                         dest="Zindex", help="Index in third dimension for >2D datasets.")
     main.add_argument("-hrx", "--histrange-x", default=None, nargs=2,
                       dest="histrange_x",
@@ -169,24 +169,26 @@ def create_cmd_arguments():
                              "the plot to a serperate file.",
                         type=str)
     # begin optional arg group
-    optional.add_argument("--first-iter", default=1, nargs="?",
+    optional.add_argument("-fi", "--first-iter", default=1, nargs="?",
                         dest="first_iter",
                         help="Plot data starting at iteration FIRST_ITER. "
                              "By default, plot data starting at the first "
                              "iteration in the specified west.h5 file.",
                         type=int)
-    optional.add_argument("--last-iter", default=None, nargs="?",
+    optional.add_argument("-li", "--last-iter", default=None, nargs="?",
                         dest="last_iter",
                         help="Plot data up to and including iteration LAST_ITER. "
                              "By default, plot data up to and including the last "
                              "iteration in the specified H5 file.",
                         type=int)
-    # TODO: x and y bins? Already implemented in base H5_Pdist
-    optional.add_argument("--bins", default=100, nargs="?",
+    # *: a flexible number of values, which will be gathered into a list
+    # +: like *, but requiring at least one value
+    optional.add_argument("--bins", default=[100, 100], nargs="+",
                         dest="bins",
-                        help="Use BINS number of bins for histogramming. "
+                        help="Use BINS number of bins for histogramming X and Y. "
                              "Divide the range between the minimum and maximum "
-                             "observed values into this many bins.",
+                             "observed values into this many bins. Must input 1 bin "
+                             "value per dimension (e.g. X and Y so '100 100')",
                         type=int)
     optional.add_argument("--pmin", default=None, nargs="?",
                         dest="p_min",
