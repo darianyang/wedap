@@ -38,7 +38,7 @@ class H5_Pdist():
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     # TODO: add step-iter
-    def __init__(self, data_type, h5="west.h5", Xname="pcoord", Xindex=0, Yname=None, 
+    def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
                  Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
@@ -106,7 +106,10 @@ class H5_Pdist():
         # TODO: maybe change self.f to self.h5?
         self.h5 = h5
         self.f = h5py.File(h5, mode="r")
-        self.data_type = data_type
+        if data_type is None:
+            raise ValueError("Must input valid data_type: `evolution`, `average`, or `instant`")
+        else:
+            self.data_type = data_type
         self.p_units = p_units
         self.T = T
         self.weighted = weighted
