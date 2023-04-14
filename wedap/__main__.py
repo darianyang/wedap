@@ -58,10 +58,10 @@ def main():
         weighted = True
 
     # always output XYZ with fake Z for 1D, makes this part easier/less verbose
-    pdist = H5_Pdist(args.data_type, args.h5, Xname=args.Xname, Xindex=args.Xindex, 
-                    Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
+    pdist = H5_Pdist(h5=args.h5, data_type=args.data_type, Xname=args.Xname,
+                    Xindex=args.Xindex, Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
                     Zindex=args.Zindex, first_iter=args.first_iter, skip_basis=args.skip_basis,
-                    last_iter=args.last_iter, bins=(args.bins, args.bins), T=args.T,
+                    last_iter=args.last_iter, bins=args.bins, T=args.T,
                     weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar,
                     histrange_x=args.histrange_x, histrange_y=args.histrange_y)
     X, Y, Z = pdist.pdist()
@@ -72,12 +72,14 @@ def main():
     # 2D plot with cbar
     # TODO: can this be done better?
     if args.Yname or args.data_type == "evolution":
+        #plot.plot(cbar=True)
         try:
             plot.plot(cbar=True)
+        # TODO: this hides ulterior error messages
         except AttributeError:
             print(f"ERROR: Attempting to plot an {args.data_type} dataset using ")
             print(f"a {args.plot_mode} type plot. Is this what you meant to do?")
-            sys.exit()
+            sys.exit(0)
     # 1D plot that isn't evolution
     elif args.Yname is None and args.Zname is None and args.data_type != "evolution":
         plot.plot(cbar=False)
