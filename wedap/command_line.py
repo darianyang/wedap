@@ -234,7 +234,11 @@ def create_cmd_arguments():
                           help="List of binary values for skipping basis states, "
                                "e.g. 0 1 1 to skip all bstates except for first.",
                           type=int)
-
+    optional.add_argument("-jp", "--joint-plot", default=False,
+                          dest="jointplot",
+                          help="Optionally include marginal plots to create "
+                               "a joint plot from 2D pdist.",
+                          action="store_true")
     optional.add_argument("--style", default="default", nargs="?",
                         dest="style",
                         help="mpl style, can use default, None, or custom. "

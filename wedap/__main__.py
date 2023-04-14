@@ -68,18 +68,20 @@ def main():
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
                    contour_interval=args.contour_interval, p_min=args.p_min,
                    p_max=args.p_max, cbar_label=cbar_label, color=args.color,
-                   smoothing_level=args.smoothing_level)
+                   smoothing_level=args.smoothing_level, jointplot=args.jointplot,
+                   # only necessary since for joint plot, could adapt better later
+                   p_units=args.p_units, T=args.T)
     # 2D plot with cbar
     # TODO: can this be done better?
     if args.Yname or args.data_type == "evolution":
-        #plot.plot(cbar=True)
-        try:
-            plot.plot(cbar=True)
-        # TODO: this hides ulterior error messages
-        except AttributeError:
-            print(f"ERROR: Attempting to plot an {args.data_type} dataset using ")
-            print(f"a {args.plot_mode} type plot. Is this what you meant to do?")
-            sys.exit(0)
+        plot.plot(cbar=True)
+        # try:
+        #     plot.plot(cbar=True)
+        # # TODO: this hides ulterior error messages
+        # except AttributeError:
+        #     print(f"ERROR: Attempting to plot an {args.data_type} dataset using ")
+        #     print(f"a {args.plot_mode} type plot. Is this what you meant to do?")
+        #     sys.exit(0)
     # 1D plot that isn't evolution
     elif args.Yname is None and args.Zname is None and args.data_type != "evolution":
         plot.plot(cbar=False)
@@ -122,7 +124,9 @@ def main():
     """
     Show and/or save the final plot
     """
-    plot.fig.tight_layout()
+    # fig vs plt shouldn't matter here (needed to go plt for mosaic)
+    #plot.fig.tight_layout()
+    plt.tight_layout()
     if args.output_path is not None:
         plot.fig.savefig(args.output_path)
         #logging.info(f"Plot was saved to {args.output_path}")

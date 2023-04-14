@@ -45,7 +45,7 @@ class H5_Plot(H5_Pdist):
     """
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap="viridis", smoothing_level=None,
         color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,
-        cbar_label=None, *args, **kwargs):
+        cbar_label=None, cax=None, jointplot=False, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
 
@@ -74,6 +74,11 @@ class H5_Plot(H5_Pdist):
             Interval to put contour levels if using 'contour' plot_mode.
         cbar_label : str
             Label for the colorbar.
+        cax : MPL axes object
+            Optionally define axes object to place colorbar.
+        jointplot : bool
+            Whether or not to include marginal plots. Note to use this argument, 
+            probabilities for Z or from H5_Pdist must be in `raw` p_units.
         ** args
         ** kwargs
         """
@@ -81,13 +86,9 @@ class H5_Plot(H5_Pdist):
         # TODO: how to make some of the args optional if I want to use classes seperately?
         #super().__init__(*args, **kwargs)
 
-        if ax is None:
-            self.fig, self.ax = plt.subplots()
-        else:
-            self.fig = plt.gcf()
-            self.ax = ax
-
+        self.ax = ax
         self.smoothing_level = smoothing_level
+        self.jointplot = jointplot
 
         # TODO: option if you want to generate pdist
         # also need option of just using the input X Y Z args
@@ -95,6 +96,11 @@ class H5_Plot(H5_Pdist):
         # user inputs XYZ
         if X is None and Y is None and Z is None:
             super().__init__(*args, **kwargs)
+            # # raw pdists for joint plots
+            # if self.jointplot:
+            #     self.requested_p_units = self.p_units
+            #     self.p_units = "raw"
+            # will be re-normed later on
             X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
 
         self.X = X
@@ -123,6 +129,7 @@ class H5_Plot(H5_Pdist):
             self.cbar_label = cbar_label
         else:
             self.cbar_label = "-ln P(x)"
+        self.cax = cax
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -167,7 +174,9 @@ class H5_Plot(H5_Pdist):
         cax : mpl cbar axis
             Optionally specify the cbar axis.
         """
-        cbar = self.fig.colorbar(self.plot, cax=cax)
+        # fig vs plt should be the same, tests run fine (needed to go plt for mosaic)
+        #cbar = self.fig.colorbar(self.plot, cax=cax)
+        cbar = plt.colorbar(self.plot, cax=cax)
         # TODO: lines on colorbar?
         # TODO: related, make a discrete colorbar/mapping for hist2d?
         #if lines:
@@ -254,6 +263,21 @@ class H5_Plot(H5_Pdist):
         self.plot = self.ax.hexbin(self.X, self.Y, C=self.Z,
                                    cmap=self.cmap, vmin=self.p_min, vmax=self.p_max)
 
+    def plot_margins(self):
+        """
+        Joint plot of heatmap (pcolormesh).
+        Must input raw probabilities from H5_Pdist(p_units = 'raw').
+        """
+        # TODO: add functionality for scatter3d, use XY data to create gaussian_kde margins
+        # clean up infs and NaNs in Z
+        Z = np.ma.masked_invalid(self.Z)
+        # calc margin datasets
+        x_proj = Z.sum(axis=0)
+        y_proj = Z.sum(axis=1)
+        # plot margins
+        self.fig["x"].plot(self.X, self._normalize(x_proj))
+        self.fig["y"].plot(self._normalize(y_proj), self.Y)
+
     def _unpack_plot_options(self):
         """
         Unpack the plot_options kwarg dictionary.
@@ -289,13 +313,58 @@ class H5_Plot(H5_Pdist):
         Master plotting run function
         Parse plot type and add cbars/tightlayout/plot_options/smoothing
 
-        TODO: some kind 1d vs 2d indicator, then if not 1d plot cbar
-
         Parameters
         ----------
         cbar : bool
             Whether or not to include a colorbar.
         """
+        # special settings for joint plots
+        if self.jointplot:
+            # since jointplot starts with raw probabilities
+            # need to figure out what p_units are needed
+            # only if p_units is definied (e.g. H5_Pdist args are in place)
+            # try:
+            #     self.p_units
+            #     self.T
+            # # if H5_Pdist args not in place, use default
+            # except AttributeError:
+            #     warn("Defaulting to 'kT' probability units.")
+            #     # self.p_units does not exist, default to kT
+            #     self.p_units = "kT"
+            # # if H5_Pdists args were in place and changed to "raw" for jointplots
+            # if self.p_units == "raw":
+            #     # return to requested p_units
+            #     self.p_units = self.requested_p_units
+
+            self.p_units = "kT"
+            self.fig = plt.figure(layout="tight").subplot_mosaic(
+                        """
+                        x..
+                        Hyc
+                        """,
+                        # set the height ratios between the rows
+                        height_ratios=[1, 3.5],
+                        # set the width ratios between the columns
+                        width_ratios=[3.5, 1, 0.25],
+                        )
+            self.cax = self.fig["c"]
+            self.ax = self.fig["H"]
+            # plot margins first from raw probabilities
+            self.plot_margins()
+            # calc normalized hist using updated p_units
+            self.Z = self._normalize(np.ma.masked_invalid(self.Z))
+            #self.Z = self._normalize(self.Z)
+            # TODO: add formatting jointplot here?
+            # TODO: put pmax as ylim on margin plots
+            self.fig["x"].set_xticks([])
+            self.fig["y"].set_yticks([])
+
+        else:
+            if self.ax is None:
+                self.fig, self.ax = plt.subplots()
+            else:
+                self.fig = plt.gcf()
+
         # smooth the data if specified
         if self.smoothing_level:
             self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=self.smoothing_level)
@@ -331,6 +400,9 @@ class H5_Plot(H5_Pdist):
         elif self.plot_mode == "hexbin3d":
             self.plot_hexbin3d()
 
+        #elif self.plot_mode == "jointheat":
+            #self.plot_jointheat()
+
         # error if unknown plot_mode
         else:
             raise ValueError(f"plot_mode = '{self.plot_mode}' is not valid.")
@@ -343,8 +415,12 @@ class H5_Plot(H5_Pdist):
 
         # don't add cbar if not specified or if using a 1D plot
         if cbar and self.plot_mode not in ["line", "bar"]:
-            self.add_cbar()
+            self.add_cbar(cax=self.cax)
 
+        # TODO: update to just unpack kwargs
         if self.plot_options is not None:
             self._unpack_plot_options()
-        self.fig.tight_layout()
+
+        # fig vs plt shouldn't matter here (needed to go plt for mosaic)
+        #self.fig.tight_layout()
+        plt.tight_layout()
