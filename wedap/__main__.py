@@ -57,12 +57,18 @@ def main():
     elif args.not_weighted is False:
         weighted = True
 
+    # accounting for joint plot option (TODO: better way?)
+    if args.jointplot:
+        temp_p_units = "raw"
+    else:
+        temp_p_units = args.p_units
+
     # always output XYZ with fake Z for 1D, makes this part easier/less verbose
     pdist = H5_Pdist(h5=args.h5, data_type=args.data_type, Xname=args.Xname,
                     Xindex=args.Xindex, Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
                     Zindex=args.Zindex, first_iter=args.first_iter, skip_basis=args.skip_basis,
                     last_iter=args.last_iter, bins=args.bins, T=args.T,
-                    weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar,
+                    weighted=weighted, p_units=temp_p_units, no_pbar=args.no_pbar,
                     histrange_x=args.histrange_x, histrange_y=args.histrange_y)
     X, Y, Z = pdist.pdist()
     plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,

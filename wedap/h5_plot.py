@@ -96,10 +96,10 @@ class H5_Plot(H5_Pdist):
         # user inputs XYZ
         if X is None and Y is None and Z is None:
             super().__init__(*args, **kwargs)
-            # # raw pdists for joint plots
-            # if self.jointplot:
-            #     self.requested_p_units = self.p_units
-            #     self.p_units = "raw"
+            # save the user requested p_units and changes p_units to raw
+            if self.jointplot:
+                self.requested_p_units = self.p_units
+                kwargs["p_units"] = "raw"
             # will be re-normed later on
             X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
 
@@ -323,20 +323,19 @@ class H5_Plot(H5_Pdist):
             # since jointplot starts with raw probabilities
             # need to figure out what p_units are needed
             # only if p_units is definied (e.g. H5_Pdist args are in place)
-            # try:
-            #     self.p_units
-            #     self.T
-            # # if H5_Pdist args not in place, use default
-            # except AttributeError:
-            #     warn("Defaulting to 'kT' probability units.")
-            #     # self.p_units does not exist, default to kT
-            #     self.p_units = "kT"
-            # # if H5_Pdists args were in place and changed to "raw" for jointplots
-            # if self.p_units == "raw":
-            #     # return to requested p_units
-            #     self.p_units = self.requested_p_units
+            try:
+                self.p_units
+                self.T
+            # if H5_Pdist args not in place, use default
+            except AttributeError:
+                warn("Defaulting to 'kT' probability units.")
+                # self.p_units does not exist, default to kT
+                self.p_units = "kT"
+            # if H5_Pdists args were in place and changed to "raw" for jointplots
+            if self.p_units == "raw":
+                # return to requested p_units
+                self.p_units = self.requested_p_units
 
-            self.p_units = "kT"
             self.fig = plt.figure(layout="tight").subplot_mosaic(
                         """
                         x..
@@ -351,13 +350,16 @@ class H5_Plot(H5_Pdist):
             self.ax = self.fig["H"]
             # plot margins first from raw probabilities
             self.plot_margins()
-            # calc normalized hist using updated p_units
+            # calc normalized hist using updated p_units (could also do Z[Z != np.isinf])
             self.Z = self._normalize(np.ma.masked_invalid(self.Z))
-            #self.Z = self._normalize(self.Z)
-            # TODO: add formatting jointplot here?
-            # TODO: put pmax as ylim on margin plots
+
+            # add formatting jointplot options
+            # remove redundant tick labels
             self.fig["x"].set_xticks([])
             self.fig["y"].set_yticks([])
+            # put pmax as lims on margin plots
+            self.fig["x"].set_ylim(self.p_min, self.p_max)
+            self.fig["y"].set_xlim(self.p_min, self.p_max)
 
         else:
             if self.ax is None:
