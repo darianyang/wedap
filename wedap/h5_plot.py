@@ -177,7 +177,9 @@ class H5_Plot(H5_Pdist):
         # fig vs plt should be the same, tests run fine (needed to go plt for mosaic)
         #cbar = self.fig.colorbar(self.plot, cax=cax)
         cbar = plt.colorbar(self.plot, cax=cax)
-        # TODO: lines on colorbar?
+
+        # TODO: lines on colorbar? Can prob do this easier by putting grid on cax
+
         # TODO: related, make a discrete colorbar/mapping for hist2d?
         #if lines:
         #    cbar.add_lines(lines)
@@ -268,7 +270,6 @@ class H5_Plot(H5_Pdist):
         Joint plot of heatmap (pcolormesh).
         Must input raw probabilities from H5_Pdist(p_units = 'raw').
         """
-        # TODO: add functionality for scatter3d, use XY data to create gaussian_kde margins
         # clean up infs and NaNs in Z
         Z = np.ma.masked_invalid(self.Z)
         # calc margin datasets
@@ -277,6 +278,8 @@ class H5_Plot(H5_Pdist):
         # plot margins
         self.fig["x"].plot(self.X, self._normalize(x_proj))
         self.fig["y"].plot(self._normalize(y_proj), self.Y)
+
+        # TODO: add functionality for scatter3d, use XY data to create gaussian_kde margins
 
     def _unpack_plot_options(self):
         """
@@ -295,8 +298,13 @@ class H5_Plot(H5_Pdist):
                 self.ax.set_ylim(item)
             if key == "title":
                 self.ax.set_title(item)
+            # TODO: add grid to cli plot formatting args?
             if key == "grid" and item is True:
                 self.ax.grid(item, alpha=0.5)
+                if self.jointplot:
+                    # grid the margins
+                    for ax in ["x", "y"]:
+                        self.fig[ax].grid(item, alpha=0.5)
             if key == "minima": # TODO: this is essentially bstate, also put maxima?
                 # reorient transposed hist matrix
                 Z = np.rot90(np.flip(self.Z, axis=0), k=3)
@@ -327,8 +335,8 @@ class H5_Plot(H5_Pdist):
                 self.p_units
                 self.T
             # if H5_Pdist args not in place, use default
-            except AttributeError:
-                warn("Defaulting to 'kT' probability units.")
+            except AttributeError as e:
+                warn(f"{e}: Defaulting to 'kT' probability units.")
                 # self.p_units does not exist, default to kT
                 self.p_units = "kT"
             # if H5_Pdists args were in place and changed to "raw" for jointplots
@@ -355,8 +363,10 @@ class H5_Plot(H5_Pdist):
 
             # add formatting jointplot options
             # remove redundant tick labels
-            self.fig["x"].set_xticks([])
-            self.fig["y"].set_yticks([])
+            # self.fig["x"].set_xticks([])
+            # self.fig["y"].set_yticks([])
+            self.fig["x"].set_xticklabels([])
+            self.fig["y"].set_yticklabels([])
             # put pmax as lims on margin plots
             self.fig["x"].set_ylim(self.p_min, self.p_max)
             self.fig["y"].set_xlim(self.p_min, self.p_max)
@@ -380,9 +390,9 @@ class H5_Plot(H5_Pdist):
             # the h5 but didn't adjust the plot mode to something like line
             try:
                 self.plot_hist()
-            except (TypeError,ValueError):
+            except (TypeError,ValueError) as e:
                 # TODO: put the text into logger?
-                print("ERROR: Did you mean to use the default 'hist' plot mode?")
+                print(f"{e}: Did you mean to use the default 'hist' plot mode?")
                 print("Perhaps you need to define another dimension via '--Yname'?")
                 sys.exit()
             #self.add_cbar()

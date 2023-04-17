@@ -411,8 +411,8 @@ class H5_Pdist():
                 message = f"The traced pcoord \n{it1_unique_coords} \ndoes not equal " + \
                           f"the basis state coordinates \n{bs_coords}"
                 warn(message)
-        except ValueError:
-            message = "Not all bstates may have been used in iteration 1."
+        except ValueError as e:
+            message = f"{e}: Not all bstates may have been used in iteration 1."
             warn(message)
 
         # TODO: print bstate pcoords
@@ -1032,11 +1032,11 @@ class H5_Pdist():
         try:
             array = array.reshape(self.total_particles, self.tau, -1)
         # e.g. ValueError: cannot reshape array of size 303000 into shape (3000,100,newaxis)
-        except ValueError:
+        except ValueError as e:
             array = array.reshape(self.total_particles, self.tau - 1, -1)
             message = "\nYou may be using an input data array which did not include the rst file datapoints. " + \
                       "\nThis may be fine, but note that you shouldn't create a new H5 file using this array."
-            warn(message)
+            warn(e + message)
             # TODO: does this work?
             # the case where the array does not have rst data included
             # put the new first column as the first value of each row (segment)
@@ -1068,8 +1068,8 @@ class H5_Pdist():
             try: 
                 self.weights = self._new_weights_from_skip_basis()
             # if the wrong amount of args are input and != n_bstates
-            except IndexError:
-                message = f"IndexError for bstate input ({self.skip_basis}): " + \
+            except IndexError as e:
+                message = f"IndexError ({e}) for bstate input ({self.skip_basis}): " + \
                           f"Did you use the correct amount of bstates {self.n_bstates}?"
                 warn(message)
 

@@ -66,14 +66,19 @@ def create_cmd_arguments():
     argparse.ArgumentParser: 
         An ArgumentParser that is used to retrieve command line arguments. 
     """
-    wedap_desc = """weighted ensemble data analysis and plotting (wedap): \n
-                 Given an input west.h5 file from a successful WESTPA simulation, prepare probability distributions and plots."""
+    wedap_desc = "============================================================ \n" + \
+                 "=== weighted ensemble data analysis and plotting (wedap) === \n" + \
+                 "============================================================ \n" + \
+                 "\nGiven an input west.h5 file from a successful WESTPA simulation, " + \
+                 "prepare probability distributions and plots."
 
     # create argument parser (gooey based if available)
     if gooey is None:
-        parser = argparse.ArgumentParser(description = wedap_desc)
+        parser = argparse.ArgumentParser(description=wedap_desc, 
+                                        formatter_class=argparse.RawDescriptionHelpFormatter)
     else:
-        parser = gooey.GooeyParser(description = wedap_desc)
+        parser = gooey.GooeyParser(description=wedap_desc, 
+                                   formatter_class=argparse.RawDescriptionHelpFormatter)
 
     ##########################################################
     ############### REQUIRED ARGUMENTS #######################

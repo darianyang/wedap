@@ -80,14 +80,12 @@ def main():
     # 2D plot with cbar
     # TODO: can this be done better?
     if args.Yname or args.data_type == "evolution":
-        plot.plot(cbar=True)
-        # try:
-        #     plot.plot(cbar=True)
-        # # TODO: this hides ulterior error messages
-        # except AttributeError:
-        #     print(f"ERROR: Attempting to plot an {args.data_type} dataset using ")
-        #     print(f"a {args.plot_mode} type plot. Is this what you meant to do?")
-        #     sys.exit(0)
+        try:
+            plot.plot(cbar=True)
+        except AttributeError as e:
+            print(f"{e}: Attempting to plot an {args.data_type} dataset using ")
+            print(f"a {args.plot_mode} type plot. Is this what you meant to do?")
+            sys.exit(0)
     # 1D plot that isn't evolution
     elif args.Yname is None and args.Zname is None and args.data_type != "evolution":
         plot.plot(cbar=False)
