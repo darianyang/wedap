@@ -347,16 +347,17 @@ class H5_Plot(H5_Pdist):
                 # return to requested p_units
                 self.p_units = self.requested_p_units
 
+            # set figure attribute to be a mosaic plot
             self.fig = plt.figure(layout="tight").subplot_mosaic(
-                        """
-                        x..
-                        Hyc
-                        """,
-                        # set the height ratios between the rows
-                        height_ratios=[1, 3.5],
-                        # set the width ratios between the columns
-                        width_ratios=[3.5, 1, 0.25],
-                        )
+                                                    """
+                                                    x..
+                                                    Hyc
+                                                    """,
+                                                    # set the height ratios between the rows
+                                                    height_ratios=[1, 3.5],
+                                                    # set the width ratios between the columns
+                                                    width_ratios=[3.5, 1, 0.25],
+                                                    )
             self.cax = self.fig["c"]
             self.ax = self.fig["H"]
             # plot margins first from raw probabilities

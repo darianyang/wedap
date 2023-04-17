@@ -58,25 +58,31 @@ def main():
         weighted = True
 
     # accounting for joint plot option (TODO: better way?)
-    if args.jointplot:
-        temp_p_units = "raw"
-    else:
-        temp_p_units = args.p_units
+    # if args.jointplot:
+    #     temp_p_units = "raw"
+    # else:
+    #     temp_p_units = args.p_units
 
     # always output XYZ with fake Z for 1D, makes this part easier/less verbose
-    pdist = H5_Pdist(h5=args.h5, data_type=args.data_type, Xname=args.Xname,
+    #pdist = H5_Pdist()
+    plot = H5_Plot(# H5_Pdist args
+                    h5=args.h5, data_type=args.data_type, Xname=args.Xname,
                     Xindex=args.Xindex, Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
                     Zindex=args.Zindex, first_iter=args.first_iter, skip_basis=args.skip_basis,
                     last_iter=args.last_iter, bins=args.bins, T=args.T,
-                    weighted=weighted, p_units=temp_p_units, no_pbar=args.no_pbar,
-                    histrange_x=args.histrange_x, histrange_y=args.histrange_y)
-    X, Y, Z = pdist.pdist()
-    plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
-                   contour_interval=args.contour_interval, p_min=args.p_min,
-                   p_max=args.p_max, cbar_label=cbar_label, color=args.color,
-                   smoothing_level=args.smoothing_level, jointplot=args.jointplot,
-                   # only necessary since for joint plot, could adapt better later
-                   p_units=args.p_units, T=args.T)
+                    weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar,
+                    histrange_x=args.histrange_x, histrange_y=args.histrange_y,
+                    # H5_Plot args
+                    plot_mode=args.plot_mode, cmap=args.cmap,
+                    contour_interval=args.contour_interval, p_min=args.p_min,
+                    p_max=args.p_max, cbar_label=cbar_label, color=args.color,
+                    smoothing_level=args.smoothing_level, jointplot=args.jointplot)
+    # had to adjust this since joint_plots require raw dist, so coupled pdist/plot needed
+    # X, Y, Z = pdist.pdist()
+    # plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
+    #                contour_interval=args.contour_interval, p_min=args.p_min,
+    #                p_max=args.p_max, cbar_label=cbar_label, color=args.color,
+    #                smoothing_level=args.smoothing_level, jointplot=args.jointplot)
     # 2D plot with cbar
     # TODO: can this be done better?
     if args.Yname or args.data_type == "evolution":
@@ -97,17 +103,17 @@ def main():
     if args.color is None:
         args.color = "white"
     if args.trace_seg is not None:
-        pdist.plot_trace(args.trace_seg, color=args.color, ax=plot.ax)
+        plot.plot_trace(args.trace_seg, color=args.color, ax=plot.ax)
     if args.trace_val is not None:
-        iter, seg = pdist.search_aux_xy_nn(args.trace_val[0], args.trace_val[1])
-        pdist.plot_trace((iter,seg), color=args.color, ax=plot.ax)
+        iter, seg = plot.search_aux_xy_nn(args.trace_val[0], args.trace_val[1])
+        plot.plot_trace((iter,seg), color=args.color, ax=plot.ax)
 
     """
     Plot formatting (TODO; handle multiple cli args here via plot_options?)
     """
-    plot.ax.set_xlabel(args.Xname + " i" + str(pdist.Xindex))
+    plot.ax.set_xlabel(args.Xname + " i" + str(plot.Xindex))
     if args.Yname:
-        plot.ax.set_ylabel(args.Yname + " i" + str(pdist.Yindex))
+        plot.ax.set_ylabel(args.Yname + " i" + str(plot.Yindex))
     if args.data_type == "evolution":
         plot.ax.set_ylabel("WE Iteration")
 
@@ -141,7 +147,9 @@ def main():
     #plot.fig.tight_layout()
     plt.tight_layout()
     if args.output_path is not None:
-        plot.fig.savefig(args.output_path)
+        # fig vs plt shouldn't matter here (needed to go plt for mosaic)
+        #plot.fig.savefig(args.output_path)
+        plt.savefig(args.output_path)
         #logging.info(f"Plot was saved to {args.output_path}")
         print(f"Plot was saved to {args.output_path}")
     if args.no_output_to_screen:
