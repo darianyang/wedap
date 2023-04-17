@@ -127,6 +127,12 @@ def main():
         plt.suptitle(args.suptitle)
     if args.cbar_label:
         plot.cbar.set_label(args.cbar_label, labelpad=14)
+    if args.grid:
+        plot.ax.grid(args.grid, alpha=0.5)
+        if args.jointplot:
+            # grid the margins
+            for ax in ["x", "y"]:
+                plot.fig[ax].grid(args.grid, alpha=0.5)
 
     """
     Show and/or save the final plot
