@@ -276,8 +276,8 @@ class H5_Plot(H5_Pdist):
         x_proj = Z.sum(axis=0)
         y_proj = Z.sum(axis=1)
         # plot margins
-        self.fig["x"].plot(self.X, self._normalize(x_proj))
-        self.fig["y"].plot(self._normalize(y_proj), self.Y)
+        self.fig["x"].plot(self.X, self._normalize(x_proj), color=self.color)
+        self.fig["y"].plot(self._normalize(y_proj), self.Y, color=self.color)
 
         # TODO: add functionality for scatter3d, use XY data to create gaussian_kde margins
 
@@ -298,6 +298,8 @@ class H5_Plot(H5_Pdist):
                 self.ax.set_ylim(item)
             if key == "title":
                 self.ax.set_title(item)
+            if key == "suptitle":
+                plt.suptitle(item)
             # TODO: add grid to cli plot formatting args?
             if key == "grid" and item is True:
                 self.ax.grid(item, alpha=0.5)
@@ -335,6 +337,7 @@ class H5_Plot(H5_Pdist):
                 self.p_units
                 self.T
             # if H5_Pdist args not in place, use default
+            # TODO: this warning always pops up even is args.p_units is set
             except AttributeError as e:
                 warn(f"{e}: Defaulting to 'kT' probability units.")
                 # self.p_units does not exist, default to kT

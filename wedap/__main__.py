@@ -112,6 +112,7 @@ def main():
         plot.ax.set_ylabel("WE Iteration")
 
     # args formatting (note args is a namespace object)
+    # TODO: update this to go directly into plot_options dict or **kwargs
     if args.xlabel:
         plot.ax.set_xlabel(args.xlabel)
     if args.ylabel:
@@ -122,6 +123,8 @@ def main():
         plot.ax.set_ylim(args.ylim)
     if args.title:
         plot.ax.set_title(args.title)
+    if args.suptitle:
+        plt.suptitle(args.suptitle)
     if args.cbar_label:
         plot.cbar.set_label(args.cbar_label, labelpad=14)
 

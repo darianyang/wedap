@@ -302,7 +302,10 @@ def create_cmd_arguments():
     formatting.add_argument("--ylabel", dest="ylabel", type=str)
     formatting.add_argument("--ylim", help="LB UB", dest="ylim", nargs=2, type=float)
     formatting.add_argument("--title", dest="title", type=str)
+    formatting.add_argument("--suptitle", dest="suptitle", type=str)
     formatting.add_argument("--cbar-label", dest="cbar_label", type=str)
+    # TODO: add grid formatting
+    #formatting.add_argument("--grid", dest="grid", type=bool)
 
     # return the argument parser
     return parser 
