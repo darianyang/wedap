@@ -60,4 +60,4 @@ for i in tqdm(range(1, 355, 5), desc="GIF Progress"):
     frames.append(frame)
 
 # specify the duration between frames (milliseconds) and save to file:
-gif.save(frames, "example.gif", duration=50)
+gif.save(frames, "test.gif", duration=50)

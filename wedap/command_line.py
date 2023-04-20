@@ -216,7 +216,7 @@ def create_cmd_arguments():
                         help="If using plot-mode contour, "
                              "This sets the interval of contour level.",
                         type=float)
-    optional.add_argument("-sd", "--smooth-data", default=None, 
+    optional.add_argument("-sl", "--smoothing-level", default=None, 
                         dest="smoothing_level",
                         help="Smooth data (plotted as histogram or contour"
                              " levels) using a gaussian filter with sigma="

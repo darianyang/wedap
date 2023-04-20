@@ -176,7 +176,7 @@ class H5_Plot(H5_Pdist):
         """
         # fig vs plt should be the same, tests run fine (needed to go plt for mosaic)
         #cbar = self.fig.colorbar(self.plot, cax=cax)
-        cbar = plt.colorbar(self.plot, cax=cax)
+        cbar = plt.colorbar(self.plot_obj, cax=cax)
 
         # TODO: lines on colorbar? Can prob do this easier by putting grid on cax
 
@@ -197,8 +197,8 @@ class H5_Plot(H5_Pdist):
         # TODO: westpa makes these the max to keep the pdist shape
         # if self.p_max:
         #     self.Z[self.Z > self.p_max] = inf
-        self.plot = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, 
-                                       shading="auto", vmin=self.p_min, vmax=self.p_max)
+        self.plot_obj = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, 
+                                           shading="auto", vmin=self.p_min, vmax=self.p_max)
 
     def plot_contour(self):
         """
@@ -220,7 +220,7 @@ class H5_Plot(H5_Pdist):
             levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
 
         self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
-        self.plot = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
+        self.plot_obj = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
 
     def plot_bar(self):
         """
@@ -251,19 +251,19 @@ class H5_Plot(H5_Pdist):
         s : float
             mpl scatter marker size.
         """
-        self.plot = self.ax.scatter(self.X[::interval], 
-                                    self.Y[::interval], 
-                                    c=self.Z[::interval], 
-                                    cmap=self.cmap, s=s,
-                                    vmin=self.p_min, vmax=self.p_max)
+        self.plot_obj = self.ax.scatter(self.X[::interval], 
+                                        self.Y[::interval], 
+                                        c=self.Z[::interval], 
+                                        cmap=self.cmap, s=s,
+                                        vmin=self.p_min, vmax=self.p_max)
 
     def plot_hexbin3d(self):
         """
         Hexbin plot?
         """
         # TODO: test this and add grid?
-        self.plot = self.ax.hexbin(self.X, self.Y, C=self.Z,
-                                   cmap=self.cmap, vmin=self.p_min, vmax=self.p_max)
+        self.plot_obj = self.ax.hexbin(self.X, self.Y, C=self.Z,
+                                       cmap=self.cmap, vmin=self.p_min, vmax=self.p_max)
 
     def plot_margins(self):
         """
@@ -294,8 +294,12 @@ class H5_Plot(H5_Pdist):
                 self.ax.set_ylabel(item)
             if key == "xlim":
                 self.ax.set_xlim(item)
+                if self.jointplot:
+                    self.fig["x"].set_xlim(item)
             if key == "ylim":
                 self.ax.set_ylim(item)
+                if self.jointplot:
+                    self.fig["y"].set_ylim(item)
             if key == "title":
                 self.ax.set_title(item)
             if key == "suptitle":
