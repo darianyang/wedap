@@ -334,6 +334,10 @@ class H5_Plot(H5_Pdist):
         """
         # special settings for joint plots
         if self.jointplot:
+            # right now can't handle scatter with joint plot, it wouldn't be kT but standard hist
+            if self.plot_mode == "scatter3d":
+                warn("EXITING: Currently can't use `--plot-mode scatter3d` with `--jointplot`.")
+                sys.exit(0)
             # since jointplot starts with raw probabilities
             # need to figure out what p_units are needed
             # only if p_units is definied (e.g. H5_Pdist args are in place)

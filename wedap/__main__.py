@@ -125,8 +125,12 @@ def main():
         plot.ax.set_ylabel(args.ylabel)
     if args.xlim:
         plot.ax.set_xlim(args.xlim)
+        if args.jointplot:
+            plot.fig["x"].set_xlim(args.xlim)
     if args.ylim:
         plot.ax.set_ylim(args.ylim)
+        if args.jointplot:
+            plot.fig["y"].set_ylim(args.ylim)
     if args.title:
         plot.ax.set_title(args.title)
     if args.suptitle:
