@@ -31,5 +31,6 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering :: Chemistry"
     ],
-    entry_points={"console_scripts" : ["wedap=wedap.__main__:main"]}
+    entry_points={"console_scripts" : ["wedap=wedap.__main__:main",
+                                       "mdap=mdap.__main__:main"]}
 )

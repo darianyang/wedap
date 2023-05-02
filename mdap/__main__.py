@@ -1,0 +1,153 @@
+"""
+Main call.
+"""
+from mdap.md_pdist import *
+from mdap.md_plot import *
+from mdap.command_line import *
+
+from wedap import H5_Plot
+
+#from wedap.search_aux import *
+#from wedap.h5_plot_trace import *
+
+# TODO: change to logging style instead of stdout
+#import logging
+
+# for accessing package data: mpl styles
+import pkgutil 
+import os
+
+def main():
+
+    """
+    Command line
+    """
+    # Create command line arguments with argparse
+    argument_parser = create_cmd_arguments()
+    # Retrieve list of args
+    args = handle_command_line(argument_parser)
+
+    """
+    Generate pdist and plot it
+    """
+    if args.style == "default":
+        # get the style parameters from package data
+        # currently writes into temp file, could be more efficient (TODO)
+        style = pkgutil.get_data(__name__, "styles/default.mplstyle")
+        # pkgutil returns binary string, decode it first and make temp file
+        with open("style.temp", "w+") as f:
+            f.write(style.decode())
+        plt.style.use("style.temp")
+        # clean up temp style file
+        os.remove("style.temp")
+    elif args.style != "default" and args.style != "None":
+        plt.style.use(args.style)
+
+    if args.p_units == "kT":
+        cbar_label = "$-\ln\,P(x)$"
+    elif args.p_units == "kcal":
+        cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+    elif args.p_units == "raw":
+        cbar_label = "Counts"
+    elif args.p_units == "raw_norm":
+        cbar_label = "Normalized Counts"
+
+    # TODO: default the xlabel and ylabel to Xname and Yname
+
+    pdist = MD_Pdist(data_type=args.data_type, Xname=args.Xname, Xindex=args.Xindex, 
+                     Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
+                     Zindex=args.Zindex, first_iter=args.first_iter, last_iter=args.last_iter, 
+                     bins=args.bins, T=args.T, p_units=args.p_units, no_pbar=args.no_pbar, 
+                     timescale=args.timescale,
+                     histrange_x=args.histrange_x, histrange_y=args.histrange_y,
+                     Xint=args.Xinterval, Yint=args.Yinterval, Zint=args.Zinterval)
+    X, Y, Z = pdist.pdist()
+
+    # H5_Plot(X, Y, Z).plot()
+    # plt.show()
+    # sys.exit(0)
+
+    # plot = MD_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
+    #                contour_interval=args.contour_interval, p_min=args.p_min,
+    #                p_max=args.p_max, cbar_label=cbar_label, color=args.color,
+    #                smoothing_level=args.smoothing_level, jointplot=args.jointplot)
+    # plot = plot.plot()
+
+    plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
+                   contour_interval=args.contour_interval, p_min=args.p_min,
+                   p_max=args.p_max, cbar_label=cbar_label, color=args.color,
+                   smoothing_level=args.smoothing_level, jointplot=args.jointplot,
+                   plot_options=vars(args))
+    #print(plot.__dir__())
+    plot = plot.plot()
+    #print(vars(args))
+    plt.show()
+    sys.exit(0)
+
+    """
+    Trace (Optional Argument)
+    """
+    # default to white if no color provided
+    if args.color is None:
+        args.color = "white"
+    if args.trace_frame is not None: # TODO
+        plot.plot_trace(args.trace_frame, color=args.color, ax=plot.ax)
+    if args.trace_val is not None:
+        iter, seg = plot.search_aux_xy_nn(args.trace_val[0], args.trace_val[1])
+        plot.plot_trace((iter,seg), color=args.color, ax=plot.ax)
+
+    """
+    Plot formatting (TODO; handle multiple cli args here via plot_options?)
+    """
+    plot.ax.set_xlabel(args.Xname + " i" + str(plot.Xindex))
+    if args.Yname:
+        plot.ax.set_ylabel(args.Yname + " i" + str(plot.Yindex))
+
+    # args formatting (note args is a namespace object)
+    # TODO: update this to go directly into plot_options dict or **kwargs
+    # if args.xlabel:
+    #     plot.ax.set_xlabel(args.xlabel)
+    # if args.ylabel:
+    #     plot.ax.set_ylabel(args.ylabel)
+    # if args.xlim:
+    #     plot.ax.set_xlim(args.xlim)
+    #     if args.jointplot:
+    #         plot.fig["x"].set_xlim(args.xlim)
+    # if args.ylim:
+    #     plot.ax.set_ylim(args.ylim)
+    #     if args.jointplot:
+    #         plot.fig["y"].set_ylim(args.ylim)
+    # if args.title:
+    #     plot.ax.set_title(args.title)
+    # if args.suptitle:
+    #     plt.suptitle(args.suptitle)
+    # if args.cbar_label:
+    #     plot.cbar.set_label(args.cbar_label, labelpad=14)
+    # if args.grid:
+    #     plot.ax.grid(args.grid, alpha=0.5)
+    #     if args.jointplot:
+    #         # grid the margins
+    #         for ax in ["x", "y"]:
+    #             plot.fig[ax].grid(args.grid, alpha=0.5)
+
+    """
+    Show and/or save the final plot
+    """
+    # fig vs plt shouldn't matter here (needed to go plt for mosaic)
+    #plot.fig.tight_layout()
+    plt.tight_layout()
+    if args.output_path is not None:
+        # fig vs plt shouldn't matter here (needed to go plt for mosaic)
+        #plot.fig.savefig(args.output_path)
+        plt.savefig(args.output_path)
+        #logging.info(f"Plot was saved to {args.output_path}")
+        print(f"Plot was saved to {args.output_path}")
+    if args.no_output_to_screen:
+        pass
+    else:
+        plt.show()
+        #plot.fig.show() # only for after event loop starts e.g. with plt.show()
+
+# if python file is being used 
+if __name__ == "__main__": 
+    main()

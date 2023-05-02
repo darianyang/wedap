@@ -1,10 +1,5 @@
 """
 Functions for handling command-line input using argparse module.
-
-TODO: add option to split pdist and plot once the pdist to txt feature is done
-      so the pdist txt file could be: X_column, Y_column, Z_matrix_columns.
-      This would be something like pdist.dap default and option to check and 
-      read in a wedap or westpa pdist file for pdist function.
 """
 
 import argparse
@@ -41,7 +36,7 @@ if gooey is None or len(sys.argv) > 1:
 else:
     ArgumentParser = gooey.GooeyParser
     gui_decorator = gooey.Gooey(
-        program_name='wedap',
+        program_name='mdap',
         #navigation='TABBED',
         #advanced=True,
         suppress_gooey_flag=True,
@@ -56,7 +51,7 @@ else:
 def create_cmd_arguments(): 
     """
     Use the `argparse` module to make the optional and required command-line
-    arguments for the `wedap`. 
+    arguments for `mdap`. 
 
     Parameters 
     ----------
@@ -66,18 +61,21 @@ def create_cmd_arguments():
     argparse.ArgumentParser: 
         An ArgumentParser that is used to retrieve command line arguments. 
     """
-    wedap_desc = "============================================================ \n" + \
-                 "=== weighted ensemble data analysis and plotting (wedap) === \n" + \
-                 "============================================================ \n" + \
-                 "\nGiven an input west.h5 file from a successful WESTPA simulation, " + \
-                 "prepare probability distributions and plots."
+    mdap_desc = "======================================================= \n" + \
+                "=== molecular dynamics analysis and plotting (mdap) === \n" + \
+                "======================================================= \n" + \
+                "\nGiven an input (pre-calcualated) dataset from standard MD simulations, " + \
+                "prepare probability distributions and plots." + \
+                "Input data must be in >=2 column format: \n" + \
+                "# use hashs at top of data file to indicate comments (skipped) \n" + \
+                "COL1:Frame | COL2:Data | COL3:Data..."
 
     # create argument parser (gooey based if available)
     if gooey is None:
-        parser = argparse.ArgumentParser(description=wedap_desc, 
+        parser = argparse.ArgumentParser(description=mdap_desc, 
                                         formatter_class=argparse.RawDescriptionHelpFormatter)
     else:
-        parser = gooey.GooeyParser(description=wedap_desc, 
+        parser = gooey.GooeyParser(description=mdap_desc, 
                                    formatter_class=argparse.RawDescriptionHelpFormatter)
 
     ##########################################################
@@ -103,12 +101,12 @@ def create_cmd_arguments():
     # sub_main2.add_argument("test")
 
     # test out gooey specific widgets
-    required = parser.add_argument_group("Required Arguments")
-    required.add_argument("-h5", "--h5file", #required=True, nargs="?",
-        default="west.h5", action="store", dest="h5", type=str,
-        help="The WESTPA west.h5 output file that will be analyzed. "
-             "Default 'west.h5'.", 
-        widget="FileChooser")
+#     required = parser.add_argument_group("Required Arguments")
+#     required.add_argument("-h5", "--h5file", #required=True, nargs="?",
+#         default="west.h5", action="store", dest="h5", type=str,
+#         help="The WESTPA west.h5 output file that will be analyzed. "
+#              "Default 'west.h5'.", 
+#         widget="FileChooser")
 
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
@@ -120,11 +118,10 @@ def create_cmd_arguments():
     main = parser.add_argument_group("Main Arguments")
     optional = parser.add_argument_group("Optional Extra Arguments")
 
-    main.add_argument("-dt", "--data-type", default="evolution", nargs="?",
-                        dest="data_type", choices=("evolution", "average", "instant"),
-                        help="Type of pdist dataset to generate, options are "
-                             "'evolution' (1 dataset); " 
-                             "'average' or 'instance' (1 or 2 or 3 datasets).",
+    main.add_argument("-dt", "--data-type", default="timeseries", nargs="?",
+                        dest="data_type", choices=("timeseries", "pdist"),
+                        help="Type of pdist dataset to generate, options are ",
+                             # TODO
                         type=str) 
     main.add_argument("-pm", "--plot-mode", default="hist", nargs="?",
                         dest="plot_mode", choices=("hist", "contour", "bar", 
@@ -132,28 +129,36 @@ def create_cmd_arguments():
                         help="The type of plot desired, current options for: "
                              "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'.",
                         type=str)
-    main.add_argument("-X", "-x", "--Xname", "--xname", default="pcoord", nargs="?",
-                        dest="Xname", 
-                        help="Target data name for x axis. Default 'pcoord', "
-                        "can also be any aux dataset name in your h5 file.",
+    # TODO: allow a list of files, then multiple replicates can be addressed
+    # * args is flexible number of values, which will be gathered into a list
+    main.add_argument("-X", "-x", "--Xname", "--xname", default=None, nargs="*",
+                        dest="Xname",
+                        help="Target data name for x axis",
                         type=str)
-    main.add_argument("-Y", "-y", "--Yname", "--yname", default=None, nargs="?",
-                        dest="Yname", 
-                        help="Target data name for y axis. Default 'None', "
-                        "can be 'pcoord' or any aux dataset name in your h5 file.",
+    main.add_argument("-Y", "-y", "--Yname", "--yname", default=None, nargs="*",
+                        dest="Yname",
+                        help="Target data name for y axis.",
                         type=str)
-    main.add_argument("-Z", "-z", "--Zname", "--zname", default=None, nargs="?",
+    main.add_argument("-Z", "-z", "--Zname", "--zname", default=None, nargs="*",
                         dest="Zname", 
                         help="Target data name for z axis. Must use 'scatter3d' "
-                        "for 'plot_mode'. Can be 'pcoord' or any aux dataset name "
-                        "in your h5 file.",
+                        "for 'plot_mode'.",
                         type=str)
-    main.add_argument("-Xi", "-xi", "--Xindex", "--xindex", default=0, nargs="?", type=int,
+    # default to index 1 (2nd item of dataset)
+    main.add_argument("-Xi", "-xi", "--Xindex", "--xindex", default=1, nargs="?", type=int,
                         dest="Xindex", help="Index in third dimension for >2D datasets.")
-    main.add_argument("-Yi", "-yi", "--Yindex", "--yindex", default=0, nargs="?", type=int,
+    main.add_argument("-Yi", "-yi", "--Yindex", "--yindex", default=1, nargs="?", type=int,
                         dest="Yindex", help="Index in third dimension for >2D datasets.")
-    main.add_argument("-Zi", "-zi", "--Zindex", "--zindex", default=0, nargs="?", type=int,
+    main.add_argument("-Zi", "-zi", "--Zindex", "--zindex", default=1, nargs="?", type=int,
                         dest="Zindex", help="Index in third dimension for >2D datasets.")
+    # default to interval of 1 (process every frame)
+    # TODO: update convention to be different from index
+    main.add_argument("-Xint", "-xint", "--Xinterval", "--xinterval", default=1, nargs="?", type=int,
+                        dest="Xinterval", help="Interval in third dimension for >2D datasets.")
+    main.add_argument("-Yint", "-yint", "--Yinterval", "--yinterval", default=1, nargs="?", type=int,
+                        dest="Yinterval", help="interval in third dimension for >2D datasets.")
+    main.add_argument("-Zint", "-zint", "--Zinterval", "--zinterval", default=1, nargs="?", type=int,
+                        dest="Zinterval", help="Interval in third dimension for >2D datasets.")
     main.add_argument("-hrx", "--histrange-x", default=None, nargs=2,
                       dest="histrange_x",
                       help="Ranges to consider for the x-axis, input "
@@ -173,6 +178,7 @@ def create_cmd_arguments():
                              "the plot to a serperate file.",
                         type=str)
     # begin optional arg group
+    # TODO: update to be first/last frame and add an interval arg
     optional.add_argument("-fi", "--first-iter", default=1, nargs="?",
                         dest="first_iter",
                         help="Plot data starting at iteration FIRST_ITER. "
@@ -210,6 +216,10 @@ def create_cmd_arguments():
                              "kT = -lnP, kcal/mol = -RT(lnP), "
                              "where RT=0.5922 at T(298K).",
                         type=str)
+    optional.add_argument("-ts", "--timescale", default=None, nargs="?",
+                        dest="timescale",
+                        help="Default ps to µs (10e6). Converts frames to time.",
+                        type=float)
     optional.add_argument("-ci", "--contour-interval", default=1, nargs="?",
                         dest="contour_interval",
                         help="If using plot-mode contour, "
@@ -224,20 +234,6 @@ def create_cmd_arguments():
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p-units'.",
                         type=int)
-    # TODO: is there a better way to do this? 
-    #optional.add_argument("--weighted", default=True, action="store_true",
-    #                      help="Use weights from WE.")
-    optional.add_argument("-nw", "--not-weighted",
-                          help="Include this to not use WE weights.",
-                          dest="not_weighted", action="store_true")
-    # optional.add_argument("--weighted", default=True, 
-    #                       action=argparse.BooleanOptionalAction)
-    # * args is flexible number of values, which will be gathered into a list
-    optional.add_argument("-sb", "--skip-basis", default=None, nargs="*",
-                          dest="skip_basis",
-                          help="List of binary values for skipping basis states, "
-                               "e.g. 0 1 1 to skip all bstates except for first.",
-                          type=int)
     optional.add_argument("-jp", "--joint-plot", default=False,
                           dest="jointplot",
                           help="Optionally include marginal plots to create "
@@ -258,11 +254,7 @@ def create_cmd_arguments():
                         dest="color", help="Color for 1D plots and trace plots.",
                         widget="ColourChooser")
 
-    # create optional flag to output everything to console screen
-    # optional.add_argument("-ots", "--output_to_screen", default=True,
-    #                     dest = "output_to_screen",
-    #                     help = "Outputs plot to screen. True (default) or False", 
-    #                     action= "store_true") 
+    # create optional flag to not output plot to console screen
     optional.add_argument("-nots", "--no-output-to-screen",
                         dest = "no_output_to_screen",
                         help = "Include this argument to not output the plot to "
@@ -273,20 +265,20 @@ def create_cmd_arguments():
                         help = "Include this argument to not output the tqdm progress bar.",
                         action= "store_true")
 
-    # plot tracing arg group
+    # plot tracing arg group (TODO: include this as trace-frame and can also trace-val)
     trace = parser.add_argument_group("Optional Plot Tracing", 
                                        description="Plot a trace on top of the pdist.")
     trace_group = trace.add_mutually_exclusive_group()
     # type to float for val inside tuple, 
     # and nargs to 2 since it is interpreted as a 2 item tuple or list
-    trace_group.add_argument("--trace-seg", default=None, nargs=2,
-                             dest="trace_seg",
+    trace_group.add_argument("--trace-frame", default=None, nargs=1,
+                             dest="trace_frame",
                              help="Trace and plot a single continuous trajectory based "
-                                 "off of 2 space-seperated ints : iteration segment",
+                                 "off of 1 ints to specify frame number.",
                              type=int)
     trace_group.add_argument("--trace-val", default=None, nargs=2,
                              dest="trace_val",
-                             help="Trace and plot a single continuous trajectory based "
+                             help="Trace and plot the trajectory up this value based "
                                   "off of 2 space-seprated floats : Xvalue Yvalue",
                              type=float)
 
