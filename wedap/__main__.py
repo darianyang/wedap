@@ -76,7 +76,8 @@ def main():
                     plot_mode=args.plot_mode, cmap=args.cmap,
                     contour_interval=args.contour_interval, p_min=args.p_min,
                     p_max=args.p_max, cbar_label=cbar_label, color=args.color,
-                    smoothing_level=args.smoothing_level, jointplot=args.jointplot)
+                    smoothing_level=args.smoothing_level, jointplot=args.jointplot,
+                    plot_options=vars(args))
     # had to adjust this since joint_plots require raw dist, so coupled pdist/plot needed
     # X, Y, Z = pdist.pdist()
     # plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
@@ -111,38 +112,17 @@ def main():
     """
     Plot formatting (TODO; handle multiple cli args here via plot_options?)
     """
-    plot.ax.set_xlabel(args.Xname + " i" + str(plot.Xindex))
-    if args.Yname:
-        plot.ax.set_ylabel(args.Yname + " i" + str(plot.Yindex))
-    if args.data_type == "evolution":
-        plot.ax.set_ylabel("WE Iteration")
+    if args.xlabel is None:
+        plot.ax.set_xlabel(args.Xname + " i" + str(plot.Xindex))
 
-    # args formatting (note args is a namespace object)
-    # TODO: update this to go directly into plot_options dict or **kwargs
-    if args.xlabel:
-        plot.ax.set_xlabel(args.xlabel)
-    if args.ylabel:
-        plot.ax.set_ylabel(args.ylabel)
-    if args.xlim:
-        plot.ax.set_xlim(args.xlim)
-        if args.jointplot:
-            plot.fig["x"].set_xlim(args.xlim)
-    if args.ylim:
-        plot.ax.set_ylim(args.ylim)
-        if args.jointplot:
-            plot.fig["y"].set_ylim(args.ylim)
-    if args.title:
-        plot.ax.set_title(args.title)
-    if args.suptitle:
-        plt.suptitle(args.suptitle)
+    if args.ylabel is None:
+        if args.Yname:
+            plot.ax.set_ylabel(args.Yname + " i" + str(plot.Yindex))
+        if args.data_type == "evolution":
+            plot.ax.set_ylabel("WE Iteration")
+
     if args.cbar_label:
         plot.cbar.set_label(args.cbar_label, labelpad=14)
-    if args.grid:
-        plot.ax.grid(args.grid, alpha=0.5)
-        if args.jointplot:
-            # grid the margins
-            for ax in ["x", "y"]:
-                plot.fig[ax].grid(args.grid, alpha=0.5)
 
     """
     Show and/or save the final plot

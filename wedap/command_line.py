@@ -205,7 +205,7 @@ def create_cmd_arguments():
                              "This determines the cbar limits and contour levels.",
                         type=float)
     optional.add_argument("-pu", "--p-units", default="kT", nargs="?",
-                        dest="p_units", choices=("kT", "kcal"),
+                        dest="p_units", choices=("kT", "kcal", "raw", "raw_norm"),
                         help="Can be 'kT' (default) or 'kcal'. "
                              "kT = -lnP, kcal/mol = -RT(lnP), "
                              "where RT=0.5922 at T(298K).",
