@@ -206,9 +206,10 @@ def create_cmd_arguments():
                         type=float)
     optional.add_argument("-pu", "--p-units", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal", "raw", "raw_norm"),
-                        help="Can be 'kT' (default) or 'kcal'. "
-                             "kT = -lnP, kcal/mol = -RT(lnP), "
-                             "where RT=0.5922 at T(298K).",
+                        help="Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'"
+                             "kT = -lnP, kcal/mol = -RT(lnP), where RT=0.5922 at T(298K). "
+                             "'raw' is the raw probabilities and "
+                             "'raw_norm' is the raw probabilities P(max) normalized.",
                         type=str)
     optional.add_argument("-ci", "--contour-interval", default=1, nargs="?",
                         dest="contour_interval",

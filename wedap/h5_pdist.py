@@ -211,7 +211,6 @@ class H5_Pdist():
 
         self.skip_basis = skip_basis
         self.skip_basis_out = skip_basis_out
-        self.n_bstates = self.f["ibstates/index"]["n_bstates"]
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
@@ -1065,6 +1064,7 @@ class H5_Pdist():
         """ 
         # option to zero weight out specific basis states
         if self.skip_basis is not None:
+            self.n_bstates = self.f["ibstates/index"]["n_bstates"]
             try: 
                 self.weights = self._new_weights_from_skip_basis()
             # if the wrong amount of args are input and != n_bstates
