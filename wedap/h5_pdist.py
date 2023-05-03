@@ -42,7 +42,7 @@ class H5_Pdist():
                  Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
                  Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
-                 histrange_x=None, histrange_y=None, no_pbar=False):
+                 histrange_x=None, histrange_y=None, no_pbar=False, *args, **kwargs):
         """
         Parameters
         ----------
@@ -278,6 +278,7 @@ class H5_Pdist():
 
         # option to fill out new h5 file with dataset included here
         # using westpa style compression and scaleoffset 
+        # this way it gets repacked into h5 file to update storage
         # could round to 4 decimal places with data=np.around(data, 4)
         if h5_create:
             h5_create.create_dataset(f"iterations/iter_{iteration:08d}/auxdata/{h5_create_name}", 
@@ -1125,6 +1126,9 @@ class H5_Pdist():
             else:
                 X, Y = self.average_pdist_1d()
                 return X, Y, np.ones((self.first_iter, self.last_iter))
+            
+        # safely close h5 file
+        self.h5.close()
 
 #if __name__ == "__main__":
     # total_array_out = np.loadtxt("p53_X_array.txt")

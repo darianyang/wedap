@@ -41,14 +41,14 @@ def main():
     elif args.style != "default" and args.style != "None":
         plt.style.use(args.style)
 
-    if args.p_units == "kT":
-        cbar_label = "$-\ln\,P(x)$"
-    elif args.p_units == "kcal":
-        cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
-    elif args.p_units == "raw":
-        cbar_label = "Counts"
-    elif args.p_units == "raw_norm":
-        cbar_label = "Normalized Counts"
+    # if args.p_units == "kT":
+    #     cbar_label = "$-\ln\,P(x)$"
+    # elif args.p_units == "kcal":
+    #     cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+    # elif args.p_units == "raw":
+    #     cbar_label = "Counts"
+    # elif args.p_units == "raw_norm":
+    #     cbar_label = "Normalized Counts"
 
     # a poor workaround for now for the weighted arg
     # this is only to make the gooey formatting look nicer in terms of the checkbox
@@ -65,19 +65,23 @@ def main():
 
     # always output XYZ with fake Z for 1D, makes this part easier/less verbose
     #pdist = H5_Pdist()
-    plot = H5_Plot(# H5_Pdist args
-                    h5=args.h5, data_type=args.data_type, Xname=args.Xname,
-                    Xindex=args.Xindex, Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
-                    Zindex=args.Zindex, first_iter=args.first_iter, skip_basis=args.skip_basis,
-                    last_iter=args.last_iter, bins=args.bins, T=args.T,
-                    weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar,
-                    histrange_x=args.histrange_x, histrange_y=args.histrange_y,
-                    # H5_Plot args
-                    plot_mode=args.plot_mode, cmap=args.cmap,
-                    contour_interval=args.contour_interval, p_min=args.p_min,
-                    p_max=args.p_max, cbar_label=cbar_label, color=args.color,
-                    smoothing_level=args.smoothing_level, jointplot=args.jointplot,
-                    plot_options=vars(args))
+    # plot = H5_Plot(# H5_Pdist args
+    #                 h5=args.h5, data_type=args.data_type, Xname=args.Xname,
+    #                 Xindex=args.Xindex, Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
+    #                 Zindex=args.Zindex, first_iter=args.first_iter, skip_basis=args.skip_basis,
+    #                 last_iter=args.last_iter, bins=args.bins, T=args.T,
+    #                 weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar,
+    #                 histrange_x=args.histrange_x, histrange_y=args.histrange_y,
+    #                 # H5_Plot args
+    #                 plot_mode=args.plot_mode, cmap=args.cmap,
+    #                 contour_interval=args.contour_interval, p_min=args.p_min,
+    #                 p_max=args.p_max, cbar_label=cbar_label, color=args.color,
+    #                 smoothing_level=args.smoothing_level, jointplot=args.jointplot,
+    #                 **args_dict)
+    
+    # vars converts from Namespace object to dict
+    plot = H5_Plot(**vars(args))
+
     # had to adjust this since joint_plots require raw dist, so coupled pdist/plot needed
     # X, Y, Z = pdist.pdist()
     # plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
@@ -112,17 +116,23 @@ def main():
     """
     Plot formatting (TODO; handle multiple cli args here via plot_options?)
     """
+    # if no xlabel is given, create default label
     if args.xlabel is None:
         plot.ax.set_xlabel(args.Xname + " i" + str(plot.Xindex))
 
+    # if no ylabel is given, create default label of Yname or "WE Iteration"
     if args.ylabel is None:
         if args.Yname:
             plot.ax.set_ylabel(args.Yname + " i" + str(plot.Yindex))
         if args.data_type == "evolution":
             plot.ax.set_ylabel("WE Iteration")
 
+    # if cbar_label is given set as cbar_label
     if args.cbar_label:
         plot.cbar.set_label(args.cbar_label, labelpad=14)
+    # if using scatter3d and no label is given, create default label
+    elif args.plot_mode == "scatter3d":
+        plot.cbar.set_label(args.Zname + " i" + str(plot.Zindex))
 
     """
     Show and/or save the final plot

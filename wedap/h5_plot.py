@@ -44,7 +44,7 @@ class H5_Plot(H5_Pdist):
     These methods provide various plotting options for pdist data.
     """
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap="viridis", smoothing_level=None,
-        color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,
+        color="tab:blue", ax=None, p_min=None, p_max=None, contour_interval=1,
         cbar_label=None, cax=None, jointplot=False, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
@@ -114,22 +114,28 @@ class H5_Plot(H5_Pdist):
         self.plot_mode = plot_mode
         self.cmap = cmap
         self.color = color # 1D color
-        self.plot_options = plot_options
+        #self.plot_options = plot_options
 
-        # TODO: not compatible if inputing data instead of running pdist
-        # try checking for the variable first, could use a t/e block
-        #if self.p_units in locals():
-        # if self.p_units == "kT":
-        #     self.cbar_label = "$-\ln\,P(x)$"
-        # elif self.p_units == "kcal":
-        #     self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
-
-        # user override None cbar_label TODO
+        # otherwise check if p_units are there
+        # if no p_units are there then no label is fine
+        if hasattr(self, "p_units"):
+            if self.p_units == "kT":
+                self.cbar_label = "$-\ln\,P(x)$"
+            elif self.p_units == "kcal":
+                self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+            elif self.p_units == "raw":
+                self.cbar_label = "Counts"
+            elif self.p_units == "raw_norm":
+                self.cbar_label = "Normalized Counts"
+        # if using 3 datasets, put blank name as default cbar
+        if self.plot_mode == "scatter3d":
+            self.cbar_label = ""
+        # overwrite and apply cbar_label attr if available/specified
         if cbar_label:
             self.cbar_label = cbar_label
-        else:
-            self.cbar_label = "-ln P(x)"
+
         self.cax = cax
+        self.kwargs = kwargs
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -183,7 +189,7 @@ class H5_Plot(H5_Pdist):
         # TODO: related, make a discrete colorbar/mapping for hist2d?
         #if lines:
         #    cbar.add_lines(lines)
-        # TODO: move labelpad here to style
+        # TODO: move labelpad here to style?
         cbar.set_label(self.cbar_label, labelpad=14)
 
         # allow for cbar object manipulation (e.g. removal in movie)
@@ -287,7 +293,8 @@ class H5_Plot(H5_Pdist):
         """
         # unpack plot options dictionary
         # TODO: put all in ax.set()?
-        for key, item in self.plot_options.items():
+        #for key, item in self.plot_options.items():
+        for key, item in self.kwargs.items():
             if key == "xlabel":
                 self.ax.set_xlabel(item)
             if key == "ylabel":
@@ -442,7 +449,7 @@ class H5_Plot(H5_Pdist):
             self.add_cbar(cax=self.cax)
 
         # TODO: update to just unpack kwargs
-        if self.plot_options is not None:
+        if self.kwargs is not None:
             self._unpack_plot_options()
 
         # fig vs plt shouldn't matter here (needed to go plt for mosaic)
