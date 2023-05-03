@@ -116,8 +116,12 @@ class H5_Plot(H5_Pdist):
         self.color = color # 1D color
         #self.plot_options = plot_options
 
-        # otherwise check if p_units are there
+        # set cbar_label to default to blank if None
+        if cbar_label is None:
+            self.cbar_label = ""
+
         # if no p_units are there then no label is fine
+        # otherwise check if p_units are there
         if hasattr(self, "p_units"):
             if self.p_units == "kT":
                 self.cbar_label = "$-\ln\,P(x)$"
@@ -341,6 +345,11 @@ class H5_Plot(H5_Pdist):
         """
         # special settings for joint plots
         if self.jointplot:
+            # can't use custom ax objects with jointplot, must create new fig and ax using mosaic
+            if self.ax:
+                message = "Can't use custom mpl axes objects with jointplot option, " + \
+                          "creating new fig and ax using mpl subplot_mosaic."
+                warn(message)
             # right now can't handle scatter with joint plot, it wouldn't be kT but standard hist
             if self.plot_mode == "scatter3d":
                 warn("EXITING: Currently can't use `--plot-mode scatter3d` with `--jointplot`.")

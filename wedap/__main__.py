@@ -114,7 +114,7 @@ def main():
         plot.plot_trace((iter,seg), color=args.color, ax=plot.ax)
 
     """
-    Plot formatting (TODO; handle multiple cli args here via plot_options?)
+    Plot formatting
     """
     # if no xlabel is given, create default label
     if args.xlabel is None:

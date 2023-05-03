@@ -33,10 +33,11 @@ class MD_Pdist(H5_Pdist):
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
     # TODO: add step-iter
-    def __init__(self, data_type=None, Xname=None, Xindex=0, Yname=None, Yindex=0, 
-                 Zname=None, Zindex=0, Xint=1, Yint=1, Zint=1, data_proc=None, 
+    def __init__(self, data_type=None, Xname=None, Xindex=1, Yname=None, Yindex=1, 
+                 Zname=None, Zindex=1, Xinterval=1, Yinterval=1, Zinterval=1, data_proc=None, 
                  first_iter=1, last_iter=None, bins=(100,100), p_units='kT', T=298, 
-                 histrange_x=None, histrange_y=None, no_pbar=False, timescale=10**6):
+                 histrange_x=None, histrange_y=None, no_pbar=False, timescale=10**6,
+                 *args, **kwargs):
         """
         TODO: add XYZ interval to proc (default 1)
 
@@ -60,7 +61,7 @@ class MD_Pdist(H5_Pdist):
             This is becasue the weights/pdist isn't considered.
         Zindex : int
             If Z.ndim > 2, use this to index.
-        Xint, Yint, Zint : int
+        Xinterval, Yinterval, Zinterval : int
             Interval for processing dataset. E.g. 10 = every 10 frames.
         data_proc : function or tuple of functions
             Of the form f(data) where data has rows=segments, columns=frames until tau, depth=data dims.
@@ -100,9 +101,9 @@ class MD_Pdist(H5_Pdist):
         self.Zname = Zname
         self.Zindex = Zindex
         
-        self.Xint = Xint
-        self.Yint = Yint
-        self.Zint = Zint
+        self.Xinterval = Xinterval
+        self.Yinterval = Yinterval
+        self.Zinterval = Zinterval
 
         # raw data processing function
         # TODO: allow for 1-3 functions as tuple input, right now one function only
@@ -128,9 +129,9 @@ class MD_Pdist(H5_Pdist):
         X : ndarray
         Y : ndarray
         """
-        time = np.concatenate([np.genfromtxt(i)[::self.Xint, 0] for i in self.Xname])
+        time = np.concatenate([np.genfromtxt(i)[::self.Xinterval, 0] for i in self.Xname])
         time = np.divide(time, self.timescale)
-        X = np.concatenate([np.genfromtxt(i)[::self.Xint, self.Xindex] for i in self.Xname])
+        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
 
         return time, X
 
@@ -141,7 +142,7 @@ class MD_Pdist(H5_Pdist):
         X : ndarray
         Y : ndarray
         """
-        X = np.concatenate([np.genfromtxt(i)[::self.Xint, self.Xindex] for i in self.Xname])
+        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
     
         # get rid of nan values: return array without (not) True nan values
         #X = X[np.logical_not(np.isnan(X))]
@@ -165,13 +166,10 @@ class MD_Pdist(H5_Pdist):
         Y : ndarray
         Z : ndarray
         """
-        X = np.concatenate([np.genfromtxt(i)[::self.Xint, self.Xindex] for i in self.Xname])
-        Y = np.concatenate([np.genfromtxt(i)[::self.Yint, self.Yindex] for i in self.Yname])
+        # TODO: move out as a seperate method that is faster (pre-cast the array)
+        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
+        Y = np.concatenate([np.genfromtxt(i)[::self.Yinterval, self.Yindex] for i in self.Yname])
     
-        # get rid of nan values: return array without (not) True nan values
-        #X = X[np.logical_not(np.isnan(X))]
-        #Y = Y[np.logical_not(np.isnan(Y))]
-
         # numpy equivalent to: ax.hist2d(c2[:,1], aux)
         hist, x_edges, y_edges = np.histogram2d(X, Y, bins=self.bins)
         # let each row list bins with common y range
@@ -192,9 +190,9 @@ class MD_Pdist(H5_Pdist):
         Y : ndarray
         Z : ndarray
         """
-        X = np.concatenate([np.genfromtxt(i)[::self.Xint, self.Xindex] for i in self.Xname])
-        Y = np.concatenate([np.genfromtxt(i)[::self.Yint, self.Yindex] for i in self.Yname])
-        Z = np.concatenate([np.genfromtxt(i)[::self.Zint, self.Zindex] for i in self.Zname])
+        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
+        Y = np.concatenate([np.genfromtxt(i)[::self.Yinterval, self.Yindex] for i in self.Yname])
+        Z = np.concatenate([np.genfromtxt(i)[::self.Zinterval, self.Zindex] for i in self.Zname])
 
         return X, Y, Z
 
@@ -220,6 +218,7 @@ class MD_Pdist(H5_Pdist):
             X, Y = self.timeseries()
             return X, Y, np.ones((X.shape[0]))
         # return pdist data
+        # TODO: t/e block to catch mismatched data lengths and print lengths
         elif self.data_type == "pdist":
             # for 3D datasets, e.g. scatter
             if self.Yname and self.Zname:

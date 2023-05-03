@@ -118,7 +118,7 @@ def create_cmd_arguments():
     main = parser.add_argument_group("Main Arguments")
     optional = parser.add_argument_group("Optional Extra Arguments")
 
-    main.add_argument("-dt", "--data-type", default="timeseries", nargs="?",
+    main.add_argument("-dt", "--data-type", default="pdist", nargs="?",
                         dest="data_type", choices=("timeseries", "pdist"),
                         help="Type of pdist dataset to generate, options are ",
                              # TODO
@@ -211,12 +211,12 @@ def create_cmd_arguments():
                              "This determines the cbar limits and contour levels.",
                         type=float)
     optional.add_argument("-pu", "--p-units", default="kT", nargs="?",
-                        dest="p_units", choices=("kT", "kcal"),
+                        dest="p_units", choices=("kT", "kcal", "raw", "raw_norm"),
                         help="Can be 'kT' (default) or 'kcal'. "
                              "kT = -lnP, kcal/mol = -RT(lnP), "
                              "where RT=0.5922 at T(298K).",
                         type=str)
-    optional.add_argument("-ts", "--timescale", default=None, nargs="?",
+    optional.add_argument("-ts", "--timescale", default=10e6, nargs="?",
                         dest="timescale",
                         help="Default ps to µs (10e6). Converts frames to time.",
                         type=float)

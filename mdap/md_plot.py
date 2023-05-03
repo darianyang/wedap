@@ -26,7 +26,7 @@ class MD_Plot(H5_Plot):
         color="tab:blue", ax=None, plot_options=None, p_min=None, p_max=None, contour_interval=1,
         cbar_label=None, cax=None, jointplot=False, *args, **kwargs):
         """
-        Plotting of pdists generated from H5 datasets.
+        Plotting of pdists generated from MD calculated datasets.
 
         Parameters
         ----------
