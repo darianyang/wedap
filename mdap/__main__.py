@@ -97,8 +97,8 @@ def main():
     # if using scatter3d and no label is given, create default label
     elif args.plot_mode == "scatter3d":
         cbar_label = pdist.Zname[0] + " i" + str(pdist.Zindex)
-    # if there is a cbar object
-    if plot.cbar:
+    # if there is a cbar object set label
+    if hasattr(plot, "cbar"):
         plot.cbar.set_label(cbar_label, labelpad=14)
 
     """
