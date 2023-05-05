@@ -75,7 +75,11 @@ def main():
     """
     # if no label is given, create default label (default to first item in XYZname list)
     if args.xlabel is None:
-        plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
+        # unless timeseries, then use time label
+        if args.data_type == "timeseries":
+            plot.ax.set_xlabel(f"Time (frames x {args.timeseries})")
+        else:
+            plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
     if args.ylabel is None:
         # use Xname on Y if timeseries, otherwise use Yname on Y
         if args.data_type == "timeseries":
