@@ -148,7 +148,7 @@ class MD_Pdist(H5_Pdist):
         #X = X[np.logical_not(np.isnan(X))]
 
         # numpy equivalent to: ax.hist2d(c2[:,1], aux)
-        hist, x_edges = np.histogram(X, bins=self.bins[0])
+        hist, x_edges = np.histogram(X, bins=self.bins[0], range=self.histrange_x)
         # let each row list bins with common y range
         hist = np.transpose(hist)
         # convert histogram counts to p_units
@@ -171,7 +171,8 @@ class MD_Pdist(H5_Pdist):
         Y = np.concatenate([np.genfromtxt(i)[::self.Yinterval, self.Yindex] for i in self.Yname])
     
         # numpy equivalent to: ax.hist2d(c2[:,1], aux)
-        hist, x_edges, y_edges = np.histogram2d(X, Y, bins=self.bins)
+        hist, x_edges, y_edges = np.histogram2d(X, Y, bins=self.bins, 
+                                                range=[self.histrange_x, self.histrange_y])
         # let each row list bins with common y range
         hist = np.transpose(hist)
         # convert histogram counts to p_units
