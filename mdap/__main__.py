@@ -77,7 +77,7 @@ def main():
     if args.xlabel is None:
         # unless timeseries, then use time label
         if args.data_type == "timeseries":
-            plot.ax.set_xlabel(f"Time (frames x {args.timeseries})")
+            plot.ax.set_xlabel(f"Time (frames x {args.timescale})")
         else:
             plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
     if args.ylabel is None:
