@@ -77,7 +77,11 @@ def main():
     if args.xlabel is None:
         plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
     if args.ylabel is None:
-        plot.ax.set_ylabel(pdist.Yname[0] + " i" + str(pdist.Yindex))
+        # use Xname on Y if timeseries, otherwise use Yname on Y
+        if args.data_type == "timeseries":
+            plot.ax.set_ylabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
+        else:
+            plot.ax.set_ylabel(pdist.Yname[0] + " i" + str(pdist.Yindex))
     
     # if cbar_label is given set as cbar_label, otherwise try to find a good label
     if args.cbar_label:
