@@ -73,20 +73,6 @@ def main():
     """
     Plot formatting
     """
-    # if no label is given, create default label (default to first item in XYZname list)
-    if args.xlabel is None:
-        # unless timeseries, then use time label
-        if args.data_type == "timeseries":
-            plot.ax.set_xlabel(f"Time (frames x {args.timescale})")
-        else:
-            plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
-    if args.ylabel is None:
-        # use Xname on Y if timeseries, otherwise use Yname on Y
-        if args.data_type == "timeseries":
-            plot.ax.set_ylabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
-        else:
-            plot.ax.set_ylabel(pdist.Yname[0] + " i" + str(pdist.Yindex))
-    
     # if cbar_label is given set as cbar_label, otherwise try to find a good label
     if args.cbar_label:
         cbar_label = args.cbar_label
@@ -104,6 +90,24 @@ def main():
     # if there is a cbar object set label
     if hasattr(plot, "cbar"):
         plot.cbar.set_label(cbar_label, labelpad=14)
+
+    # if no label is given, create default label (default to first item in XYZname list)
+    if args.xlabel is None:
+        # unless timeseries, then use time label
+        if args.data_type == "timeseries":
+            plot.ax.set_xlabel(f"Time (frames x {str(args.timescale)})")
+        else:
+            plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
+    if args.ylabel is None:
+        # use Xname on Y if timeseries, otherwise use Yname on Y
+        if args.data_type == "timeseries":
+            plot.ax.set_ylabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
+        # if Y data is given
+        elif args.Yname:
+            plot.ax.set_ylabel(pdist.Yname[0] + " i" + str(pdist.Yindex))
+        # otherwise it will be something like 1d pdist
+        else:
+            plot.ax.set_ylabel(cbar_label)
 
     """
     Show and/or save the final plot
