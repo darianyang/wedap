@@ -43,8 +43,8 @@ class H5_Plot(H5_Pdist):
     """
     These methods provide various plotting options for pdist data.
     """
-    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap="viridis", smoothing_level=None,
-        color="tab:blue", ax=None, p_min=None, p_max=None, contour_interval=1,
+    def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap=None, smoothing_level=None,
+        color=None, ax=None, p_min=None, p_max=None, contour_interval=1, contour_levels=None,
         cbar_label=None, cax=None, jointplot=False, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
@@ -110,6 +110,7 @@ class H5_Plot(H5_Pdist):
         self.p_min = p_min
         self.p_max = p_max
         self.contour_interval = contour_interval
+        self.contour_levels = contour_levels
 
         self.plot_mode = plot_mode
         self.cmap = cmap
@@ -187,12 +188,10 @@ class H5_Plot(H5_Pdist):
         # fig vs plt should be the same, tests run fine (needed to go plt for mosaic)
         #cbar = self.fig.colorbar(self.plot, cax=cax)
         cbar = plt.colorbar(self.plot_obj, cax=cax)
+        # if contour lines are present
+        if hasattr(self, "lines"):
+            cbar.add_lines(self.lines)
 
-        # TODO: lines on colorbar? Can prob do this easier by putting grid on cax
-
-        # TODO: related, make a discrete colorbar/mapping for hist2d?
-        #if lines:
-        #    cbar.add_lines(lines)
         # TODO: move labelpad here to style?
         cbar.set_label(self.cbar_label, labelpad=14)
 
@@ -210,27 +209,41 @@ class H5_Plot(H5_Pdist):
         self.plot_obj = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, 
                                            shading="auto", vmin=self.p_min, vmax=self.p_max)
 
-    def plot_contour(self):
+    def _get_contour_levels(self):
         """
-        2d contour plot.
+        Get contour level attribute.
         """
-        # TODO: seperate functions for contourf and contourl?
-            # then can use hist and contourl
         # TODO: could clean up this logic better
         if self.p_min is None:
             self.p_min = np.min(self.Z)
-        # 2D contour plots
-        if self.p_max is None:
-            warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
-            levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), self.contour_interval)
-        elif self.p_max <= 1:
-            warn("You may want to change the `contour_interval` argument to be < 1")
-            levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
-        else:
-            levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
+        # if levels aren't specified
+        if self.contour_levels is None:
+            # 2D contour plots
+            if self.p_max is None:
+                warn("With 'contour' plot_type, p_max should be set. Otherwise max Z is used.")
+                self.contour_levels = np.arange(self.p_min, np.max(self.Z[self.Z != np.inf ]), self.contour_interval)
+            elif self.p_max <= 1:
+                warn("You may want to change the `contour_interval` argument to be < 1")
+                self.contour_levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
+            else:
+                self.contour_levels = np.arange(self.p_min, self.p_max + self.contour_interval, self.contour_interval)
 
-        self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=levels, colors="black", linewidths=1)
-        self.plot_obj = self.ax.contourf(self.X, self.Y, self.Z, levels=levels, cmap=self.cmap)
+    def plot_contour_l(self):
+        """
+        2d contour plot, lines.
+        """
+        # can control linewidths using rc params (lines.linewidths (default 1.5))
+        if self.color:
+            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, colors=self.color)
+            #self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=[5], colors=self.color)
+        else:
+            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, cmap=self.cmap)
+
+    def plot_contour_f(self):
+        """
+        2d contour plot, fill.
+        """
+        self.plot_obj = self.ax.contourf(self.X, self.Y, self.Z, levels=self.contour_levels, cmap=self.cmap)
 
     def plot_bar(self):
         """
@@ -408,12 +421,29 @@ class H5_Plot(H5_Pdist):
         # smooth the data if specified
         if self.smoothing_level:
             self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=self.smoothing_level)
+            # get rid of any negatives --> 0
+            #self.Z[self.Z < 0] = np.inf
+            #self.Z[self.Z == np.inf] = 0
+            self.Z[self.Z < 0] = 0
+
+        # get contour levels if needed
+        if self.plot_mode in ["contour", "contour_l", "contour_f", "hist_l"]:
+            self._get_contour_levels()
 
         if self.plot_mode == "contour":
-            self.plot_contour()
+            self.plot_contour_l()
+            self.plot_contour_f()
+
+        elif self.plot_mode == "contour_l":
+            self.plot_contour_l()
+
+        elif self.plot_mode == "contour_f":
+            self.plot_contour_f()
 
         # TODO: auto label WE iterations on evolution? (done via __main__ right now)
-        elif self.plot_mode == "hist":
+        elif self.plot_mode == "hist" or self.plot_mode == "hist_l":
+            if self.plot_mode == "hist_l":
+                self.plot_contour_l()
             # I run into this error when I run something like instant with 
             # the h5 but didn't adjust the plot mode to something like line
             try:
@@ -423,12 +453,10 @@ class H5_Plot(H5_Pdist):
                 print(f"{e}: Did you mean to use the default 'hist' plot mode?")
                 print("Perhaps you need to define another dimension via '--Yname'?")
                 sys.exit()
-            #self.add_cbar()
 
         elif self.plot_mode == "bar":
             self.plot_bar()
             Warning("'bar' plot_mode is still under development")
-            #self.ax.set_ylabel(self.cbar_label)
 
         elif self.plot_mode == "line":
             self.plot_line()
@@ -439,9 +467,6 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "hexbin3d":
             self.plot_hexbin3d()
-
-        #elif self.plot_mode == "jointheat":
-            #self.plot_jointheat()
 
         # error if unknown plot_mode
         else:
@@ -454,7 +479,7 @@ class H5_Plot(H5_Pdist):
         #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
         # don't add cbar if not specified or if using a 1D plot
-        if cbar and self.plot_mode not in ["line", "bar"]:
+        if cbar and self.plot_mode not in ["line", "bar", "contour_l"]:
             self.add_cbar(cax=self.cax)
 
         # TODO: update to just unpack kwargs

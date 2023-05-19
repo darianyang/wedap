@@ -127,10 +127,10 @@ def create_cmd_arguments():
                              "'average' or 'instance' (1 or 2 or 3 datasets).",
                         type=str) 
     main.add_argument("-pm", "--plot-mode", default="hist", nargs="?",
-                        dest="plot_mode", choices=("hist", "contour", "bar", 
-                                                   "line", "scatter3d"),
+                        dest="plot_mode", choices=("hist", "hist_l", "contour", "contour_l", 
+                                                   "contour_f", "bar", "line", "scatter3d"),
                         help="The type of plot desired, current options for: "
-                             "1D: 'line', 2D: 'hist2d', 'contour', 3D: 'scatter3d'.",
+                             "1D: 'line', 2D: 'hist', 'contour', 3D: 'scatter3d'.",
                         type=str)
     main.add_argument("-X", "-x", "--Xname", "--xname", default="pcoord", nargs="?",
                         dest="Xname", 
@@ -215,6 +215,11 @@ def create_cmd_arguments():
                         dest="contour_interval",
                         help="If using plot-mode contour, "
                              "This sets the interval of contour level.",
+                        type=float)
+    optional.add_argument("-cl", "--contour-levels", default=None, nargs="*",
+                        dest="contour_levels",
+                        help="If using plot-mode contour, "
+                             "This overrides and sets the contour levels manually.",
                         type=float)
     optional.add_argument("-sl", "--smoothing-level", default=None, 
                         dest="smoothing_level",
