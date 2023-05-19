@@ -70,7 +70,29 @@ def create_cmd_arguments():
                  "=== weighted ensemble data analysis and plotting (wedap) === \n" + \
                  "============================================================ \n" + \
                  "\nGiven an input west.h5 file from a successful WESTPA simulation, " + \
-                 "prepare probability distributions and plots."
+                 "prepare probability distributions and plots." + \
+                 "\nSee the documentation for usage and examples: https://darianyang.github.io/wedap" + \
+                 "\n\n" + \
+                 "wedap can be used with 3 different --data-type (-dt) args: " + \
+                 "\n\t`evolution` (default), `average`, and `instant`" + \
+                 "\n\nAvailable --plot-mode (-pm) options are: " + \
+                 "\n\t1D: `line`" + \
+                 "\n\t2D: `hist` (default), `hist_l` (hist with contour lines), " + \
+                 "\n\t    `contour` (lines and fill), `contour_l` (lines only), `contour_f` (fill only)" + \
+                 "\n\t3D: `scatter3d`" + \
+                 "\n\nExamples\n--------" + \
+                 "\nEvolution plot of your progress coordinate:" + \
+                 "\n\t$ wedap -W west.h5 (default) -dt evolution (default) -X pcoord (default)" + \
+                 "\n\n1D average probability distribution of your progress coordinate:" + \
+                 "\n\t$ wedap -W west.h5 -dt average -pm line" + \
+                 "\n\n2D average probability distribution of pcoord 1 and 2:" + \
+                 "\n\t$ wedap -W west.h5 -dt average -X pcoord (default) -Xi 0 (default) -Y pcoord -Yi 1" + \
+                 "\n\n1D instant probability distribution of an aux dataset:" + \
+                 "\n\t$ wedap -W west.h5 -dt instant -pm line -X auxname" + \
+                 "\n\n3D scatter of your progress coordinates and aux data" + \
+                 "\n\t$ wedap -W west.h5 -dt average -pm scatter3d -X pcoord -Xi 0 -Y pcoord -Yi 1 -Z auxname -Zi 0" + \
+                 "\n\n2D average contour plot of 2 aux datasets for iterations 100 to 200 with probability limits in kcal/mol." + \
+                 "\n\t$ wedap -dt average -pm contour -X auxname -Y auxname -fi 100 -li 200 --pmin 0 --pmax 20 --p-units kcal"
 
     # create argument parser (gooey based if available)
     if gooey is None:
@@ -104,7 +126,7 @@ def create_cmd_arguments():
 
     # test out gooey specific widgets
     required = parser.add_argument_group("Required Arguments")
-    required.add_argument("-h5", "--h5file", #required=True, nargs="?",
+    required.add_argument("-W", "-h5", "--h5file", #required=True, nargs="?",
         default="west.h5", action="store", dest="h5", type=str,
         help="The WESTPA west.h5 output file that will be analyzed. "
              "Default 'west.h5'.", 
@@ -154,16 +176,6 @@ def create_cmd_arguments():
                         dest="Yindex", help="Index in third dimension for >2D datasets.")
     main.add_argument("-Zi", "-zi", "--Zindex", "--zindex", default=0, nargs="?", type=int,
                         dest="Zindex", help="Index in third dimension for >2D datasets.")
-    main.add_argument("-hrx", "--histrange-x", default=None, nargs=2,
-                      dest="histrange_x",
-                      help="Ranges to consider for the x-axis, input "
-                           "2 space-seperated floats : LB UB",
-                      type=float)
-    main.add_argument("-hry", "--histrange-y", default=None, nargs=2,
-                      dest="histrange_y",
-                      help="Ranges to consider for the y-axis, input "
-                           "2 space-seperated floats : LB UB",
-                      type=float)
     main.add_argument("-o", "--output", default=None,
                         dest="output_path",
                         help="The filename to which the plot will be saved. "
@@ -194,6 +206,16 @@ def create_cmd_arguments():
                              "observed values into this many bins. Must input 1 bin "
                              "value per dimension (e.g. X and Y so '100 100')",
                         type=int)
+    optional.add_argument("-hrx", "--histrange-x", default=None, nargs=2,
+                          dest="histrange_x",
+                          help="Ranges to consider for the x-axis, input "
+                               "2 space-seperated floats : LB UB",
+                          type=float)
+    optional.add_argument("-hry", "--histrange-y", default=None, nargs=2,
+                          dest="histrange_y",
+                          help="Ranges to consider for the y-axis, input "
+                               "2 space-seperated floats : LB UB",
+                          type=float)
     optional.add_argument("--pmin", default=None, nargs="?",
                         dest="p_min",
                         help="The minimum probability value limit. "
@@ -211,6 +233,9 @@ def create_cmd_arguments():
                              "'raw' is the raw probabilities and "
                              "'raw_norm' is the raw probabilities P(max) normalized.",
                         type=str)
+    optional.add_argument("-T", "--temp", default=298, nargs="?",
+                        dest="T", help="Used with kcal/mol 'p-units'.",
+                        type=int)
     optional.add_argument("-ci", "--contour-interval", default=1, nargs="?",
                         dest="contour_interval",
                         help="If using plot-mode contour, "
@@ -227,9 +252,6 @@ def create_cmd_arguments():
                              " levels) using a gaussian filter with sigma="
                              "SMOOTHING_LEVEL.",
                         type=float)
-    optional.add_argument("-T", "--temp", default=298, nargs="?",
-                        dest="T", help="Used with kcal/mol 'p-units'.",
-                        type=int)
     # TODO: is there a better way to do this? 
     #optional.add_argument("--weighted", default=True, action="store_true",
     #                      help="Use weights from WE.")
@@ -249,21 +271,6 @@ def create_cmd_arguments():
                           help="Optionally include marginal plots to create "
                                "a joint plot from 2D pdist.",
                           action="store_true")
-    optional.add_argument("--style", default="default", nargs="?",
-                        dest="style",
-                        help="mpl style, can use default, None, or custom. "
-                             "Edit the wedap/styles/default.mplstyle file to "
-                             "change default wedap plotting style options.",
-                        type=str)
-    # TODO: prob cant use custom outside of list
-    optional.add_argument("--cmap", default="viridis", nargs="?",
-                        dest="cmap",
-                        help="mpl colormap name.",
-                        type=str)
-    optional.add_argument("--color",
-                        dest="color", help="Color for 1D plots and trace plots.",
-                        widget="ColourChooser")
-
     # create optional flag to output everything to console screen
     # optional.add_argument("-ots", "--output_to_screen", default=True,
     #                     dest = "output_to_screen",
@@ -302,6 +309,21 @@ def create_cmd_arguments():
 
     formatting = parser.add_argument_group("Plot Formatting Arguments") 
 
+    formatting.add_argument("--style", default="default", nargs="?",
+                        dest="style",
+                        help="mpl style, can leave blank to use default, "
+                             "input `None` for basic mpl settings, can use a custom "
+                             "path to a mpl.style text file, or could use a mpl included "
+                             "named style, e.g. `ggplot`. "
+                             "Edit the wedap/styles/default.mplstyle file to "
+                             "change default wedap plotting style options.",
+                        type=str)
+    # TODO: prob cant use custom outside of list
+    formatting.add_argument("--cmap", default="viridis", nargs="?",
+                        dest="cmap", help="mpl colormap name.", type=str)
+    formatting.add_argument("--color",
+                        dest="color", help="Color for 1D plots, contour lines, and trace plots.",
+                        widget="ColourChooser")
     formatting.add_argument("--xlabel", dest="xlabel", type=str)
     formatting.add_argument("--xlim", help="LB UB", dest="xlim", nargs=2, type=float)
     formatting.add_argument("--ylabel", dest="ylabel", type=str)
