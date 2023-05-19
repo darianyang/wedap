@@ -122,10 +122,10 @@ def main():
 
     # if no ylabel is given, create default label of Yname or "WE Iteration"
     if args.ylabel is None:
-        if args.Yname:
-            plot.ax.set_ylabel(args.Yname + " i" + str(plot.Yindex))
         if args.data_type == "evolution":
             plot.ax.set_ylabel("WE Iteration")
+        if args.Yname:
+            plot.ax.set_ylabel(args.Yname + " i" + str(plot.Yindex))
 
     # if cbar_label is given set as cbar_label
     if args.cbar_label:

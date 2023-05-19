@@ -126,6 +126,7 @@ class H5_Plot(H5_Pdist):
         if hasattr(self, "p_units"):
             if self.p_units == "kT":
                 self.cbar_label = "$-\ln\,P(x)$"
+                #self.cbar_label = "-ln (P(x))"
             elif self.p_units == "kcal":
                 self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
             elif self.p_units == "raw":
@@ -232,6 +233,7 @@ class H5_Plot(H5_Pdist):
         """
         2d contour plot, lines.
         """
+        Warning("contour_l lines are set to mpl defaults, set can be changed with `--color` or `--cmap`")
         # can control linewidths using rc params (lines.linewidths (default 1.5))
         if self.color:
             self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, colors=self.color)
@@ -308,34 +310,33 @@ class H5_Plot(H5_Pdist):
         """
         Unpack the plot_options kwarg dictionary.
         """
-        # unpack plot options dictionary
+        # unpack plot options dictionary making sure not None
         # TODO: put all in ax.set()?
         #for key, item in self.plot_options.items():
         for key, item in self.kwargs.items():
-            if key == "xlabel":
+            if key == "xlabel" and item:
                 self.ax.set_xlabel(item)
-            if key == "ylabel":
+            if key == "ylabel" and item:
                 self.ax.set_ylabel(item)
-            if key == "xlim":
+            if key == "xlim" and item:
                 self.ax.set_xlim(item)
                 if self.jointplot:
                     self.fig["x"].set_xlim(item)
-            if key == "ylim":
+            if key == "ylim"and item:
                 self.ax.set_ylim(item)
                 if self.jointplot:
                     self.fig["y"].set_ylim(item)
-            if key == "title":
+            if key == "title" and item:
                 self.ax.set_title(item)
-            if key == "suptitle":
+            if key == "suptitle" and item:
                 plt.suptitle(item)
-            # TODO: add grid to cli plot formatting args?
-            if key == "grid" and item is True:
+            if key == "grid" and item:
                 self.ax.grid(item, alpha=0.5)
                 if self.jointplot:
                     # grid the margins
                     for ax in ["x", "y"]:
                         self.fig[ax].grid(item, alpha=0.5)
-            if key == "minima": # TODO: this is essentially bstate, also put maxima?
+            if key == "minima" and item: # TODO: this is essentially bstate, also put maxima?
                 # reorient transposed hist matrix
                 Z = np.rot90(np.flip(self.Z, axis=0), k=3)
                 # get minima coordinates index (inverse maxima since min = 0)
@@ -460,7 +461,7 @@ class H5_Plot(H5_Pdist):
 
         elif self.plot_mode == "line":
             self.plot_line()
-            self.ax.set_ylabel(self.cbar_label)
+            #self.ax.set_ylabel(self.cbar_label)
 
         elif self.plot_mode == "scatter3d":
             self.plot_scatter3d()

@@ -129,8 +129,8 @@ def create_cmd_arguments():
     main.add_argument("-pm", "--plot-mode", default="hist", nargs="?",
                         dest="plot_mode", choices=("hist", "hist_l", "contour", "contour_l", 
                                                    "contour_f", "bar", "line", "scatter3d"),
-                        help="The type of plot desired, current options for: "
-                             "1D: 'line', 2D: 'hist', 'contour', 3D: 'scatter3d'.",
+                        help="The type of plot desired.  "
+                             "e.g. line for 1D, hist or contour for 2D and scatter3d for 3D.",
                         type=str)
     main.add_argument("-X", "-x", "--Xname", "--xname", default="pcoord", nargs="?",
                         dest="Xname", 
