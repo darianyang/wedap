@@ -122,6 +122,25 @@ class MD_Pdist(H5_Pdist):
         self.no_pbar = no_pbar
         self.timescale = timescale
 
+    def _get_md_data(self, names, index, interval):
+        """
+        Return MD data in array.
+        """
+        # grab dataset (make sure 2D for proper indexing)
+        # TODO: switch to pre-cast array?
+        data = []
+        # handle multiple file name list
+        for name in names:
+            data_item = np.genfromtxt(name)
+            # for 1D datasets, need to standardize to 2D, but as a new column
+            if data_item.ndim < 2:
+                data_item = data_item[:, np.newaxis]
+            data.append(data_item[::interval, index])
+        # combine into a single array
+        data = np.concatenate(data)
+
+        return data
+
     def timeseries(self):
         """
         Returns
@@ -129,9 +148,14 @@ class MD_Pdist(H5_Pdist):
         X : ndarray
         Y : ndarray
         """
-        time = np.concatenate([np.genfromtxt(i)[::self.Xinterval, 0] for i in self.Xname])
+        # could get time from frame column
+        #time = np.concatenate([np.genfromtxt(i)[::self.Xinterval, 0] for i in self.Xname])
+
+        X = self._get_md_data(self.Xname, self.Xindex, self.Xinterval)
+
+        # or can just get it from n rows
+        time = np.arange(0, X.shape[0], self.Xinterval)
         time = np.divide(time, self.timescale)
-        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
 
         return time, X
 
@@ -142,7 +166,8 @@ class MD_Pdist(H5_Pdist):
         X : ndarray
         Y : ndarray
         """
-        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
+        #X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
+        X = self._get_md_data(self.Xname, self.Xindex, self.Xinterval)
     
         # get rid of nan values: return array without (not) True nan values
         #X = X[np.logical_not(np.isnan(X))]
@@ -166,9 +191,8 @@ class MD_Pdist(H5_Pdist):
         Y : ndarray
         Z : ndarray
         """
-        # TODO: move out as a seperate method that is faster (pre-cast the array)
-        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
-        Y = np.concatenate([np.genfromtxt(i)[::self.Yinterval, self.Yindex] for i in self.Yname])
+        X = self._get_md_data(self.Xname, self.Xindex, self.Xinterval)
+        Y = self._get_md_data(self.Yname, self.Yindex, self.Yinterval)
     
         # numpy equivalent to: ax.hist2d(c2[:,1], aux)
         hist, x_edges, y_edges = np.histogram2d(X, Y, bins=self.bins, 
@@ -191,9 +215,9 @@ class MD_Pdist(H5_Pdist):
         Y : ndarray
         Z : ndarray
         """
-        X = np.concatenate([np.genfromtxt(i)[::self.Xinterval, self.Xindex] for i in self.Xname])
-        Y = np.concatenate([np.genfromtxt(i)[::self.Yinterval, self.Yindex] for i in self.Yname])
-        Z = np.concatenate([np.genfromtxt(i)[::self.Zinterval, self.Zindex] for i in self.Zname])
+        X = self._get_md_data(self.Xname, self.Xindex, self.Xinterval)
+        Y = self._get_md_data(self.Yname, self.Yindex, self.Yinterval)
+        Z = self._get_md_data(self.Zname, self.Zindex, self.Zinterval)
 
         return X, Y, Z
 
@@ -215,7 +239,7 @@ class MD_Pdist(H5_Pdist):
         #     self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
 
         # return timeseries data
-        if self.data_type == "timeseries":
+        if self.data_type == "time":
             X, Y = self.timeseries()
             return X, Y, np.ones((X.shape[0]))
         # return pdist data

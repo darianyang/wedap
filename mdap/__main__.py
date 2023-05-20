@@ -43,6 +43,15 @@ def main():
     elif args.style != "default" and args.style != "None":
         plt.style.use(args.style)
 
+    # for jointplots, save original p_units and run pdist with raw
+    og_p_units = args.p_units
+    #print(args.jointplot)
+    if args.jointplot:
+        args.p_units == "raw"
+
+    # TODO: need to adjust this so that I can use raw but change it to p_units upon plotting
+    #print(args.p_units)
+
     pdist = MD_Pdist(**vars(args))
     X, Y, Z = pdist.pdist()
 
@@ -55,6 +64,9 @@ def main():
 
     # TODO: note that jointplot will not work well since p_units are not available
     
+    # for jointplot, use og p_units to convert from raw
+    if args.jointplot:
+        args.p_units == og_p_units
     plot = H5_Plot(X, Y, Z, **vars(args))
     plot.plot()
 
@@ -94,13 +106,13 @@ def main():
     # if no label is given, create default label (default to first item in XYZname list)
     if args.xlabel is None:
         # unless timeseries, then use time label
-        if args.data_type == "timeseries":
+        if args.data_type == "time":
             plot.ax.set_xlabel(f"Time (frames x {str(args.timescale)})")
         else:
             plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
     if args.ylabel is None:
         # use Xname on Y if timeseries, otherwise use Yname on Y
-        if args.data_type == "timeseries":
+        if args.data_type == "time":
             plot.ax.set_ylabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
         # if Y data is given
         elif args.Yname:
