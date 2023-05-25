@@ -16,6 +16,7 @@ from tqdm.auto import tqdm
 from scipy.spatial import KDTree
 
 from warnings import warn
+import sys
 
 # for copying h5 file
 import shutil
@@ -131,7 +132,12 @@ class MD_Pdist(H5_Pdist):
         data = []
         # handle multiple file name list
         for name in names:
-            data_item = np.genfromtxt(name)
+            # for .npy binary files
+            if name[-4:] == ".npy":
+                data_item = np.load(name)
+            else:
+                # TODO: note that genfromtxt can handle multiple items in list, could this help?
+                data_item = np.genfromtxt(name)
             # for 1D datasets, need to standardize to 2D, but as a new column
             if data_item.ndim < 2:
                 data_item = data_item[:, np.newaxis]
@@ -194,9 +200,13 @@ class MD_Pdist(H5_Pdist):
         X = self._get_md_data(self.Xname, self.Xindex, self.Xinterval)
         Y = self._get_md_data(self.Yname, self.Yindex, self.Yinterval)
     
-        # numpy equivalent to: ax.hist2d(c2[:,1], aux)
-        hist, x_edges, y_edges = np.histogram2d(X, Y, bins=self.bins, 
-                                                range=[self.histrange_x, self.histrange_y])
+        try:
+            # numpy equivalent to: ax.hist2d(c2[:,1], aux)
+            hist, x_edges, y_edges = np.histogram2d(X, Y, bins=self.bins, 
+                                                    range=[self.histrange_x, self.histrange_y])
+        except ValueError as e:
+            print(f"{e}: do the size of the x {X.shape} and y {Y.shape} inputs match? --Xinterval and --Yinterval can be adjusted.")
+            sys.exit(0)
         # let each row list bins with common y range
         hist = np.transpose(hist)
         # convert histogram counts to p_units
