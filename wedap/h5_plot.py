@@ -45,7 +45,7 @@ class H5_Plot(H5_Pdist):
     """
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap=None, smoothing_level=None,
         color=None, ax=None, p_min=None, p_max=None, contour_interval=1, contour_levels=None,
-        cbar_label=None, cax=None, jointplot=False, *args, **kwargs):
+        cbar_label=None, cax=None, jointplot=False, data_label=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
 
@@ -79,6 +79,8 @@ class H5_Plot(H5_Pdist):
         jointplot : bool
             Whether or not to include marginal plots. Note to use this argument, 
             probabilities for Z or from H5_Pdist must be in `raw` p_units.
+        data_label : str
+            Optionally label the data, e.g. for multiple 1D plots.
         ** args
         ** kwargs
         """
@@ -141,6 +143,7 @@ class H5_Plot(H5_Pdist):
             self.cbar_label = cbar_label
 
         self.cax = cax
+        self.data_label = data_label
         self.kwargs = kwargs
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
@@ -207,7 +210,7 @@ class H5_Plot(H5_Pdist):
         # TODO: westpa makes these the max to keep the pdist shape
         # if self.p_max:
         #     self.Z[self.Z > self.p_max] = inf
-        self.plot_obj = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap, 
+        self.plot_obj = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap,
                                            shading="auto", vmin=self.p_min, vmax=self.p_max)
 
     def _get_contour_levels(self):
@@ -252,7 +255,7 @@ class H5_Plot(H5_Pdist):
         Simple bar plot.
         """
         # 1D data
-        self.ax.bar(self.X, self.Y, color=self.color)
+        self.ax.bar(self.X, self.Y, color=self.color, label=self.data_label)
         self.ax.set_ylabel("P(x)")
 
     def plot_line(self):
@@ -262,7 +265,7 @@ class H5_Plot(H5_Pdist):
         # 1D data
         if self.p_max:
             self.Y[self.Y > self.p_max] = inf
-        self.ax.plot(self.X, self.Y, color=self.color)
+        self.ax.plot(self.X, self.Y, color=self.color, label=self.data_label)
         self.ax.set_ylabel(self.cbar_label)
     
     def plot_scatter3d(self, interval=10, s=1):

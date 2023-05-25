@@ -8,7 +8,7 @@ pdist.h5 --plothist(with --postprocess-functions hist_settings.py)--> plot.pdf
 
 TODO: 
     - maybe add option to output pdist as file, this would speed up subsequent plotting
-        of the same data.
+        of the same data. H5_Plot could then use this data.
     - add option for a list of equivalent h5 files, alternative to w_multi_west.
 """
 
@@ -30,8 +30,6 @@ import shutil
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
-# TODO: maybe can have the plot class take a pdist object as the input
-#       then if I want to use a loaded pdist, easy to swap it
 class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
@@ -104,14 +102,14 @@ class H5_Pdist():
         TODO: maybe also binsfromexpression?
         """
         # TODO: maybe change self.f to self.h5?
-        self.h5 = h5
+        self.h5 = str(h5)
         self.f = h5py.File(h5, mode="r")
         if data_type is None:
             raise ValueError("Must input valid data_type: `evolution`, `average`, or `instant`")
         else:
             self.data_type = data_type
-        self.p_units = p_units
-        self.T = T
+        self.p_units = str(p_units)
+        self.T = int(T)
         self.weighted = weighted
 
         # TODO: Default pcoord for either dim
@@ -171,14 +169,14 @@ class H5_Pdist():
 
         # default to last
         if last_iter is not None:
-            self.last_iter = last_iter
+            self.last_iter = int(last_iter)
         elif last_iter is None:
             self.last_iter = self.f.attrs["west_current_iteration"] - 1
 
         if data_type == "instant":
             self.first_iter = self.last_iter
         else:
-            self.first_iter = first_iter
+            self.first_iter = int(first_iter)
 
         self.bins = bins
 
