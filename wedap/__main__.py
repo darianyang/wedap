@@ -53,9 +53,9 @@ def main():
     # a poor workaround for now for the weighted arg
     # this is only to make the gooey formatting look nicer in terms of the checkbox
     if args.not_weighted is True:
-        weighted = False
+        args.weighted = False
     elif args.not_weighted is False:
-        weighted = True
+        args.weighted = True
 
     # accounting for joint plot option (TODO: better way?)
     # if args.jointplot:
