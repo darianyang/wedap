@@ -39,20 +39,17 @@ plot_args = {#"plot_mode" : "contour",
             "plot_mode" : "hist2d",
             #"plot_mode" : "scatter3d",
             #"plot_mode" : "line",
+            #"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
+            #"ylabel" : "RMSD ($\AA$)", 
+            #"ylabel" : "WE Iteration", 
+            "ylabel" : "RMSD to Xtal ($\AA$)",
+            #"ylabel" : "$-RT\ \ln\, P\ (kcal\ mol^{-1})$", 
+            "xlabel" : "Helical Angle (°)",
+            #"ylabel" : "3 Point Angle (°)",
+            "grid" : True,
+            #"minima" : True, 
+            # TODO: diagonal line option
             }
-
-# TODO: default to aux for labels if available or pcoord dim if None
-plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
-                #"ylabel" : "RMSD ($\AA$)", 
-                #"ylabel" : "WE Iteration", 
-                "ylabel" : "RMSD to Xtal ($\AA$)",
-                #"ylabel" : "$-RT\ \ln\, P\ (kcal\ mol^{-1})$", 
-                "xlabel" : "Helical Angle (°)",
-                #"ylabel" : "3 Point Angle (°)",
-                "grid" : True,
-                #"minima" : True, 
-                # TODO: diagonal line option
-                }
 
 
 # time the run
@@ -107,7 +104,7 @@ labels = km.labels_
 #np.savetxt("test.txt", labels)
 
 # make pdist plot
-plot = wedap.H5_Plot(plot_options=plot_options, **plot_args, **pdist_options)
+plot = wedap.H5_Plot(**plot_args, **pdist_options)
 plot.plot()
 
 # plot km centers

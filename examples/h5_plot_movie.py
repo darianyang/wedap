@@ -54,9 +54,7 @@ def make_frame(t):
                     #"plot_mode" : "hist2d",
                     #"data_smoothing_level" : 0.4,
                     #"curve_smoothing_level" : 0.4,
-                    }
-
-    plot_options = {#"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
+                    #"ylabel" : r"M2Oe-M1He1 Distance ($\AA$)", 
                     #"ylabel" : "RMSD to NMR ($\AA$)", 
                     "ylabel" : "RMSD to XTAL ($\AA$)", 
                     #"ylabel" : "WE Iteration", 
@@ -73,7 +71,7 @@ def make_frame(t):
                     #"minima" : True,
                     }
     
-    we = wedap.H5_Plot(plot_options=plot_options, **data_options)
+    we = wedap.H5_Plot(**data_options)
     # TODO: is this the best option? maybe it is, need to update
         # so if Yname, use cbar?
     we.plot(cbar=False)

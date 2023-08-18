@@ -34,9 +34,7 @@ def plot(iteration, avg_plus=100):
                     "bins" : 100,
                     "plot_mode" : "contour",
                     #"cmap" : "gnuplot_r",
-                    }
-
-    plot_options = {"ylabel" : "C2 Angle (°)",
+                    "ylabel" : "C2 Angle (°)",
                     "xlabel" : "Orientation Angle (°)",
                     "title" : f"WE Iteration {iteration} to {iteration + avg_plus}",
                     "ylim" : (20, 90),
@@ -44,7 +42,7 @@ def plot(iteration, avg_plus=100):
                     "grid" : True,
                     }
     
-    we = wedap.H5_Plot(plot_options=plot_options, **data_options)
+    we = wedap.H5_Plot(**data_options)
     we.plot()
 
 # build a bunch of "frames"
