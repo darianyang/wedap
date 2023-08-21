@@ -456,6 +456,7 @@ class H5_Plot(H5_Pdist):
                 # TODO: put the text into logger?
                 print(f"{e}: Did you mean to use the default 'hist' plot mode?")
                 print("Perhaps you need to define another dimension via '--Yname'?")
+                print("Or if you want a 1D pdist, set --plot-mode or -pm to `line`.")
                 sys.exit()
 
         elif self.plot_mode == "bar":
