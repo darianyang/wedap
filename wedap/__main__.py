@@ -132,7 +132,13 @@ def main():
         plot.cbar.set_label(args.cbar_label, labelpad=14)
     # if using scatter3d and no label is given, create default label
     elif args.plot_mode == "scatter3d":
-        plot.cbar.set_label(args.Zname + " i" + str(plot.Zindex))
+        # for 3d projected
+        if args.proj3d is True:
+            plot.ax.set_zlabel(args.Zname + " i" + str(plot.Zindex))
+        # for 2d scatter with cbar
+        else:
+            plot.cbar.set_label(args.Zname + " i" + str(plot.Zindex))
+    
 
     """
     Show and/or save the final plot

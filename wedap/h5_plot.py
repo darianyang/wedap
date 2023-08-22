@@ -45,7 +45,8 @@ class H5_Plot(H5_Pdist):
     """
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap=None, smoothing_level=None,
         color=None, ax=None, p_min=None, p_max=None, contour_interval=1, contour_levels=None,
-        cbar_label=None, cax=None, jointplot=False, data_label=None, *args, **kwargs):
+        cbar_label=None, cax=None, jointplot=False, data_label=None, proj3d=False, 
+        *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
 
@@ -144,6 +145,7 @@ class H5_Plot(H5_Pdist):
 
         self.cax = cax
         self.data_label = data_label
+        self.proj3d = proj3d
         self.kwargs = kwargs
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
@@ -279,11 +281,19 @@ class H5_Plot(H5_Pdist):
         s : float
             mpl scatter marker size.
         """
-        self.plot_obj = self.ax.scatter(self.X[::interval], 
-                                        self.Y[::interval], 
-                                        c=self.Z[::interval], 
-                                        cmap=self.cmap, s=s,
-                                        vmin=self.p_min, vmax=self.p_max)
+        if self.proj3d:
+            self.plot_obj = self.ax.scatter(self.X[::interval], 
+                                            self.Y[::interval], 
+                                            self.Z[::interval],
+                                            c=self.Z[::interval],
+                                            cmap=self.cmap, s=s,
+                                            vmin=self.p_min, vmax=self.p_max)
+        else:
+            self.plot_obj = self.ax.scatter(self.X[::interval], 
+                                            self.Y[::interval], 
+                                            c=self.Z[::interval], 
+                                            cmap=self.cmap, s=s,
+                                            vmin=self.p_min, vmax=self.p_max)
 
     def plot_hexbin3d(self):
         """
@@ -418,9 +428,14 @@ class H5_Plot(H5_Pdist):
             self.fig["x"].set_ylim(self.p_min, self.p_max)
             self.fig["y"].set_xlim(self.p_min, self.p_max)
 
-        # if self.3d:
-        #     self.fig = plt.figure()
-        #     self.ax = self.fig.add_subplot(projection='3d')
+        # 3dprojection test, not going to be compatible with jp
+        elif self.proj3d:
+            self.fig = plt.figure()
+            self.ax = self.fig.add_subplot(projection='3d')
+            # don't need cbar since 3d projected
+            cbar = False
+            # but add cbar label to z axis
+            self.ax.set_zlabel(self.cbar_label)
 
         else:
             if self.ax is None:
@@ -448,10 +463,8 @@ class H5_Plot(H5_Pdist):
         if self.plot_mode == "contour":
             self.plot_contour_l()
             self.plot_contour_f()
-
         elif self.plot_mode == "contour_l":
             self.plot_contour_l()
-
         elif self.plot_mode == "contour_f":
             self.plot_contour_f()
 

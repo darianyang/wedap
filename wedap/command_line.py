@@ -271,6 +271,10 @@ def create_cmd_arguments():
                           help="Optionally include marginal plots to create "
                                "a joint plot from 2D pdist.",
                           action="store_true")
+    optional.add_argument("-3d", "--proj3d", default=False,
+                          dest="proj3d",
+                          help="Make a 3d projection plot",
+                          action="store_true")
     # create optional flag to output everything to console screen
     # optional.add_argument("-ots", "--output_to_screen", default=True,
     #                     dest = "output_to_screen",
