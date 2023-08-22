@@ -131,10 +131,11 @@ class MD_Pdist(H5_Pdist):
         # TODO: switch to pre-cast array?
         data = []
         # handle multiple file name list
+        # TODO: handle direct ndarray inputs as well as file str
         for name in names:
-            # for .npy binary files
-            if name[-4:] == ".npy":
-                data_item = np.load(name)
+            # for .npy binary files or pkl files
+            if name[-4:] in [".npy", ".npz", ".pkl"]:
+                data_item = np.load(name, allow_pickle=True)
             else:
                 # TODO: note that genfromtxt can handle multiple items in list, could this help?
                 data_item = np.genfromtxt(name)
