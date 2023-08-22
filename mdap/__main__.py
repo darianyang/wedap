@@ -46,11 +46,9 @@ def main():
     # for jointplots, save original p_units and run pdist with raw
     og_p_units = args.p_units
     #print(args.jointplot)
-    if args.jointplot:
-        args.p_units == "raw"
-
-    # TODO: need to adjust this so that I can use raw but change it to p_units upon plotting
-    #print(args.p_units)
+    if args.jointplot is True:
+        #vars(args)["p_units"] = "raw"
+        args.p_units = "raw"
 
     pdist = MD_Pdist(**vars(args))
     X, Y, Z = pdist.pdist()
@@ -63,7 +61,6 @@ def main():
     # plot = plot.plot()
 
     # TODO: note that jointplot will not work well since p_units are not available
-    
     # for jointplot, use og p_units to convert from raw
     if args.jointplot:
         args.p_units == og_p_units
