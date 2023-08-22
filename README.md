@@ -43,7 +43,7 @@ Then simply type `wedap` on the terminal to run the wedap GUI.
 
 Install into a new conda env:
 ``` bash
-conda env create --name wedap python=3.7+
+conda env create --name wedap python=3.8+
 conda activate wedap
 conda install -c conda-forge gooey
 pip install wedap
