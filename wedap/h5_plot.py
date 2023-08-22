@@ -403,7 +403,9 @@ class H5_Plot(H5_Pdist):
             self.ax = self.fig["H"]
             # plot margins first from raw probabilities
             self.plot_margins()
-            # calc normalized hist using updated p_units (could also do Z[Z != np.isinf])
+            # calc normalized hist using updated p_units (maybe could also do Z[Z != np.isinf])
+            # but masked invalid takes care of Nan and inf converts to mask (--)
+            #self.Z = self._normalize(self.Z[self.Z != np.inf])
             self.Z = self._normalize(np.ma.masked_invalid(self.Z))
 
             # add formatting jointplot options
@@ -416,6 +418,10 @@ class H5_Plot(H5_Pdist):
             self.fig["x"].set_ylim(self.p_min, self.p_max)
             self.fig["y"].set_xlim(self.p_min, self.p_max)
 
+        # if self.3d:
+        #     self.fig = plt.figure()
+        #     self.ax = self.fig.add_subplot(projection='3d')
+
         else:
             if self.ax is None:
                 self.fig, self.ax = plt.subplots()
@@ -424,11 +430,16 @@ class H5_Plot(H5_Pdist):
 
         # smooth the data if specified
         if self.smoothing_level:
+            # make into a smooth style e.g. contour with 0 as base instead of negative or inf
+            #self.Z = np.ma.masked_invalid(self.Z)
+            self.Z[self.Z < 0] = 0
+            self.Z[self.Z == np.inf] = 0
             self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=self.smoothing_level)
+            #self.Z[self.Z == 0] = np.inf
             # get rid of any negatives --> 0
             #self.Z[self.Z < 0] = np.inf
             #self.Z[self.Z == np.inf] = 0
-            self.Z[self.Z < 0] = 0
+            #self.Z[self.Z < 0] = 0
 
         # get contour levels if needed
         if self.plot_mode in ["contour", "contour_l", "contour_f", "hist_l"]:
@@ -487,7 +498,7 @@ class H5_Plot(H5_Pdist):
         if cbar and self.plot_mode not in ["line", "bar", "contour_l"]:
             self.add_cbar(cax=self.cax)
 
-        # TODO: update to just unpack kwargs
+        # take kwargs and unpack to look for plot option items
         if self.kwargs is not None:
             self._unpack_plot_options()
 

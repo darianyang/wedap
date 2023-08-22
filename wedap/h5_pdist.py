@@ -130,7 +130,7 @@ class H5_Pdist():
             # for common case of evolution with extra Yname input
             if Yname and data_type == "evolution":
                 message = "\nDefaulting to evolution plot for --data-type, since you put a --Yname arg, " + \
-                        "\nDid you mean to use --data-type of `average` or `instant`?"
+                          "\nDid you mean to use --data-type of `average` or `instant`?"
                 warn(message)
             # add auxdata prefix if not using pcoord and not using array input
             if Yname != "pcoord":
@@ -141,7 +141,7 @@ class H5_Pdist():
                 if Xname == Yname and Xindex == 0 and Yindex == 0:
                     Yindex = 1
                     message = "\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname " + \
-                            "and Xindex/Yindex were the same."
+                              "and Xindex/Yindex were the same."
                     warn(message)
         self.Yname = Yname
         self.Yindex = Yindex
@@ -1105,6 +1105,7 @@ class H5_Pdist():
             self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
 
         # TODO: need a better way to always return XYZ (currently using ones)
+        #       this is needed for easy testing with uniform XYZ 3 array returns
         if self.data_type == "evolution":
             return self.evolution_pdist()
         elif self.data_type == "instant":
