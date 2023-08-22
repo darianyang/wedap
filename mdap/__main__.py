@@ -102,6 +102,9 @@ def main():
     # if there is a cbar object set label
     if hasattr(plot, "cbar"):
         plot.cbar.set_label(cbar_label, labelpad=14)
+    # if using proj3d, add z axis label
+    if args.proj3d is True:
+        plot.ax.set_zlabel(cbar_label)
 
     # if no label is given, create default label (default to first item in XYZname list)
     if args.xlabel is None:

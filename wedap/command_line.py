@@ -363,6 +363,8 @@ def handle_command_line(argument_parser):
     # retrieve args
     args = argument_parser.parse_args() 
 
+     # TODO: check make sure that -jp and -3d not being using at same time
+
     # h5 file and file exists
     # if not os.path.exists(args.file) or not ".h5" in args.file:  
     #     # print error message and exits
