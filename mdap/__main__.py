@@ -63,7 +63,7 @@ def main():
     # TODO: note that jointplot will not work well since p_units are not available
     # for jointplot, use og p_units to convert from raw
     if args.jointplot:
-        args.p_units == og_p_units
+        args.p_units = og_p_units
     plot = H5_Plot(X, Y, Z, **vars(args))
     plot.plot()
 
