@@ -14,14 +14,15 @@ from sklearn import cluster, mixture
 plt.style.use("styles/default.mplstyle")
 
 # generate raw data arrays
-data = wedap.H5_Pdist("data/p53.h5", data_type="average", last_iter=15)
+#data = wedap.H5_Pdist("data/p53.h5", data_type="average", last_iter=15)
+data = wedap.H5_Pdist("data/west_c2x.h5", data_type="average", last_iter=50)
 
 # now condensed into method
 weights_expanded = data.get_all_weights()
 
 # can get the raw data arrays
 X = data.get_total_data_array("pcoord", 0)
-Y = data.get_total_data_array("pcoord", 1)
+Y = data.get_total_data_array("rms_bb_nmr", 0)
 
 # goal is to now load it in and reshape it
 #np.savetxt("p53_X_array_i15.txt", X)
@@ -31,14 +32,20 @@ XY = np.hstack((X,Y))
 
 weights_expanded = -np.log(weights_expanded/np.max(weights_expanded))
 
-n_clusters = 5
+n_clusters = 4
 interval = 10
+
+# km cluster pdist
+clust = KMeans(n_clusters=n_clusters).fit(XY[::interval,:])
+
+# can use weighted k-means
+#clust = KMeans(n_clusters=n_clusters).fit(XY[::interval,:], sample_weight=weights_expanded[::interval])
 
 # spectral clustering
 #clust = cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver="arpack", affinity="rbf").fit(XY[::interval,:])
 
 # gmm clustering
-clust = mixture.GaussianMixture(n_components=n_clusters, covariance_type="full").fit(XY[::interval,:])
+#clust = mixture.GaussianMixture(n_components=n_clusters, covariance_type="full").fit(XY[::interval,:])
 
 # DBSCAN
 #clust = cluster.DBSCAN().fit(XY[::interval,:])
@@ -65,7 +72,7 @@ cmap = np.array(["#377eb8", "#ff7f00", "#4daf4a", "#f781bf", "#a65628",
                  "#984ea3", "#999999", "#e41a1c", "#dede00", "#a65328"])
 colors = [cmap[label] for label in labels]
                     
-plot = wedap.H5_Plot(XY[::interval,0], XY[::interval,1], colors, cmap=cmap, plot_mode="scatter3d",)
+plot = wedap.H5_Plot(XY[::interval,0], XY[::interval,1], colors, plot_mode="scatter3d",)
 plot.plot(cbar=False)
 
 plot.ax.set_title("GMM")
