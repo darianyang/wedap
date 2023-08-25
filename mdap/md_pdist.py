@@ -5,29 +5,13 @@ TODO:
     Maybe could include an arg for custom weights
 """
 
-# TEMP for trace plot (TODO)
-import matplotlib.pyplot as plt
-######
-
-import h5py
-import numpy as np
-from tqdm.auto import tqdm
-
-from scipy.spatial import KDTree
-
-from warnings import warn
 import sys
-
-# for copying h5 file
-import shutil
-
+import numpy as np
 from wedap import H5_Pdist
 
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
-# TODO: maybe can have the plot class take a pdist object as the input
-#       then if I want to use a loaded pdist, easy to swap it
 class MD_Pdist(H5_Pdist):
     """
     These class methods generate probability distributions from input MD data files.

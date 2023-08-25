@@ -1,14 +1,11 @@
 """
 Main call.
 """
+import matplotlib.pyplot as plt
+
 from mdap.md_pdist import *
 from mdap.md_plot import *
 from mdap.command_line import *
-
-from wedap import H5_Plot
-
-#from wedap.search_aux import *
-#from wedap.h5_plot_trace import *
 
 # TODO: change to logging style instead of stdout
 #import logging
@@ -112,21 +109,20 @@ def main():
     if args.proj3d is True:
         plot.ax.set_zlabel(cbar_label)
 
-    pdist = plot
     # if no label is given, create default label (default to first item in XYZname list)
     if args.xlabel is None:
         # unless timeseries, then use time label
         if args.data_type == "time":
             plot.ax.set_xlabel(f"Time (frames x {str(args.timescale)})")
         else:
-            plot.ax.set_xlabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
+            plot.ax.set_xlabel(plot.Xname[0] + " i" + str(plot.Xindex))
     if args.ylabel is None:
         # use Xname on Y if timeseries, otherwise use Yname on Y
         if args.data_type == "time":
-            plot.ax.set_ylabel(pdist.Xname[0] + " i" + str(pdist.Xindex))
+            plot.ax.set_ylabel(plot.Xname[0] + " i" + str(plot.Xindex))
         # if Y data is given
         elif args.Yname:
-            plot.ax.set_ylabel(pdist.Yname[0] + " i" + str(pdist.Yindex))
+            plot.ax.set_ylabel(plot.Yname[0] + " i" + str(plot.Yindex))
         # otherwise it will be something like 1d pdist
         else:
             plot.ax.set_ylabel(cbar_label)
