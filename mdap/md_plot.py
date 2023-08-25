@@ -44,9 +44,11 @@ class MD_Plot(H5_Plot, MD_Pdist):
                 # if the original p_units from user were provided and saved
                 if "p_units" in kwargs and "og_p_units" in locals():
                     kwargs["p_units"] = og_p_units
+                    self.p_units = og_p_units
                 # otherwise default to kT
                 else:
                     kwargs["p_units"] = "kT"
+                    self.p_units = "kT"
 
         # run H5_Plot initialization
         H5_Plot.__init__(self, self.X, self.Y, self.Z, *args, **kwargs)
