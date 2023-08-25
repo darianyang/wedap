@@ -23,18 +23,30 @@ class MD_Plot(H5_Plot, MD_Pdist):
         # for jointplots, save original p_units and run pdist with raw
         # only if jointplot var exists and is True
         if "jointplot" in kwargs:
-            if kwargs["jointplot"]:
-                og_p_units = kwargs["p_units"]
+            # separate since if it doesn't exist can't index to check if True
+            if kwargs["jointplot"] is True:
+                # with user specified p_units, save it
+                if "p_units" in kwargs:
+                    og_p_units = kwargs["p_units"]
+                # always set p_units to 'raw' for joint plots
                 kwargs["p_units"] = "raw"
+
         # initialize md pdist
         MD_Pdist.__init__(self, *args, **kwargs)
         # generate xyz arrays
         self.X, self.Y, self.Z = self.pdist()
 
         # change back to original p_units
+        # only if jointplot var exists and is True
         if "jointplot" in kwargs:
-            if kwargs["jointplot"]:
-                kwargs["p_units"] = og_p_units
+            # separate since if it doesn't exist can't index to check if True
+            if kwargs["jointplot"] is True:
+                # if the original p_units from user were provided and saved
+                if "p_units" in kwargs and "og_p_units" in locals():
+                    kwargs["p_units"] = og_p_units
+                # otherwise default to kT
+                else:
+                    kwargs["p_units"] = "kT"
 
         # run H5_Plot initialization
         H5_Plot.__init__(self, self.X, self.Y, self.Z, *args, **kwargs)
