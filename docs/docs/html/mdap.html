@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mdap.md_pdist module &mdash; wedap  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="wedap demo" href="notebook/wedap_demo.html" />
+    <link rel="prev" title="mdap modules" href="mdap_modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            wedap
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wedap_modules.html">wedap modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="mdap_modules.html">mdap modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">mdap.md_pdist module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mdap.md_plot">mdap.md_plot module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebook/wedap_demo.html">wedap demo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">wedap</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="mdap_modules.html">mdap modules</a></li>
+      <li class="breadcrumb-item active">mdap.md_pdist module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/mdap.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mdap.md_pdist">
+<span id="mdap-md-pdist-module"></span><h1>mdap.md_pdist module<a class="headerlink" href="#module-mdap.md_pdist" title="Permalink to this heading"></a></h1>
+<p>Convert MD analyzed data to pdists.</p>
+<dl class="simple">
+<dt>TODO:</dt><dd><p>Maybe could include an arg for custom weights</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdap.md_pdist.</span></span><span class="sig-name descname"><span class="pre">MD_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="wedap.html#wedap.h5_pdist.H5_Pdist" title="wedap.h5_pdist.H5_Pdist"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5_Pdist</span></code></a></p>
+<p>These class methods generate probability distributions from input MD data files.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.aux_to_pdist_1d">
+<span class="sig-name descname"><span class="pre">aux_to_pdist_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.aux_to_pdist_1d" title="Permalink to this definition"></a></dt>
+<dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
+1D probability distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>iteration</strong> (<em>int</em>) – Desired iteration to extract timeseries info from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>midpoints_x</strong> (<em>ndarray</em>) – Histogram midpoint bin values for target aux coordinate of dimension 0.</p></li>
+<li><p><strong>midpoints_y</strong> (<em>ndarray</em>) – Optional histogram midpoint bin values for target aux coordinate of dimension 1.</p></li>
+<li><p><strong>histogram</strong> (<em>ndarray</em>) – Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.aux_to_pdist_2d">
+<span class="sig-name descname"><span class="pre">aux_to_pdist_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.aux_to_pdist_2d" title="Permalink to this definition"></a></dt>
+<dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
+2D probability distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>iteration</strong> (<em>int</em>) – Desired iteration to extract timeseries info from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>midpoints_x</strong> (<em>ndarray</em>) – Histogram midpoint bin values for target aux coordinate of dimension 0.</p></li>
+<li><p><strong>midpoints_y</strong> (<em>ndarray</em>) – Optional histogram midpoint bin values for target aux coordinate of dimension 1.</p></li>
+<li><p><strong>histogram</strong> (<em>ndarray</em>) – Raw histogram count values of each histogram bin. Can be later normalized as -lnP(x).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.average_datasets_3d">
+<span class="sig-name descname"><span class="pre">average_datasets_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_datasets_3d" title="Permalink to this definition"></a></dt>
+<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
+Averaged over the iteration range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X, Y, Z</strong> – Raw data for each named coordinate.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.average_pdist_1d">
+<span class="sig-name descname"><span class="pre">average_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_pdist_1d" title="Permalink to this definition"></a></dt>
+<dd><p>1 dataset: average pdist for a range of iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X),
+also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>x, y</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.average_pdist_2d">
+<span class="sig-name descname"><span class="pre">average_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_pdist_2d" title="Permalink to this definition"></a></dt>
+<dd><p>2 datasets: average pdist for a range of iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>x, y, norm_hist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.evolution_pdist">
+<span class="sig-name descname"><span class="pre">evolution_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.evolution_pdist" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the pdist for 1 coordinate for the range iterations specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x, y, norm_hist</strong> – x and y axis values, and if using Y or evolution (with only X),
+also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_all_weights">
+<span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_all_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an 1D array of the weight for every frame of each tau
+for all segments of all iterations specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>weights_expanded</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_coords">
+<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_coords" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of data coordinates for plotting traces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>list of tuples</em>) – Tuples are (iteration, walker) traces.</p></li>
+<li><p><strong>data_name</strong> (<em>str</em>) – Name of dataset.</p></li>
+<li><p><strong>data_index</strong> (<em>int</em>) – Index of dataset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>coordinates</strong> – Array of coordinates from the list of (iteration, walker) tuples.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_parents">
+<span class="sig-name descname"><span class="pre">get_parents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_parents" title="Permalink to this definition"></a></dt>
+<dd><p>Get parent of an input (iteration, walker).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>parent</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iteration, walker</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_total_data_array">
+<span class="sig-name descname"><span class="pre">get_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_total_data_array" title="Permalink to this definition"></a></dt>
+<dd><p>Loop through all iterations specified and get a 1d raw data array.
+# TODO: this could be organized better with my other methods
+maybe I can separate the helper functions into another class
+for extracting and moving data around, this pdist class could
+be used strictly for making pdists from a nice and standard data
+array input that is handled by the H5_Processing class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of data from h5 file such as <cite>pcoord</cite> or an aux dataset.</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – Index of the data from h5 file.</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – If more sparse data is needed for efficiency.</p></li>
+<li><p><strong>reshape</strong> (<em>bool</em>) – Option to reshape into 1d array instead of each seg for all tau values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – Raw (unweighted) data array for the name specified.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1d array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.instant_datasets_3d">
+<span class="sig-name descname"><span class="pre">instant_datasets_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_datasets_3d" title="Permalink to this definition"></a></dt>
+<dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
+For single iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X, Y, Z</strong> – Raw data for each named coordinate.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.instant_pdist_1d">
+<span class="sig-name descname"><span class="pre">instant_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_pdist_1d" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the x and y pdist datasets for a single iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Xdata, y</strong> – x (dataset) and y (pdist) axis values</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.instant_pdist_2d">
+<span class="sig-name descname"><span class="pre">instant_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_pdist_2d" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the xyz pdist datasets for a single iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x, y, norm_hist</strong> – x and y axis values, and if using Y or evolution (with only X),
+also returns norm_hist.
+norm_hist is a 2-D matrix of the normalized histogram values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist">
+<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist" title="Permalink to this definition"></a></dt>
+<dd><p>Main public method with pdist generation controls.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist_1d">
+<span class="sig-name descname"><span class="pre">pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_1d" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em>)</p></li>
+<li><p><strong>Y</strong> (<em>ndarray</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist_2d">
+<span class="sig-name descname"><span class="pre">pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_2d" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em>)</p></li>
+<li><p><strong>Y</strong> (<em>ndarray</em>)</p></li>
+<li><p><strong>Z</strong> (<em>ndarray</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist_3d">
+<span class="sig-name descname"><span class="pre">pdist_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_3d" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em>)</p></li>
+<li><p><strong>Y</strong> (<em>ndarray</em>)</p></li>
+<li><p><strong>Z</strong> (<em>ndarray</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.plot_trace">
+<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
+<dd><p>Plot trace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker) start point to trace from.</p></li>
+<li><p><strong>color</strong> (<em>str</em>)</p></li>
+<li><p><strong>ax</strong> (<em>mpl axes object</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.reshape_total_data_array">
+<span class="sig-name descname"><span class="pre">reshape_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.reshape_total_data_array" title="Permalink to this definition"></a></dt>
+<dd><p>Take an input 1d array of the data values at every segment for each
+iteration, and reshape them to make pdists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>1d array</em>) – Data values at every segment for each iteration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>array</strong> – Now rows = segments, columns = frame until tau, depth = data dimensions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.search_aux_xy_nn">
+<span class="sig-name descname"><span class="pre">search_aux_xy_nn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.search_aux_xy_nn" title="Permalink to this definition"></a></dt>
+<dd><p>Originally adapted from code by Jeremy Leung.
+Tree search to find closest datapoint to input data value(s).</p>
+<p># TODO: add step size for searching, right now gets the last frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val_x</strong> (<em>int or float</em>) – X dataset value to search for.</p></li>
+<li><p><strong>val_y</strong> (<em>int or float</em>) – Y dataset value to search for.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.succ_pdist">
+<span class="sig-name descname"><span class="pre">succ_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.succ_pdist" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: Filter weights to be zero for all non successfull trajectories.
+Make an array of zero weights and fill out weights for succ trajs only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.timeseries">
+<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.timeseries" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em>)</p></li>
+<li><p><strong>Y</strong> (<em>ndarray</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.trace_walker">
+<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.trace_walker" title="Permalink to this definition"></a></dt>
+<dd><p>Get trace path of an input (iteration, walker).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>trace</strong> – Tuples are (iteration, walker) traces.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of tuples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.w_succ">
+<span class="sig-name descname"><span class="pre">w_succ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.w_succ" title="Permalink to this definition"></a></dt>
+<dd><p>Find and return all successfully recycled (iter, seg) pairs.
+TODO eventually can use this to plot pdist of succ only trajs
+note that I would have to norm by the overall pmax (not just succ pmax)
+Could have this be an optional feature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-mdap.md_plot">
+<span id="mdap-md-plot-module"></span><h1>mdap.md_plot module<a class="headerlink" href="#module-mdap.md_plot" title="Permalink to this heading"></a></h1>
+<p>Plot MD pdists.</p>
+<dl class="simple">
+<dt>TODO: specify option for:</dt><dd><p>timeseries (option for KDE side plot and option for stdev vs all reps)
+pdist (1D hist, 1D KDE, + others from H5_Plot)
+others?</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="mdap.md_plot.MD_Plot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdap.md_plot.</span></span><span class="sig-name descname"><span class="pre">MD_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_plot.MD_Plot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="wedap.html#wedap.h5_plot.H5_Plot" title="wedap.h5_plot.H5_Plot"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5_Plot</span></code></a>, <a class="reference internal" href="#mdap.md_pdist.MD_Pdist" title="mdap.md_pdist.MD_Pdist"><code class="xref py py-class docutils literal notranslate"><span class="pre">MD_Pdist</span></code></a></p>
+<p>These methods provide various plotting options for pdist data.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mdap_modules.html" class="btn btn-neutral float-left" title="mdap modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="notebook/wedap_demo.html" class="btn btn-neutral float-right" title="wedap demo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Darian Yang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

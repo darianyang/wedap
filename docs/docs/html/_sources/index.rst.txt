@@ -14,7 +14,8 @@ Welcome to wedap's documentation!
 
    quickstart
    api
-   modules
+   wedap_modules
+   mdap_modules
    notebook/wedap_demo
 
 * :ref:`genindex`
