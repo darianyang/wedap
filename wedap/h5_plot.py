@@ -2,19 +2,14 @@
 Main plotting class of wedap.
 Plot all of the datasets generated with H5_Pdist.
 
-# TODO: all plotting options with test.h5, compare output
-    # 1D Evo, 1D and 2D instant and average
-    # optional: diff max_iter and bins args
+* line -- plot 1D lines.
+* hist -- plot histogram (default).
+* hist_l -- plot histogram and contour lines.
+* contour -- plot contour levels and lines.
+* contour_f -- plot contour levels
+* contour_l -- plot contour lines only.
+* scatter3d -- plot 3 datasets in a scatter plot.
 
-TODO: maybe make methods for the following plots:
-contourf--plot contour levels
-histogram--plot histogram.
-lines--plot contour lines only.
-contourf_l--plot contour levels and lines.
-histogram_l--plot histogram and contour lines.
-option - with and without side histograms
-- mpl mosaic options
-- see mpl scatter hist: https://matplotlib.org/stable/gallery/lines_bars_and_markers/scatter_hist.html
 maybe a ridgeline plot?
 - This would be maybe for 1D avg of every 100 iterations
 - https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/

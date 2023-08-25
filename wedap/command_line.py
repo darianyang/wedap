@@ -216,17 +216,17 @@ def create_cmd_arguments():
                           help="Ranges to consider for the y-axis, input "
                                "2 space-seperated floats : LB UB",
                           type=float)
-    optional.add_argument("--pmin", default=None, nargs="?",
+    optional.add_argument("--pmin", "--p-min", default=None, nargs="?",
                         dest="p_min",
                         help="The minimum probability value limit. "
                              "This determines the cbar limits and contour levels.",
                         type=float)
-    optional.add_argument("--pmax", default=None, nargs="?",
+    optional.add_argument("--pmax", "--p-max",default=None, nargs="?",
                         dest="p_max",
                         help="The maximum probability limit value. "
                              "This determines the cbar limits and contour levels.",
                         type=float)
-    optional.add_argument("-pu", "--p-units", default="kT", nargs="?",
+    optional.add_argument("-pu", "--p-units", "--punits", default="kT", nargs="?",
                         dest="p_units", choices=("kT", "kcal", "raw", "raw_norm"),
                         help="Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'"
                              "kT = -lnP, kcal/mol = -RT(lnP), where RT=0.5922 at T(298K). "
@@ -266,7 +266,7 @@ def create_cmd_arguments():
                           help="List of binary values for skipping basis states, "
                                "e.g. 0 1 1 to skip all bstates except for first.",
                           type=int)
-    optional.add_argument("-jp", "--joint-plot", default=False,
+    optional.add_argument("-jp", "--jointplot", "--joint-plot", default=False,
                           dest="jointplot",
                           help="Optionally include marginal plots to create "
                                "a joint plot from 2D pdist.",
