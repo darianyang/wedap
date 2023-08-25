@@ -29,7 +29,7 @@ class MD_Plot(H5_Plot, MD_Pdist):
         # initialize md pdist
         MD_Pdist.__init__(self, *args, **kwargs)
         # generate xyz arrays
-        X, Y, Z = self.pdist()
+        self.X, self.Y, self.Z = self.pdist()
 
         # change back to original p_units
         if "jointplot" in kwargs:
@@ -37,4 +37,4 @@ class MD_Plot(H5_Plot, MD_Pdist):
                 kwargs["p_units"] = og_p_units
 
         # run H5_Plot initialization
-        H5_Plot.__init__(self, X, Y, Z, *args, **kwargs)
+        H5_Plot.__init__(self, self.X, self.Y, self.Z, *args, **kwargs)
