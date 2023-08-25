@@ -31,10 +31,12 @@
       ~H5_Plot.pdist
       ~H5_Plot.plot
       ~H5_Plot.plot_bar
-      ~H5_Plot.plot_contour
+      ~H5_Plot.plot_contour_f
+      ~H5_Plot.plot_contour_l
       ~H5_Plot.plot_hexbin3d
       ~H5_Plot.plot_hist
       ~H5_Plot.plot_line
+      ~H5_Plot.plot_margins
       ~H5_Plot.plot_scatter3d
       ~H5_Plot.plot_trace
       ~H5_Plot.reshape_total_data_array

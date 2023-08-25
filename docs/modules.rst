@@ -1,5 +1,5 @@
-wedap
-=====
+wedap modules
+=============
 
 .. toctree::
    :maxdepth: 4
