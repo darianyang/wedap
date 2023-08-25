@@ -100,6 +100,12 @@ class H5_Plot(H5_Pdist):
                 kwargs["p_units"] = "raw"
             # will be re-normed later on
             X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
+        # need to set this when using mdap, shouldn't affect anything else
+        # since joint plot dists must be changed from raw to requested p_units
+        if self.jointplot and "p_units" in kwargs:
+            self.requested_p_units = kwargs["p_units"]
+        else:
+            self.requested_p_units = "kT"
 
         self.X = X
         self.Y = Y
