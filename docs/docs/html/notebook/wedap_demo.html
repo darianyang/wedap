@@ -58,15 +58,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#mdap:-plotting-directly-from-standard-MD-data">mdap: plotting directly from standard MD data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Example-6:-1D-Probability-Distribution">Example 6: 1D Probability Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-1:-1D-Probability-Distribution">Example 1: 1D Probability Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-2:-2D-Probability-Distribution">Example 2: 2D Probability Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-3:-3D-Scatter-Plot">Example 3: 3D Scatter Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-4:-Joint-Plot-with-Extra-Features">Example 4: Joint Plot with Extra Features</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Advanced-wedap-examples">Advanced wedap examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Example-7:-Multi-panel-Probability-Distributions">Example 7: Multi-panel Probability Distributions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Example-8:-Multiple-Datasets-on-One-Plot">Example 8: Multiple Datasets on One Plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Example-9:-Tracing-Trajectories">Example 9: Tracing Trajectories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Example-10:-Making-a-GIF">Example 10: Making a GIF</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Example-11:-Data-Extraction-for-Machine-Learning-with-scikit-learn">Example 11: Data Extraction for Machine Learning with scikit-learn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-1:-Multi-panel-Probability-Distributions">Example 1: Multi-panel Probability Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-2:-Multiple-Datasets-on-One-Plot">Example 2: Multiple Datasets on One Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-3:-Tracing-Trajectories">Example 3: Tracing Trajectories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-4:-Making-a-GIF">Example 4: Making a GIF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn">Example 5: Data Extraction for Machine Learning with scikit-learn</a></li>
 </ul>
 </li>
 </ul>
@@ -509,8 +512,8 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 </pre></div>
 </div>
 </div>
-<section id="Example-6:-1D-Probability-Distribution">
-<h3>Example 6: 1D Probability Distribution<a class="headerlink" href="#Example-6:-1D-Probability-Distribution" title="Permalink to this heading"></a></h3>
+<section id="Example-1:-1D-Probability-Distribution">
+<h3>Example 1: 1D Probability Distribution<a class="headerlink" href="#Example-1:-1D-Probability-Distribution" title="Permalink to this heading"></a></h3>
 <p>We can make the same 1D line plot of the probability from any input data file. Note that if you have multiple replicates that you want to plot together, you can just include more data files after the X axis data input flag (<code class="docutils literal notranslate"><span class="pre">-X</span> <span class="pre">or</span> <span class="pre">--Xname</span> <span class="pre">file1.txt</span> <span class="pre">file2.txt</span> <span class="pre">...</span></code> and in Python you can input a list of file names into <code class="docutils literal notranslate"><span class="pre">mdap.MD_Pdist(Xname=[])</span></code>). Here, I am including just one file for the examples.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat --xlabel &quot;Input Data 0&quot; -pm line
 </pre></div>
@@ -540,7 +543,9 @@ Text(0.5, 7.222222222222218, &#39;Input Data 0&#39;)
 <img alt="../_images/notebook_wedap_demo_41_1.png" src="../_images/notebook_wedap_demo_41_1.png" />
 </div>
 </div>
-<p>Next up, a 2D probability distribution:</p>
+</section>
+<section id="Example-2:-2D-Probability-Distribution">
+<h3>Example 2: 2D Probability Distribution<a class="headerlink" href="#Example-2:-2D-Probability-Distribution" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y rms_bb_nmr.dat --xlabel &quot;Input Data 0&quot; --ylabel &quot;Input Data 1”
 </pre></div>
 </div>
@@ -570,6 +575,9 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
 <img alt="../_images/notebook_wedap_demo_44_1.png" src="../_images/notebook_wedap_demo_44_1.png" />
 </div>
 </div>
+</section>
+<section id="Example-3:-3D-Scatter-Plot">
+<h3>Example 3: 3D Scatter Plot<a class="headerlink" href="#Example-3:-3D-Scatter-Plot" title="Permalink to this heading"></a></h3>
 <p>Next, a scatter plot using 3 input datasets and notice how we can use a numpy binary file as input (<code class="docutils literal notranslate"><span class="pre">.npy</span></code>):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y rms_bb_nmr.dat --xlabel &quot;Input Data 0&quot; --ylabel &quot;Input Data 1&quot; -z c2_angle.npy --cbar-label &quot;Input Data 2&quot; -pm scatter3d
 </pre></div>
@@ -598,9 +606,12 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_47_1.png" src="../_images/notebook_wedap_demo_47_1.png" />
+<img alt="../_images/notebook_wedap_demo_48_1.png" src="../_images/notebook_wedap_demo_48_1.png" />
 </div>
 </div>
+</section>
+<section id="Example-4:-Joint-Plot-with-Extra-Features">
+<h3>Example 4: Joint Plot with Extra Features<a class="headerlink" href="#Example-4:-Joint-Plot-with-Extra-Features" title="Permalink to this heading"></a></h3>
 <p>For the last example in the <code class="docutils literal notranslate"><span class="pre">mdap</span></code> set, we can again demonsrate a variety of extra features, many of which are the same as with <code class="docutils literal notranslate"><span class="pre">wedap</span></code>. Something that is unique with <code class="docutils literal notranslate"><span class="pre">mdap</span></code> is that you can set <code class="docutils literal notranslate"><span class="pre">--Xinterval</span></code> || <code class="docutils literal notranslate"><span class="pre">MD_Plot.Xinterval</span></code> to apply to X Y or Z data (changing X to Y or Z in the arguments). This can adjust the size of your datasets if there is a mismatch (e.g. if you saved one dataset every 10 frames and the other every single frame). We can also see here that the
 <code class="docutils literal notranslate"><span class="pre">--contour-interval</span></code> or <code class="docutils literal notranslate"><span class="pre">-ci</span></code> argument was used, which sets the interval of each contour level. The Y axis data is also being indexed to position 2, so if the input dataset has multiple columns they can all be accessed like this. Finally we set the <code class="docutils literal notranslate"><span class="pre">--style</span></code> argument to <code class="docutils literal notranslate"><span class="pre">None</span></code>, which sets everything back to the matplotlib plotting defaults.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y o_angle.dat --xlabel &quot;Input Data 0&quot; --ylabel &quot;Input Data 3&quot; --Yindex 2 --Xinterval 10 -pm contour --color k --style None --p-units kT --contour-interval 0.5 --smoothing-level 2 --cmap gnuplot_r -jp --xlim 2 8 --ylim 20 60 --pmin 0.5
@@ -636,7 +647,7 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_51_0.png" src="../_images/notebook_wedap_demo_51_0.png" />
+<img alt="../_images/notebook_wedap_demo_53_0.png" src="../_images/notebook_wedap_demo_53_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -653,8 +664,8 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
 <section id="Advanced-wedap-examples">
 <h2>Advanced wedap examples<a class="headerlink" href="#Advanced-wedap-examples" title="Permalink to this heading"></a></h2>
 <hr class="docutils" />
-<section id="Example-7:-Multi-panel-Probability-Distributions">
-<h3>Example 7: Multi-panel Probability Distributions<a class="headerlink" href="#Example-7:-Multi-panel-Probability-Distributions" title="Permalink to this heading"></a></h3>
+<section id="Example-1:-Multi-panel-Probability-Distributions">
+<h3>Example 1: Multi-panel Probability Distributions<a class="headerlink" href="#Example-1:-Multi-panel-Probability-Distributions" title="Permalink to this heading"></a></h3>
 <p>Here, we can make a plot showcasing multiple aux datasets and how they relate to the progress coordinate.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
@@ -685,7 +696,7 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_55_1.png" src="../_images/notebook_wedap_demo_55_1.png" />
+<img alt="../_images/notebook_wedap_demo_57_1.png" src="../_images/notebook_wedap_demo_57_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -748,7 +759,7 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_58_4.png" src="../_images/notebook_wedap_demo_58_4.png" />
+<img alt="../_images/notebook_wedap_demo_60_4.png" src="../_images/notebook_wedap_demo_60_4.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -762,8 +773,8 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 </div>
 </div>
 </section>
-<section id="Example-8:-Multiple-Datasets-on-One-Plot">
-<h3>Example 8: Multiple Datasets on One Plot<a class="headerlink" href="#Example-8:-Multiple-Datasets-on-One-Plot" title="Permalink to this heading"></a></h3>
+<section id="Example-2:-Multiple-Datasets-on-One-Plot">
+<h3>Example 2: Multiple Datasets on One Plot<a class="headerlink" href="#Example-2:-Multiple-Datasets-on-One-Plot" title="Permalink to this heading"></a></h3>
 <p>We can also directly compare multiple aux or pcoord datasets on a single axis.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
@@ -823,7 +834,7 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_62_6.png" src="../_images/notebook_wedap_demo_62_6.png" />
+<img alt="../_images/notebook_wedap_demo_64_6.png" src="../_images/notebook_wedap_demo_64_6.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -837,8 +848,8 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 </div>
 </div>
 </section>
-<section id="Example-9:-Tracing-Trajectories">
-<h3>Example 9: Tracing Trajectories<a class="headerlink" href="#Example-9:-Tracing-Trajectories" title="Permalink to this heading"></a></h3>
+<section id="Example-3:-Tracing-Trajectories">
+<h3>Example 3: Tracing Trajectories<a class="headerlink" href="#Example-3:-Tracing-Trajectories" title="Permalink to this heading"></a></h3>
 <p>We often want to see how a single continuous trajectory evolves as the WE simulation progresses.</p>
 <p>If we want to trace the path to get to iteration 18 and segment 1:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Progress Coordinate 0&quot; -dt average  \
@@ -876,7 +887,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_67_2.png" src="../_images/notebook_wedap_demo_67_2.png" />
+<img alt="../_images/notebook_wedap_demo_69_2.png" src="../_images/notebook_wedap_demo_69_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -934,7 +945,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_71_3.png" src="../_images/notebook_wedap_demo_71_3.png" />
+<img alt="../_images/notebook_wedap_demo_73_3.png" src="../_images/notebook_wedap_demo_73_3.png" />
 </div>
 </div>
 <p>We also get an output line of which iteration and segment the trace cooresponds to.</p>
@@ -949,8 +960,8 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 </div>
 </section>
-<section id="Example-10:-Making-a-GIF">
-<h3>Example 10: Making a GIF<a class="headerlink" href="#Example-10:-Making-a-GIF" title="Permalink to this heading"></a></h3>
+<section id="Example-4:-Making-a-GIF">
+<h3>Example 4: Making a GIF<a class="headerlink" href="#Example-4:-Making-a-GIF" title="Permalink to this heading"></a></h3>
 <p>Let’s now make a GIF of our data, here I am using the dihedral 11 aux dataset and looping through the averages of small sets of iteration ranges, but anything could be looped to make the GIF using this example as a template.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
@@ -1133,8 +1144,8 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <p>The resulting GIF is shown below:</p>
 <p align="left"><p><img alt="example gif" class="no-scaled-link" src="../_images/example.gif" style="width: 400px;" /></p>
 </p></section>
-<section id="Example-11:-Data-Extraction-for-Machine-Learning-with-scikit-learn">
-<h3>Example 11: Data Extraction for Machine Learning with scikit-learn<a class="headerlink" href="#Example-11:-Data-Extraction-for-Machine-Learning-with-scikit-learn" title="Permalink to this heading"></a></h3>
+<section id="Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn">
+<h3>Example 5: Data Extraction for Machine Learning with scikit-learn<a class="headerlink" href="#Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn" title="Permalink to this heading"></a></h3>
 <p>In this final example, I will go through how to extract data from a <code class="docutils literal notranslate"><span class="pre">west.h5</span></code> file using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and then we can directly pass the data to other Python libraries such as <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> to do some clustering and pca.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
@@ -1220,7 +1231,7 @@ Text(0, 0.5, &#39;PC2&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_84_3.png" src="../_images/notebook_wedap_demo_84_3.png" />
+<img alt="../_images/notebook_wedap_demo_86_3.png" src="../_images/notebook_wedap_demo_86_3.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">

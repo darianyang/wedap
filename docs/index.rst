@@ -9,7 +9,7 @@ Welcome to wedap's documentation!
   :alt: wedap logo
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    quickstart
