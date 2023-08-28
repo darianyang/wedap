@@ -31,21 +31,13 @@ Or view the same demo notebook on the [documentation web page](https://darianyan
 - gif (optional for making gifs)
 - gooey (optional for GUI)
 
-## GUI
-
-wedap has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `wedap` or `python wedap` if you're in the main wedap directory of this repository. If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. 
-If you pip install (instead of conda installing) wxPython and Gooey on Mac you may be able to just run `wedap`. 
-If you wish to use the command line interface instead include any amount of arguments and include `-h` or `--help` to see the available options.
-
-For MacOSX, you can set up an alias in your `.bash_profile` by running the following:
-```
-echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profile
-```
-Then simply type `wedap` on the terminal to run the wedap GUI.
-
 ## Installation
 
-Install into a new conda env:
+If you don't need the GUI, then installing `Gooey` is not required and you can just pip install.
+``` bash
+pip install wedap
+```
+Otherwise you can install with `Gooey`, e.g. into a new conda env:
 ``` bash
 conda env create --name wedap python=3.8+
 conda activate wedap
@@ -58,17 +50,20 @@ conda activate ENV_NAME
 conda install -c conda-forge gooey
 pip install wedap
 ```
-Or, if you have the repository cloned, go into the main wedap directory (may have more up to date features):
-``` bash
-conda install -c conda-forge gooey
-pip install .
-```
-If you don't need the GUI, then installing gooey is not required
-``` bash
-pip install wedap
-```
 
-Note that gooey is kindof troublesome to pip install in some systems, which is also why it's not included in the requirements (although it is required for the GUI). For now I reccomend conda installing gooey.
+Note that `Gooey` is kindof troublesome to pip install in some systems, which is also why it's not included in the requirements (although it is required for the GUI). For now, I recommend conda installing `Gooey`.
+
+## GUI
+
+`wedap` has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `wedap` or `python wedap` if you're in the main `wedap` directory of this repository. If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. 
+If you pip install (instead of conda installing) `wxPython` and `Gooey` on Mac you may be able to just run `wedap`. 
+If you wish to use the command line interface instead include any amount of arguments and include `-h` or `--help` to see the available options.
+
+For MacOSX, you can set up an alias in your `.bash_profile` by running the following:
+```
+echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profile
+```
+Then simply type `wedap` on the terminal to run the wedap GUI.
 
 ## Examples
 
@@ -86,7 +81,7 @@ wedap
 ```
 To start the GUI on MacOSX:
 ``` bash
-pythonw /Path/to/wedap/git/repo/wedap/wedap
+pythonw /"Path to wedap git repo"/wedap/wedap
 ```
 To visualize the evolution of the pcoord for the example p53.h5 file via CLI:
 ``` bash
@@ -140,11 +135,11 @@ The resulting `p53.h5` file average plot of the pcoord datasets will look like t
 </p>
 
 ## Motivation
-WESTPA already comes with some excellent analysis tools for generating probability distributions, so why is wedap needed?
+`WESTPA` already comes with some excellent analysis tools for generating probability distributions, so why is `wedap` needed?
 
-wedap was originally built as a way to simplify the original WESTPA plotting pipeline:
+`wedap` was originally built as a way to simplify the original `WESTPA` plotting pipeline:
 
-Native WESTPA CLI-based Analysis Tools:
+Native `WESTPA` CLI-based Analysis Tools:
 
     ┌───────┐       w_pdist        ┌────────┐        plothist         ┌────────┐
     │west.h5├─────────────────────►│pdist.h5├────────────────────────►│plot.pdf│
@@ -152,27 +147,27 @@ Native WESTPA CLI-based Analysis Tools:
                    module.py                      plot_settings.py
 
 
-Analysis using wedap:
+Analysis using `wedap`:
 
     ┌───────┐     wedap       ┌────────┐
     │west.h5├────────────────►│plot.pdf│
     └───────┘ CLI/GUI/Python  └────────┘
 
-So wedap can generate plots with more flexibilty and less intermediate files, providing an especially useful way to plot aux datasets and explore your h5 file. 
+So `wedap` can generate plots with more flexibilty and less intermediate files, providing an especially useful way to plot aux datasets and explore your h5 file. 
 * The Python interface allows for advanced users to quickly generate a plot as a matplotlib axes object which can be further customized all in one Python script.
-    * For example, the moviepy package can be used with wedap to easily create a gif of your h5 file (see an example of this in `wedap/h5_movie.py`).
+    * For example, the `moviepy` or `gif` package can be used with wedap to easily create a gif of your h5 file (see an example of this in `wedap/h5_movie.py`).
     * The actual data can also be easily extracted and then analyzed (see `wedap/h5_cluster.py` for an example of k-means clustering using the data from a WESTPA west.h5 file). 
 * The GUI allows for users who may not be comfortable with command line tools or Python to be able to quickly analyze their simulation results.
 * A CLI is also available if using wedap on a system without access to a display.
 
-Since the original implementation of wedap, many more features have been added that are not available using the WESTPA `w_pdist` and `plothist` tools, these include the following:
+Since the original implementation of `wedap`, many more features have been added that are not available using the `WESTPA` `w_pdist` and `plothist` tools, these include the following:
 * Easy WE tracing and plotting by inputing an iteration and segment, or by inputing the X and Y value to then query and trace.
 * 3D plots that replace the probability with another pcoord or aux dataset (`plot_mode="scatter3d"`).
 * Selective basis states (if you have multiple basis states, only plot the probability contributions from specific states).
     * See the `skip_basis` argument (available through the Python API only currently).
 * More to come!
 
-Note that the WESTPA analysis tools have features not available in wedap and may still be of interest to you.
+Note that the `WESTPA` analysis tools have features not available in `wedap` and may still be of interest to you.
 
 ## Contributing
 
