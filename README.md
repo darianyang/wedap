@@ -8,11 +8,15 @@
 [![Downloads](https://static.pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
 [![GitHub license](https://img.shields.io/github/license/darianyang/wedap)](https://github.com/darianyang/wedap/blob/master/LICENSE)
 
-weighted ensemble data analysis and plotting (wedap)
+**wedap** : **w**eighted **e**nsemble **d**ata **a**nalysis and **p**lotting (pronounced we-dap)
 
-This is used to plot H5 files produced from running [WESTPA](https://github.com/westpa/westpa).
+`wedap` is primarily used to plot H5 files produced from running [WESTPA](https://github.com/westpa/westpa).
 
-This repository is currently under development.
+`mdap` can be used to plot data files from analysis of standard MD simulations.
+
+For a demo and summary of features, see this [jupyter notebook](docs/notebook/wedap_demo.ipynb).
+
+Or view the same demo notebook on the [documentation web page](https://darianyang.github.io/wedap/docs/html/notebook/wedap_demo.html).
 
 ### Requirements
 
