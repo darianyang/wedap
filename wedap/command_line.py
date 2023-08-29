@@ -51,7 +51,6 @@ else:
     )
 
 # TODO: make tabs?
-# then push new pip version
 @gui_decorator
 def create_cmd_arguments(): 
     """
@@ -196,6 +195,11 @@ def create_cmd_arguments():
                         help="Plot data up to and including iteration LAST_ITER. "
                              "By default, plot data up to and including the last "
                              "iteration in the specified H5 file.",
+                        type=int)
+    optional.add_argument("-si", "--step-iter", default=1, nargs="?",
+                        dest="step_iter",
+                        help="Only use every step_iter size chunks of the input data, "
+                             "e.g. --step-iter 10 for every 10 iterations. Default 1.",
                         type=int)
     # *: a flexible number of values, which will be gathered into a list
     # +: like *, but requiring at least one value

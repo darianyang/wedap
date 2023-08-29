@@ -35,12 +35,11 @@ class H5_Pdist():
     These class methods generate probability distributions from a WESTPA H5 file.
     """
     # TODO: is setting aux_y to None the best approach to 1D plot settings?
-    # TODO: add step-iter
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
                  Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
-                 histrange_x=None, histrange_y=None, no_pbar=False, *args, **kwargs):
+                 histrange_x=None, histrange_y=None, no_pbar=False, step_iter=1, *args, **kwargs):
         """
         Parameters
         ----------
@@ -99,6 +98,9 @@ class H5_Pdist():
             Optionally put custom bin ranges.
         no_pbar : bool
             Optionally do not include the progress bar for pdist generation.
+        step_iter : int
+            Only use every step_iter size chunks of the input data, 
+            e.g. step_iter=10 for every 10 iterations.
         TODO: maybe also binsfromexpression?
         """
         # TODO: maybe change self.f to self.h5?
@@ -212,6 +214,7 @@ class H5_Pdist():
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
+        self.step_iter = step_iter
 
     def _get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
         """
@@ -308,7 +311,7 @@ class H5_Pdist():
         histrange = [np.amin(iter_data), np.amax(iter_data)]
 
         # loop and update to the max and min for all other iterations considered
-        for iter in range(self.first_iter + 1, self.last_iter + 1):
+        for iter in range(self.first_iter + 1, self.last_iter + 1, self.step_iter):
             # get min and max for the iteration
             iter_data = self._get_data_array(name, index, iter)
             iter_min = np.amin(iter_data)
@@ -777,7 +780,7 @@ class H5_Pdist():
         evolution_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins[0]))
         positions_x = np.zeros((self.last_iter - self.first_iter + 1, self.bins[0]))
 
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
                          desc="Evolution", disable=self.no_pbar):
             # account for first_iter arg for array indexing
             iter_index = iter - self.first_iter + 1
@@ -857,7 +860,7 @@ class H5_Pdist():
         evolution_x = np.zeros((self.last_iter, self.bins[0]))
         positions_x = np.zeros((self.last_iter, self.bins[0]))
 
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
                          desc="Average 1D", disable=self.no_pbar):
             # generate evolution x data
             center_x, counts_total_x = self.aux_to_pdist_1d(iter)
@@ -885,7 +888,7 @@ class H5_Pdist():
         average_xy = np.zeros(self.bins)
 
         # 2D avg pdist data generation
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
                          desc="Average 2D", disable=self.no_pbar):
             center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
@@ -915,7 +918,7 @@ class H5_Pdist():
 
         # loop each iteration
         seg_start = 0
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
                          desc="Average 3D", disable=self.no_pbar):
             # then go through and add all segments/walkers in the iteration
             X[seg_start:seg_start + self.n_particles[iter - 1]] = \
@@ -991,7 +994,7 @@ class H5_Pdist():
     
         # loop each iteration
         seg_start = 0
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
                          desc="Getting Data Array", disable=self.no_pbar):
             # then go through and add all segments/walkers in the iteration
             data[seg_start : seg_start + self.n_particles[iter - 1]] = \
