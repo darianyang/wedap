@@ -46,7 +46,6 @@ else:
     )
 
 # TODO: make tabs?
-# then push new pip version
 @gui_decorator
 def create_cmd_arguments(): 
     """
@@ -65,10 +64,30 @@ def create_cmd_arguments():
                 "=== molecular dynamics analysis and plotting (mdap) === \n" + \
                 "======================================================= \n" + \
                 "\nGiven an input (pre-calcualated) dataset from standard MD simulations, " + \
-                "prepare probability distributions and plots." + \
+                "prepare probability distributions and plots. " + \
                 "Input data must be in >=2 column format: \n" + \
                 "# use hashs at top of data file to indicate comments (skipped) \n" + \
-                "COL1:Frame | COL2:Data | COL3:Data..."
+                "COL1:Frame | COL2:Data | COL3:Data... \n\n" + \
+                "\nSee the documentation for usage and examples: https://darianyang.github.io/wedap " + \
+                "\n\n" + \
+                "mdap can be used with 2 different --data-type (-dt) args: " + \
+                "\n\t`pdist` (default) and `time`" + \
+                "\n\nAvailable --plot-mode (-pm) options are: " + \
+                "\n\t1D: `line`" + \
+                "\n\t2D: `hist` (default), `hist_l` (hist with contour lines), " + \
+                "\n\t    `contour` (lines and fill), `contour_l` (lines only), `contour_f` (fill only)" + \
+                "\n\t3D: `scatter3d`" + \
+                "\n\nExamples\n--------" + \
+                "\nTime evolution plot:" + \
+                "\n\t$ mdap -X input_data.dat -dt time -pm line" + \
+                "\n\n1D average probability distribution:" + \
+                "\n\t$ mdap -X input_data.dat -dt pdist -pm line" + \
+                "\n\n2D average probability distribution of datasets 1 and 2 and default column index:" + \
+                "\n\t$ mdap -X input_data_0.dat -Y input_data_1.dat -Xi 1 -Yi 1" + \
+                "\n\n3D scatter of three input datasets:" + \
+                "\n\t$ mdap -pm scatter3d -X input_data_0.dat -Y input_data_1.dat -Z input_data_2.dat" + \
+                "\n\n2D average contour plot of 2 input datasets probability limits in kcal/mol:" + \
+                "\n\t$ mdap -pm contour -X input_data_0.dat -Y input_data_1.dat --pmin 0 --pmax 5 --p-units kcal"
 
     # create argument parser (gooey based if available)
     if gooey is None:
