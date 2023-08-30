@@ -125,7 +125,7 @@ def create_cmd_arguments():
 
     # test out gooey specific widgets
     required = parser.add_argument_group("Required Arguments")
-    required.add_argument("-W", "-h5", "--h5file", #required=True, nargs="?",
+    required.add_argument("-W", "-w", "-h5", "--h5file", #required=True, nargs="?",
         default="west.h5", action="store", dest="h5", type=str,
         help="The WESTPA west.h5 output file that will be analyzed. "
              "Default 'west.h5'.", 
@@ -198,7 +198,7 @@ def create_cmd_arguments():
                         type=int)
     optional.add_argument("-si", "--step-iter", default=1, nargs="?",
                         dest="step_iter",
-                        help="Only use every step_iter size chunks of the input data, "
+                        help="Only use every step_iter size iteration intervals of the data "
                              "e.g. --step-iter 10 for every 10 iterations. Default 1.",
                         type=int)
     # *: a flexible number of values, which will be gathered into a list

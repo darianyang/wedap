@@ -99,7 +99,7 @@ class H5_Pdist():
         no_pbar : bool
             Optionally do not include the progress bar for pdist generation.
         step_iter : int
-            Only use every step_iter size chunks of the input data, 
+            Only use every step_iter size iteration intervals of the input data,
             e.g. step_iter=10 for every 10 iterations.
         TODO: maybe also binsfromexpression?
         """
