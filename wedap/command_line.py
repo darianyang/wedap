@@ -125,7 +125,7 @@ def create_cmd_arguments():
 
     # test out gooey specific widgets
     required = parser.add_argument_group("Required Arguments")
-    required.add_argument("-W", "-w", "-h5", "--h5file", #required=True, nargs="?",
+    required.add_argument("-W", "-w", "--west", "--west-data", "-h5", "--h5file", 
         default="west.h5", action="store", dest="h5", type=str,
         help="The WESTPA west.h5 output file that will be analyzed. "
              "Default 'west.h5'.", 
@@ -141,13 +141,13 @@ def create_cmd_arguments():
     main = parser.add_argument_group("Main Arguments")
     optional = parser.add_argument_group("Optional Extra Arguments")
 
-    main.add_argument("-dt", "--data-type", default="evolution", nargs="?",
+    main.add_argument("-dt", "--data-type", "--datatype", default="evolution", nargs="?",
                         dest="data_type", choices=("evolution", "average", "instant"),
                         help="Type of pdist dataset to generate, options are "
                              "'evolution' (1 dataset); " 
                              "'average' or 'instance' (1 or 2 or 3 datasets).",
                         type=str) 
-    main.add_argument("-pm", "--plot-mode", default="hist", nargs="?",
+    main.add_argument("-pm", "--plot-mode", "--plotmode", default="hist", nargs="?",
                         dest="plot_mode", choices=("hist", "hist_l", "contour", "contour_l", 
                                                    "contour_f", "bar", "line", "scatter3d"),
                         help="The type of plot desired.  "

@@ -137,12 +137,12 @@ def create_cmd_arguments():
     main = parser.add_argument_group("Main Arguments")
     optional = parser.add_argument_group("Optional Extra Arguments")
 
-    main.add_argument("-dt", "--data-type", default="pdist", nargs="?",
+    main.add_argument("-dt", "--data-type", "--datatype", default="pdist", nargs="?",
                         dest="data_type", choices=("time", "pdist"),
                         help="Type of pdist dataset to generate, options are ",
                              # TODO
                         type=str) 
-    main.add_argument("-pm", "--plot-mode", default="hist", nargs="?",
+    main.add_argument("-pm", "--plot-mode", "--plotmode", default="hist", nargs="?",
                         dest="plot_mode", choices=("hist", "hist_l", "contour", "contour_l", 
                                                    "contour_f", "bar", "line", "scatter3d"),
                         help="The type of plot desired.  "
@@ -235,7 +235,7 @@ def create_cmd_arguments():
                              "kT = -lnP, kcal/mol = -RT(lnP), "
                              "where RT=0.5922 at T(298K).",
                         type=str)
-    optional.add_argument("-ts", "--timescale", default=10e6, nargs="?",
+    optional.add_argument("-ts", "--timescale", "--time-scale", default=10e6, nargs="?",
                         dest="timescale",
                         help="Default ps to µs (10e6). Converts frames to time.",
                         type=float)
