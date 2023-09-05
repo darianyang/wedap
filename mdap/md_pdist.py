@@ -114,6 +114,11 @@ class MD_Pdist(H5_Pdist):
         # grab dataset (make sure 2D for proper indexing)
         # TODO: switch to pre-cast array?
         data = []
+
+        # if the input file isn't already a list, make it a 1 item list
+        if not isinstance(names, list):
+            names = [names]
+
         # handle multiple file name list
         # TODO: handle direct ndarray inputs as well as file str
         for name in names:
