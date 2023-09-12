@@ -78,7 +78,7 @@ class H5_Pdist():
         last_iter : int
             Last iteration data to include, default is the last recorded iteration in the west.h5 file. 
             Note that `instant` type pdists only depend on last_iter.
-        bins : tuple of ints (TODO: maybe the tuple isn't user friendly for 1 dim?)
+        bins : tuple of ints (TODO: maybe the tuple isn't user friendly for 1 dim? Could check items like md_pdist)
             Histogram bins in pdist data to be generated for x and y datasets, default both 100.
         p_units : str
             Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
@@ -103,9 +103,8 @@ class H5_Pdist():
             e.g. step_iter=10 for every 10 iterations.
         TODO: maybe also binsfromexpression?
         """
-        # TODO: maybe change self.f to self.h5?
-        self.h5 = str(h5)
-        self.f = h5py.File(h5, mode="r")
+        self.h5_name = str(h5)
+        self.h5 = h5py.File(h5, mode="r")
         if data_type is None:
             raise ValueError("Must input valid data_type: `evolution`, `average`, or `instant`")
         else:
@@ -114,7 +113,7 @@ class H5_Pdist():
         self.T = int(T)
         self.weighted = weighted
 
-        # TODO: Default pcoord for either dim
+        # TODO: Default pcoord for either dim?
         # TODO: clean up and condense this name processing section
         # add auxdata prefix if not using pcoord and not using array input
         # doing it in two conditional blocks since numpy as warning with comparing array to string
@@ -162,7 +161,7 @@ class H5_Pdist():
         self.Ysave_name = Ysave_name
         self.Zsave_name = Zsave_name
         if H5save_out is not None:
-            shutil.copyfile(self.h5, H5save_out)
+            shutil.copyfile(self.h5_name, H5save_out)
             self.H5save_out = h5py.File(H5save_out, "r+")
         
         # raw data processing function
@@ -173,7 +172,7 @@ class H5_Pdist():
         if last_iter is not None:
             self.last_iter = int(last_iter)
         elif last_iter is None:
-            self.last_iter = self.f.attrs["west_current_iteration"] - 1
+            self.last_iter = self.h5.attrs["west_current_iteration"] - 1
 
         if data_type == "instant":
             self.first_iter = self.last_iter
@@ -192,7 +191,7 @@ class H5_Pdist():
         elif skip_basis:
             weight_start = 1
         for iter in range(weight_start, self.last_iter + 1):
-            weights.append(self.f[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
+            weights.append(self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
         # 1D array of variably shaped arrays
         self.weights = np.array(weights, dtype=object)
 
@@ -200,14 +199,14 @@ class H5_Pdist():
         self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
 
         # n_particles for each iteration
-        self.n_particles = self.f["summary"]["n_particles"]#[self.first_iter-1:self.last_iter]
+        self.n_particles = self.h5["summary"]["n_particles"]#[self.first_iter-1:self.last_iter]
 
         # TODO: I wonder if both of these attributes are needed (total only used by reshape data array)
         #       I should note somewhere that data array must be for the same length/iters as the west.h5 file
         # the sum of n segments in all specified iterations and all iterations overall
-        self.current_particles = np.sum(self.f["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+        self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
         # do not include the final (empty) iteration
-        self.total_particles = np.sum(self.f["summary"]["n_particles"][:-1])
+        self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
 
         self.skip_basis = skip_basis
         self.skip_basis_out = skip_basis_out
@@ -254,13 +253,13 @@ class H5_Pdist():
         elif isinstance(name, str):
             # this t/e block is to catch non-existent aux data names
             try:
-                data = np.array(self.f[f"iterations/iter_{iteration:08d}/{name}"])
+                data = np.array(self.h5[f"iterations/iter_{iteration:08d}/{name}"])
             except KeyError:
                 message = f"{name} is not a valid object in the h5 file. \n" + \
                           f"Available datasets are: 'pcoord' "
                 # this t/e block is to catch the case where there are no aux datasets at all
                 try:
-                    auxnames = list(self.f[f"iterations/iter_{self.first_iter:08d}/auxdata"])
+                    auxnames = list(self.h5[f"iterations/iter_{self.first_iter:08d}/auxdata"])
                     message += f"and the following aux datasets {auxnames}"
                 except KeyError:
                     message += "and no aux datasets were found"
@@ -399,8 +398,8 @@ class H5_Pdist():
         # setup a warning for h5 files that have incorrectly recorded bstate pcoords
         # this will all be based off of the first pcoord array (Z index 0)
         # correspondingly, the bstate_pcoord will be the first column
-        bs_coords = self.f[f"ibstates/0/bstate_pcoord"]
-        it1_coords = self.f[f"iterations/iter_00000001/pcoord"][:,0,0]
+        bs_coords = self.h5[f"ibstates/0/bstate_pcoord"]
+        it1_coords = self.h5[f"iterations/iter_00000001/pcoord"][:,0,0]
         # need to second element get the unique indices
         it1_unique_indices = np.unique(it1_coords, return_index=True)[1]
         # then sort to the original bstate ordering
@@ -458,7 +457,7 @@ class H5_Pdist():
         print("pdist calculation: ")
         # write new weights into skip_basis_out h5 file
         if self.skip_basis_out is not None:
-            shutil.copyfile(self.h5, self.skip_basis_out)
+            shutil.copyfile(self.h5_name, self.skip_basis_out)
             h5_skip_basis = h5py.File(self.skip_basis_out, "r+")
             for idx, weight in enumerate(new_weights):
                 h5_skip_basis[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
@@ -562,7 +561,7 @@ class H5_Pdist():
         parent : iteration, walker
         """
         it, wlk = walker_tuple
-        parent = self.f[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
+        parent = self.h5[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
         return it-1, parent
 
     def trace_walker(self, walker_tuple):
@@ -659,7 +658,7 @@ class H5_Pdist():
         for iter in range(self.last_iter):
             # if the new_weights group exists in the h5 file
             if f"iterations/iter_{iter:08d}/new_weights" in self.h5:
-                prev_segs = self.f[f"iterations/iter_{iter:08d}/new_weights/index"]["prev_seg_id"]
+                prev_segs = self.h5[f"iterations/iter_{iter:08d}/new_weights/index"]["prev_seg_id"]
                 # append the previous iter and previous seg id recycled
                 for seg in prev_segs:
                     succ.append((iter-1, seg))
@@ -1066,7 +1065,7 @@ class H5_Pdist():
         """ 
         # option to zero weight out specific basis states
         if self.skip_basis is not None:
-            self.n_bstates = self.f["ibstates/index"]["n_bstates"]
+            self.n_bstates = self.h5["ibstates/index"]["n_bstates"]
             try: 
                 self.weights = self._new_weights_from_skip_basis()
             # if the wrong amount of args are input and != n_bstates
