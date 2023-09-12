@@ -180,10 +180,9 @@ class H5_Pdist():
         else:
             self.first_iter = int(first_iter)
 
+        self.step_iter = step_iter
         self.bins = bins
 
-        # first make a list for each iteration weight array
-        weights = []
         #for iter in range(self.first_iter, self.last_iter + 1):
         # have to make array start from iteration 1 to index well during weighting
         # but only for using skipping basis
@@ -191,7 +190,13 @@ class H5_Pdist():
             weight_start = self.first_iter
         elif skip_basis:
             weight_start = 1
-        for iter in range(weight_start, self.last_iter + 1):
+
+        # make a (TODO: pre-allocated?) list for each iteration weight array
+        #weights = [None] * (self.last_iter - weight_start + 1)
+        weights = []
+        # fill out the weight list
+        for iter in range(weight_start, self.last_iter + 1, self.step_iter):
+            #weights[iter - weight_start] = self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"]
             weights.append(self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
         # 1D array of variably shaped arrays
         self.weights = np.array(weights, dtype=object)
@@ -214,7 +219,6 @@ class H5_Pdist():
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
-        self.step_iter = step_iter
 
     def _get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
         """
@@ -309,22 +313,24 @@ class H5_Pdist():
         """
         # set base histrange based on first iteration
         iter_data = self._get_data_array(name, index, self.first_iter)
-        histrange = [np.amin(iter_data), np.amax(iter_data)]
+        #iter_data = self._get_data_array(name, index, self.first_iter)
+        global_min = np.amin(iter_data)
+        global_max = np.amax(iter_data)
 
         # loop and update to the max and min for all other iterations considered
         for iter in range(self.first_iter + 1, self.last_iter + 1, self.step_iter):
-            # get min and max for the iteration
             iter_data = self._get_data_array(name, index, iter)
+
+            # find minimum and maximum values within the current iter
             iter_min = np.amin(iter_data)
             iter_max = np.amax(iter_data)
 
-            # update to get the largest possible range from all iterations
-            if iter_min < histrange[0]:
-                histrange[0] = iter_min
-            if iter_max > histrange[1]:
-                histrange[1] = iter_max
+            # update global minimum and maximum values
+            global_min = min(global_min, iter_min)
+            global_max = max(global_max, iter_max)
 
-        return histrange
+        # define the common histogram range
+        return (global_min, global_max)
 
     def _normalize(self, hist):
         """
