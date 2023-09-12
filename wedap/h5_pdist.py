@@ -290,6 +290,7 @@ class H5_Pdist():
     # this does add a little overhead at high iteration ranges
     # ~0.5s from 100i to 400i
     # alternatively, can put histrange_x and histrange_y args to skip this
+    # TODO: does plothist avoid this?
     def _get_histrange(self, name, index):
         """
         Get the histrange considering the min/max of all iterations considered.

@@ -19,6 +19,7 @@ TODO: plot clustering centroids option?
       can then grab the search_aux at the centroid
 
 TODO: bin visualizer? and maybe show the trajectories as just dots?
+Add postprocess function for quick fixes when using CLI? see feplotter
 """
 
 import sys
