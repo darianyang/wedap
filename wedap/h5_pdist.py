@@ -332,7 +332,7 @@ class H5_Pdist():
         # define the common histogram range
         return (global_min, global_max)
 
-    def _normalize(self, hist):
+    def _normalize(self, hist, p_units):
         """
         Normalize or convert the probabilities.
 
@@ -340,6 +340,10 @@ class H5_Pdist():
         ----------
         hist : ndarray
             Array containing the histogram count values to be normalized.
+        p_units : str
+            Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
+            kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
+            'raw' is the raw probabilities and 'raw_norm' is the raw probabilities P(max) normalized.
 
         Returns
         -------
@@ -347,17 +351,17 @@ class H5_Pdist():
             The hist array is normalized according to the p_units argument. 
         """
         # -lnP
-        if self.p_units == "kT":
+        if p_units == "kT":
             hist = -np.log(hist / np.max(hist))
         # -RT*lnP
-        elif self.p_units == "kcal":
+        elif p_units == "kcal":
             # Gas constant R = 1.9872 cal/K*mol or 0.0019872 kcal/K*mol
             hist = -0.0019872 * self.T * np.log(hist / np.max(hist))
         # raw probability
-        elif self.p_units == "raw":
+        elif p_units == "raw":
             hist = hist
         # raw normalized probability (P(x)/P(max))
-        elif self.p_units == "raw_norm":
+        elif p_units == "raw_norm":
             hist = hist / np.max(hist)
         else:
             raise ValueError("Invalid p_units value, must be 'kT', 'kcal', 'raw', or 'raw_norm'.")
@@ -797,7 +801,7 @@ class H5_Pdist():
             positions_x[iter_index - 1] = center_x
 
         # 2D evolution plot of X (Y not used if provided) per iteration        
-        evolution_x = self._normalize(evolution_x)
+        evolution_x = self._normalize(evolution_x, self.p_units)
 
         # bin positions along aux x, WE iteration numbers, z data
         return positions_x, np.arange(self.first_iter, self.last_iter + 1, 1), evolution_x
@@ -813,7 +817,7 @@ class H5_Pdist():
             x (dataset) and y (pdist) axis values
         """
         center, counts_total = self.aux_to_pdist_1d(self.last_iter)
-        counts_total = self._normalize(counts_total)
+        counts_total = self._normalize(counts_total, self.p_units)
         return center, counts_total
 
     def instant_pdist_2d(self):
@@ -828,7 +832,7 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         center_x, center_y, counts_total = self.aux_to_pdist_2d(self.last_iter)
-        counts_total = self._normalize(counts_total)
+        counts_total = self._normalize(counts_total, self.p_units)
         return center_x, center_y, counts_total
 
     def instant_datasets_3d(self):
@@ -872,7 +876,7 @@ class H5_Pdist():
             average_x += counts_total_x
 
         # return X positions and normalized 1D average plot data for Y
-        return center_x, self._normalize(average_x)
+        return center_x, self._normalize(average_x, self.p_units)
 
     def average_pdist_2d(self):
         """
@@ -893,7 +897,7 @@ class H5_Pdist():
             center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
 
-        return center_x, center_y, self._normalize(average_xy)
+        return center_x, center_y, self._normalize(average_xy, self.p_units)
 
     def average_datasets_3d(self, interval=1):
         """
@@ -1097,12 +1101,12 @@ class H5_Pdist():
 
         # TODO: if I can get rid of this or optimize it, I can then use the 
             # original methods of each pdist by themselves
-        # TODO: only if histrange is None
+        # only if histrange is None
         if self.histrange_x is None:
             # get the optimal histrange
             self.histrange_x = self._get_histrange(self.Xname, self.Xindex)
         # if using 2D pdist
-        # TODO: needs to handle array input or None input
+        # needs to handle array input or None input
         if isinstance(self.Yname, (str, np.ndarray)) and self.histrange_y is None:
             self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
 

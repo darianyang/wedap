@@ -316,8 +316,8 @@ class H5_Plot(H5_Pdist):
         x_proj = Z.sum(axis=0)
         y_proj = Z.sum(axis=1)
         # plot margins
-        self.fig["x"].plot(self.X, self._normalize(x_proj), color=self.color)
-        self.fig["y"].plot(self._normalize(y_proj), self.Y, color=self.color)
+        self.fig["x"].plot(self.X, self._normalize(x_proj, self.p_units), color=self.color)
+        self.fig["y"].plot(self._normalize(y_proj, self.p_units), self.Y, color=self.color)
 
         # TODO: add functionality for scatter3d, use XY data to create gaussian_kde margins
 
@@ -417,8 +417,10 @@ class H5_Plot(H5_Pdist):
             self.plot_margins()
             # calc normalized hist using updated p_units (maybe could also do Z[Z != np.isinf])
             # but masked invalid takes care of Nan and inf converts to mask (--)
-            #self.Z = self._normalize(self.Z[self.Z != np.inf])
-            self.Z = self._normalize(np.ma.masked_invalid(self.Z))
+            #self.Z = self._normalize(self.Z[self.Z != np.inf], self.p_units)
+            # TODO: now that normalize can take p_units, could be easier to not go
+            #       back and forth with saving the requested p units and changing to raw
+            self.Z = self._normalize(np.ma.masked_invalid(self.Z), self.p_units)
 
             # add formatting jointplot options
             # remove redundant tick labels
