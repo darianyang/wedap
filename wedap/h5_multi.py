@@ -41,8 +41,11 @@ class H5_Multi(H5_Pdist):
             List of h5 file paths.
         """
         self.h5_list = h5_list
-        # save the selected p_units
-        self.og_p_units = kwargs["p_units"]
+        # save if there are requested p_units (TODO: maybe a better way to account this)
+        if "p_units" in kwargs:
+            self.og_p_units = kwargs["p_units"]
+        else:
+            self.og_p_units = "kT"
         # have to change to raw for adding counts and will be normalized later
         kwargs["p_units"] = "raw"
         # initialize the parent H5_Pdist class using the first h5 file
@@ -71,12 +74,29 @@ class H5_Multi(H5_Pdist):
         # return the updated pdist object
         return pdist
 
-    def multi_h5(self):
+    def multi_xy(self):
         """
-        Main class method, returns XYZ pdist arrays for multiple h5 files.
+        Returns XYZ pdist arrays for multiple h5 files.
+        Normalizes the 1D Y array.
         """
         # make pdist object for first file
-        #pdist0 = self.pdist_scaled(self.h5_list[0])
+        X, Y, Z = self.pdist()
+
+        # loop all other pdists in list and add to initial
+        for h5 in self.h5_list[1:]:
+            nX, nY, nZ = self.pdist_scaled(h5).pdist()
+            Y += nY
+
+        # using p_units back to original values
+        # normalize from raw weighted hists
+        return X, self._normalize(Y, self.og_p_units), Z
+
+    def multi_xyz(self):
+        """
+        Returns XYZ pdist arrays for multiple h5 files.
+        Normalizes the 2D Z array.
+        """
+        # make pdist object for first file
         X, Y, Z = self.pdist()
 
         # loop all other pdists in list and add to initial
@@ -84,22 +104,77 @@ class H5_Multi(H5_Pdist):
             nX, nY, nZ = self.pdist_scaled(h5).pdist()
             Z += nZ
 
-        # set p_units back to original values
-        # TODO: I feel like I have alot of this back and forth especially with the
-        #       joint plots, it may be easier to adjust normalize to take the p_unit as an arg
-        self.p_units = self.og_p_units
+        # using p_units back to original values
         # normalize from raw weighted hists
-        return X, Y, self._normalize(Z, self.p_units)
+        return X, Y, self._normalize(Z, self.og_p_units)
+    
+    def multi_average_datasets_3d(self):
+        """
+        For scatter3d plots using 3 datasets.
+        TODO: add interval
+        """
+        # make empty arrays shaped n h5_list items * XYZ
+
+        # make pdist object for first file
+        X, Y, Z = self.average_datasets_3d()
+
+        # loop all other pdists in list and add to initial
+        for h5 in self.h5_list[1:]:
+            nX, nY, nZ = self.average_datasets_3d()
+            # TODO: fill out empty array
+
+        return X, Y, Z
+
+    def multi_instant_datasets_3d(self):
+        """
+        For scatter3d plots using 3 datasets.
+        TODO: add interval
+        """
+        pass
+
+    def multi(self):
+        """
+        Main public class method, returns XYZ pdist arrays for multiple h5 files.
+        """
+        if self.data_type == "evolution":
+            return self.multi_xyz()
+        
+        elif self.data_type == "instant":
+            if self.Yname and self.Zname:
+                return self.multi_instant_datasets_3d()
+            elif self.Yname:
+                # 2D pdist
+                return self.multi_xyz()
+            else:
+                # 1D pdist
+                return self.multi_xy()
+                
+        elif self.data_type == "average":
+            # attemts to say, if not None, but has to be compatible with str and arrays
+            if isinstance(self.Yname, (str, np.ndarray)) and isinstance(self.Zname, (str, np.ndarray)):
+                return self.multi_average_datasets_3d()
+            elif isinstance(self.Yname, (str, np.ndarray)):
+                # 2D pdist
+                return self.multi_xyz()
+            else:
+                # 1D pdist
+                return self.multi_xy()
 
 # run wedap multi test
-X, Y, Z = H5_Multi(h5_list, data_type="evolution", last_iter=10, p_units="kT").multi_h5()
+data_options = {"data_type" : "average",
+                "Xname" : "o_angle_m1",
+                "Yname" : "o_angle_m2",
+                "last_iter" : 10,
+                "p_units" : "kT"
+                }
+X, Y, Z = H5_Multi(h5_list, **data_options).multi()
+# H5_Plot(X, Y, Z).plot()
+# plt.show()
 
 # could use something like this in the test file
 #_, _, checkZ = H5_Pdist("data/p53.h5", "evolution").pdist()
-#cX, cY, cZ = H5_Pdist("/Users/darian/Desktop/oa_tests/multi-oamax/wt-v00-04.h5", "evolution", last_iter=10).pdist()
+cX, cY, cZ = H5_Pdist("/Users/darian/Desktop/oa_tests/multi-oamax/wt-v00-04.h5", **data_options).pdist()
 #cX, cY, cZ = H5_Pdist("/Users/darian/Desktop/oa_tests/multi-oamax/v00.h5", "evolution", last_iter=10).pdist()
 #print(np.testing.assert_array_almost_equal(Z, cZ))
-
-H5_Plot(X, Y, Z).plot()
 #H5_Plot(cX, cY, cZ).plot()
-plt.show()
+#plt.show()
