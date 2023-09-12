@@ -10,6 +10,7 @@ TODO:
     - maybe add option to output pdist as file, this would speed up subsequent plotting
         of the same data. H5_Plot could then use this data.
     - add option for a list of equivalent h5 files, alternative to w_multi_west.
+    - method to return pdist of a single trace, leading into option to plot all succ traces.
 """
 
 # TEMP for trace plot (TODO)
@@ -711,7 +712,7 @@ class H5_Pdist():
         # get bin midpoints
         midpoints_x = (bins[:-1] + bins[1:]) / 2
         
-        # TODO: also save as instance attributes
+        # TODO: also save as instance attributes?
         return midpoints_x, histogram
 
     def aux_to_pdist_2d(self, iteration):
@@ -851,27 +852,20 @@ class H5_Pdist():
         Returns
         -------
         x, y
-            x and y axis values, and if using Y or evolution (with only X), 
-            also returns norm_hist.
-            norm_hist is a 2-D matrix of the normalized histogram values.
+            x and y axis values, x is the coordinate values and y is probabilities.
         """
-        # make array to store hist (-lnP) values for n iterations of X
-        evolution_x = np.zeros((self.last_iter, self.bins[0]))
-        positions_x = np.zeros((self.last_iter, self.bins[0]))
+        # make 1D array to sum hist (-lnP) values for n iterations of X
+        average_x = np.zeros(self.bins[0])
 
         for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
                          desc="Average 1D", disable=self.no_pbar):
-            # generate evolution x data
+            # generate 1d x pdist data
             center_x, counts_total_x = self.aux_to_pdist_1d(iter)
-            evolution_x[iter - 1] = counts_total_x
-            positions_x[iter - 1] = center_x
+            # summation of counts for all iterations
+            average_x += counts_total_x
 
-        # summation of counts for all iterations : then normalize
-        col_avg_x = [np.sum(col[col != np.isinf]) for col in evolution_x.T]
-        col_avg_x = self._normalize(col_avg_x)
-
-        # 1D average plot data for X
-        return center_x, col_avg_x
+        # return X positions and normalized 1D average plot data for Y
+        return center_x, self._normalize(average_x)
 
     def average_pdist_2d(self):
         """
@@ -883,7 +877,7 @@ class H5_Pdist():
             x and y axis values, and if using Y or evolution (with only X), also returns norm_hist.
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
-        # empty array for 2D pdist
+        # empty array for 2D pdist (bins being e.g. (100, 100))
         average_xy = np.zeros(self.bins)
 
         # 2D avg pdist data generation
@@ -892,8 +886,7 @@ class H5_Pdist():
             center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
 
-        average_xy = self._normalize(average_xy)
-        return center_x, center_y, average_xy
+        return center_x, center_y, self._normalize(average_xy)
 
     def average_datasets_3d(self, interval=1):
         """
