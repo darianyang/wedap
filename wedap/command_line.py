@@ -126,7 +126,7 @@ def create_cmd_arguments():
     # test out gooey specific widgets
     required = parser.add_argument_group("Required Arguments")
     required.add_argument("-W", "-w", "--west", "--west-data", "-h5", "--h5file", 
-        default="west.h5", action="store", dest="h5", type=str,
+        default="west.h5", action="store", dest="h5", type=str, nargs="*",
         help="The WESTPA west.h5 output file that will be analyzed. "
              "Default 'west.h5'.", 
         widget="FileChooser")
