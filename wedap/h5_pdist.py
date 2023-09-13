@@ -44,20 +44,20 @@ class H5_Pdist():
         """
         Parameters
         ----------
-        h5 : str
-            path to west.h5 file.
+        h5 : str or list of str
+            Path(s) to west.h5 file(s).
         data_type : str
             'evolution' (1 dataset); 'average' or 'instant' (1 or 2 datasets)
         Xname : str
-            target data for x axis, default pcoord.
+            Target data for x axis, default pcoord.
         Xindex : int
             If X.ndim > 2, use this to index.
         Yname : str
-            target data for y axis, default None.
+            Target data for y axis, default None.
         Yindex : int
             If Y.ndim > 2, use this to index.
         Zname : str
-            target data for z axis, default None. 
+            Target data for z axis, default None. 
             Use this if you want to use a dataset instead of pdist for Z axis.
             This will be best plotted as a scatter plot with Z as the marker color.
             Instead of returning the pdist, only the XYZ datasets will be returned.
@@ -104,13 +104,40 @@ class H5_Pdist():
             e.g. step_iter=10 for every 10 iterations.
         TODO: maybe also binsfromexpression?
         """
-        self.h5_name = str(h5)
+        # standard case where the input h5 file is a single string
+        if isinstance(h5, str):
+            self.h5_list = [h5]
+        # if input is a list with only one h5 file, convert to str from single item list
+        elif isinstance(h5, list) and len(h5) == 1:
+            h5 = h5[0]
+            self.h5_list = h5
+        # input is a list of multiple h5 files
+        elif isinstance(h5, list) and len(h5) > 1:
+            # use the first h5 file in the list to initialize
+            h5 = h5[0]
+            # but note that there are others
+            self.multi_h5 = True
+            # and save the whole list
+            self.h5_list = h5
+        else:
+            raise ValueError(f"Something may be wrong with the h5 file name input: {h5}")
+
+        # save both the name and the h5 file
+        self.h5_name = h5
         self.h5 = h5py.File(h5, mode="r")
+
         if data_type is None:
             raise ValueError("Must input valid data_type: `evolution`, `average`, or `instant`")
         else:
             self.data_type = data_type
+        
+        # # save requested p_units
+        # self.requested_p_units = p_units        
+        # # have to change to raw for adding counts and will be normalized later
+        # self.p_units = "raw"
+
         self.p_units = str(p_units)
+
         self.T = int(T)
         self.weighted = weighted
 
@@ -801,7 +828,7 @@ class H5_Pdist():
             positions_x[iter_index - 1] = center_x
 
         # 2D evolution plot of X (Y not used if provided) per iteration        
-        evolution_x = self._normalize(evolution_x, self.p_units)
+        #evolution_x = self._normalize(evolution_x, self.p_units)
 
         # bin positions along aux x, WE iteration numbers, z data
         return positions_x, np.arange(self.first_iter, self.last_iter + 1, 1), evolution_x
@@ -817,7 +844,7 @@ class H5_Pdist():
             x (dataset) and y (pdist) axis values
         """
         center, counts_total = self.aux_to_pdist_1d(self.last_iter)
-        counts_total = self._normalize(counts_total, self.p_units)
+        #counts_total = self._normalize(counts_total, self.p_units)
         return center, counts_total
 
     def instant_pdist_2d(self):
@@ -832,7 +859,7 @@ class H5_Pdist():
             norm_hist is a 2-D matrix of the normalized histogram values.
         """
         center_x, center_y, counts_total = self.aux_to_pdist_2d(self.last_iter)
-        counts_total = self._normalize(counts_total, self.p_units)
+        #counts_total = self._normalize(counts_total, self.p_units)
         return center_x, center_y, counts_total
 
     def instant_datasets_3d(self):
@@ -876,7 +903,8 @@ class H5_Pdist():
             average_x += counts_total_x
 
         # return X positions and normalized 1D average plot data for Y
-        return center_x, self._normalize(average_x, self.p_units)
+        #return center_x, self._normalize(average_x, self.p_units)
+        return center_x, average_x
 
     def average_pdist_2d(self):
         """
@@ -897,7 +925,8 @@ class H5_Pdist():
             center_x, center_y, counts_total_xy = self.aux_to_pdist_2d(iter)
             average_xy = np.add(average_xy, counts_total_xy)
 
-        return center_x, center_y, self._normalize(average_xy, self.p_units)
+        #return center_x, center_y, self._normalize(average_xy, self.p_units)
+        return center_x, center_y, average_xy
 
     def average_datasets_3d(self, interval=1):
         """
@@ -1062,10 +1091,25 @@ class H5_Pdist():
         # Note, if the user includes the rst files like WESTPA does, it should look and process fine
 
         return array
-        
-    def pdist(self):
+
+    def multi_pdist(self):
+        """
+        If multiple h5 files are input.
+        """
+        pass
+
+    def pdist(self, normalize=True):
         """
         Main public method with pdist generation controls.
+
+        Parameters
+        ----------
+        normalize : bool
+            By default (True), normalizes the output pdist.
+        
+        Returns
+        -------
+        X, Y, Z : arrays
         """ 
         # option to zero weight out specific basis states
         if self.skip_basis is not None:
@@ -1097,10 +1141,14 @@ class H5_Pdist():
                 if self.Zsave_name:
                     self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
 
+        # TODO: testing multi_h5: putting the whole thing in a loop over each h5 file
+        # loop histranges to find the best hist range for all input h5 files
+        # loop each pdist return, sum and normalize at the end
+
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
         # TODO: if I can get rid of this or optimize it, I can then use the 
-            # original methods of each pdist by themselves
+        # original methods of each pdist by themselves
         # only if histrange is None
         if self.histrange_x is None:
             # get the optimal histrange
@@ -1112,28 +1160,40 @@ class H5_Pdist():
 
         # TODO: need a better way to always return XYZ (currently using ones)
         #       this is needed for easy testing with uniform XYZ 3 array returns
+        #       but maybe a different test strategy would also work
+        # TODO: tuple unpacking to deal with variable item return? (this affects super.init of H5_Plot)
         if self.data_type == "evolution":
-            return self.evolution_pdist()
+            X, Y, Z = self.evolution_pdist()
         elif self.data_type == "instant":
             if self.Yname and self.Zname:
-                return self.instant_datasets_3d()
+                X, Y, Z = self.instant_datasets_3d()
             elif self.Yname:
-                return self.instant_pdist_2d()
+                X, Y, Z = self.instant_pdist_2d()
             else:
                 X, Y = self.instant_pdist_1d()
-                return X, Y, np.ones((self.first_iter, self.last_iter))
+                Z = np.ones((self.first_iter, self.last_iter))
         elif self.data_type == "average":
             # attemts to say, if not None, but has to be compatible with str and arrays
             if isinstance(self.Yname, (str, np.ndarray)) and isinstance(self.Zname, (str, np.ndarray)):
-                return self.average_datasets_3d()
+                X, Y, Z = self.average_datasets_3d()
             elif isinstance(self.Yname, (str, np.ndarray)):
-                return self.average_pdist_2d()
+                X, Y, Z = self.average_pdist_2d()
             else:
                 X, Y = self.average_pdist_1d()
-                return X, Y, np.ones((self.first_iter, self.last_iter))
-            
+                Z = np.ones((self.first_iter, self.last_iter))
+        
+        # selectively normalize final probabilities (sometimes Y and sometimes Z)
+        # no normalization needed with 3D data returns (Zname) for 3D scatter plots
+        if normalize:
+            if self.data_type == "evolution" or self.Yname is not None and self.Zname is None:
+                Z = self._normalize(Z, self.p_units)
+            elif self.Yname is None:
+                Y = self._normalize(Y, self.p_units)
+
         # safely close h5 file
         self.h5.close()
+
+        return X, Y, Z
 
 #if __name__ == "__main__":
     # total_array_out = np.loadtxt("p53_X_array.txt")
