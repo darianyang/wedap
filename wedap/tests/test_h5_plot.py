@@ -23,11 +23,13 @@ matplotlib.use('agg')
 # decorator to skip in pytest
 #@pytest.mark.skip
 
-def plot_data_gen(h5, data_type, plot_mode, Xname, Yname=None, Zname=None, out=None):
+def plot_data_gen(h5, data_type, plot_mode, Xname, Yname=None, Zname=None, 
+                  jointplot=False, out=None):
     """
     Make plot and return or convert to npy binary data file.
     """
     plot = wedap.H5_Plot(h5=h5, data_type=data_type, plot_mode=plot_mode, 
+                         jointplot=jointplot,
                          Xname=Xname, Yname=Yname, Zname=Zname)
     plot.plot()
     fig = plot.fig
@@ -60,25 +62,29 @@ class Test_H5_Plot():
         plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode="line", Xname=Xname)
 
         # compare to previously generated plot data
-        data = np.load(f"wedap/data/plot_{data_type}_line_{Xname}.npy")
+        data = np.load(f"wedap/tests/data/plot_{data_type}_line_{Xname}.npy")
         #np.testing.assert_allclose(plotdata, data)
         # check to see if the amount of mismatches is less than 500 (<1% of 1 million items)
         assert data.size - np.count_nonzero(plotdata==data) < 500
         
+
+    #@pytest.mark.parametrize("jointplot", [True, False]) # TODO
     @pytest.mark.parametrize("data_type", ["average", "instant"])
     @pytest.mark.parametrize("plot_mode", ["hist", "contour"])
     @pytest.mark.parametrize("Xname, Yname", [["pcoord", "dihedral_2"], ["dihedral_2", "pcoord"]])
-    def test_2_dataset_plots(self, data_type, plot_mode, Xname, Yname):
+    def test_2_dataset_plots(self, data_type, plot_mode, Xname, Yname):#, jointplot):
         # make plot data array
         plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode=plot_mode, 
-                                 Xname=Xname, Yname=Yname)
+                                 Xname=Xname, Yname=Yname)#, jointplot=jointplot)
 
         # compare to previously generated plot data
-        data = np.load(f"wedap/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}.npy")
+        data = np.load(f"wedap/tests/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}.npy")
+        #data = np.load(f"wedap/tests/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}_jp{jointplot}.npy")
         #np.testing.assert_allclose(plotdata, data)
         # check to see if the amount of mismatches is less than 500 (<1% of 1 million items)
         assert data.size - np.count_nonzero(plotdata==data) < 500
     
+
     @pytest.mark.parametrize("data_type", ["average", "instant"])
     @pytest.mark.parametrize("Xname, Yname, Zname", [["pcoord", "dihedral_2", "dihedral_3"], 
                                                      ["dihedral_2", "pcoord", "dihedral_3"], 
@@ -89,7 +95,7 @@ class Test_H5_Plot():
                                  Xname=Xname, Yname=Yname, Zname=Zname)
 
         # compare to previously generated plot data
-        data = np.load(f"wedap/data/plot_{data_type}_scatter3d_{Xname}_{Yname}_{Zname}.npy")
+        data = np.load(f"wedap/tests/data/plot_{data_type}_scatter3d_{Xname}_{Yname}_{Zname}.npy")
         #np.testing.assert_allclose(plotdata, data)
         # check to see if the amount of mismatches is less than 500 (<1% of ~1 million items)
         assert data.size - np.count_nonzero(plotdata==data) < 500
