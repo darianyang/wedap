@@ -107,15 +107,12 @@ class H5_Pdist():
         # standard case where the input h5 file is a single string
         if isinstance(h5, str):
             self.h5_list = [h5]
-        # if input is a list with only one h5 file, convert to str from single item list
-        elif isinstance(h5, list) and len(h5) == 1:
+        # when input is a list one or many h5 files
+        elif isinstance(h5, list):
+            # save the whole list
             self.h5_list = h5
-            h5 = h5[0]
-        # input is a list of multiple h5 files
-        elif isinstance(h5, list) and len(h5) > 1:
-            # and save the whole list
-            self.h5_list = h5
-            # use the first h5 file in the list to initialize
+            # convert to str if input is a single item list
+            # or use the first h5 file in the list to initialize (when multiple items)
             h5 = h5[0]
         else:
             raise ValueError(f"Something may be wrong with the h5 file name input: {h5}")
