@@ -5,9 +5,6 @@ from wedap.h5_pdist import *
 from wedap.h5_plot import *
 from wedap.command_line import *
 
-#from wedap.search_aux import *
-#from wedap.h5_plot_trace import *
-
 # TODO: change to logging style instead of stdout
 #import logging
 
@@ -41,53 +38,16 @@ def main():
     elif args.style != "default" and args.style != "None":
         plt.style.use(args.style)
 
-    # if args.p_units == "kT":
-    #     cbar_label = "$-\ln\,P(x)$"
-    # elif args.p_units == "kcal":
-    #     cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
-    # elif args.p_units == "raw":
-    #     cbar_label = "Counts"
-    # elif args.p_units == "raw_norm":
-    #     cbar_label = "Normalized Counts"
-
     # a poor workaround for now for the weighted arg
     # this is only to make the gooey formatting look nicer in terms of the checkbox
     if args.not_weighted is True:
         args.weighted = False
     elif args.not_weighted is False:
         args.weighted = True
-
-    # accounting for joint plot option (TODO: better way?)
-    # if args.jointplot:
-    #     temp_p_units = "raw"
-    # else:
-    #     temp_p_units = args.p_units
-
-    # always output XYZ with fake Z for 1D, makes this part easier/less verbose
-    #pdist = H5_Pdist()
-    # plot = H5_Plot(# H5_Pdist args
-    #                 h5=args.h5, data_type=args.data_type, Xname=args.Xname,
-    #                 Xindex=args.Xindex, Yname=args.Yname, Yindex=args.Yindex, Zname=args.Zname, 
-    #                 Zindex=args.Zindex, first_iter=args.first_iter, skip_basis=args.skip_basis,
-    #                 last_iter=args.last_iter, bins=args.bins, T=args.T,
-    #                 weighted=weighted, p_units=args.p_units, no_pbar=args.no_pbar,
-    #                 histrange_x=args.histrange_x, histrange_y=args.histrange_y,
-    #                 # H5_Plot args
-    #                 plot_mode=args.plot_mode, cmap=args.cmap,
-    #                 contour_interval=args.contour_interval, p_min=args.p_min,
-    #                 p_max=args.p_max, cbar_label=cbar_label, color=args.color,
-    #                 smoothing_level=args.smoothing_level, jointplot=args.jointplot,
-    #                 **args_dict)
     
     # vars converts from Namespace object to dict
     plot = H5_Plot(**vars(args))
 
-    # had to adjust this since joint_plots require raw dist, so coupled pdist/plot needed
-    # X, Y, Z = pdist.pdist()
-    # plot = H5_Plot(X, Y, Z, plot_mode=args.plot_mode, cmap=args.cmap,
-    #                contour_interval=args.contour_interval, p_min=args.p_min,
-    #                p_max=args.p_max, cbar_label=cbar_label, color=args.color,
-    #                smoothing_level=args.smoothing_level, jointplot=args.jointplot)
     # 2D plot with cbar
     # TODO: can this be done better?
     if args.Yname or args.data_type == "evolution":
@@ -139,7 +99,6 @@ def main():
         else:
             plot.cbar.set_label(args.Zname + " i" + str(plot.Zindex))
     
-
     """
     Show and/or save the final plot
     """
