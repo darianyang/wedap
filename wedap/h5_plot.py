@@ -97,10 +97,13 @@ class H5_Plot(H5_Pdist):
             super().__init__(*args, **kwargs)
             # save the user requested p_units and changes p_units to raw
             if self.jointplot:
-                self.requested_p_units = self.p_units
-                kwargs["p_units"] = "raw"
-            # will be re-normed later on
-            X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
+                # self.requested_p_units = self.p_units
+                # kwargs["p_units"] = "raw"
+                # will be re-normed later on
+                X, Y, Z = H5_Pdist(*args, **kwargs).pdist(normalize=False)
+            else:
+                # TODO: tuple unpacking to deal with variable item return
+                X, Y, Z = H5_Pdist(*args, **kwargs).pdist()
         # need to set this when using mdap, shouldn't affect anything else
         # since joint plot dists must be changed from raw to requested p_units
         if self.jointplot and "p_units" in kwargs:
@@ -383,22 +386,22 @@ class H5_Plot(H5_Pdist):
             if self.plot_mode == "scatter3d":
                 warn("EXITING: Currently can't use `--plot-mode scatter3d` with `--jointplot`.")
                 sys.exit(0)
-            # since jointplot starts with raw probabilities
-            # need to figure out what p_units are needed
-            # only if p_units is definied (e.g. H5_Pdist args are in place)
-            try:
-                self.p_units
-                self.T
-            # if H5_Pdist args not in place, use default
-            # TODO: this warning always pops up even is args.p_units is set
-            except AttributeError as e:
-                warn(f"{e}: Defaulting to 'kT' probability units.")
-                # self.p_units does not exist, default to kT
-                self.p_units = "kT"
-            # if H5_Pdists args were in place and changed to "raw" for jointplots
-            if self.p_units == "raw":
-                # return to requested p_units
-                self.p_units = self.requested_p_units
+            # # since jointplot starts with raw probabilities
+            # # need to figure out what p_units are needed
+            # # only if p_units is definied (e.g. H5_Pdist args are in place)
+            # try:
+            #     self.p_units
+            #     self.T
+            # # if H5_Pdist args not in place, use default
+            # # TODO: this warning always pops up even is args.p_units is set
+            # except AttributeError as e:
+            #     warn(f"{e}: Defaulting to 'kT' probability units.")
+            #     # self.p_units does not exist, default to kT
+            #     self.p_units = "kT"
+            # # if H5_Pdists args were in place and changed to "raw" for jointplots
+            # if self.p_units == "raw":
+            #     # return to requested p_units
+            #     self.p_units = self.requested_p_units
 
             # set figure attribute to be a mosaic plot
             self.fig = plt.figure(layout="tight").subplot_mosaic(
