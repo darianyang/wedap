@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 h5_list = [f"/Users/darian/Desktop/oa_tests/multi-oamax/v0{i}.h5" for i in range(0, 5)]
 #h5_list = ["data/p53.h5", "data/p53.h5", "data/p53.h5"]
 
-class H5_Multi(H5_Pdist):
+class H5_Multi(H5_Plot):
     """
     Generate a probability distribution dataset for multiple input h5 files.
 
@@ -120,6 +120,7 @@ class H5_Multi(H5_Pdist):
 
         # loop all other pdists in list and add to initial
         for h5 in self.h5_list[1:]:
+            # create new pdist object and extract 1D data
             nX, nY, nZ = self.average_datasets_3d()
             # TODO: fill out empty array
 
@@ -128,7 +129,7 @@ class H5_Multi(H5_Pdist):
     def multi_instant_datasets_3d(self):
         """
         For scatter3d plots using 3 datasets.
-        TODO: add interval
+        TODO
         """
         pass
 
@@ -167,14 +168,22 @@ data_options = {"data_type" : "average",
                 "last_iter" : 10,
                 "p_units" : "kT"
                 }
-X, Y, Z = H5_Multi(h5_list, **data_options).multi()
-# H5_Plot(X, Y, Z).plot()
+# multi = H5_Multi(h5_list, **data_options)
+# X, Y, Z = multi.multi()
+# multi.plot()
 # plt.show()
 
-# could use something like this in the test file
+# TODO: need to potentially subclass H5_plot not H5_pdist (which worked)
+# have to make some adjustment to account for this
+# then finish adding it to CLI in main and command_line
+
+# could use something like this in the test file (but needs to be smaller file sizes first)
 #_, _, checkZ = H5_Pdist("data/p53.h5", "evolution").pdist()
-cX, cY, cZ = H5_Pdist("/Users/darian/Desktop/oa_tests/multi-oamax/wt-v00-04.h5", **data_options).pdist()
+#cX, cY, cZ = H5_Pdist("/Users/darian/Desktop/oa_tests/multi-oamax/wt-v00-04.h5", **data_options).pdist()
 #cX, cY, cZ = H5_Pdist("/Users/darian/Desktop/oa_tests/multi-oamax/v00.h5", "evolution", last_iter=10).pdist()
 #print(np.testing.assert_array_almost_equal(Z, cZ))
 #H5_Plot(cX, cY, cZ).plot()
 #plt.show()
+
+pdist = H5_Pdist("/Users/darian/Desktop/oa_tests/multi-oamax/wt-v00-04.h5", **data_options)
+print(pdist._get_histrange("pcoord", 0))

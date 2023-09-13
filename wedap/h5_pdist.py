@@ -109,16 +109,14 @@ class H5_Pdist():
             self.h5_list = [h5]
         # if input is a list with only one h5 file, convert to str from single item list
         elif isinstance(h5, list) and len(h5) == 1:
-            h5 = h5[0]
             self.h5_list = h5
+            h5 = h5[0]
         # input is a list of multiple h5 files
         elif isinstance(h5, list) and len(h5) > 1:
-            # use the first h5 file in the list to initialize
-            h5 = h5[0]
-            # but note that there are others
-            self.multi_h5 = True
             # and save the whole list
             self.h5_list = h5
+            # use the first h5 file in the list to initialize
+            h5 = h5[0]
         else:
             raise ValueError(f"Something may be wrong with the h5 file name input: {h5}")
 
@@ -209,24 +207,11 @@ class H5_Pdist():
 
         self.step_iter = step_iter
         self.bins = bins
+        self.skip_basis = skip_basis
+        self.skip_basis_out = skip_basis_out
 
-        #for iter in range(self.first_iter, self.last_iter + 1):
-        # have to make array start from iteration 1 to index well during weighting
-        # but only for using skipping basis
-        if skip_basis is None:
-            weight_start = self.first_iter
-        elif skip_basis:
-            weight_start = 1
-
-        # make a (TODO: pre-allocated?) list for each iteration weight array
-        #weights = [None] * (self.last_iter - weight_start + 1)
-        weights = []
-        # fill out the weight list
-        for iter in range(weight_start, self.last_iter + 1, self.step_iter):
-            #weights[iter - weight_start] = self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"]
-            weights.append(self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
-        # 1D array of variably shaped arrays
-        self.weights = np.array(weights, dtype=object)
+        # initialize weights
+        self._init_weights()
 
         # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
         self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
@@ -241,11 +226,31 @@ class H5_Pdist():
         # do not include the final (empty) iteration
         self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
 
-        self.skip_basis = skip_basis
-        self.skip_basis_out = skip_basis_out
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
+
+    def _init_weights(self):
+        """
+        Initialize the weight array.
+        """
+        #for iter in range(self.first_iter, self.last_iter + 1):
+        # have to make array start from iteration 1 to index well during weighting
+        # but only for using skipping basis
+        if self.skip_basis is None:
+            weight_start = self.first_iter
+        elif self.skip_basis:
+            weight_start = 1
+
+        # make a (TODO: pre-allocated?) list for each iteration weight array
+        #weights = [None] * (self.last_iter - weight_start + 1)
+        weights = []
+        # fill out the weight list
+        for iter in range(weight_start, self.last_iter + 1, self.step_iter):
+            #weights[iter - weight_start] = self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"]
+            weights.append(self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
+        # 1D array of variably shaped arrays
+        self.weights = np.array(weights, dtype=object)
 
     def _get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
         """
@@ -1092,12 +1097,6 @@ class H5_Pdist():
 
         return array
 
-    def multi_pdist(self):
-        """
-        If multiple h5 files are input.
-        """
-        pass
-
     def pdist(self, normalize=True):
         """
         Main public method with pdist generation controls.
@@ -1106,6 +1105,7 @@ class H5_Pdist():
         ----------
         normalize : bool
             By default (True), normalizes the output pdist.
+            Must be True when using multiple h5 input files.
         
         Returns
         -------
@@ -1141,58 +1141,107 @@ class H5_Pdist():
                 if self.Zsave_name:
                     self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
 
+        # TODO: need to consolidate the Y 2d vs 1d stuff somehow
+
         # TODO: testing multi_h5: putting the whole thing in a loop over each h5 file
         # loop histranges to find the best hist range for all input h5 files
         # loop each pdist return, sum and normalize at the end
 
-        # TODO: need to consolidate the Y 2d vs 1d stuff somehow
-
-        # TODO: if I can get rid of this or optimize it, I can then use the 
-        # original methods of each pdist by themselves
-        # only if histrange is None
+        # collect each histrange for each file 
+        xranges = []
+        yranges = []
+        # go through each file and find a consistent histrange if histrangeXY is None
+        for h5 in self.h5_list:
+            # close and re-open, keeping the class attribute for method calls
+            # but allowing the loop to propagate through each file
+            self.h5.close()
+            self.h5 = h5py.File(h5, mode="r")
+            if self.histrange_x is None:
+                # get the optimal histrange
+                xranges.append(self._get_histrange(self.Xname, self.Xindex))
+                histrange_x = (min(i[0] for i in xranges),
+                               max(i[1] for i in xranges))
+            # 2D pdist: needs to handle array input or None input
+            if isinstance(self.Yname, (str, np.ndarray)) and self.histrange_y is None:
+                yranges.append(self._get_histrange(self.Yname, self.Yindex))
+                histrange_y = (min(i[0] for i in yranges),
+                               max(i[1] for i in yranges))
+        # set final ranges
         if self.histrange_x is None:
-            # get the optimal histrange
-            self.histrange_x = self._get_histrange(self.Xname, self.Xindex)
-        # if using 2D pdist
-        # needs to handle array input or None input
+            self.histrange_x = histrange_x
+        # 2D pdist: needs to handle array input or None input
         if isinstance(self.Yname, (str, np.ndarray)) and self.histrange_y is None:
-            self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
+            self.histrange_y = histrange_y
 
-        # TODO: need a better way to always return XYZ (currently using ones)
-        #       this is needed for easy testing with uniform XYZ 3 array returns
-        #       but maybe a different test strategy would also work
-        # TODO: tuple unpacking to deal with variable item return? (this affects super.init of H5_Plot)
-        if self.data_type == "evolution":
-            X, Y, Z = self.evolution_pdist()
-        elif self.data_type == "instant":
-            if self.Yname and self.Zname:
-                X, Y, Z = self.instant_datasets_3d()
-            elif self.Yname:
-                X, Y, Z = self.instant_pdist_2d()
-            else:
-                X, Y = self.instant_pdist_1d()
-                Z = np.ones((self.first_iter, self.last_iter))
-        elif self.data_type == "average":
-            # attemts to say, if not None, but has to be compatible with str and arrays
-            if isinstance(self.Yname, (str, np.ndarray)) and isinstance(self.Zname, (str, np.ndarray)):
-                X, Y, Z = self.average_datasets_3d()
-            elif isinstance(self.Yname, (str, np.ndarray)):
-                X, Y, Z = self.average_pdist_2d()
-            else:
-                X, Y = self.average_pdist_1d()
-                Z = np.ones((self.first_iter, self.last_iter))
+        # collect each iteration's XYZ arrays for potential summation
+        Xs = []
+        Ys = []
+        Zs = []
+        # same loop but now use the optimized histrange for pdist gen of all h5 files in list
+        for h5 in self.h5_list:
+            # close and re-open, keeping the class attribute for method calls
+            # but allowing the loop to propagate through each file
+            self.h5.close()
+            self.h5 = h5py.File(h5, mode="r")
+            self._init_weights()
+            # scale weights by n h5 files
+            self.weights /= len(self.h5_list)
+
+            # TODO: need a better way to always return XYZ (currently using ones)
+            #       this is needed for easy testing with uniform XYZ 3 array returns
+            #       but maybe a different test strategy would also work
+            # TODO: tuple unpacking to deal with variable item return? (this affects super.init of H5_Plot)
+            if self.data_type == "evolution":
+                x, y, z = self.evolution_pdist()
+            elif self.data_type == "instant":
+                if self.Yname and self.Zname:
+                    x, y, z = self.instant_datasets_3d()
+                elif self.Yname:
+                    x, y, z = self.instant_pdist_2d()
+                else:
+                    x, y = self.instant_pdist_1d()
+                    z = np.ones((self.first_iter, self.last_iter))
+            elif self.data_type == "average":
+                # attemts to say, if not None, but has to be compatible with str and arrays
+                if isinstance(self.Yname, (str, np.ndarray)) and isinstance(self.Zname, (str, np.ndarray)):
+                    x, y, z = self.average_datasets_3d()
+                elif isinstance(self.Yname, (str, np.ndarray)):
+                    x, y, z = self.average_pdist_2d()
+                else:
+                    x, y = self.average_pdist_1d()
+                    z = np.ones((self.first_iter, self.last_iter))
         
+            # append to master lists
+            Xs.append(x)
+            Ys.append(y)
+            Zs.append(z)
+
         # selectively normalize final probabilities (sometimes Y and sometimes Z)
         # no normalization needed with 3D data returns (Zname) for 3D scatter plots
-        if normalize:
-            if self.data_type == "evolution" or self.Yname is not None and self.Zname is None:
+        if self.data_type == "evolution" or self.Yname is not None and self.Zname is None:
+            # for XY, just use the first file array
+            X = Xs[0]
+            Y = Ys[0]
+            # sum each h5 file probability array and return original shape
+            Z = np.sum(Zs, axis=0)
+            if normalize:
                 Z = self._normalize(Z, self.p_units)
-            elif self.Yname is None:
+        elif self.Yname is None:
+            # for XZ, just use the first file array
+            X = Xs[0]
+            Z = Zs[0]                
+            # sum each h5 file probability array and return original shape
+            Y = np.sum(Ys, axis=0)
+            if normalize:
                 Y = self._normalize(Y, self.p_units)
+        else:
+            # for 3d data returns for scatter3d, stack list of XYZs
+            X = np.concatenate(Xs)
+            Y = np.concatenate(Ys)
+            Z = np.concatenate(Zs)
 
         # safely close h5 file
         self.h5.close()
-
         return X, Y, Z
 
 #if __name__ == "__main__":
