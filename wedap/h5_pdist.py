@@ -1181,6 +1181,21 @@ class H5_Pdist():
             self.h5.close()
             self.h5 = h5py.File(h5, mode="r")
             self._init_weights()
+            
+            # TODO: instead of just opening h5 and re-init weights, need to also account for
+            # cases like with 3D dataset returns which use self.n_particles (segs per iter)
+            # perhaps I can just reinit the entire set of attrs
+            #self.h5 = h5
+            #self.__init__(self)
+            
+            # TODO: maybe this could go into a _particle_init method?
+            # for now just going to save a new self.n_particles attribute
+            self.n_particles = self.h5["summary"]["n_particles"]
+            # these may not be needed, 
+            self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+            # do not include the final (empty) iteration
+            self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
+
             # scale weights by n h5 files
             self.weights /= len(self.h5_list)
 
