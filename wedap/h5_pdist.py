@@ -121,8 +121,8 @@ class H5_Pdist():
         self.h5_name = h5
         self.h5 = h5py.File(h5, mode="r")
 
-        if data_type is None:
-            raise ValueError("Must input valid data_type: `evolution`, `average`, or `instant`")
+        if data_type is None or data_type not in ["evolution", "average", "instant"]:
+            raise ValueError("Must input valid data_type str: `evolution`, `average`, or `instant`")
         else:
             self.data_type = data_type
         

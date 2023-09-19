@@ -72,8 +72,8 @@ class MD_Pdist(H5_Pdist):
             Default ps to µs (10**6). Converts frames to time.
         TODO: maybe also binsfromexpression?
         """
-        if data_type is None:
-            raise ValueError("Must input valid data_type: `timeseries`, `pdist`, or ")
+        if data_type is None or data_type not in ["timeseries", "pdist"]:
+            raise ValueError("Must input valid data_type str: `timeseries` or `pdist`")
         else:
             self.data_type = data_type
         self.p_units = p_units
