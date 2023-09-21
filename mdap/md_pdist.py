@@ -173,7 +173,7 @@ class MD_Pdist(H5_Pdist):
         # let each row list bins with common y range
         hist = np.transpose(hist)
         # convert histogram counts to p_units
-        hist = self._normalize(hist)
+        hist = self._normalize(hist, self.p_units)
         # get bin midpoints
         midpoints_x = (x_edges[:-1] + x_edges[1:]) / 2
 
@@ -200,7 +200,7 @@ class MD_Pdist(H5_Pdist):
         # let each row list bins with common y range
         hist = np.transpose(hist)
         # convert histogram counts to p_units
-        hist = self._normalize(hist)
+        hist = self._normalize(hist, self.p_units)
         # get bin midpoints
         midpoints_x = (x_edges[:-1] + x_edges[1:]) / 2
         midpoints_y = (y_edges[:-1] + y_edges[1:]) / 2

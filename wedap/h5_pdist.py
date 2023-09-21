@@ -1071,7 +1071,7 @@ class H5_Pdist():
             array = array.reshape(self.total_particles, self.tau - 1, -1)
             message = "\nYou may be using an input data array which did not include the rst file datapoints. " + \
                       "\nThis may be fine, but note that you shouldn't create a new H5 file using this array."
-            warn(e + message)
+            warn(f"{e} {message}")
             # TODO: does this work?
             # the case where the array does not have rst data included
             # put the new first column as the first value of each row (segment)
