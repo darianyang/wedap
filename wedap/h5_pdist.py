@@ -35,7 +35,6 @@ class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
     """
-    # TODO: is setting aux_y to None the best approach to 1D plot settings?
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
                  Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
@@ -125,59 +124,16 @@ class H5_Pdist():
             raise ValueError("Must input valid data_type str: `evolution`, `average`, or `instant`")
         else:
             self.data_type = data_type
-        
-        # # save requested p_units
-        # self.requested_p_units = p_units        
-        # # have to change to raw for adding counts and will be normalized later
-        # self.p_units = "raw"
 
         self.p_units = str(p_units)
 
         self.T = int(T)
         self.weighted = weighted
 
-        ### This section for XYZ name processing ###
-        # TODO: Default pcoord for either dim?
-        # TODO: clean up and condense this name processing section
-        # add auxdata prefix if not using pcoord and not using array input
-        # doing it in two conditional blocks since numpy as warning with comparing array to string
-        # this way it only does the string comparison if Xname is a string and not a filename 
-        if isinstance(Xname, str):
-            if Xname != "pcoord" and Xname[-4] != ".":
-                Xname = "auxdata/" + Xname
-        self.Xname = Xname
-        # TODO: set this up as an arg to be able to process 3D+ arrays form aux
-        # need to define the index if pcoord is 3D+ array, index is ndim - 1
-        self.Xindex = Xindex
-
-        # for 1D plots, but could be better (TODO)
-        if Yname is not None and isinstance(Yname, str):
-            # for common case of evolution with extra Yname input
-            if Yname and data_type == "evolution":
-                message = "\nDefaulting to evolution plot for --data-type, since you put a --Yname arg, " + \
-                          "\nDid you mean to use --data-type of `average` or `instant`?"
-                warn(message)
-            # add auxdata prefix if not using pcoord and not using array or filename input
-            if Yname != "pcoord" and Yname[-4] != ".":
-                Yname = "auxdata/" + Yname
-            # before comparing X and Y, make sure they are both strings
-            if isinstance(Xname, str):
-                # for the common case where one plots pcoord/aux 0 and pcoord/aux 1
-                if Xname == Yname and Xindex == 0 and Yindex == 0:
-                    Yindex = 1
-                    message = "\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname " + \
-                              "and Xindex/Yindex were the same."
-                    warn(message)
-        self.Yname = Yname
-        self.Yindex = Yindex
-
-        # for replacing the Z axis pdist with a dataset
-        if Zname is not None and isinstance(Zname, str):
-            # add auxdata prefix if not using pcoord and not using array or filename input
-            if Zname != "pcoord" and Zname[-4] != ".":
-                Zname = "auxdata/" + Zname
-        self.Zname = Zname
-        self.Zindex = Zindex
+        # process XYZ names and indicies
+        self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
+        self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
+        self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
 
         # XYZ save into new h5 file options
         self.H5save_out = H5save_out
@@ -228,7 +184,49 @@ class H5_Pdist():
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
 
-        # check XYZnames for array and filename input (if found, initilize)
+        # accounts for array and filename input XYZnames
+        self._check_XYZnames()
+
+    def _process_name_and_index(self, name, index, Xname, Yname):
+        """
+        Consolidated logic for taking input XYZnames and outputting the 
+        corrected name and index.
+
+        Parameters
+        ----------
+        name : str
+            Input XYZ name.
+        index : int
+            Input XYZ index 
+        Xname : str
+        Yname : str
+        
+        Returns
+        -------
+        name : str
+            Corrected XYZ name.
+        index : int
+            Corrected XYZ index.
+        """
+        if name is not None and isinstance(name, str):
+            # add auxdata prefix if not using "pcoord" and not using array or filename input
+            if name != "pcoord" and name[-4:] != ".":
+                name = "auxdata/" + name
+            # for common case of evolution with extra Yname input
+            if self.data_type == "evolution":
+                warn("\nDefaulting to evolution plot for --data-type, since you put a --Yname arg.\n"
+                    "Did you mean to use --data-type of `average` or `instant`?")
+            # for common case where one plots "pcoord/aux 0" and "pcoord/aux 1"
+            elif isinstance(name, str) and name == Yname and Xname == Yname and index == 0:
+                index = 1
+                warn("\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname and Xindex/Yindex were the same.")
+        return name, index
+
+    def _check_XYZnames(self):
+        """
+        Check XYZnames for array and filename input (if found, initialize).
+        Replaces self.Xname, self.Yname, and self.Zname attrs as needed.
+        """
         XYZnames = ["Xname", "Yname", "Zname"]
         for name in XYZnames:
             attr_value = getattr(self, name)
