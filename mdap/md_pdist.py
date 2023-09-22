@@ -29,7 +29,7 @@ class MD_Pdist(H5_Pdist):
         Parameters
         ----------
         data_type : str
-            'timeseries' for 1 dataset, or 'pdist' for 2D. scatter for 3d? (TODO)
+            'time' for 1 dataset timeseries, or 'pdist' for everything else.
         Xname : str or list of str
             target data for x axis, default None.
         Xindex : int
@@ -72,8 +72,8 @@ class MD_Pdist(H5_Pdist):
             Default ps to µs (10**6). Converts frames to time.
         TODO: maybe also binsfromexpression?
         """
-        if data_type is None or data_type not in ["timeseries", "pdist"]:
-            raise ValueError("Must input valid data_type str: `timeseries` or `pdist`")
+        if data_type is None or data_type not in ["time", "pdist"]:
+            raise ValueError("Must input valid data_type str: `time` or `pdist`")
         else:
             self.data_type = data_type
         self.p_units = p_units
@@ -195,8 +195,10 @@ class MD_Pdist(H5_Pdist):
             hist, x_edges, y_edges = np.histogram2d(X, Y, bins=self.bins, 
                                                     range=[self.histrange_x, self.histrange_y])
         except ValueError as e:
-            print(f"{e}: do the size of the x {X.shape} and y {Y.shape} inputs match? --Xinterval and --Yinterval can be adjusted.")
-            sys.exit(0)
+            message = f"{e}: do the size of the x {X.shape} and y {Y.shape} inputs match? "
+            message += f"--Xinterval and --Yinterval can be adjusted."
+            raise ValueError(message)
+        
         # let each row list bins with common y range
         hist = np.transpose(hist)
         # convert histogram counts to p_units
@@ -225,25 +227,12 @@ class MD_Pdist(H5_Pdist):
         """
         Main public method with pdist generation controls.
         """ 
-        # TODO: need to consolidate the Y 2d vs 1d stuff somehow
-
-        # TODO: if I can get rid of this or optimize it, I can then use the 
-            # original methods of each pdist by themselves
-        # TODO: only if histrange is None
-        # if self.histrange_x is None:
-        #     # get the optimal histrange
-        #     self.histrange_x = self._get_histrange(self.Xname, self.Xindex)
-        # # if using 2D pdist
-        # # TODO: needs to handle array input or None input
-        # if isinstance(self.Yname, (str, np.ndarray)) and self.histrange_y is None:
-        #     self.histrange_y = self._get_histrange(self.Yname, self.Yindex)
-
         # return timeseries data
         if self.data_type == "time":
             X, Y = self.timeseries()
             return X, Y, np.ones((X.shape[0]))
         # return pdist data
-        # TODO: t/e block to catch mismatched data lengths and print lengths
+        # TODO: t/e block to catch mismatched data lengths and print lengths?
         elif self.data_type == "pdist":
             # for 3D datasets, e.g. scatter
             if self.Yname and self.Zname:

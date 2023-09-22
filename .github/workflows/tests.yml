@@ -57,3 +57,4 @@ jobs:
     - name: Test with pytest
       run: |
         pytest wedap/tests/
+        pytest mdap/tests/
