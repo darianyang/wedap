@@ -136,13 +136,14 @@ class H5_Pdist():
         self.T = int(T)
         self.weighted = weighted
 
+        ### This section for XYZ name processing ###
         # TODO: Default pcoord for either dim?
         # TODO: clean up and condense this name processing section
         # add auxdata prefix if not using pcoord and not using array input
         # doing it in two conditional blocks since numpy as warning with comparing array to string
-        # this way it only does the string comparison if Xname is a string
+        # this way it only does the string comparison if Xname is a string and not a filename 
         if isinstance(Xname, str):
-            if Xname != "pcoord":
+            if Xname != "pcoord" and Xname[-4] != ".":
                 Xname = "auxdata/" + Xname
         self.Xname = Xname
         # TODO: set this up as an arg to be able to process 3D+ arrays form aux
@@ -156,8 +157,8 @@ class H5_Pdist():
                 message = "\nDefaulting to evolution plot for --data-type, since you put a --Yname arg, " + \
                           "\nDid you mean to use --data-type of `average` or `instant`?"
                 warn(message)
-            # add auxdata prefix if not using pcoord and not using array input
-            if Yname != "pcoord":
+            # add auxdata prefix if not using pcoord and not using array or filename input
+            if Yname != "pcoord" and Yname[-4] != ".":
                 Yname = "auxdata/" + Yname
             # before comparing X and Y, make sure they are both strings
             if isinstance(Xname, str):
@@ -172,8 +173,8 @@ class H5_Pdist():
 
         # for replacing the Z axis pdist with a dataset
         if Zname is not None and isinstance(Zname, str):
-            # add auxdata prefix if not using pcoord and not using array input
-            if Zname != "pcoord":
+            # add auxdata prefix if not using pcoord and not using array or filename input
+            if Zname != "pcoord" and Zname[-4] != ".":
                 Zname = "auxdata/" + Zname
         self.Zname = Zname
         self.Zindex = Zindex
@@ -210,11 +211,8 @@ class H5_Pdist():
         # initialize weights
         self._init_weights()
 
-        # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
-        self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
-
         # n_particles for each iteration
-        self.n_particles = self.h5["summary"]["n_particles"]#[self.first_iter-1:self.last_iter]
+        self.n_particles = self.h5["summary"]["n_particles"]
 
         # TODO: I wonder if both of these attributes are needed (total only used by reshape data array)
         #       I should note somewhere that data array must be for the same length/iters as the west.h5 file
@@ -223,9 +221,34 @@ class H5_Pdist():
         # do not include the final (empty) iteration
         self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
 
+        # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
+        self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
+
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
+
+        # check XYZnames for array and filename input (if found, initilize)
+        XYZnames = ["Xname", "Yname", "Zname"]
+        for name in XYZnames:
+            attr_value = getattr(self, name)
+            # reshape 1d input raw data array (if given) into 3d array
+            if isinstance(attr_value, np.ndarray):
+                setattr(self, name, self.reshape_total_data_array(attr_value))
+            # if input isn't an auxname but an allowed filename for input
+            elif isinstance(attr_value, str) and attr_value[-4] == ".":
+                # for .npy binary files or pkl files
+                if attr_value[-4:] in [".npy", ".npz", ".pkl"]:
+                    data = np.load(attr_value, allow_pickle=True)
+                # text files
+                elif attr_value[-4:] in [".dat", ".txt"]:
+                    data = np.genfromtxt(attr_value)
+                else:
+                    raise ValueError("File ending must be '.dat', '.txt', '.npy', '.npz', or '.pkl'")
+                # need to reshape so that the columns go depth wise
+                data = data.reshape(data.shape[0], 1, -1)
+                # reshape the array again to fit into current westpa seg per iter shape and set
+                setattr(self, name, self.reshape_total_data_array(data))
 
     def _init_weights(self):
         """
@@ -272,17 +295,19 @@ class H5_Pdist():
         data : ndarray
             Dataset of interest from the H5 file.
         """
-        # if the user puts in an array object instead of a string dataset name
+        # if the user puts in an array object or filename instead of a string dataset name
+        # for filename case, should have been converted to an array upon init
         if isinstance(name, np.ndarray):
             # first reshape 1d input raw data array into 3d array
-            # currently, this is done during pdist method
             #data = self.reshape_total_data_array(name)
+            # this is done in pdist instead to be more optimized (only needs to be ran once)
 
             # need to parse data for segments only in current iteration
             # segments are each row, but in input they are all concatenated
             n_segs_up_to_iter = np.sum(self.n_particles[self.first_iter-1:iteration-1])
             n_segs_including_iter = np.sum(self.n_particles[self.first_iter-1:iteration])
             data = name[n_segs_up_to_iter:n_segs_including_iter,:,:]
+
         # name should be a string for the h5 file dataset name
         elif isinstance(name, str):
             # this t/e block is to catch non-existent aux data names
@@ -1070,17 +1095,18 @@ class H5_Pdist():
         except ValueError as e:
             array = array.reshape(self.total_particles, self.tau - 1, -1)
             message = "\nYou may be using an input data array which did not include the rst file datapoints. " + \
-                      "\nThis may be fine, but note that you shouldn't create a new H5 file using this array."
+                      "\nThis will work, but note that you shouldn't create a new H5 file using this array."
             warn(f"{e} {message}")
-            # TODO: does this work?
             # the case where the array does not have rst data included
             # put the new first column as the first value of each row (segment)
             # TODO: this is a temp hack for the no rst shape data
             # noting that both arrays must have same ndims for hstack
-            #print(f"original shape: {data.shape}")
-            #print(f"to stack shape: {data[:,0,:]}")
-            array = np.hstack((np.atleast_3d(array[:,0,:]), array)) # TODO: test this
-            #print(f"new shape: {data.shape}")
+            #print(f"original shape: {array.shape}")
+            #print(f"to stack shape: {np.atleast_3d(array[:,0,:]).shape}")
+            # make array for all first col vals reshape so that the columns go depth wise
+            firstcols = array[:,0,:].reshape(array.shape[0], 1, -1)
+            array = np.hstack((firstcols, array))
+            #print(f"new shape: {array.shape}")
 
         # TODO: the above works to solve the shape issue but if I wanted to fill out a new dataset in
         # the h5 file, it would be missing the first value, which links walkers.
@@ -1119,14 +1145,6 @@ class H5_Pdist():
                           f"Did you use the correct amount of bstates {self.n_bstates}?"
                 warn(message)
 
-        # reshape 1d input raw data array (if given) into 3d array
-        if isinstance(self.Xname, np.ndarray):
-            self.Xname = self.reshape_total_data_array(self.Xname)
-        if isinstance(self.Yname, np.ndarray):
-            self.Yname = self.reshape_total_data_array(self.Yname)
-        if isinstance(self.Zname, np.ndarray):
-            self.Zname = self.reshape_total_data_array(self.Zname)
-
         # TODO: could make this it's own method
         # if requested, save out a new H5 file with the input data array in new aux name
         if self.H5save_out is not None:
@@ -1140,7 +1158,7 @@ class H5_Pdist():
 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
-        # TODO: testing multi_h5: putting the whole thing in a loop over each h5 file
+        # multi_h5: putting the whole thing in a loop over each h5 file
         # loop histranges to find the best hist range for all input h5 files
         # loop each pdist return, sum and normalize at the end
 
