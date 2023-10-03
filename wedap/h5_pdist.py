@@ -130,9 +130,9 @@ class H5_Pdist():
         self.T = int(T)
         self.weighted = weighted
 
-        # process XYZ names and indicies
+        # process XYZ names and indicies (TODO: maybe a more efficient way to go about this)
         self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
-        self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
+        self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname, usingY=True)
         self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
 
         # XYZ save into new h5 file options
@@ -187,7 +187,7 @@ class H5_Pdist():
         # accounts for array and filename input XYZnames
         self._check_XYZnames()
 
-    def _process_name_and_index(self, name, index, Xname, Yname):
+    def _process_name_and_index(self, name, index, Xname, Yname, usingY=False):
         """
         Consolidated logic for taking input XYZnames and outputting the 
         corrected name and index.
@@ -200,6 +200,8 @@ class H5_Pdist():
             Input XYZ index 
         Xname : str
         Yname : str
+        usingY : bool
+            Set to True when returning name/index for Yname, default False.
         
         Returns
         -------
@@ -213,11 +215,11 @@ class H5_Pdist():
             if name != "pcoord" and name[-4:] != ".":
                 name = "auxdata/" + name
             # for common case of evolution with extra Yname input
-            if self.data_type == "evolution":
+            if self.data_type == "evolution" and Yname is not None:
                 warn("\nDefaulting to evolution plot for --data-type, since you put a --Yname arg.\n"
                     "Did you mean to use --data-type of `average` or `instant`?")
-            # for common case where one plots "pcoord/aux 0" and "pcoord/aux 1"
-            elif isinstance(name, str) and name == Yname and Xname == Yname and index == 0:
+            # for case with "pcoord/aux 0" and "pcoord/aux 0": same name and index will auto change index
+            elif isinstance(name, str) and usingY and Xname == Yname and index == 0:
                 index = 1
                 warn("\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname and Xindex/Yindex were the same.")
         return name, index
