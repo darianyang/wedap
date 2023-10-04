@@ -212,7 +212,7 @@ class H5_Pdist():
         """
         if name is not None and isinstance(name, str):
             # add auxdata prefix if not using "pcoord" and not using array or filename input
-            if name != "pcoord" and name[-4:] != ".":
+            if name != "pcoord" and name[-4] != ".":
                 name = "auxdata/" + name
             # for common case of evolution with extra Yname input
             if self.data_type == "evolution" and Yname is not None:
