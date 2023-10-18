@@ -308,7 +308,13 @@ class H5_Pdist():
         elif isinstance(name, str):
             # this t/e block is to catch non-existent aux data names
             try:
-                data = np.array(self.h5[f"iterations/iter_{iteration:08d}/{name}"])
+                #data = np.array(self.h5[f"iterations/iter_{iteration:08d}/{name}"])
+                #data = self.h5[f"iterations/iter_{iteration:08d}/{name}"][:]
+                # seems like data is okay left as type: <class 'h5py._hl.dataset.Dataset'>
+                # doesn't need to be an array, I guess array indexing already works so it's compatible
+                # speeds seem pretty similar for both though
+                # and the np.atleast_3d will convert to array anyway
+                data = self.h5[f"iterations/iter_{iteration:08d}/{name}"]
             except KeyError:
                 message = f"{name} is not a valid object in the h5 file. \n" + \
                           f"Available datasets are: 'pcoord' "
@@ -1162,11 +1168,13 @@ class H5_Pdist():
         xranges = []
         yranges = []
         # go through each file and find a consistent histrange if histrangeXY is None
-        for h5 in self.h5_list:
-            # close and re-open, keeping the class attribute for method calls
-            # but allowing the loop to propagate through each file
-            self.h5.close()
-            self.h5 = h5py.File(h5, mode="r")
+        for i, h5 in enumerate(self.h5_list):
+            # only needs to be done for non-first dataset in h5_list
+            if i != 0:
+                # close and re-open, keeping the class attribute for method calls
+                # but allowing the loop to propagate through each file
+                self.h5.close()
+                self.h5 = h5py.File(h5, mode="r")
             if self.histrange_x is None:
                 # get the optimal histrange
                 xranges.append(self._get_histrange(self.Xname, self.Xindex))
@@ -1189,26 +1197,28 @@ class H5_Pdist():
         Ys = []
         Zs = []
         # same loop but now use the optimized histrange for pdist gen of all h5 files in list
-        for h5 in self.h5_list:
-            # close and re-open, keeping the class attribute for method calls
-            # but allowing the loop to propagate through each file
-            self.h5.close()
-            self.h5 = h5py.File(h5, mode="r")
-            self._init_weights()
-            
-            # TODO: instead of just opening h5 and re-init weights, need to also account for
-            # cases like with 3D dataset returns which use self.n_particles (segs per iter)
-            # perhaps I can just reinit the entire set of attrs
-            #self.h5 = h5
-            #self.__init__(self)
-            
-            # TODO: maybe this could go into a _particle_init method?
-            # for now just going to save a new self.n_particles attribute
-            self.n_particles = self.h5["summary"]["n_particles"]
-            # these may not be needed, 
-            self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
-            # do not include the final (empty) iteration
-            self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
+        for i, h5 in enumerate(self.h5_list):
+            # only needs to be done for non-first dataset in h5_list
+            if i != 0:
+                # close and re-open, keeping the class attribute for method calls
+                # but allowing the loop to propagate through each file
+                self.h5.close()
+                self.h5 = h5py.File(h5, mode="r")
+                self._init_weights()
+                
+                # TODO: instead of just opening h5 and re-init weights, need to also account for
+                # cases like with 3D dataset returns which use self.n_particles (segs per iter)
+                # perhaps I can just reinit the entire set of attrs
+                #self.h5 = h5
+                #self.__init__(self)
+                
+                # TODO: maybe this could go into a _particle_init method?
+                # for now just going to save a new self.n_particles attribute
+                self.n_particles = self.h5["summary"]["n_particles"]
+                # these may not be needed, 
+                self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+                # do not include the final (empty) iteration
+                self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
 
             # scale weights by n h5 files
             self.weights /= len(self.h5_list)
@@ -1267,7 +1277,8 @@ class H5_Pdist():
             Z = np.concatenate(Zs)
 
         # safely close h5 file
-        self.h5.close()
+        # TODO: not doing this since methods e.g. for tracing need access to h5 file
+        #self.h5.close()
         return X, Y, Z
 
 #if __name__ == "__main__":
