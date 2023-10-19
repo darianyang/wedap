@@ -80,7 +80,8 @@ class Test_H5_Pdist():
             np.loadtxt(f"wedap/tests/data/instant_{Xname}_{Yname}_Z.txt"))
 
     @pytest.mark.parametrize("Xname", ["pcoord"])
-    @pytest.mark.parametrize("Yname", ["dihedral_3", "pcoord"])
+    #@pytest.mark.parametrize("Yname", ["dihedral_3", "pcoord"])
+    @pytest.mark.parametrize("Yname", ["dihedral_3"])
     @pytest.mark.parametrize("Xindex", [0, 1])
     def test_instant_2d_idx(self, Xname, Yname, Xindex):
         X, Y, Z = wedap.H5_Pdist(h5=self.h5, data_type="instant", Xindex=Xindex,
@@ -119,7 +120,8 @@ class Test_H5_Pdist():
         np.testing.assert_allclose(Z, 
             np.loadtxt(f"wedap/tests/data/average_{Xname}_{Yname}_Z.txt"))
         
-    @pytest.mark.parametrize("Xname", ["dihedral_3", "pcoord"])
+    #@pytest.mark.parametrize("Xname", ["dihedral_3", "pcoord"])
+    @pytest.mark.parametrize("Xname", ["dihedral_3"])
     @pytest.mark.parametrize("Yname", ["pcoord"])
     @pytest.mark.parametrize("Yindex", [0, 1])
     def test_average_2d_idx(self, Xname, Yname, Yindex):

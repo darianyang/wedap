@@ -132,8 +132,11 @@ class H5_Pdist():
 
         # process XYZ names and indicies (TODO: maybe a more efficient way to go about this)
         self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
-        self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname, usingY=True)
+        self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
         self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
+
+        # check to make sure none of the Name / Index pairs are identical
+        self._check_duplicate_name_index_pairs()
 
         # XYZ save into new h5 file options
         self.H5save_out = H5save_out
@@ -187,7 +190,7 @@ class H5_Pdist():
         # accounts for array and filename input XYZnames
         self._check_XYZnames()
 
-    def _process_name_and_index(self, name, index, Xname, Yname, usingY=False):
+    def _process_name_and_index(self, name, index, Xname, Yname):
         """
         Consolidated logic for taking input XYZnames and outputting the 
         corrected name and index.
@@ -200,8 +203,8 @@ class H5_Pdist():
             Input XYZ index 
         Xname : str
         Yname : str
-        usingY : bool
-            Set to True when returning name/index for Yname, default False.
+        # usingY : bool
+        #     Set to True when returning name/index for Yname, default False.
         
         Returns
         -------
@@ -219,9 +222,12 @@ class H5_Pdist():
                 warn("\nDefaulting to evolution plot for --data-type, since you put a --Yname arg.\n"
                     "Did you mean to use --data-type of `average` or `instant`?")
             # for case with "pcoord/aux 0" and "pcoord/aux 0": same name and index will auto change index
-            elif isinstance(name, str) and usingY and Xname == Yname and index == 0:
-                index = 1
-                warn("\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname and Xindex/Yindex were the same.")
+            # Note: this didnt really work if you set -xi 1 or other index and -yi 0 
+            #       need to actually compare the xindex and yindex within this function
+            #       instead, just not going to include this check.
+            # elif isinstance(name, str) and usingY and Xname == Yname and index == 0:
+            #     index = 1
+            #     warn("\nSetting --Yindex to 1 (2nd dimension) since Xname/Yname and Xindex/Yindex were the same.")
         return name, index
 
     def _check_XYZnames(self):
@@ -271,6 +277,36 @@ class H5_Pdist():
             weights.append(self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
         # 1D array of variably shaped arrays
         self.weights = np.array(weights, dtype=object)
+
+    def _check_duplicate_name_index_pairs(self):
+        """
+        Warnings if there are duplicate XYZ name/index pairs.
+        """
+        pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex), (self.Zname, self.Zindex)]
+        seen_pairs = set()
+        duplicates = set()
+
+        for pair in pairs:
+            # Check if the pair has been seen before
+            if pair in seen_pairs:
+                duplicates.add(pair)
+            else:
+                seen_pairs.add(pair)
+
+        if duplicates:
+            # Handle duplicates
+            # For example, you can print a message or perform any desired action
+            message = "Duplicate name and index pairs found, "
+            message += "check to make sure XYZname and XYZindex values are unique:\n" 
+            message += f"Xname: {self.Xname}, Xindex: {self.Xindex}\n"
+            message += f"Yname: {self.Yname}, Yindex: {self.Yindex}\n"
+            message += f"Zname: {self.Zname}, Zindex: {self.Zindex}\n" 
+            warn(message)
+            # for pair in duplicates:
+            #     print(f"Name: {pair[0]}, Index: {pair[1]}")
+        #else:
+            # No duplicates found
+            #print("No duplicate name and index pairs found")
 
     def _get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
         """
