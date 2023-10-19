@@ -243,7 +243,7 @@ class H5_Pdist():
         Check XYZnames for array and filename input (if found, initialize).
         Replaces self.Xname, self.Yname, and self.Zname attrs as needed.
         """
-        XYZnames = ["Xname", "Yname", "Zname"]
+        XYZnames = ["Xname", "Yname", "Zname", "Cname"]
         for name in XYZnames:
             attr_value = getattr(self, name)
             # reshape 1d input raw data array (if given) into 3d array
@@ -1383,7 +1383,7 @@ class H5_Pdist():
         #self.h5.close()
 
         # for optional Cname 4D returns
-        if self.Cname:
+        if isinstance(self.Cname, (str, np.ndarray)):
             C = np.concatenate(Cs)
             return X, Y, Z, C
         else:
