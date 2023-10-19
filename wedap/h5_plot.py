@@ -39,10 +39,11 @@ class H5_Plot(H5_Pdist):
     """
     These methods provide various plotting options for pdist data.
     """
+    cbar_pad = 0.05
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap=None, smoothing_level=None,
         color=None, ax=None, p_min=None, p_max=None, contour_interval=1, contour_levels=None,
-        cbar_label=None, cax=None, jointplot=False, data_label=None, proj3d=False, 
-        *args, **kwargs):
+        cbar_label=None, cax=None, jointplot=False, data_label=None, proj3d=False, proj4d=False, 
+        C=None, scatter_interval=10, scatter_s=1, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
 
@@ -78,6 +79,16 @@ class H5_Plot(H5_Pdist):
             probabilities for Z or from H5_Pdist must be in `raw` p_units.
         data_label : str
             Optionally label the data, e.g. for multiple 1D plots.
+        proj3d : bool
+            Optionally use a 3d projection plot, defaut False.
+        proj4d : bool
+            Optionally use a 4d projection plot, defaut False.
+        C : array
+            For color mapping of 3d projection plots.
+        scatter_interval : int
+            Interval for displaying scatter plot data, default 1.
+        scatter_s : float
+            Int for displaying scatter plot data marker size, default 1.
         ** args
         ** kwargs
         """
@@ -93,12 +104,15 @@ class H5_Plot(H5_Pdist):
         # also need option of just using the input X Y Z args
         # or getting them from w_pdist h5 file, or from H5_Pdist output file
         # user inputs XYZ
-        if X is None and Y is None and Z is None:
+        if X is None and Y is None and Z is None and C is None:
             super().__init__(*args, **kwargs)
             # save the user requested p_units and changes p_units to raw
             if self.jointplot:
                 # will be re-normed later on
                 X, Y, Z = self.pdist(normalize=False)
+            # when requesting a projection plot with 4d cbar additional dataset
+            elif proj4d:
+                X, Y, Z, C = self.pdist()
             else:
                 # TODO: tuple unpacking to deal with variable item return
                 X, Y, Z = self.pdist()
@@ -112,6 +126,7 @@ class H5_Plot(H5_Pdist):
         self.X = X
         self.Y = Y
         self.Z = Z
+        self.C = C
 
         self.p_min = p_min
         self.p_max = p_max
@@ -149,6 +164,9 @@ class H5_Plot(H5_Pdist):
         self.cax = cax
         self.data_label = data_label
         self.proj3d = proj3d
+        self.proj4d = proj4d
+        self.scatter_interval = scatter_interval
+        self.scatter_s = scatter_s
         self.kwargs = kwargs
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
@@ -185,7 +203,7 @@ class H5_Plot(H5_Pdist):
     #     if self.axis_list[0] > self.axis_list[1]:
     #         self.H = self.H.transpose()
 
-    def add_cbar(self, cax=None):
+    def add_cbar(self, cax=None, pad=0.05):
         """
         Add cbar.
 
@@ -193,10 +211,12 @@ class H5_Plot(H5_Pdist):
         ----------
         cax : mpl cbar axis
             Optionally specify the cbar axis.
+        pad : float
+            cbar padding level.
         """
         # fig vs plt should be the same, tests run fine (needed to go plt for mosaic)
         #cbar = self.fig.colorbar(self.plot, cax=cax)
-        cbar = plt.colorbar(self.plot_obj, cax=cax)
+        cbar = plt.colorbar(self.plot_obj, cax=cax, pad=pad)
         # if contour lines are present
         if hasattr(self, "lines"):
             cbar.add_lines(self.lines)
@@ -284,11 +304,15 @@ class H5_Plot(H5_Pdist):
         s : float
             mpl scatter marker size.
         """
-        if self.proj3d:
+        if self.proj3d or self.proj4d:
+            if isinstance(self.C, np.ndarray):
+                C = self.C[::interval]
+            else:
+                C = self.Z[::interval]
             self.plot_obj = self.ax.scatter(self.X[::interval], 
                                             self.Y[::interval], 
                                             self.Z[::interval],
-                                            c=self.Z[::interval],
+                                            c=C,
                                             cmap=self.cmap, s=s,
                                             vmin=self.p_min, vmax=self.p_max)
         else:
@@ -418,13 +442,16 @@ class H5_Plot(H5_Pdist):
             self.fig["y"].set_xlim(self.p_min, self.p_max)
 
         # 3dprojection test, not going to be compatible with jp
-        elif self.proj3d:
+        elif self.proj3d or self.proj4d:
             self.fig = plt.figure()
             self.ax = self.fig.add_subplot(projection='3d')
-            # don't need cbar since 3d projected
-            cbar = False
-            # but add cbar label to z axis
-            self.ax.set_zlabel(self.cbar_label)
+            # don't need 4d cbar when 3d projected
+            if self.proj3d:
+                cbar = False
+                # but add cbar label to z axis
+                self.ax.set_zlabel(self.cbar_label)
+            # elif self.proj4d:
+            #     self.ax.set_zlabel(self.cbar_label)
 
         else:
             if self.ax is None:
@@ -481,7 +508,7 @@ class H5_Plot(H5_Pdist):
             #self.ax.set_ylabel(self.cbar_label)
 
         elif self.plot_mode == "scatter3d":
-            self.plot_scatter3d()
+            self.plot_scatter3d(interval=self.scatter_interval, s=self.scatter_s)
 
         elif self.plot_mode == "hexbin3d":
             self.plot_hexbin3d()
@@ -498,7 +525,7 @@ class H5_Plot(H5_Pdist):
 
         # don't add cbar if not specified or if using a 1D plot
         if cbar and self.plot_mode not in ["line", "bar", "contour_l"]:
-            self.add_cbar(cax=self.cax)
+            self.add_cbar(cax=self.cax, pad=self.cbar_pad)
 
         # take kwargs and unpack to look for plot option items
         if self.kwargs is not None:

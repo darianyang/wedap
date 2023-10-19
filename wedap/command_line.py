@@ -201,6 +201,14 @@ def create_cmd_arguments():
                         help="Only use every step_iter size iteration intervals of the data "
                              "e.g. --step-iter 10 for every 10 iterations. Default 1.",
                         type=int)
+    optional.add_argument("-sci", "--scatter-iterval", default=10, nargs="?",
+                        dest="scatter_interval",
+                        help="Adjust to use less data for scatter plots.",
+                        type=int)
+    optional.add_argument("-scs", "--scatter-s", default=1, nargs="?",
+                        dest="scatter_s",
+                        help="Adjust scatter plot marker size",
+                        type=float)
     # *: a flexible number of values, which will be gathered into a list
     # +: like *, but requiring at least one value
     optional.add_argument("--bins", default=[100, 100], nargs="+",
@@ -279,6 +287,19 @@ def create_cmd_arguments():
                           dest="proj3d",
                           help="Make a 3d projection plot",
                           action="store_true")
+    optional.add_argument("-4d", "--proj4d", default=False,
+                          dest="proj4d",
+                          help="Make a 4d projection plot, must have Cname.",
+                          action="store_true")
+    optional.add_argument("-C", "-c", "--Cname", "--cname", default=None, nargs="?",
+                         dest="Cname", 
+                         help="Target data name for cbar of proj3d. Must use 'scatter3d' "
+                         "for 'plot_mode'. Can be 'pcoord' or any aux dataset name "
+                         "in your h5 file.",
+                         type=str)
+    optional.add_argument("-Ci", "--Cindex", "--cindex", default=0, nargs="?", type=int,
+                           dest="Cindex", help="Index in third dimension for >2D datasets.")
+
     # create optional flag to output everything to console screen
     # optional.add_argument("-ots", "--output_to_screen", default=True,
     #                     dest = "output_to_screen",

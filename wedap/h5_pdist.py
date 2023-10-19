@@ -36,8 +36,9 @@ class H5_Pdist():
     These class methods generate probability distributions from a WESTPA H5 file.
     """
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
-                 Yindex=0, Zname=None, Zindex=0, H5save_out=None, Xsave_name=None, Ysave_name=None,
-                 Zsave_name=None, data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
+                 Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0,
+                 H5save_out=None, Xsave_name=None, Ysave_name=None, Zsave_name=None, 
+                 data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None, no_pbar=False, step_iter=1, *args, **kwargs):
         """
@@ -63,6 +64,10 @@ class H5_Pdist():
             This is becasue the weights/pdist isn't considered.
         Zindex : int
             If Z.ndim > 2, use this to index.
+        Cname : str
+            Target data for cbar axis when using 3d projection scatter, default None. 
+        Cindex : int
+            If C.ndim > 2, use this to index.
         H5save_out : str
             Paths to save a new H5 file with this dataset name.
             Right now it saves the requested X Y or Z data into a new aux_name.
@@ -134,6 +139,9 @@ class H5_Pdist():
         self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
         self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
         self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
+
+        # for 3d proj plot cbar
+        self.Cname, self.Cindex = self._process_name_and_index(Cname, Cindex, Xname, Yname)
 
         # check to make sure none of the Name / Index pairs are identical
         self._check_duplicate_name_index_pairs()
@@ -282,7 +290,15 @@ class H5_Pdist():
         """
         Warnings if there are duplicate XYZ name/index pairs.
         """
-        pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex), (self.Zname, self.Zindex)]
+        # only check all of them if Cname is not None
+        if self.Cname:
+            pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex), 
+                     (self.Zname, self.Zindex), (self.Cname, self.Cindex)]
+        # only check if Zname is not None
+        elif self.Zname:
+            pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex), (self.Zname, self.Zindex)]
+        else:
+            pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex)]
         seen_pairs = set()
         duplicates = set()
 
@@ -1016,7 +1032,7 @@ class H5_Pdist():
         # loop each iteration
         seg_start = 0
         for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
-                         desc="Average 3D", disable=self.no_pbar):
+                         desc="Data 3D", disable=self.no_pbar):
             # then go through and add all segments/walkers in the iteration
             X[seg_start:seg_start + self.n_particles[iter - 1]] = \
                 self._get_data_array(self.Xname, self.Xindex, iter)
@@ -1028,8 +1044,50 @@ class H5_Pdist():
             # keeps track of position in the seg_total length based arrays
             seg_start += self.n_particles[iter - 1]
 
-        # 3D average datasets using all available data (can more managable with interval)
+        # 3D datasets using all available data (can be more managable with interval)
         return X[::interval], Y[::interval], Z[::interval]
+    
+    # TODO: very similar method to avg_datasets_3d, also could combine with code from get_total_dataset
+    def average_datasets_4d(self, interval=1):
+        """
+        Unique case where `Zname` is specified and the XYZ datasets are returned.
+        Averaged over the iteration range. With `Cname`, 4d.
+        
+        Returns
+        -------
+        X, Y, Z, C : arrays 
+            Raw data for each named coordinate.
+        """
+        if self.Yname is None:
+            warn("`Zname` is defined but not `Yname`, using Yname=`pcoord`")
+            self.Yname = "pcoord"
+
+        # arrays to be filled with values from each iteration
+        # rows are for all segments, columns are each segment datapoint
+        X = np.zeros((self.current_particles, self.tau))
+        Y = np.zeros((self.current_particles, self.tau))
+        Z = np.zeros((self.current_particles, self.tau))
+        C = np.zeros((self.current_particles, self.tau))
+
+        # loop each iteration
+        seg_start = 0
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
+                         desc="Data 4D", disable=self.no_pbar):
+            # then go through and add all segments/walkers in the iteration
+            X[seg_start:seg_start + self.n_particles[iter - 1]] = \
+                self._get_data_array(self.Xname, self.Xindex, iter)
+            Y[seg_start:seg_start + self.n_particles[iter - 1]] = \
+                self._get_data_array(self.Yname, self.Yindex, iter)
+            Z[seg_start:seg_start + self.n_particles[iter - 1]] = \
+                self._get_data_array(self.Zname, self.Zindex, iter)
+            C[seg_start:seg_start + self.n_particles[iter - 1]] = \
+                self._get_data_array(self.Cname, self.Cindex, iter)
+
+            # keeps track of position in the seg_total length based arrays
+            seg_start += self.n_particles[iter - 1]
+
+        # 4D datasets using all available data (can be more managable with interval)
+        return X[::interval], Y[::interval], Z[::interval], C[::interval]
 
     def get_all_weights(self):
         """
@@ -1232,6 +1290,7 @@ class H5_Pdist():
         Xs = []
         Ys = []
         Zs = []
+        Cs = []
         # same loop but now use the optimized histrange for pdist gen of all h5 files in list
         for i, h5 in enumerate(self.h5_list):
             # only needs to be done for non-first dataset in h5_list
@@ -1276,7 +1335,11 @@ class H5_Pdist():
             elif self.data_type == "average":
                 # attemts to say, if not None, but has to be compatible with str and arrays
                 if isinstance(self.Yname, (str, np.ndarray)) and isinstance(self.Zname, (str, np.ndarray)):
-                    x, y, z = self.average_datasets_3d()
+                    # for 4d plots
+                    if isinstance(self.Cname, (str, np.ndarray)):
+                        x, y, z, c = self.average_datasets_4d()
+                    else:
+                        x, y, z = self.average_datasets_3d()
                 elif isinstance(self.Yname, (str, np.ndarray)):
                     x, y, z = self.average_pdist_2d()
                 else:
@@ -1287,6 +1350,9 @@ class H5_Pdist():
             Xs.append(x)
             Ys.append(y)
             Zs.append(z)
+            # optional C
+            if 'c' in locals():
+                Cs.append(c)
 
         # selectively normalize final probabilities (sometimes Y and sometimes Z)
         # no normalization needed with 3D data returns (Zname) for 3D scatter plots
@@ -1315,7 +1381,13 @@ class H5_Pdist():
         # safely close h5 file
         # TODO: not doing this since methods e.g. for tracing need access to h5 file
         #self.h5.close()
-        return X, Y, Z
+
+        # for optional Cname 4D returns
+        if self.Cname:
+            C = np.concatenate(Cs)
+            return X, Y, Z, C
+        else:
+            return X, Y, Z
 
 #if __name__ == "__main__":
     # total_array_out = np.loadtxt("p53_X_array.txt")

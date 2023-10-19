@@ -48,6 +48,10 @@ def main():
     # vars converts from Namespace object to dict
     plot = H5_Plot(**vars(args))
 
+    # for 4d projected, adjust cbar position (this is a class attr)
+    if args.proj4d is True:
+        plot.cbar_pad = 0.2
+
     # 2D plot with cbar
     # TODO: can this be done better?
     if args.Yname or args.data_type == "evolution":
@@ -95,6 +99,10 @@ def main():
         # for 3d projected
         if args.proj3d is True:
             plot.ax.set_zlabel(args.Zname + " i" + str(plot.Zindex))
+        # for 4d projected
+        elif args.proj4d is True:
+            plot.ax.set_zlabel(args.Zname + " i" + str(plot.Zindex))
+            plot.cbar.set_label(args.Cname + " i" + str(plot.Cindex))
         # for 2d scatter with cbar
         else:
             plot.cbar.set_label(args.Zname + " i" + str(plot.Zindex))
