@@ -17,6 +17,7 @@ TODO:
 import matplotlib.pyplot as plt
 ######
 
+import os
 import h5py
 import numpy as np
 from tqdm.auto import tqdm
@@ -223,7 +224,9 @@ class H5_Pdist():
         """
         if name is not None and isinstance(name, str):
             # add auxdata prefix if not using "pcoord" and not using array or filename input
-            if name != "pcoord" and name[-4] != ".":
+            # instead of checking for '.', check for filename
+            #if name != "pcoord" and name[-4] != ".":
+            if name != "pcoord" and not os.path.isfile(name):
                 name = "auxdata/" + name
             # for common case of evolution with extra Yname input
             if self.data_type == "evolution" and Yname is not None:
@@ -250,7 +253,9 @@ class H5_Pdist():
             if isinstance(attr_value, np.ndarray):
                 setattr(self, name, self.reshape_total_data_array(attr_value))
             # if input isn't an auxname but an allowed filename for input
-            elif isinstance(attr_value, str) and attr_value[-4] == ".":
+            # instead of checking for '.', check for filename
+            #elif isinstance(attr_value, str) and attr_value[-4] == ".":
+            elif isinstance(attr_value, str) and os.path.isfile(attr_value):
                 # for .npy binary files or pkl files
                 if attr_value[-4:] in [".npy", ".npz", ".pkl"]:
                     data = np.load(attr_value, allow_pickle=True)
