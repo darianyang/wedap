@@ -81,8 +81,10 @@ class H5_Plot(H5_Pdist):
             Optionally label the data, e.g. for multiple 1D plots.
         proj3d : bool
             Optionally use a 3d projection plot, defaut False.
+            Only works with contour and scatter plots.
         proj4d : bool
             Optionally use a 4d projection plot, defaut False.
+            Only works with scatter plots.
         C : array
             For color mapping of 3d projection plots.
         scatter_interval : int

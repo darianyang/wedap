@@ -285,11 +285,12 @@ def create_cmd_arguments():
                           action="store_true")
     optional.add_argument("-3d", "--proj3d", default=False,
                           dest="proj3d",
-                          help="Make a 3d projection plot",
+                          help="Make a 3d projection plot, works with contour or scatter plots.",
                           action="store_true")
     optional.add_argument("-4d", "--proj4d", default=False,
                           dest="proj4d",
-                          help="Make a 4d projection plot, must have Cname.",
+                          help="Make a 4d projection plot, must have Cname. " +
+                               "only works with scatter plots.",
                           action="store_true")
     optional.add_argument("-C", "-c", "--Cname", "--cname", default=None, nargs="?",
                          dest="Cname", 
