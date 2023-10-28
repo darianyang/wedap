@@ -4,7 +4,7 @@
 
 Welcome to wedap's documentation!
 =========================================================
-.. image:: _static/wedap.jpeg
+.. image:: _static/wedap_logo.png
   :width: 400
   :alt: wedap logo
 
