@@ -18,6 +18,7 @@
       ~MD_Plot.aux_to_pdist_1d
       ~MD_Plot.aux_to_pdist_2d
       ~MD_Plot.average_datasets_3d
+      ~MD_Plot.average_datasets_4d
       ~MD_Plot.average_pdist_1d
       ~MD_Plot.average_pdist_2d
       ~MD_Plot.evolution_pdist
@@ -52,5 +53,11 @@
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MD_Plot.cbar_pad
    
    

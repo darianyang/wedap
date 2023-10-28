@@ -53,7 +53,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../wedap_modules.html">wedap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mdap_modules.html">mdap modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebook/wedap_demo.html">wedap demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebook/wedap_demo.html">WEDAP Demo</a></li>
 </ul>
 
         </div>
@@ -94,7 +94,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_type</strong> (<em>str</em>) – ‘timeseries’ for 1 dataset, or ‘pdist’ for 2D. scatter for 3d? (TODO)</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) – ‘time’ for 1 dataset timeseries, or ‘pdist’ for everything else.</p></li>
 <li><p><strong>Xname</strong> (<em>str or list of str</em>) – target data for x axis, default None.</p></li>
 <li><p><strong>Xindex</strong> (<em>int</em>) – If X.ndim &gt; 2, use this to index.</p></li>
 <li><p><strong>Yname</strong> (<em>str or list of str</em>) – target data for y axis, default None.</p></li>
@@ -140,40 +140,43 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_datasets_3d</span></code>([interval])</p></td>
 <td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_1d</span></code>()</p></td>
-<td><p>1 dataset: average pdist for a range of iterations.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_2d</span></code>()</p></td>
-<td><p>2 datasets: average pdist for a range of iterations.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolution_pdist</span></code>()</p></td>
-<td><p>Returns the pdist for 1 coordinate for the range iterations specified.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_weights</span></code>()</p></td>
-<td><p>Returns an 1D array of the weight for every frame of each tau for all segments of all iterations specified.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coords</span></code>(path, data_name, data_index)</p></td>
-<td><p>Get a list of data coordinates for plotting traces.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parents</span></code>(walker_tuple)</p></td>
-<td><p>Get parent of an input (iteration, walker).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_total_data_array</span></code>(name[, index, ...])</p></td>
-<td><p>Loop through all iterations specified and get a 1d raw data array.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_datasets_3d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_datasets_4d</span></code>([interval])</p></td>
 <td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_1d</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_1d</span></code>()</p></td>
+<td><p>1 dataset: average pdist for a range of iterations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_pdist_2d</span></code>()</p></td>
+<td><p>2 datasets: average pdist for a range of iterations.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolution_pdist</span></code>()</p></td>
+<td><p>Returns the pdist for 1 coordinate for the range iterations specified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_weights</span></code>()</p></td>
+<td><p>Returns an 1D array of the weight for every frame of each tau for all segments of all iterations specified.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coords</span></code>(path, data_name, data_index)</p></td>
+<td><p>Get a list of data coordinates for plotting traces.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parents</span></code>(walker_tuple)</p></td>
+<td><p>Get parent of an input (iteration, walker).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_total_data_array</span></code>(name[, index, ...])</p></td>
+<td><p>Loop through all iterations specified and get a 1d raw data array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_datasets_3d</span></code>()</p></td>
+<td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_1d</span></code>()</p></td>
 <td><p>Returns the x and y pdist datasets for a single iteration.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_2d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_2d</span></code>()</p></td>
 <td><p>Returns the xyz pdist datasets for a single iteration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist</span></code>()</p></td>
 <td><p>Main public method with pdist generation controls.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_1d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_1d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -183,7 +186,7 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_2d</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_2d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -193,7 +196,7 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.
 </dl>
 </p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_3d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_3d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -203,19 +206,19 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code>(walker_tuple[, color, ax])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code>(walker_tuple[, color, ax])</p></td>
 <td><p>Plot trace.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshape_total_data_array</span></code>(array)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshape_total_data_array</span></code>(array)</p></td>
 <td><p>Take an input 1d array of the data values at every segment for each iteration, and reshape them to make pdists.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_aux_xy_nn</span></code>(val_x, val_y)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_aux_xy_nn</span></code>(val_x, val_y)</p></td>
 <td><p>Originally adapted from code by Jeremy Leung.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">succ_pdist</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">succ_pdist</span></code>()</p></td>
 <td><p>TODO: Filter weights to be zero for all non successfull trajectories.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeseries</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeseries</span></code>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -225,10 +228,10 @@ kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at <cite>T</cite> Kelvin.
 </dl>
 </p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_walker</span></code>(walker_tuple)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_walker</span></code>(walker_tuple)</p></td>
 <td><p>Get trace path of an input (iteration, walker).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">w_succ</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">w_succ</span></code>()</p></td>
 <td><p>Find and return all successfully recycled (iter, seg) pairs.</p></td>
 </tr>
 </tbody>

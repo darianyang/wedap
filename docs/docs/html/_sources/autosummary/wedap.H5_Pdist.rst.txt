@@ -17,6 +17,7 @@
       ~H5_Pdist.aux_to_pdist_1d
       ~H5_Pdist.aux_to_pdist_2d
       ~H5_Pdist.average_datasets_3d
+      ~H5_Pdist.average_datasets_4d
       ~H5_Pdist.average_pdist_1d
       ~H5_Pdist.average_pdist_2d
       ~H5_Pdist.evolution_pdist

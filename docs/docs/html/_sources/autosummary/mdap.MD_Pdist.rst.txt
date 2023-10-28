@@ -17,6 +17,7 @@
       ~MD_Pdist.aux_to_pdist_1d
       ~MD_Pdist.aux_to_pdist_2d
       ~MD_Pdist.average_datasets_3d
+      ~MD_Pdist.average_datasets_4d
       ~MD_Pdist.average_pdist_1d
       ~MD_Pdist.average_pdist_2d
       ~MD_Pdist.evolution_pdist

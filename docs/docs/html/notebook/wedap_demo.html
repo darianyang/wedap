@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wedap demo &mdash; wedap  documentation</title>
+  <title>WEDAP Demo &mdash; wedap  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
@@ -49,9 +49,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wedap_modules.html">wedap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mdap_modules.html">mdap modules</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">wedap demo</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">WEDAP Demo</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Basic-wedap-usages-with-WESTPA-H5-data">Basic wedap usages with WESTPA H5 data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mdap:-plotting-directly-from-standard-MD-data">mdap: plotting directly from standard MD data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#MDAP:-plotting-directly-from-standard-MD-data">MDAP: plotting directly from standard MD data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Advanced-wedap-examples">Advanced wedap examples</a></li>
 </ul>
 </li>
@@ -71,7 +71,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">wedap demo</li>
+      <li class="breadcrumb-item active">WEDAP Demo</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/notebook/wedap_demo.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -81,11 +81,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="wedap-demo">
-<h1>wedap demo<a class="headerlink" href="#wedap-demo" title="Permalink to this heading"></a></h1>
+  <section id="WEDAP-Demo">
+<h1>WEDAP Demo<a class="headerlink" href="#WEDAP-Demo" title="Permalink to this heading"></a></h1>
 <hr class="docutils" />
-<p><strong>wedap</strong> : <strong>w</strong>eighted <strong>e</strong>nsemble <strong>d</strong>ata <strong>a</strong>nalysis and <strong>p</strong>lotting (pronounced we-dap)</p>
-<p><p><img alt="wedap logo" class="no-scaled-link" src="../_images/wedap-logo-black.png" style="width: 300px;" /></p>
+<p><strong>WEDAP</strong> : <strong>W</strong>eighted <strong>E</strong>nsemble <strong>D</strong>ata <strong>A</strong>nalysis and <strong>P</strong>lotting (pronounced we-dap)</p>
+<p><p><img alt="wedap logo" class="no-scaled-link" src="../_images/wedap_logo2.png" style="width: 300px;" /></p>
 </p><p>Here, we will go through many examples of how to use the Python API or the command line for various types of plots using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and <code class="docutils literal notranslate"><span class="pre">mdap</span></code>. Note that the CLI will tend to format and label more things for you, while the API starts as more of a “blank slate” format wise since the options can be more easily adjusted.</p>
 <p>Each of these examples are presented in the same order as in the <code class="docutils literal notranslate"><span class="pre">wedap</span></code> paper, which you can refer to for more details about each plot.</p>
 <div class="nbinput nblast docutils container">
@@ -115,19 +115,20 @@
 </p><p>To use the GUI, simply run <code class="docutils literal notranslate"><span class="pre">wedap</span></code> in the command line with no arguments and the popup should look something this:</p>
 <p align="left"><p><img alt="GUI" class="no-scaled-link" src="../_images/gui3_postproc.png" style="width: 550px;" /></p>
 </p><p>Reading through the GUI options and their associated descriptions can also be useful to find out more about them.</p>
+<p>We note that wedap is compatible with multiple HDF5 data files passed into the <code class="docutils literal notranslate"><span class="pre">-W</span></code> or <code class="docutils literal notranslate"><span class="pre">-h5</span></code> flag, which corresponds to passing a list instead of a string into the <code class="docutils literal notranslate"><span class="pre">h5</span></code> argument in Python. For simplicity we only use a single file for our examples.</p>
 <section id="Example-1:-Evolution-Plot">
 <h3>Example 1: Evolution Plot<a class="headerlink" href="#Example-1:-Evolution-Plot" title="Permalink to this heading"></a></h3>
 <p>This is a classic plot of the evolution of a WE simulation, plotting the probability distribution on the X axis as you progress through each iteration of the WE simulation on the Y axis. The colorbar is showing the probability values of each bin in the histogram. The probability values are derived from the raw data count values of the multiple segments in each WE iteration in the west.h5 file, weighted by each segment weight. This weighted histogram is normalized and shown on an inverted natural
 log scale: <span class="math notranslate nohighlight">\(-\ln(\frac{P(x)}{P(max)})\)</span></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --data-type evolution --xlabel &quot;Progress Coordinate 0&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --data-type evolution --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot;
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;evolution&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;WE Iteration&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -136,30 +137,34 @@ log scale: <span class="math notranslate nohighlight">\(-\ln(\frac{P(x)}{P(max)}
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ff03820777b2423f988552c41b94e324", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "9e3293d6bf454793b1def4f273166594", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Text(7.375, 0.5, &#39;WE Iteration&#39;)
+Text(10.097222222222232, 0.5, &#39;WE Iteration&#39;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_7_2.png" src="../_images/notebook_wedap_demo_7_2.png" />
+<img alt="../_images/notebook_wedap_demo_8_2.png" src="../_images/notebook_wedap_demo_8_2.png" />
 </div>
 </div>
-<p>We could also just directly place the plot formatting arguments into <code class="docutils literal notranslate"><span class="pre">wedap.H5_Plot()</span></code></p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<p>We could also just directly place the plot formatting arguments into <code class="docutils literal notranslate"><span class="pre">wedap.H5_Plot()</span></code>, we can also plot the other dimension of the progress coordinate by setting <code class="docutils literal notranslate"><span class="pre">Xindex=1</span></code>.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --data-type evolution -X pcoord -Xi 1 --xlabel &quot;End-to-end Distance ($\AA$)&quot;
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;evolution&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;WE Iteration&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;evolution&quot;</span><span class="p">,</span> <span class="n">Xname</span><span class="o">=</span><span class="s2">&quot;pcoord&quot;</span><span class="p">,</span> <span class="n">Xindex</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;End-to-end Distance ($\AA$)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;WE Iteration&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -167,18 +172,18 @@ Text(7.375, 0.5, &#39;WE Iteration&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c44f85f0e8f9416db2e1095f08c8c8cb", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "11959c3e73f84b3095fb71914691fdd4", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_9_1.png" src="../_images/notebook_wedap_demo_9_1.png" />
+<img alt="../_images/notebook_wedap_demo_11_1.png" src="../_images/notebook_wedap_demo_11_1.png" />
 </div>
 </div>
 <p>Alternatively we can use the mpl object-based interface, this offers more flexibility when making more complex plots, examples of which will be demonstrated later along in this notebook.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># instantiate the wedap H5_Plot class</span>
@@ -186,7 +191,7 @@ Text(7.375, 0.5, &#39;WE Iteration&#39;)
 <span class="c1"># run the main plotting method</span>
 <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="c1"># call the mpl axes object (ax) from wedap class object and format</span>
-<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">)</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
 <span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;WE Iteration&quot;</span><span class="p">)</span>
 <span class="c1"># the fig object can also be called</span>
 <span class="n">wedap_obj</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Evolution Plot&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
@@ -197,52 +202,10 @@ Text(7.375, 0.5, &#39;WE Iteration&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "9695618e06484f758654c5b703f20905", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "905c50ed59364e11bbf1d52a8a883bb6", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(0.45, 1.02, &#39;Evolution Plot&#39;)
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_11_2.png" src="../_images/notebook_wedap_demo_11_2.png" />
-</div>
-</div>
-<p>We can break the process down further to access the data being passed:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># run the wedap H5_Pdist class main method</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Pdist</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;evolution&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pdist</span><span class="p">()</span>
-
-<span class="c1"># pass datasets to H5_Plot</span>
-<span class="n">wedap_obj</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
-<span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-
-<span class="c1"># call the mpl axes object (ax) from wedap class object and format</span>
-<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">)</span>
-<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;WE Iteration&quot;</span><span class="p">)</span>
-<span class="c1"># the fig object can also be called</span>
-<span class="n">wedap_obj</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Evolution Plot&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "3ce2fbe3d86546468dca16a03d84fcb9", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -257,19 +220,23 @@ Text(0.45, 1.02, &#39;Evolution Plot&#39;)
 <img alt="../_images/notebook_wedap_demo_13_2.png" src="../_images/notebook_wedap_demo_13_2.png" />
 </div>
 </div>
-</section>
-<section id="Example-2:-1D-Probability-Distribution">
-<h3>Example 2: 1D Probability Distribution<a class="headerlink" href="#Example-2:-1D-Probability-Distribution" title="Permalink to this heading"></a></h3>
-<p>You can also make simple 1D plots for a single iteration <code class="docutils literal notranslate"><span class="pre">--data-type</span> <span class="pre">instant</span></code> || <code class="docutils literal notranslate"><span class="pre">data_type='instant'</span></code> or for the average of a range of iterations <code class="docutils literal notranslate"><span class="pre">--data-type</span> <span class="pre">average</span></code> || <code class="docutils literal notranslate"><span class="pre">data_type='average'</span></code>. Here we show the average probability distribution for the entire range of WE iterations in the input <code class="docutils literal notranslate"><span class="pre">west.h5</span></code> file.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 -dt average --plot-mode line --xlabel &quot;Progress Coordinate 0&quot;
-</pre></div>
-</div>
+<p>We can break the process down further to access the data being passed:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># run the wedap H5_Pdist class main method</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Pdist</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;evolution&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pdist</span><span class="p">()</span>
+
+<span class="c1"># pass datasets to H5_Plot</span>
+<span class="n">wedap_obj</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="c1"># call the mpl axes object (ax) from wedap class object and format</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;WE Iteration&quot;</span><span class="p">)</span>
+<span class="c1"># the fig object can also be called</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Evolution Plot&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -277,39 +244,77 @@ Text(0.45, 1.02, &#39;Evolution Plot&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "09f556bbd0f942248296911e8c70046e", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c1209e85922b40ea8c65fa53ca4001fc", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Text(0.5, 10.0, &#39;Progress Coordinate 0&#39;)
+Text(0.45, 1.02, &#39;Evolution Plot&#39;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_17_2.png" src="../_images/notebook_wedap_demo_17_2.png" />
+<img alt="../_images/notebook_wedap_demo_15_2.png" src="../_images/notebook_wedap_demo_15_2.png" />
+</div>
+</div>
+</section>
+<section id="Example-2:-1D-Probability-Distribution">
+<h3>Example 2: 1D Probability Distribution<a class="headerlink" href="#Example-2:-1D-Probability-Distribution" title="Permalink to this heading"></a></h3>
+<p>You can also make simple 1D plots for a single iteration <code class="docutils literal notranslate"><span class="pre">--data-type</span> <span class="pre">instant</span></code> || <code class="docutils literal notranslate"><span class="pre">data_type='instant'</span></code> or for the average of a range of iterations <code class="docutils literal notranslate"><span class="pre">--data-type</span> <span class="pre">average</span></code> || <code class="docutils literal notranslate"><span class="pre">data_type='average'</span></code>. Here we show the average probability distribution for the entire range of WE iterations in the input <code class="docutils literal notranslate"><span class="pre">west.h5</span></code> file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 -dt average --plot-mode line --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "06089cb5f8f045589315bd02e05dd37a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 7.222222222222218, &#39;Heavy Atom RMSD ($\\AA$)&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebook_wedap_demo_19_2.png" src="../_images/notebook_wedap_demo_19_2.png" />
 </div>
 </div>
 </section>
 <section id="Example-3:-2D-Probability-Distribution">
 <h3>Example 3: 2D Probability Distribution<a class="headerlink" href="#Example-3:-2D-Probability-Distribution" title="Permalink to this heading"></a></h3>
 <p>We can also make probability distributions using two datasets, first we can try this with just our two dimensional progress coordinates. Note that you can set the progress coordinate or any aux dataset index using <code class="docutils literal notranslate"><span class="pre">Xindex</span></code>, <code class="docutils literal notranslate"><span class="pre">Yindex</span></code>, and <code class="docutils literal notranslate"><span class="pre">Zindex</span></code>. This can be useful for multi-dimensional progress coordinates, but also for multi-dimensional auxiliary data.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Progress Coordinate 0&quot; -dt average  \
-        -y pcoord -yi 1 --ylabel &quot;Progress Coordinate 1&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -dt average  \
+        -y pcoord -yi 1 --ylabel &quot;End-to-end Distance ($\AA$)&quot;
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">Xindex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Yname</span><span class="o">=</span><span class="s2">&quot;pcoord&quot;</span><span class="p">,</span> <span class="n">Yindex</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;End-to-end Distance ($\AA$)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -317,35 +322,36 @@ Text(0.5, 10.0, &#39;Progress Coordinate 0&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e5026d4801834e3d89e41151073776d0", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "71fab1b5da794652858377acee17ac72", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Text(22.625, 0.5, &#39;Progress Coordinate 1&#39;)
+Text(31.347222222222232, 0.5, &#39;End-to-end Distance ($\\AA$)&#39;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_21_2.png" src="../_images/notebook_wedap_demo_21_2.png" />
+<img alt="../_images/notebook_wedap_demo_23_2.png" src="../_images/notebook_wedap_demo_23_2.png" />
 </div>
 </div>
-<p>Now we can try it with one progress coordinate and an auxiliary dataset saved during the WE simulation of calculated post-simulation (e.g. using <code class="docutils literal notranslate"><span class="pre">w_crawl</span></code>):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Progress Coordinate 1&quot; -xi 1 -dt average  -y dihedral_11 --ylabel &quot;Aux Coordinate&quot;
+<p>Now we can try it with one progress coordinate and an auxiliary dataset saved during the WE simulation (or it could have been calculated post-simulation (e.g. using <code class="docutils literal notranslate"><span class="pre">w_crawl</span></code>)):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;End-to-end Distance ($\AA$)&quot; -xi 1 -dt average  \
+        -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot;
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">Xindex</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Yname</span><span class="o">=</span><span class="s2">&quot;dihedral_11&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 1&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Aux Coordinate&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;End-to-end Distance ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Dihedral 11 ($\degree$)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -353,39 +359,39 @@ Text(22.625, 0.5, &#39;Progress Coordinate 1&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "97154a350a524d8384a5cc324d1e6b6a", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c2a17dd9d70f435e8a574cefcf3bbecc", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
+Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_24_2.png" src="../_images/notebook_wedap_demo_24_2.png" />
+<img alt="../_images/notebook_wedap_demo_26_2.png" src="../_images/notebook_wedap_demo_26_2.png" />
 </div>
 </div>
 </section>
 <section id="Example-4:-3D-Scatter-Plot">
 <h3>Example 4: 3D Scatter Plot<a class="headerlink" href="#Example-4:-3D-Scatter-Plot" title="Permalink to this heading"></a></h3>
 <p>What if you don’t want to show the probability axis? Well, you can also just show how three different datasets are related in a 3D scatter plot. Here we can put two different aux datasets on the X and Y axes and we can set the colorbar to show the progress coordinate values in comparison:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Aux Coordinate 0&quot; -x dihedral_11  -dt average  -y dihedral_12 --ylabel &quot;Aux Coordinate 1&quot; -z pcoord --cbar-label &quot;Progress Coordinate 0&quot; -pm scatter3d
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Dihedral 11 ($\degree$)&quot; -x dihedral_11  -dt average  -y dihedral_12 --ylabel &quot;Dihedral 12 ($\degree$)&quot; -z pcoord --cbar-label &quot;Heavy Atom RMSD ($\AA$)&quot; -pm scatter3d
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;scatter3d&quot;</span><span class="p">,</span>
               <span class="n">Xname</span><span class="o">=</span><span class="s2">&quot;dihedral_11&quot;</span><span class="p">,</span> <span class="n">Yname</span><span class="o">=</span><span class="s2">&quot;dihedral_12&quot;</span><span class="p">,</span> <span class="n">Zname</span><span class="o">=</span><span class="s2">&quot;pcoord&quot;</span><span class="p">,</span>
-              <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">,</span>
-              <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Aux Coordinate 0&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Aux Coordinate 1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+              <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">,</span>
+              <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Dihedral 11 ($\degree$)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Dihedral 12 ($\degree$)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -393,13 +399,13 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "52f73791ff9c4f889c473f47884a7bac", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "83b8cf91542a49de9b3bbb027b770218", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_28_1.png" src="../_images/notebook_wedap_demo_28_1.png" />
+<img alt="../_images/notebook_wedap_demo_30_1.png" src="../_images/notebook_wedap_demo_30_1.png" />
 </div>
 </div>
 </section>
@@ -408,11 +414,11 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 <p>Here, I want to demonstrate some of the additional features available by making a more complicated joint plot. This is using a contour plot instead of a histogram, as set by <code class="docutils literal notranslate"><span class="pre">--plot-mode</span> <span class="pre">contour</span></code> || <code class="docutils literal notranslate"><span class="pre">plot_mode='contour'</span></code>, there is also custom colormapping (<code class="docutils literal notranslate"><span class="pre">--cmap</span></code>), probability units (<code class="docutils literal notranslate"><span class="pre">--p-units</span></code>), iteration ranges (<code class="docutils literal notranslate"><span class="pre">--first-iter</span></code>, <code class="docutils literal notranslate"><span class="pre">--last-iter</span></code>), probability limits (<code class="docutils literal notranslate"><span class="pre">--pmin</span></code>, <code class="docutils literal notranslate"><span class="pre">--pmax</span></code>), plot style (<code class="docutils literal notranslate"><span class="pre">--style</span></code>), data smoothing (<code class="docutils literal notranslate"><span class="pre">--smoothing-level</span></code>), and plot limits
 (<code class="docutils literal notranslate"><span class="pre">--xlim</span></code>, <code class="docutils literal notranslate"><span class="pre">--ylim</span></code>).</p>
 <p>Available <code class="docutils literal notranslate"><span class="pre">--plot-mode</span></code> || <code class="docutils literal notranslate"><span class="pre">plot_mode</span></code> options: * <code class="docutils literal notranslate"><span class="pre">line</span></code> – plot 1D lines. * <code class="docutils literal notranslate"><span class="pre">hist</span></code> – plot histogram (default). * <code class="docutils literal notranslate"><span class="pre">hist_l</span></code> – plot histogram and contour lines. * <code class="docutils literal notranslate"><span class="pre">contour</span></code> – plot contour levels and lines. * <code class="docutils literal notranslate"><span class="pre">contour_f</span></code> – plot contour levels only. * <code class="docutils literal notranslate"><span class="pre">contour_l</span></code> – plot contour lines only. * <code class="docutils literal notranslate"><span class="pre">scatter3d</span></code> – plot 3 datasets in a scatter plot.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Progress Coordinate 0&quot; -xi 0  -dt average  -y dihedral_11 --ylabel &quot;Aux Coordinate&quot; --joint-plot -pm contour_f --cmap gnuplot_r --style ggplot --p-units kcal --first-iter 3 --last-iter 15 --pmin 1 --pmax 10 --smoothing-level 1 --xlim -1 7 --ylim -180 180
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -xi 0  -dt average  -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot; --joint-plot -pm contour_f --cmap gnuplot_r --style ggplot --p-units kcal --first-iter 3 --last-iter 15 --pmin 1 --pmax 10 --smoothing-level 1 --xlim -1 7 --ylim -180 180
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if there is alot of plotting choices, it can be easier to just put it all into a dictionary</span>
@@ -420,23 +426,27 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
                 <span class="s2">&quot;data_type&quot;</span> <span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;plot_mode&quot;</span> <span class="p">:</span> <span class="s2">&quot;contour_f&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Xname&quot;</span> <span class="p">:</span> <span class="s2">&quot;pcoord&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Yname&quot;</span> <span class="p">:</span> <span class="s2">&quot;dihedral_12&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Yname&quot;</span> <span class="p">:</span> <span class="s2">&quot;dihedral_11&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;cmap&quot;</span> <span class="p">:</span> <span class="s2">&quot;gnuplot_r&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;jointplot&quot;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                 <span class="s2">&quot;p_units&quot;</span> <span class="p">:</span> <span class="s2">&quot;kcal&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;first_iter&quot;</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
                 <span class="s2">&quot;last_iter&quot;</span> <span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-                <span class="s2">&quot;p_min&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;p_min&quot;</span> <span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
                 <span class="s2">&quot;p_max&quot;</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
                 <span class="s2">&quot;smoothing_level&quot;</span> <span class="p">:</span><span class="mi">1</span><span class="p">,</span>
                 <span class="c1"># the input plot_options kwarg dict is also parsed for matplotlib formatting keywords</span>
-                <span class="s2">&quot;xlabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ylabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Aux Coordinate&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;xlabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ylabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Dihedral 11 ($\degree$)&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;xlim&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
                 <span class="s2">&quot;ylim&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
                 <span class="p">}</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;ggplot&quot;</span><span class="p">)</span>
 <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="o">**</span><span class="n">plot_options</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="c1"># save the resulting figure</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;wedap_jp.pdf&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -444,17 +454,17 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "92898e65d93941c681d9dc058c400f4a", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "df7b048614514d1cbd0a38b8f6a9b7e9", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_32_1.png" src="../_images/notebook_wedap_demo_32_1.png" />
+<img alt="../_images/notebook_wedap_demo_34_1.png" src="../_images/notebook_wedap_demo_34_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># change style back to wedap default</span>
@@ -466,10 +476,10 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 </section>
 </section>
-<section id="mdap:-plotting-directly-from-standard-MD-data">
-<h2>mdap: plotting directly from standard MD data<a class="headerlink" href="#mdap:-plotting-directly-from-standard-MD-data" title="Permalink to this heading"></a></h2>
+<section id="MDAP:-plotting-directly-from-standard-MD-data">
+<h2>MDAP: plotting directly from standard MD data<a class="headerlink" href="#MDAP:-plotting-directly-from-standard-MD-data" title="Permalink to this heading"></a></h2>
 <hr class="docutils" />
-<p><strong>mdap</strong> : <strong>m</strong>olecular <strong>d</strong>ynamics <strong>a</strong>nalysis and <strong>p</strong>lotting (pronounced em-dap)</p>
+<p><strong>MDAP</strong> : <strong>M</strong>olecular dynamics <strong>D</strong>ata <strong>A</strong>nalysis and <strong>P</strong>lotting (pronounced em-dap)</p>
 <p>Similarly to <code class="docutils literal notranslate"><span class="pre">wedap</span></code>, running <code class="docutils literal notranslate"><span class="pre">mdap</span> <span class="pre">-h</span></code> or <code class="docutils literal notranslate"><span class="pre">mdap</span> <span class="pre">--help</span></code> on the command line is very useful for a summary of the command options, along with some basic usage examples. To use the GUI, simply run <code class="docutils literal notranslate"><span class="pre">mdap</span></code> in the command line with no arguments.</p>
 <p>The input data from standard MD simulations must be in &gt;=2 column format: use hash symbols (#) at top of data file to indicate comments (skipped lines)</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>COL1:Frame | COL2:Data | COL3:Data...
@@ -477,7 +487,7 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 <p>This data can be output from anywhere, but just as long as it’s formatted as a text, numpy binary (<code class="docutils literal notranslate"><span class="pre">.npy</span></code>), or pickle (<code class="docutils literal notranslate"><span class="pre">.pkl</span></code>) file, it can be read into <code class="docutils literal notranslate"><span class="pre">mdap</span></code>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mdap</span>
@@ -486,7 +496,7 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># optionally apply default wedap matplotlib style sheet</span>
@@ -497,15 +507,16 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 <section id="Example-1:-1D-Timeseries">
 <h3>Example 1: 1D Timeseries<a class="headerlink" href="#Example-1:-1D-Timeseries" title="Permalink to this heading"></a></h3>
 <p>The first plotting example shows a standard 1D timeseries plot for any input dataset, where the dataset or quantity of interest on the Y axis varies over time on the X axis. The <code class="docutils literal notranslate"><span class="pre">--timescale</span></code> flag is optional to convert the frame numbers to a specific timescale depending on the time interval that the data was saved.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x input_data_0.dat --ylabel &quot;Input Data 0&quot; --plot-mode line --data-type time --timescale 10e4 --xlabel &quot;Time (µs)&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat --ylabel &quot;RMSD to XTAL ($\AA$)&quot; --plot-mode line --data-type time --timescale 10e4 --xlabel &quot;Time (µs)&quot;
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_0.dat&quot;</span><span class="p">],</span>
-             <span class="n">timescale</span><span class="o">=</span><span class="mf">10e4</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Time (µs)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Input Data 0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rms_bb_xtal.dat&quot;</span><span class="p">],</span>
+             <span class="n">timescale</span><span class="o">=</span><span class="mf">10e4</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Time (µs)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;RMSD to XTAL ($\AA$)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -513,106 +524,82 @@ Text(-0.875, 0.5, &#39;Aux Coordinate&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_41_0.png" src="../_images/notebook_wedap_demo_41_0.png" />
+<img alt="../_images/notebook_wedap_demo_43_0.png" src="../_images/notebook_wedap_demo_43_0.png" />
 </div>
 </div>
 </section>
 <section id="id1">
 <h3>Example 2: 1D Probability Distribution<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
 <p>We can make the same 1D line plot of the probability from any input data file. Note that if you have multiple replicates that you want to plot together, you can just include more data files after the X axis data input flag (<code class="docutils literal notranslate"><span class="pre">-X</span> <span class="pre">or</span> <span class="pre">--Xname</span> <span class="pre">file1.txt</span> <span class="pre">file2.txt</span> <span class="pre">...</span></code> and in Python you can input a list of file names into <code class="docutils literal notranslate"><span class="pre">mdap.MD_Pdist(Xname=[])</span></code>). Here, I am including just one file for the examples.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x input_data_0.dat --xlabel &quot;Input Data 0&quot; -pm line
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; -pm line
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_0.dat&quot;</span><span class="p">],</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Input Data 0&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rms_bb_xtal.dat&quot;</span><span class="p">],</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;RMSD to XTAL ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(0.5, 7.222222222222218, &#39;Input Data 0&#39;)
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_45_1.png" src="../_images/notebook_wedap_demo_45_1.png" />
+<img alt="../_images/notebook_wedap_demo_47_0.png" src="../_images/notebook_wedap_demo_47_0.png" />
 </div>
 </div>
 </section>
 <section id="id2">
 <h3>Example 3: 2D Probability Distribution<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
 <p>Again, if we include another dataset for the Y axis, a 2D probability distribution can be plotted.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x input_data_0.dat -y input_data_1.dat --xlabel &quot;Input Data 0&quot; --ylabel &quot;Input Data 1”
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y rms_bb_nmr.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; --ylabel &quot;RMSD to NMR ($\AA$)&quot;
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_0.dat&quot;</span><span class="p">],</span> <span class="n">Yname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_1.dat&quot;</span><span class="p">],</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Input Data 0&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Input Data 1&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rms_bb_xtal.dat&quot;</span><span class="p">],</span> <span class="n">Yname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rms_bb_nmr.dat&quot;</span><span class="p">],</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;RMSD to XTAL ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;RMSD to NMR ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_49_1.png" src="../_images/notebook_wedap_demo_49_1.png" />
+<img alt="../_images/notebook_wedap_demo_51_0.png" src="../_images/notebook_wedap_demo_51_0.png" />
 </div>
 </div>
 </section>
 <section id="id3">
 <h3>Example 4: 3D Scatter Plot<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
 <p>Next, a scatter plot using 3 input datasets and notice how we can use a numpy binary file as input (<code class="docutils literal notranslate"><span class="pre">.npy</span></code>):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x input_data_0.dat -y input_data_1.dat --xlabel &quot;Input Data 0&quot; --ylabel &quot;Input Data 1&quot; -z input_data_2.npy --cbar-label &quot;Input Data 2&quot; -pm scatter3d
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y rms_bb_nmr.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; --ylabel &quot;RMSD to NMR ($\AA$)&quot; -z c_angle.npy --cbar-label &quot;Helix Angle ($\degree$)&quot; -pm scatter3d
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_0.dat&quot;</span><span class="p">],</span> <span class="n">Yname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_1.dat&quot;</span><span class="p">],</span> <span class="n">Zname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_2.npy&quot;</span><span class="p">],</span>
-             <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;Input Data 2&quot;</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;scatter3d&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Input Data 0&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Input Data 1&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rms_bb_xtal.dat&quot;</span><span class="p">],</span> <span class="n">Yname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rms_bb_nmr.dat&quot;</span><span class="p">],</span> <span class="n">Zname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;c_angle.npy&quot;</span><span class="p">],</span>
+             <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;Helix Angle ($\degree$)&quot;</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;scatter3d&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;RMSD to XTAL ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;RMSD to NMR ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_53_1.png" src="../_images/notebook_wedap_demo_53_1.png" />
+<img alt="../_images/notebook_wedap_demo_55_0.png" src="../_images/notebook_wedap_demo_55_0.png" />
 </div>
 </div>
 </section>
@@ -620,7 +607,7 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
 <h3>Example 5: Joint Plot with Extra Features<a class="headerlink" href="#Example-5:-Joint-Plot-with-Extra-Features" title="Permalink to this heading"></a></h3>
 <p>For the last example in the <code class="docutils literal notranslate"><span class="pre">mdap</span></code> set, we can again demonsrate a variety of extra features, many of which are the same as with <code class="docutils literal notranslate"><span class="pre">wedap</span></code>. Something that is unique with <code class="docutils literal notranslate"><span class="pre">mdap</span></code> is that you can set <code class="docutils literal notranslate"><span class="pre">--Xinterval</span></code> || <code class="docutils literal notranslate"><span class="pre">MD_Plot.Xinterval</span></code> to apply to X Y or Z data (changing X to Y or Z in the arguments). This can adjust the size of your datasets if there is a mismatch (e.g. if you saved one dataset every 10 frames and the other every single frame). We can also see here that the
 <code class="docutils literal notranslate"><span class="pre">--contour-interval</span></code> or <code class="docutils literal notranslate"><span class="pre">-ci</span></code> argument was used, which sets the interval of each contour level. The Y axis data is also being indexed to position 2, so if the input dataset has multiple columns they can all be accessed like this. Finally we set the <code class="docutils literal notranslate"><span class="pre">--style</span></code> argument to <code class="docutils literal notranslate"><span class="pre">None</span></code>, which sets everything back to the matplotlib plotting defaults.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x input_data_0.dat -y input_data_3.dat --xlabel &quot;Input Data 0&quot; --ylabel &quot;Input Data 3&quot; --Yindex 2 --Xinterval 10 -pm contour --color k --style None --p-units kT --contour-interval 0.5 --smoothing-level 2 --cmap gnuplot_r -jp --xlim 2 8 --ylim 20 60 --pmin 0.5
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y o_angle12.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; --ylabel &quot;Dimer Angle 2 ($\degree$)&quot; --Yindex 2 --Xinterval 10 -pm contour --color k --style None --p-units kT --contour-interval 0.5 --smoothing-level 2 --cmap gnuplot_r -jp --xlim 2 8 --ylim 20 60 --pmin 0.5
 </pre></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -634,26 +621,36 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[88]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span> <span class="o">=</span> <span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_0.dat&quot;</span><span class="p">],</span> <span class="n">Yname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_data_3.dat&quot;</span><span class="p">],</span> <span class="n">Yindex</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">p_min</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span> <span class="o">=</span> <span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rms_bb_xtal.dat&quot;</span><span class="p">],</span> <span class="n">Yname</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;o_angle12.dat&quot;</span><span class="p">],</span> <span class="n">Yindex</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">p_min</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                     <span class="n">contour_interval</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">smoothing_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gnuplot_r&quot;</span><span class="p">,</span> <span class="n">jointplot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">,</span> <span class="n">Xinterval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;contour&quot;</span><span class="p">,</span> <span class="n">p_units</span><span class="o">=</span><span class="s2">&quot;kT&quot;</span><span class="p">,</span>
-                    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Input Data 0&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Input Data 3&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+                    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;RMSD to XTAL ($\AA$)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Dimer Angle 2 ($\degree$)&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
 <span class="c1"># save the resulting figure</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;mdap_jp.pdf&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/darian/github/wedap/wedap/h5_plot.py:254: UserWarning: With &#39;contour&#39; plot_type, p_max should be set. Otherwise max Z is used.
+  warn(&#34;With &#39;contour&#39; plot_type, p_max should be set. Otherwise max Z is used.&#34;)
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_58_0.png" src="../_images/notebook_wedap_demo_58_0.png" />
+<img alt="../_images/notebook_wedap_demo_60_1.png" src="../_images/notebook_wedap_demo_60_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -674,7 +671,7 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
 <h3>Example 1: Multi-panel Probability Distributions<a class="headerlink" href="#Example-1:-Multi-panel-Probability-Distributions" title="Permalink to this heading"></a></h3>
 <p>Here, we can make a plot showcasing multiple aux datasets and how they relate to the progress coordinate.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
@@ -684,29 +681,21 @@ Text(24.347222222222232, 0.5, &#39;Input Data 1&#39;)
                   <span class="n">Xname</span><span class="o">=</span><span class="s2">&quot;pcoord&quot;</span><span class="p">,</span> <span class="n">Yname</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;dihedral_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dihedral </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
 <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Dihedral Angle (°)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_62_1.png" src="../_images/notebook_wedap_demo_62_1.png" />
+<img alt="../_images/notebook_wedap_demo_64_0.png" src="../_images/notebook_wedap_demo_64_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># save the resulting figure</span>
@@ -717,7 +706,7 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 </div>
 <p>Since dihedral 11 looks interesting, we can make another multi-panel plot to showcase the time evolution.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
@@ -729,8 +718,9 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">5</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">+=</span> <span class="mi">6</span>
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Dihedral Angle (°)&quot;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Dihedral Angle 11 (°)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -738,38 +728,29 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f5618c223fdc487b943c497d382187d4", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "300ea64665964c8f93c5a4c7ff3923e5", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d61e14e8a2f943aca3a84e04d30ac71e", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c6816f5308ac4a8b95c1f2c0d8c278cc", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "72fd74d90d504a86b800f52c53381be5", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
-</pre></div></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8c3ac8dba81d4537b45604618349c683", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_65_4.png" src="../_images/notebook_wedap_demo_65_4.png" />
+<img alt="../_images/notebook_wedap_demo_67_3.png" src="../_images/notebook_wedap_demo_67_3.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># save the resulting figure</span>
@@ -783,7 +764,7 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <h3>Example 2: Multiple Datasets on One Plot<a class="headerlink" href="#Example-2:-Multiple-Datasets-on-One-Plot" title="Permalink to this heading"></a></h3>
 <p>We can also directly compare multiple aux or pcoord datasets on a single axis.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -794,6 +775,7 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Dihedral Angle (°)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -801,50 +783,41 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "bbb6fae2055c4f4ebd4f4d9a0999ee55", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b52a533dd56048d5a25e751417267cac", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "58d4d6f1a2d74cdc8ffe92b05aaa7575", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "462236c08ee247338d7e32a4d8f008af", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "aa08d68f4ed54ec5a83bff9e54ba28aa", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1489c8cf2eb346c28caf00d74a4e73f4", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "0aa4c845283d4f63bac0c22a3a8050c6", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "555afa32adac4fb2b19fb1588a8eeffb", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "9978fe1171614383aad503bb24e920c2", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f77936d9160&gt;
-</pre></div></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7ff912b55d0f45158a158548ad6e3b3f", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_69_6.png" src="../_images/notebook_wedap_demo_69_6.png" />
+<img alt="../_images/notebook_wedap_demo_71_5.png" src="../_images/notebook_wedap_demo_71_5.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># save the resulting figure</span>
@@ -855,7 +828,7 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 </div>
 <p>If we wanted to, mdap could then be used to compare standard MD data to WE data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mdap</span>
@@ -867,11 +840,12 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
                   <span class="n">Xname</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;dihedral_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">data_label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Dihedral </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
 <span class="c1"># extra line needed to also plot the standard MD distribution data</span>
-<span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="s2">&quot;input_data_2.dat&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span>
+<span class="n">mdap</span><span class="o">.</span><span class="n">MD_Plot</span><span class="p">(</span><span class="n">Xname</span><span class="o">=</span><span class="s2">&quot;c_angle.dat&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;pdist&quot;</span><span class="p">,</span> <span class="n">plot_mode</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span>
              <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;From MD&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Dihedral Angle (°)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -879,51 +853,42 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "58b6bc2d1dec43a98e52889cf6a84e36", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f3cc0e55bf344890b8494356872ccfb7", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b3b2f4f6c0074a0c9e4700042ab70a1f", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "82a988fdf87b4c73bc3faa0a44f63581", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7818d0afc4284c5180828963f085ab4a", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "afff38a064d0407d8b38b0d5d01da5bf", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d032bd8afc324301ac990382e32c9fec", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "6577bab81646486d93f3ce2c996678dd", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "eab50df0b1e34967b129324b5bc49a8a", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f9e2151c160&gt;
-</pre></div></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "4ef79d83e0b549ae8f9723cb4f40ddf5", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_72_6.png" src="../_images/notebook_wedap_demo_72_6.png" />
+<img alt="../_images/notebook_wedap_demo_74_5.png" src="../_images/notebook_wedap_demo_74_5.png" />
 </div>
 </div>
 <p>But keep in mind that this example doesn’t make too much sense because the datasets between standard MD and WE are for different systems and metrics. Ideally, you could use this framework to compare the same calculation for the same system to see how (hopefully) the WE simulation was able to explore the landscape better than standard MD.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># save the resulting figure</span>
@@ -937,19 +902,20 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <h3>Example 3: Tracing Trajectories<a class="headerlink" href="#Example-3:-Tracing-Trajectories" title="Permalink to this heading"></a></h3>
 <p>We often want to see how a single continuous trajectory evolves as the WE simulation progresses.</p>
 <p>If we want to trace the path to get to iteration 18 and segment 1:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Progress Coordinate 0&quot; -dt average  \
-        -y dihedral_11 --ylabel &quot;Aux Coordinate&quot; --trace-seg 18 1
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -dt average  \
+        -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot; --trace-seg 18 1
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap_obj</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">Xindex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Yname</span><span class="o">=</span><span class="s2">&quot;dihedral_11&quot;</span><span class="p">)</span>
 <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">((</span><span class="mi">18</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 1&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Aux Coordinate&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Dihedral 11 ($\degree$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -957,26 +923,17 @@ Text(12.88888888888889, 0.5, &#39;Dihedral Angle (°)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "5691892b12264dd58edb759711a88bfc", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
-</pre></div></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d0b2374e66bc4c799510ee4d8f42bf6c", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_78_2.png" src="../_images/notebook_wedap_demo_78_2.png" />
+<img alt="../_images/notebook_wedap_demo_80_1.png" src="../_images/notebook_wedap_demo_80_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># save the resulting figure</span>
@@ -986,20 +943,21 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 </div>
 <p>Or we can trace by values, let’s say we want to find a walker that goes to a pcoord value of 5.8 and an aux value of 50:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Progress Coordinate 0&quot; -dt average  \
-        -y dihedral_11 --ylabel &quot;Aux Coordinate&quot; --trace-val 5.8 50
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -dt average  \
+        -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot; --trace-val 5.8 50
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wedap_obj</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">Xindex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Yname</span><span class="o">=</span><span class="s2">&quot;dihedral_11&quot;</span><span class="p">)</span>
 <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="nb">iter</span><span class="p">,</span> <span class="n">seg</span> <span class="o">=</span> <span class="n">wedap_obj</span><span class="o">.</span><span class="n">search_aux_xy_nn</span><span class="p">(</span><span class="mf">5.8</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
 <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">((</span><span class="nb">iter</span><span class="p">,</span> <span class="n">seg</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate 1&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Aux Coordinate&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Dihedral 11 ($\degree$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1007,7 +965,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "491d07fd85904f26874469023ae2effd", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "099f8058b4de4b38a6a3664909218b6f", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -1017,25 +975,16 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 Go to ITERATION: 19 and SEGMENT: 331
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_82_3.png" src="../_images/notebook_wedap_demo_82_3.png" />
+<img alt="../_images/notebook_wedap_demo_84_2.png" src="../_images/notebook_wedap_demo_84_2.png" />
 </div>
 </div>
 <p>We also get an output line of which iteration and segment the trace corresponds to.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># save the resulting figure</span>
@@ -1049,7 +998,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <h3>Example 4: Making a GIF<a class="headerlink" href="#Example-4:-Making-a-GIF" title="Permalink to this heading"></a></h3>
 <p>Let’s now make a GIF of our data, here I am using the dihedral 11 aux dataset and looping through the averages of small sets of iteration ranges, but anything could be looped to make the GIF using this example as a template.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gif</span>
@@ -1057,7 +1006,16 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># for a progress bar</span>
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plots should not be saved with any transparency</span>
@@ -1068,7 +1026,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># decorate a plot function with @gif.frame (return not required):</span>
@@ -1093,13 +1051,14 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
                     <span class="s2">&quot;first_iter&quot;</span> <span class="p">:</span> <span class="n">iteration</span><span class="p">,</span>
                     <span class="s2">&quot;last_iter&quot;</span> <span class="p">:</span> <span class="n">iteration</span> <span class="o">+</span> <span class="n">avg_plus</span><span class="p">,</span>
                     <span class="s2">&quot;plot_mode&quot;</span> <span class="p">:</span> <span class="s2">&quot;hist&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;ylabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Dihedral Angle (°)&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;xlabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Progress Coordinate 0&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ylabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Dihedral Angle 11 (°)&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;xlabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;title&quot;</span> <span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;WE Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">iteration</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">avg_plus</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;xlim&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
                     <span class="s2">&quot;ylim&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
                     <span class="s2">&quot;grid&quot;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="s2">&quot;cmap&quot;</span> <span class="p">:</span> <span class="s2">&quot;gnuplot_r&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;no_pbar&quot;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="p">}</span>
 
     <span class="n">we</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="o">**</span><span class="n">plot_options</span><span class="p">)</span>
@@ -1109,7 +1068,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <span class="c1"># having at least 100 frames makes for a good length gif</span>
 <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="c1"># set the range to be the iterations at a specified interval</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">)):</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">avg_plus</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 
@@ -1118,113 +1077,11 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "3a131cc1623f40e48e3a194b98fbcf67", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f075e8ac40a6472088540c6f11b4a640", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ab4d06e5a0f045809d8a644038c59abf", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "9545868882ad4ca58d63e67757160e38", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d29c21e5704f46fbb3a9fae3a484f32c", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "750e1112102f4489baf27bc0be2e025b", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7b674e80ff1049718cd461c44332e923", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a4fbc307cbce452f8c3c2ce6ebe97911", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e8c7019b5dc549199884f02fb6781d95", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "5d354607956d41eeb7e87f6855977b08", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7de91d98761542dcbc9f1ffe62330c9c", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "49e3b098e8da4148a04c7c43e84f8609", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "4b6783a81f154968a3a9b75aea45a9b4", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "beffcb77dace4782a53d92c1c7da4bda", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1adb03f0f4cb4ac18930ec39d319964b", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "158be3be771f4cabbb0de47ea0cb9d98", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d96703154aba41f09753337b99201628", "version_major": 2, "version_minor": 0}</script></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "470776badb0940a8b547be9b8e48691f", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "0adaaf35f28c4c919ff4e57a4142fd10", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <p>The resulting GIF is shown below:</p>
 <p align="left"><p><img alt="example gif" class="no-scaled-link" src="../_images/example.gif" style="width: 400px;" /></p>
@@ -1233,7 +1090,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <h3>Example 5: Data Extraction for Machine Learning with scikit-learn<a class="headerlink" href="#Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn" title="Permalink to this heading"></a></h3>
 <p>In this final example, I will go through how to extract data from a <code class="docutils literal notranslate"><span class="pre">west.h5</span></code> file using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and then we can directly pass the data to other Python libraries such as <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> to do some clustering and pca.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
@@ -1244,7 +1101,7 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># load h5 file into pdist class</span>
@@ -1288,6 +1145,8 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <span class="c1"># labels</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;PC1&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;PC2&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1295,32 +1154,23 @@ Text(-1.527777777777768, 0.5, &#39;Aux Coordinate&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "36eeeee593c84390af37ea681be408b8", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e4b08b406d9e40a4a97d9879d8d64579", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "fc9fe7cd86414deb840f4512fe5a4144", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(0, 0.5, &#39;PC2&#39;)
-</pre></div></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "57e0c8e8a9c2434cad427fb2a0ad1afe", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_95_3.png" src="../_images/notebook_wedap_demo_95_3.png" />
+<img alt="../_images/notebook_wedap_demo_98_2.png" src="../_images/notebook_wedap_demo_98_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[77]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># save the resulting figure</span>

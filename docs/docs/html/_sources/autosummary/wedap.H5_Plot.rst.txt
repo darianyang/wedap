@@ -18,6 +18,7 @@
       ~H5_Plot.aux_to_pdist_1d
       ~H5_Plot.aux_to_pdist_2d
       ~H5_Plot.average_datasets_3d
+      ~H5_Plot.average_datasets_4d
       ~H5_Plot.average_pdist_1d
       ~H5_Plot.average_pdist_2d
       ~H5_Plot.evolution_pdist
@@ -48,5 +49,11 @@
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~H5_Plot.cbar_pad
    
    
