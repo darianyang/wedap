@@ -8,7 +8,7 @@
 [![Downloads](https://static.pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
 [![GitHub license](https://img.shields.io/github/license/darianyang/wedap)](https://github.com/darianyang/wedap/blob/master/LICENSE)
 
-**wedap** : **w**eighted **e**nsemble **d**ata **a**nalysis and **p**lotting (pronounced we-dap)
+**WEDAP** : **w**eighted **e**nsemble **d**ata **a**nalysis and **p**lotting (pronounced we-dap)
 
 `wedap` is primarily used to plot H5 files produced from running [WESTPA](https://github.com/westpa/westpa).
 
