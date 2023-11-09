@@ -148,10 +148,16 @@ def create_cmd_arguments():
                              "'average' or 'instance' (1 or 2 or 3 datasets).",
                         type=str) 
     main.add_argument("-pm", "--plot-mode", "--plotmode", default="hist", nargs="?",
-                        dest="plot_mode", choices=("hist", "hist_l", "contour", "contour_l", 
-                                                   "contour_f", "bar", "line", "scatter3d"),
+                        dest="plot_mode", choices=("bar", "line", "hist", "hist_l", "contour", 
+                                                   "contour_l", "contour_f", "scatter3d", "hexbin3d"),
                         help="The type of plot desired.  "
-                             "e.g. line for 1D, hist or contour for 2D and scatter3d for 3D.",
+                             "For 1D: bar or line. "
+                             "For 2D: hist or contour, hist_l is a hist with contour lines, "
+                             "contour_l is just contour lines, contour_f is just the fill, "
+                             "contour is both lines and fill, note that any contour lines "
+                             "plotted will default to cmap colors, so to have more distinctive "
+                             "contour lines, include a --color arg, e.g. `--color k`. \n"
+                             "For 3D, scatter3d or hexbin3d.",
                         type=str)
     main.add_argument("-X", "-x", "--Xname", "--xname", default="pcoord", nargs="?",
                         dest="Xname", 
@@ -201,14 +207,6 @@ def create_cmd_arguments():
                         help="Only use every step_iter size iteration intervals of the data "
                              "e.g. --step-iter 10 for every 10 iterations. Default 1.",
                         type=int)
-    optional.add_argument("-sci", "--scatter-iterval", default=10, nargs="?",
-                        dest="scatter_interval",
-                        help="Adjust to use less data for scatter plots.",
-                        type=int)
-    optional.add_argument("-scs", "--scatter-s", default=1, nargs="?",
-                        dest="scatter_s",
-                        help="Adjust scatter plot marker size",
-                        type=float)
     # *: a flexible number of values, which will be gathered into a list
     # +: like *, but requiring at least one value
     optional.add_argument("--bins", default=[100, 100], nargs="+",
@@ -264,6 +262,18 @@ def create_cmd_arguments():
                              " levels) using a gaussian filter with sigma="
                              "SMOOTHING_LEVEL.",
                         type=float)
+    optional.add_argument("-sci", "--scatter-iterval", default=10, nargs="?",
+                        dest="scatter_interval",
+                        help="Adjust to use less data for scatter plots.",
+                        type=int)
+    optional.add_argument("-scs", "--scatter-s", default=1, nargs="?",
+                        dest="scatter_s",
+                        help="Adjust scatter plot marker size",
+                        type=float)
+    optional.add_argument("-hbg", "--hexbin-grid", default=100, nargs="?",
+                        dest="hexbin_grid",
+                        help="Adjusts hexbin gridsize parameters.",
+                        type=int)
     # TODO: is there a better way to do this? 
     #optional.add_argument("--weighted", default=True, action="store_true",
     #                      help="Use weights from WE.")
@@ -354,6 +364,9 @@ def create_cmd_arguments():
     formatting.add_argument("--color",
                         dest="color", help="Color for 1D plots, contour lines, and trace plots.",
                         widget="ColourChooser")
+    formatting.add_argument("--linewidth", "-lw", default=None, nargs="?",
+                        dest="linewidth", help="Linewidth for 1D plots, contour lines, and trace plots.",
+                        type=float)
     formatting.add_argument("--xlabel", dest="xlabel", type=str)
     formatting.add_argument("--xlim", help="LB UB", dest="xlim", nargs=2, type=float)
     formatting.add_argument("--ylabel", dest="ylabel", type=str)

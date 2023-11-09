@@ -95,7 +95,7 @@ def main():
     if args.cbar_label:
         plot.cbar.set_label(args.cbar_label, labelpad=14)
     # if using scatter3d and no label is given, create default label
-    elif args.plot_mode == "scatter3d":
+    elif args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d":
         # for 3d projected
         if args.proj3d is True:
             plot.ax.set_zlabel(args.Zname + " i" + str(plot.Zindex))

@@ -43,7 +43,7 @@ class H5_Plot(H5_Pdist):
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap=None, smoothing_level=None,
         color=None, ax=None, p_min=None, p_max=None, contour_interval=1, contour_levels=None,
         cbar_label=None, cax=None, jointplot=False, data_label=None, proj3d=False, proj4d=False, 
-        C=None, scatter_interval=10, scatter_s=1, *args, **kwargs):
+        C=None, scatter_interval=10, scatter_s=1, hexbin_grid=100, linewidth=1, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
 
@@ -91,6 +91,10 @@ class H5_Plot(H5_Pdist):
             Interval for displaying scatter plot data, default 1.
         scatter_s : float
             Int for displaying scatter plot data marker size, default 1.
+        hexbin_grid : int
+            Determines gridsize for hexbin plots.
+        linewidth : float
+            Linewidth for 1D plots, contour lines, and hexbin edges.
         ** args
         ** kwargs
         """
@@ -169,6 +173,8 @@ class H5_Plot(H5_Pdist):
         self.proj4d = proj4d
         self.scatter_interval = scatter_interval
         self.scatter_s = scatter_s
+        self.hexbin_grid = hexbin_grid
+        self.linewidth = linewidth
         self.kwargs = kwargs
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
@@ -266,10 +272,12 @@ class H5_Plot(H5_Pdist):
         Warning("contour_l lines are set to mpl defaults, set can be changed with `--color` or `--cmap`")
         # can control linewidths using rc params (lines.linewidths (default 1.5))
         if self.color:
-            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, colors=self.color)
+            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, 
+                                         colors=self.color, linewidths=self.linewidth)
             #self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=[5], colors=self.color)
         else:
-            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, cmap=self.cmap)
+            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, 
+                                         cmap=self.cmap, linewidths=self.linewidth)
 
     def plot_contour_f(self):
         """
@@ -292,7 +300,7 @@ class H5_Plot(H5_Pdist):
         # 1D data
         if self.p_max:
             self.Y[self.Y > self.p_max] = inf
-        self.ax.plot(self.X, self.Y, color=self.color, label=self.data_label)
+        self.ax.plot(self.X, self.Y, color=self.color, label=self.data_label, linewidth=self.linewidth)
         self.ax.set_ylabel(self.cbar_label)
     
     def plot_scatter3d(self, interval=10, s=1):
@@ -324,12 +332,18 @@ class H5_Plot(H5_Pdist):
                                             cmap=self.cmap, s=s,
                                             vmin=self.p_min, vmax=self.p_max)
 
-    def plot_hexbin3d(self):
+    def plot_hexbin3d(self, gridsize=100):
         """
         Hexbin plot?
         """
         # TODO: test this and add grid?
-        self.plot_obj = self.ax.hexbin(self.X, self.Y, C=self.Z,
+        # reshape to 1D and then get rid of extra dimension
+        self.X = np.squeeze(self.X.reshape(1, -1))
+        self.Y = np.squeeze(self.Y.reshape(1, -1))
+        self.Z = np.squeeze(self.Z.reshape(1, -1))
+        #print(self.X.shape, self.Y.shape, self.Z.shape)
+        self.plot_obj = self.ax.hexbin(self.X, self.Y, C=self.Z, gridsize=gridsize, 
+                                       edgecolors=self.color, linewidths=self.linewidth,
                                        cmap=self.cmap, vmin=self.p_min, vmax=self.p_max)
 
     def plot_margins(self):
@@ -513,7 +527,7 @@ class H5_Plot(H5_Pdist):
             self.plot_scatter3d(interval=self.scatter_interval, s=self.scatter_s)
 
         elif self.plot_mode == "hexbin3d":
-            self.plot_hexbin3d()
+            self.plot_hexbin3d(gridsize=self.hexbin_grid)
 
         # error if unknown plot_mode
         else:

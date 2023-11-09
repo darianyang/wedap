@@ -668,7 +668,7 @@ class H5_Pdist():
             seg_num = int(i2)
 
         #print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))
-        print(f"Go to ITERATION: {iter_num} and SEGMENT: {seg_num}")
+        print(f"Tracing ITERATION: {iter_num}, SEGMENT: {seg_num}")
         return iter_num, seg_num
 
     ##################### TODO: update or organize this #############################
@@ -738,7 +738,7 @@ class H5_Pdist():
             coords.append(self._get_data_array(data_name, data_index, it)[wlk][::10])
         return np.array(coords)
 
-    def plot_trace(self, walker_tuple, color="white", ax=None):
+    def plot_trace(self, walker_tuple, color="white", linewidth=1.0, ax=None):
         """
         Plot trace.
 
@@ -761,16 +761,16 @@ class H5_Pdist():
             # split iterations up to provide y-values for each x-value (pcoord)
             aux = self.get_coords(path, self.Xname, self.Xindex)
             iters = np.arange(1, len(aux)+1)
-            ax.plot(aux[:,0], iters, c="black", lw=2)
-            ax.plot(aux[:,0], iters, c=color, lw=1)
+            ax.plot(aux[:,0], iters, c="black", lw=linewidth+1)
+            ax.plot(aux[:,0], iters, c=color, lw=linewidth)
             return
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=2)
-        ax.plot(aux_x[:,0], aux_y[:,0], c=color, lw=1)
+        ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=linewidth+1)
+        ax.plot(aux_x[:,0], aux_y[:,0], c=color, lw=linewidth)
 
     def w_succ(self):
         """
