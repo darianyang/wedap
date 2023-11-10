@@ -43,7 +43,7 @@ class H5_Plot(H5_Pdist):
     def __init__(self, X=None, Y=None, Z=None, plot_mode="hist", cmap=None, smoothing_level=None,
         color=None, ax=None, p_min=None, p_max=None, contour_interval=1, contour_levels=None,
         cbar_label=None, cax=None, jointplot=False, data_label=None, proj3d=False, proj4d=False, 
-        C=None, scatter_interval=10, scatter_s=1, hexbin_grid=100, linewidth=None, linestyle=None,
+        C=None, scatter_interval=10, scatter_s=1, hexbin_grid=100, linewidth=None, linestyle="-",
         *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
@@ -406,6 +406,8 @@ class H5_Plot(H5_Pdist):
                 # plot point at x and y bin midpoints that correspond to mimima
                 self.ax.plot(self.X[maxima[0]], self.Y[maxima[1]], 'ko')
                 print(f"Minima: ({self.X[maxima[0]][0]}, {self.Y[maxima[1]][0]})")
+            
+            # TODO: allow for a list of line inputs
             if key == "axvline" and item:
                 self.ax.axvline(item, color=self.color, linewidth=self.linewidth, linestyle=self.linestyle)
             if key == "axhline" and item:

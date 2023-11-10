@@ -9,31 +9,24 @@ from wedap.tests.test_h5_plot import plot_data_gen
 
 h5 = "wedap/data/p53.h5"
 
-# # 1 dataset plots (TODO: update kwargs)
+# # 1 dataset plots
 # for dt in ["evolution"]:
 #     for pm in ["hist"]:
 #         for x in ["pcoord", "dihedral_2"]:
-#             plot_data_gen(h5, dt, pm, x, out=f"wedap/tests/data/plot_{dt}_{pm}_{x}.npy")
-            #plot_data_gen(h5, dt, pm, x, show=True)
+#             plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, show=True)
+#                           out=f"wedap/tests/data/plot_{dt}_{pm}_{x}.npy")
 # for dt in ["average", "instant"]:
 #     for pm in ["line"]:
 #         for x in ["pcoord", "dihedral_2"]:
-#             plot_data_gen(h5, dt, pm, x, out=f"wedap/tests/data/plot_{dt}_{pm}_{x}.npy")
-#             #plot_data_gen(h5, dt, pm, x, show=True)
+#             plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, #show=True)
+#                           out=f"wedap/tests/data/plot_{dt}_{pm}_{x}.npy")
 
-# # 2 dataset plots (TODO: update kwargs)
+# 2 dataset plots
 # for dt in ["average", "instant"]:
 #     for pm in ["hist", "contour"]:
 #         for x, y in [["pcoord", "dihedral_2"], ["dihedral_2", "pcoord"]]:
-#             plot_data_gen(h5, dt, pm, x, y, out=f"wedap/tests/data/plot_{dt}_{pm}_{x}_{y}.npy")
-#             #plot_data_gen(h5, dt, pm, x, y, show=True)
-
-# 2 dataset plots with joint plots (TODO)
-# for jp in [True, False]:
-#     for dt in ["average", "instant"]:
-#         for pm in ["hist", "contour"]:
-#             for x, y in [["pcoord", "dihedral_2"], ["dihedral_2", "pcoord"]]:
-#                 plot_data_gen(h5, dt, pm, x, y, jointplot=jp, out=f"wedap/tests/data/plot_{dt}_{pm}_{x}_{y}_jp{jp}.npy")
+#             plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, Yname=y, #show=True) 
+#                           out=f"wedap/tests/data/plot_{dt}_{pm}_{x}_{y}.npy")
 
 # # 3 dataset plots
 # for dt in ["average", "instant"]:
@@ -82,5 +75,14 @@ h5 = "wedap/data/p53.h5"
 #                       out=f"wedap/tests/data/plot_{dt}_{pm}_bins{bins}_hrx{hrx[0]}-{hrx[1]}_hry{hry[0]}-{hry[1]}.npy")
 
 
+##########################################
+################## TODO ##################
+##########################################
 # # TODO: tests for p_units (all versions - maybe better with pdist test) and with --weighted
 # # TODO: tests for 3d and 4d proj plots
+# 2 dataset plots with joint plots (TODO)
+# for jp in [True, False]:
+#     for dt in ["average", "instant"]:
+#         for pm in ["hist", "contour"]:
+#             for x, y in [["pcoord", "dihedral_2"], ["dihedral_2", "pcoord"]]:
+#                 plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, Yname=y,, jointplot=jp, out=f"wedap/tests/data/plot_{dt}_{pm}_{x}_{y}_jp{jp}.npy")
