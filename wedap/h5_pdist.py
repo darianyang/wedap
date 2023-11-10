@@ -285,7 +285,9 @@ class H5_Pdist():
         #weights = [None] * (self.last_iter - weight_start + 1)
         weights = []
         # fill out the weight list
-        for iter in range(weight_start, self.last_iter + 1, self.step_iter):
+        # can't use step-iter here since the entire weight array needs to be indexed by step-iter later
+        #for iter in range(weight_start, self.last_iter + 1, self.step_iter):
+        for iter in range(weight_start, self.last_iter + 1):
             #weights[iter - weight_start] = self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"]
             weights.append(self.h5[f"iterations/iter_{iter:08d}/seg_index"]["weight"])
         # 1D array of variably shaped arrays
