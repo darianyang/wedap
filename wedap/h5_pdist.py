@@ -39,9 +39,9 @@ class H5_Pdist():
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0,
                  H5save_out=None, Xsave_name=None, Ysave_name=None, Zsave_name=None, 
-                 data_proc=None, first_iter=1, last_iter=None, bins=(100,100), 
+                 data_proc=None, first_iter=1, last_iter=None,  step_iter=1, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
-                 histrange_x=None, histrange_y=None, no_pbar=False, step_iter=1, *args, **kwargs):
+                 histrange_x=None, histrange_y=None, no_pbar=False, *args, **kwargs):
         """
         Parameters
         ----------
@@ -84,6 +84,9 @@ class H5_Pdist():
         last_iter : int
             Last iteration data to include, default is the last recorded iteration in the west.h5 file. 
             Note that `instant` type pdists only depend on last_iter.
+        step_iter : int
+            Only use every step_iter size iteration intervals of the input data,
+            e.g. step_iter=10 for every 10 iterations.
         bins : tuple of ints (TODO: maybe the tuple isn't user friendly for 1 dim? Could check items like md_pdist)
             Histogram bins in pdist data to be generated for x and y datasets, default both 100.
         p_units : str
@@ -104,9 +107,6 @@ class H5_Pdist():
             Optionally put custom bin ranges.
         no_pbar : bool
             Optionally do not include the progress bar for pdist generation.
-        step_iter : int
-            Only use every step_iter size iteration intervals of the input data,
-            e.g. step_iter=10 for every 10 iterations.
         TODO: maybe also binsfromexpression?
         """
         # standard case where the input h5 file is a single string
@@ -172,7 +172,21 @@ class H5_Pdist():
             self.first_iter = int(first_iter)
 
         self.step_iter = step_iter
-        self.bins = bins
+        
+        # standardize bins input
+        # case where the input bins is a single int
+        if isinstance(bins, int):
+            # convert single int to 1 element list to be indexable later
+            self.bins = [bins]
+            # if there is a 2 dimensional pdist requested, make same int bins each dim
+            if Yname is not None:
+                self.bins = [bins, bins]
+        # when input is already a list of bins with an item for each dimension
+        elif isinstance(bins, (list, tuple)):
+            self.bins = bins
+        else:
+            raise ValueError(f"Something may be wrong with bins input: {bins}")
+
         self.skip_basis = skip_basis
         self.skip_basis_out = skip_basis_out
 

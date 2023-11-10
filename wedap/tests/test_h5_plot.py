@@ -23,14 +23,11 @@ matplotlib.use('agg')
 # decorator to skip in pytest
 #@pytest.mark.skip
 
-def plot_data_gen(h5, data_type, plot_mode, Xname, Yname=None, Zname=None, 
-                  jointplot=False, out=None, show=False):
+def plot_data_gen(out=None, show=False, **kwargs):
     """
     Make plot and return or convert to npy binary data file.
     """
-    plot = wedap.H5_Plot(h5=h5, data_type=data_type, plot_mode=plot_mode, 
-                         jointplot=jointplot,
-                         Xname=Xname, Yname=Yname, Zname=Zname)
+    plot = wedap.H5_Plot(**kwargs)
     plot.plot()
     fig = plot.fig
 
@@ -65,7 +62,7 @@ class Test_H5_Plot():
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     def test_1d_evolution_plots(self, data_type, Xname):
         # make plot data array
-        plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode="hist", Xname=Xname)
+        plotdata = plot_data_gen(h5=self.h5, data_type=data_type, plot_mode="hist", Xname=Xname)
 
         # compare to previously generated plot data
         data = np.load(f"wedap/tests/data/plot_{data_type}_hist_{Xname}.npy")
@@ -77,7 +74,7 @@ class Test_H5_Plot():
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
     def test_1d_avg_inst_plots(self, data_type, Xname):
         # make plot data array
-        plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode="line", Xname=Xname)
+        plotdata = plot_data_gen(h5=self.h5, data_type=data_type, plot_mode="line", Xname=Xname)
 
         # compare to previously generated plot data
         data = np.load(f"wedap/tests/data/plot_{data_type}_line_{Xname}.npy")
@@ -92,7 +89,7 @@ class Test_H5_Plot():
     @pytest.mark.parametrize("Xname, Yname", [["pcoord", "dihedral_2"], ["dihedral_2", "pcoord"]])
     def test_2_dataset_plots(self, data_type, plot_mode, Xname, Yname):#, jointplot):
         # make plot data array
-        plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode=plot_mode, 
+        plotdata = plot_data_gen(h5=self.h5, data_type=data_type, plot_mode=plot_mode, 
                                  Xname=Xname, Yname=Yname)#, jointplot=jointplot)
 
         # compare to previously generated plot data
@@ -110,11 +107,63 @@ class Test_H5_Plot():
                                                      ["dihedral_2", "dihedral_3", "pcoord"]])
     def test_3_dataset_plots(self, data_type, plot_mode, Xname, Yname, Zname):
         # make plot data array
-        plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode=plot_mode, 
+        plotdata = plot_data_gen(h5=self.h5, data_type=data_type, plot_mode=plot_mode, 
                                  Xname=Xname, Yname=Yname, Zname=Zname)
 
         # compare to previously generated plot data
         data = np.load(f"wedap/tests/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}_{Zname}.npy")
+        #np.testing.assert_allclose(plotdata, data)
+        # check to see if the amount of mismatches is less than 500 (<1% of ~1 million items)
+        assert data.size - np.count_nonzero(plotdata==data) < 500
+
+    @pytest.mark.parametrize("first_iter, last_iter, step_iter", [[1, 15, 1], 
+                                                                  [3, None, 1], 
+                                                                  [5, 15, 3]])
+    def test_evolution_fi_li_si(self, first_iter, last_iter, step_iter):
+        # make plot data array
+        plotdata = plot_data_gen(h5=self.h5, data_type="evolution", plot_mode="hist", 
+                                 first_iter=first_iter, last_iter=last_iter, step_iter=step_iter)
+        
+        # compare to previously generated plot data
+        data = np.load(f"wedap/tests/data/plot_evolution_hist_fi{first_iter}_li{last_iter}_si{step_iter}.npy")
+        #np.testing.assert_allclose(plotdata, data)
+        # check to see if the amount of mismatches is less than 500 (<1% of ~1 million items)
+        assert data.size - np.count_nonzero(plotdata==data) < 500
+
+    def test_evolution_bins_hrx(self, bins=50, hrx=[0, 8]):
+        # make plot data array
+        plotdata = plot_data_gen(h5=self.h5, data_type="evolution", plot_mode="hist", 
+                                 bins=bins, histrange_x=hrx)
+        
+        # compare to previously generated plot data
+        data = np.load(f"wedap/tests/data/plot_evolution_hist_bins{bins}_hrx{hrx[0]}-{hrx[1]}.npy")
+        #np.testing.assert_allclose(plotdata, data)
+        # check to see if the amount of mismatches is less than 500 (<1% of ~1 million items)
+        assert data.size - np.count_nonzero(plotdata==data) < 500
+
+    @pytest.mark.parametrize("first_iter, last_iter, step_iter", [[1, 15, 1], 
+                                                                  [3, None, 1], 
+                                                                  [5, 15, 3]])
+    def test_average_fi_li_si(self, first_iter, last_iter, step_iter):
+        # make plot data array
+        plotdata = plot_data_gen(h5=self.h5, data_type="average", plot_mode="hist", 
+                                 Yname="pcoord", Yindex=1,
+                                 first_iter=first_iter, last_iter=last_iter, step_iter=step_iter)
+        
+        # compare to previously generated plot data
+        data = np.load(f"wedap/tests/data/plot_average_hist_fi{first_iter}_li{last_iter}_si{step_iter}.npy")
+        #np.testing.assert_allclose(plotdata, data)
+        # check to see if the amount of mismatches is less than 500 (<1% of ~1 million items)
+        assert data.size - np.count_nonzero(plotdata==data) < 500
+
+    def test_average_bins_hrx_hry(self, bins=50, hrx=[0, 8], hry=[5, 35]):
+        # make plot data array
+        plotdata = plot_data_gen(h5=self.h5, data_type="average", plot_mode="hist", 
+                                 Yname="pcoord", Yindex=1,
+                                 bins=bins, histrange_x=hrx, histrange_y=hry)
+        
+        # compare to previously generated plot data
+        data = np.load(f"wedap/tests/data/plot_average_hist_bins{bins}_hrx{hrx[0]}-{hrx[1]}_hry{hry[0]}-{hry[1]}.npy")
         #np.testing.assert_allclose(plotdata, data)
         # check to see if the amount of mismatches is less than 500 (<1% of ~1 million items)
         assert data.size - np.count_nonzero(plotdata==data) < 500
