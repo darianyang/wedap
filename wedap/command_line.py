@@ -367,6 +367,9 @@ def create_cmd_arguments():
     formatting.add_argument("--linewidth", "-lw", default=None, nargs="?",
                         dest="linewidth", help="Linewidth for 1D plots, contour lines, and trace plots.",
                         type=float)
+    formatting.add_argument("--linestyle", "-ls", default=None, nargs="?",
+                        dest="linestyle", help="Linestyle for 1D plots, contour lines, and trace plots.",
+                        type=str)
     formatting.add_argument("--xlabel", dest="xlabel", type=str)
     formatting.add_argument("--xlim", help="LB UB", dest="xlim", nargs=2, type=float)
     formatting.add_argument("--ylabel", dest="ylabel", type=str)
@@ -375,6 +378,8 @@ def create_cmd_arguments():
     formatting.add_argument("--suptitle", dest="suptitle", type=str)
     formatting.add_argument("--cbar-label", dest="cbar_label", type=str)
     formatting.add_argument("--grid", dest="grid", default=False, action="store_true")
+    formatting.add_argument("--axvline", dest="axvline", type=float)
+    formatting.add_argument("--axhline", dest="axhline", type=float)
 
     # return the argument parser
     return parser 

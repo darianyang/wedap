@@ -754,6 +754,8 @@ class H5_Pdist():
             coords.append(self._get_data_array(data_name, data_index, it)[wlk][::10])
         return np.array(coords)
 
+    # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
+    #       need to do some rearrangement and refactoring at some point
     def plot_trace(self, walker_tuple, color="white", linewidth=1.0, ax=None):
         """
         Plot trace.
@@ -777,16 +779,16 @@ class H5_Pdist():
             # split iterations up to provide y-values for each x-value (pcoord)
             aux = self.get_coords(path, self.Xname, self.Xindex)
             iters = np.arange(1, len(aux)+1)
-            ax.plot(aux[:,0], iters, c="black", lw=linewidth+1)
-            ax.plot(aux[:,0], iters, c=color, lw=linewidth)
+            ax.plot(aux[:,0], iters, c="black", lw=linewidth+1, linestyle=self.linestyle)
+            ax.plot(aux[:,0], iters, c=color, lw=linewidth, linestyle=self.linestyle)
             return
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=linewidth+1)
-        ax.plot(aux_x[:,0], aux_y[:,0], c=color, lw=linewidth)
+        ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=linewidth+1, linestyle=self.linestyle)
+        ax.plot(aux_x[:,0], aux_y[:,0], c=color, lw=linewidth, linestyle=self.linestyle)
 
     def w_succ(self):
         """
