@@ -161,7 +161,7 @@ class H5_Plot(H5_Pdist):
             elif self.p_units == "raw_norm":
                 self.cbar_label = "Normalized Counts"
         # if using 3 datasets, put blank name as default cbar
-        if self.plot_mode == "scatter3d":
+        if self.plot_mode == "scatter3d" or self.plot_mode == "hexbin3d":
             self.cbar_label = ""
         # overwrite and apply cbar_label attr if available/specified
         if cbar_label:

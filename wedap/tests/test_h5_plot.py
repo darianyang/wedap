@@ -24,7 +24,7 @@ matplotlib.use('agg')
 #@pytest.mark.skip
 
 def plot_data_gen(h5, data_type, plot_mode, Xname, Yname=None, Zname=None, 
-                  jointplot=False, out=None):
+                  jointplot=False, out=None, show=False):
     """
     Make plot and return or convert to npy binary data file.
     """
@@ -33,6 +33,10 @@ def plot_data_gen(h5, data_type, plot_mode, Xname, Yname=None, Zname=None,
                          Xname=Xname, Yname=Yname, Zname=Zname)
     plot.plot()
     fig = plot.fig
+
+    if show:
+        matplotlib.pyplot.show()
+        return
 
     # draw the figure 
     # tight since canvas is large
@@ -47,6 +51,8 @@ def plot_data_gen(h5, data_type, plot_mode, Xname, Yname=None, Zname=None,
     if out:
         np.save(out, data)
     
+    matplotlib.pyplot.close()
+
     return data
 
 class Test_H5_Plot():
@@ -55,9 +61,21 @@ class Test_H5_Plot():
     """
     h5 = "wedap/data/p53.h5"
     
-    @pytest.mark.parametrize("data_type", ["evolution", "average", "instant"])
+    @pytest.mark.parametrize("data_type", ["evolution"])
     @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
-    def test_1_dataset_plots(self, data_type, Xname):
+    def test_1d_evolution_plots(self, data_type, Xname):
+        # make plot data array
+        plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode="hist", Xname=Xname)
+
+        # compare to previously generated plot data
+        data = np.load(f"wedap/tests/data/plot_{data_type}_hist_{Xname}.npy")
+        #np.testing.assert_allclose(plotdata, data)
+        # check to see if the amount of mismatches is less than 500 (<1% of 1 million items)
+        assert data.size - np.count_nonzero(plotdata==data) < 500
+
+    @pytest.mark.parametrize("data_type", ["average", "instant"])
+    @pytest.mark.parametrize("Xname", ["pcoord", "dihedral_2"])
+    def test_1d_avg_inst_plots(self, data_type, Xname):
         # make plot data array
         plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode="line", Xname=Xname)
 
@@ -85,17 +103,18 @@ class Test_H5_Plot():
         assert data.size - np.count_nonzero(plotdata==data) < 500
     
 
+    @pytest.mark.parametrize("plot_mode", ["scatter3d", "hexbin3d"])
     @pytest.mark.parametrize("data_type", ["average", "instant"])
     @pytest.mark.parametrize("Xname, Yname, Zname", [["pcoord", "dihedral_2", "dihedral_3"], 
                                                      ["dihedral_2", "pcoord", "dihedral_3"], 
                                                      ["dihedral_2", "dihedral_3", "pcoord"]])
-    def test_3_dataset_plots(self, data_type, Xname, Yname, Zname):
+    def test_3_dataset_plots(self, data_type, plot_mode, Xname, Yname, Zname):
         # make plot data array
-        plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode="scatter3d", 
+        plotdata = plot_data_gen(self.h5, data_type=data_type, plot_mode=plot_mode, 
                                  Xname=Xname, Yname=Yname, Zname=Zname)
 
         # compare to previously generated plot data
-        data = np.load(f"wedap/tests/data/plot_{data_type}_scatter3d_{Xname}_{Yname}_{Zname}.npy")
+        data = np.load(f"wedap/tests/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}_{Zname}.npy")
         #np.testing.assert_allclose(plotdata, data)
         # check to see if the amount of mismatches is less than 500 (<1% of ~1 million items)
         assert data.size - np.count_nonzero(plotdata==data) < 500
