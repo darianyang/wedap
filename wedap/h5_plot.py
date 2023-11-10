@@ -407,11 +407,21 @@ class H5_Plot(H5_Pdist):
                 self.ax.plot(self.X[maxima[0]], self.Y[maxima[1]], 'ko')
                 print(f"Minima: ({self.X[maxima[0]][0]}, {self.Y[maxima[1]][0]})")
             
-            # TODO: allow for a list of line inputs
+            # now allowing for a list of line inputs
             if key == "axvline" and item:
-                self.ax.axvline(item, color=self.color, linewidth=self.linewidth, linestyle=self.linestyle)
+                # make into list if not already
+                if not isinstance(item, list):
+                    item = [item]
+                # loop each list item and plot line
+                for line in item:
+                    self.ax.axvline(line, color=self.color, linewidth=self.linewidth, linestyle=self.linestyle)
             if key == "axhline" and item:
-                self.ax.axhline(item, color=self.color, linewidth=self.linewidth, linestyle=self.linestyle)
+                # make into list if not already
+                if not isinstance(item, list):
+                    item = [item]
+                # loop each list item and plot line
+                for line in item:
+                    self.ax.axhline(line, color=self.color, linewidth=self.linewidth, linestyle=self.linestyle)
 
     # TODO: cbar issues with 1d plots
     def plot(self, cbar=True):
