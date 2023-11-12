@@ -55,15 +55,22 @@ Note that `Gooey` is kindof troublesome to pip install in some systems, which is
 
 ## GUI
 
-`wedap` has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched by running `wedap` or `python wedap` if you're in the main `wedap` directory of this repository. If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. 
+`wedap` has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched from the command line by simply running 
+``` bash
+wedap
+```
+or 
+`python wedap` if you're in the main `wedap` directory of this repository. 
+
+
+If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. 
 If you pip install (instead of conda installing) `wxPython` and `Gooey` on Mac you may be able to just run `wedap`. 
-If you wish to use the command line interface instead include any amount of arguments and include `-h` or `--help` to see the available options.
 
 For MacOSX, you can set up an alias in your `.bash_profile` by running the following:
-```
+``` bash
 echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profile
 ```
-Then simply type `wedap` on the terminal to run the wedap GUI.
+Then simply type `wedap` in the terminal to run the wedap GUI.
 
 ## Examples
 
