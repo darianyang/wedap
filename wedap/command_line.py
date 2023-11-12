@@ -378,8 +378,10 @@ def create_cmd_arguments():
     formatting.add_argument("--suptitle", dest="suptitle", type=str)
     formatting.add_argument("--cbar-label", dest="cbar_label", type=str)
     formatting.add_argument("--grid", dest="grid", default=False, action="store_true")
-    formatting.add_argument("--axvline", dest="axvline", nargs="*", type=float)
-    formatting.add_argument("--axhline", dest="axhline", nargs="*", type=float)
+    formatting.add_argument("--axvline", "-vl", help="Can be a single value or a list of lines.", 
+                            dest="axvline", nargs="*", type=float)
+    formatting.add_argument("--axhline", "-hl", help="Can be a single value or a list of lines.",
+                            dest="axhline", nargs="*", type=float)
 
     # return the argument parser
     return parser 
