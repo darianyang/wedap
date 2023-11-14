@@ -367,7 +367,7 @@ def create_cmd_arguments():
     formatting.add_argument("--linewidth", "-lw", default=None, nargs="?",
                         dest="linewidth", help="Linewidth for 1D plots, contour lines, and trace plots.",
                         type=float)
-    formatting.add_argument("--linestyle", "-ls", default=None, nargs="?",
+    formatting.add_argument("--linestyle", "-ls", default="-", nargs="?",
                         dest="linestyle", help="Linestyle for 1D plots, contour lines, and trace plots.",
                         type=str)
     formatting.add_argument("--xlabel", dest="xlabel", type=str)
