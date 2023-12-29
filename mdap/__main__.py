@@ -100,7 +100,7 @@ def main():
     elif args.p_units == "raw_norm":
         cbar_label = "Normalized Counts"
     # if using scatter3d and no label is given, create default label
-    if args.plot_mode == "scatter3d" and args.cbar_label is None:
+    if (args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d") and args.cbar_label is None:
         cbar_label = plot.Zname[0] + " i" + str(plot.Zindex)
     # if there is a cbar object set label
     if hasattr(plot, "cbar"):

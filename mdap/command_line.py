@@ -144,7 +144,7 @@ def create_cmd_arguments():
                         type=str) 
     main.add_argument("-pm", "--plot-mode", "--plotmode", default="hist", nargs="?",
                         dest="plot_mode", choices=("hist", "hist_l", "contour", "contour_l", 
-                                                   "contour_f", "bar", "line", "scatter3d"),
+                                                   "contour_f", "bar", "line", "scatter3d", "hexbin3d"),
                         help="The type of plot desired.  "
                              "e.g. line for 1D, hist or contour for 2D and scatter3d for 3D.",
                         type=str)
@@ -255,6 +255,18 @@ def create_cmd_arguments():
                              " levels) using a gaussian filter with sigma="
                              "SMOOTHING_LEVEL.",
                         type=float)
+    optional.add_argument("-sci", "--scatter-iterval", default=10, nargs="?",
+                        dest="scatter_interval",
+                        help="Adjust to use less data for scatter plots.",
+                        type=int)
+    optional.add_argument("-scs", "--scatter-s", default=1, nargs="?",
+                        dest="scatter_s",
+                        help="Adjust scatter plot marker size",
+                        type=float)
+    optional.add_argument("-hbg", "--hexbin-grid", default=100, nargs="?",
+                        dest="hexbin_grid",
+                        help="Adjusts hexbin gridsize parameters.",
+                        type=int)
     optional.add_argument("-T", "--temp", default=298, nargs="?",
                         dest="T", help="Used with kcal/mol 'p-units'.",
                         type=int)
@@ -265,22 +277,21 @@ def create_cmd_arguments():
                           action="store_true")
     optional.add_argument("-3d", "--proj3d", default=False,
                           dest="proj3d",
-                          help="Make a 3d projection plot",
+                          help="Make a 3d projection plot, works with contour or scatter plots.",
                           action="store_true")
-    optional.add_argument("--style", default="default", nargs="?",
-                        dest="style",
-                        help="mpl style, can use default, None, or custom. "
-                             "Edit the wedap/styles/default.mplstyle file to "
-                             "change default wedap plotting style options.",
-                        type=str)
-    # TODO: prob cant use custom outside of list
-    optional.add_argument("--cmap", default="viridis", nargs="?",
-                        dest="cmap",
-                        help="mpl colormap name.",
-                        type=str)
-    optional.add_argument("--color",
-                        dest="color", help="Color for 1D plots and trace plots.",
-                        widget="ColourChooser")
+    optional.add_argument("-4d", "--proj4d", default=False,
+                          dest="proj4d",
+                          help="Make a 4d projection plot, must have Cname. " +
+                               "only works with scatter plots.",
+                          action="store_true")
+    optional.add_argument("-C", "-c", "--Cname", "--cname", default=None, nargs="?",
+                         dest="Cname", 
+                         help="Target data name for cbar of proj3d. Must use 'scatter3d' "
+                         "for 'plot_mode'. Can be 'pcoord' or any aux dataset name "
+                         "in your h5 file.",
+                         type=str)
+    optional.add_argument("-Ci", "--Cindex", "--cindex", default=0, nargs="?", type=int,
+                           dest="Cindex", help="Index in third dimension for >2D datasets.")
 
     # create optional flag to not output plot to console screen
     optional.add_argument("-nots", "--no-output-to-screen",
@@ -316,6 +327,27 @@ def create_cmd_arguments():
 
     formatting = parser.add_argument_group("Plot Formatting Arguments") 
 
+    formatting.add_argument("--style", default="default", nargs="?",
+                        dest="style",
+                        help="mpl style, can leave blank to use default, "
+                             "input `None` for basic mpl settings, can use a custom "
+                             "path to a mpl.style text file, or could use a mpl included "
+                             "named style, e.g. `ggplot`. "
+                             "Edit the wedap/styles/default.mplstyle file to "
+                             "change default wedap plotting style options.",
+                        type=str)
+    # TODO: prob cant use custom outside of list
+    formatting.add_argument("--cmap", default="viridis", nargs="?",
+                        dest="cmap", help="mpl colormap name.", type=str)
+    formatting.add_argument("--color",
+                        dest="color", help="Color for 1D plots, contour lines, and trace plots.",
+                        widget="ColourChooser")
+    formatting.add_argument("--linewidth", "-lw", default=None, nargs="?",
+                        dest="linewidth", help="Linewidth for 1D plots, contour lines, and trace plots.",
+                        type=float)
+    formatting.add_argument("--linestyle", "-ls", default="-", nargs="?",
+                        dest="linestyle", help="Linestyle for 1D plots, contour lines, and trace plots.",
+                        type=str)
     formatting.add_argument("--xlabel", dest="xlabel", type=str)
     formatting.add_argument("--xlim", help="LB UB", dest="xlim", nargs=2, type=float)
     formatting.add_argument("--ylabel", dest="ylabel", type=str)
@@ -324,6 +356,10 @@ def create_cmd_arguments():
     formatting.add_argument("--suptitle", dest="suptitle", type=str)
     formatting.add_argument("--cbar-label", dest="cbar_label", type=str)
     formatting.add_argument("--grid", dest="grid", default=False, action="store_true")
+    formatting.add_argument("--axvline", "-vl", help="Can be a single value or a list of lines.", 
+                            dest="axvline", nargs="*", type=float)
+    formatting.add_argument("--axhline", "-hl", help="Can be a single value or a list of lines.",
+                            dest="axhline", nargs="*", type=float)
 
     # return the argument parser
     return parser 
