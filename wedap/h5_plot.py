@@ -282,6 +282,8 @@ class H5_Plot(H5_Pdist):
         else:
             self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, 
                                          cmap=self.cmap, linewidths=self.linewidth, linestyles=self.linestyle)
+        # set to call both lines and cbar plot_obj
+        self.plot_obj = self.lines
 
     def plot_contour_f(self):
         """
@@ -562,7 +564,7 @@ class H5_Plot(H5_Pdist):
         #     self.ax.set_ylabel(f"Progress Coordinate {self.Yindex}")
 
         # don't add cbar if not specified or if using a 1D plot
-        if cbar and self.plot_mode not in ["line", "bar", "contour_l"]:
+        if cbar and self.plot_mode not in ["line", "bar"]:
             self.add_cbar(cax=self.cax, pad=self.cbar_pad)
 
         # take kwargs and unpack to look for plot option items

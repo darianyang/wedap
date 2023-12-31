@@ -382,6 +382,8 @@ def create_cmd_arguments():
                             dest="axvline", nargs="*", type=float)
     formatting.add_argument("--axhline", "-hl", help="Can be a single value or a list of lines.",
                             dest="axhline", nargs="*", type=float)
+#     formatting.add_argument("--text", help="3 args for ax.text: x, y, string",
+#                             dest="text", nargs="3", type=float)
 
     # return the argument parser
     return parser 
