@@ -127,6 +127,10 @@ def main():
         else:
             plot.ax.set_ylabel(cbar_label)
 
+    # run postprocessing function if requested
+    if args.postprocess_func is not None:
+        plot._run_postprocessing()
+
     """
     Show and/or save the final plot
     """

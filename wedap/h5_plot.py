@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 import scipy.ndimage
 from warnings import warn
 from numpy import inf
+import importlib
 
 from .h5_pdist import *
 
@@ -44,7 +45,7 @@ class H5_Plot(H5_Pdist):
         color=None, ax=None, p_min=None, p_max=None, contour_interval=1, contour_levels=None,
         cbar_label=None, cax=None, jointplot=False, data_label=None, proj3d=False, proj4d=False, 
         C=None, scatter_interval=10, scatter_s=1, hexbin_grid=100, linewidth=None, linestyle="-",
-        *args, **kwargs):
+        postprocess_func=None, *args, **kwargs):
         """
         Plotting of pdists generated from H5 datasets.
 
@@ -98,6 +99,8 @@ class H5_Plot(H5_Pdist):
             Linewidth for 1D plots, contour lines, and hexbin edges.
         linestyle : str
             Linestyle for 1D plots, contour lines, and hexbin edges.
+        postprocess_func : func
+            User function to import.
         ** args
         ** kwargs
         """
@@ -179,6 +182,7 @@ class H5_Plot(H5_Pdist):
         self.hexbin_grid = hexbin_grid
         self.linewidth = linewidth
         self.linestyle = linestyle
+        self.postprocess_func = postprocess_func
         self.kwargs = kwargs
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
@@ -425,6 +429,66 @@ class H5_Plot(H5_Pdist):
                 for line in item:
                     self.ax.axhline(line, color=self.color, linewidth=self.linewidth, linestyle=self.linestyle)
 
+    def _run_postprocessing(self):
+        """
+        Run the user-specified postprocessing function.
+        """
+        # Parse the user-specifed string for the module and class/function name.
+        module_name, attr_name = self.postprocess_func.split('.', 1) 
+        # import the module ``module_name`` and make the function/class 
+        # accessible as ``attr``.
+        #attr = getattr(importlib.import_module(module_name), attr_name) 
+        attr = getattr(self.load_module(module_name, '.'), attr_name)
+        # Call ``attr``.
+        attr()
+
+    @staticmethod
+    def load_module(module_name, path=None):
+        """Load and return the given module, recursively loading containing packages as necessary."""
+        if module_name in sys.modules:
+            return sys.modules[module_name]
+
+        if path is None:
+            return importlib.import_module(module_name)
+
+        spec_components = list(reversed(module_name.split('.')))
+        qname_components = []
+        mod_chain = []
+        while spec_components:
+            next_component = spec_components.pop(-1)
+            qname_components.append(next_component)
+
+            try:
+                parent = mod_chain[-1]
+                path = parent.__path__
+            except IndexError:
+                parent = None
+
+            qname = '.'.join(qname_components)
+
+            if qname in sys.modules:
+                module = sys.modules[qname]
+            else:
+                spec = importlib.machinery.PathFinder().find_spec(qname, path)
+
+                if spec is None:
+                    raise ImportError(f'No module named {qname}')
+
+                module = importlib.util.module_from_spec(spec)
+
+                if spec.name not in sys.modules:
+                    sys.modules[spec.name] = module
+
+                spec.loader.exec_module(module)
+
+                # Make the module appear in the parent module's namespace
+                if parent:
+                    setattr(parent, next_component, module)
+
+            mod_chain.append(module)
+
+        return module
+
     # TODO: cbar issues with 1d plots
     def plot(self, cbar=True):
         """
@@ -571,6 +635,31 @@ class H5_Plot(H5_Pdist):
         if self.kwargs is not None:
             self._unpack_plot_options()
 
+        # optionally run post processing function
+        # commented out, likely if you're using the API, no need for postproc
+        # only gets called during CLI/GUI use
+        # if self.postprocess_func is not None:
+        #     self._run_postprocessing()
+
         # fig vs plt shouldn't matter here (needed to go plt for mosaic)
         #self.fig.tight_layout()
         plt.tight_layout()
+
+if __name__ == "__main__":
+    # testing of postprocess function
+    import types
+    x = types.SimpleNamespace()
+    import os
+    print(os.getcwd())
+    x.postprocess_func = "postprocess_test.adjust_plot"
+    #H5_Plot._run_postprocessing(x)
+
+    #import importlib
+    # # Parse the user-specifed string for the module and class/function name.
+    # module_name, attr_name = x.postprocess_func.split('.', 1) 
+    # # import the module ``module_name`` and make the function/class 
+    # # accessible as ``attr``.
+    # attr = getattr(importlib.import_module(module_name), attr_name) 
+    # # Call ``attr``.
+    # attr()
+    

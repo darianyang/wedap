@@ -360,7 +360,14 @@ def create_cmd_arguments():
                             dest="axvline", nargs="*", type=float)
     formatting.add_argument("--axhline", "-hl", help="Can be a single value or a list of lines.",
                             dest="axhline", nargs="*", type=float)
-
+    formatting.add_argument('--postprocess', '--postprocess-function', '-ppf', default=None,
+                            dest='postprocess_func',
+                            help='After plotting data, load and execute the '
+                                 'Python function specified by '
+                                 'POSTPROCESS_FUNC. POSTPROCESS_FUNC should be '
+                                 'a string of the form ``mymodule.myfunction``.'
+                                 'Example: '
+                                 '``--postprocess mymodule.myfunction``.')
     # return the argument parser
     return parser 
 

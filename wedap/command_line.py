@@ -384,6 +384,18 @@ def create_cmd_arguments():
                             dest="axhline", nargs="*", type=float)
 #     formatting.add_argument("--text", help="3 args for ax.text: x, y, string",
 #                             dest="text", nargs="3", type=float)
+#     formatting.add_argument("--figsize", default=None, nargs=2,
+#                             dest="figsize",
+#                             help="Matplotlib figure size, e.g. (6,4)",
+#                             type=float)
+    formatting.add_argument('--postprocess', '--postprocess-function', '-ppf', default=None,
+                            dest='postprocess_func',
+                            help='After plotting data, load and execute the '
+                                 'Python function specified by '
+                                 'POSTPROCESS_FUNC. POSTPROCESS_FUNC should be '
+                                 'a string of the form ``mymodule.myfunction``.'
+                                 'Example: '
+                                 '``--postprocess mymodule.myfunction``.')
 
     # return the argument parser
     return parser 

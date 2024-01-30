@@ -769,7 +769,7 @@ class H5_Pdist():
         """
         # TODO: update/streamline this
         if ax is None:
-            fig, ax = plt.subplots(figsize=(7,5))
+            fig, ax = plt.subplots()
         else:
             fig = plt.gcf()
 

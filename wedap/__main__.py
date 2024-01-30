@@ -107,6 +107,10 @@ def main():
         else:
             plot.cbar.set_label(args.Zname + " i" + str(plot.Zindex))
     
+    # run postprocessing function if requested
+    if args.postprocess_func is not None:
+        plot._run_postprocessing()
+
     """
     Show and/or save the final plot
     """
