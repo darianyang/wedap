@@ -756,7 +756,7 @@ class H5_Pdist():
 
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
-    def plot_trace(self, walker_tuple, color="white", linewidth=1.0, ax=None):
+    def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle="-", ax=None):
         """
         Plot trace.
 
@@ -773,22 +773,29 @@ class H5_Pdist():
         else:
             fig = plt.gcf()
 
+        # TODO: temp linestyle check, eventually move this whole method elsewhere
+        #       need to be able to use cli and pass linestyle, while being able to use API
+        #       where linestyle might not always be available if using h5_pdist and h5_plot separately
+        # if object has linestyle specified, use it, otherwise use arg
+        if hasattr(self, 'linestyle'):
+            linestyle = self.linestyle
+
         path = self.trace_walker(walker_tuple)
         # adjustments for plothist evolution of only aux_x data
         if self.data_type == "evolution":
             # split iterations up to provide y-values for each x-value (pcoord)
             aux = self.get_coords(path, self.Xname, self.Xindex)
             iters = np.arange(1, len(aux)+1, self.step_iter)
-            ax.plot(aux[::self.step_iter,0], iters, c="black", lw=linewidth+1, linestyle=self.linestyle)
-            ax.plot(aux[::self.step_iter,0], iters, c=color, lw=linewidth, linestyle=self.linestyle)
+            ax.plot(aux[::self.step_iter,0], iters, c="black", lw=linewidth+1, linestyle=linestyle)
+            ax.plot(aux[::self.step_iter,0], iters, c=color, lw=linewidth, linestyle=linestyle)
             return
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c="black", lw=linewidth+1, linestyle=self.linestyle)
-        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c=color, lw=linewidth, linestyle=self.linestyle)
+        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c="black", lw=linewidth+1, linestyle=linestyle)
+        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c=color, lw=linewidth, linestyle=linestyle)
 
     def w_succ(self):
         """
