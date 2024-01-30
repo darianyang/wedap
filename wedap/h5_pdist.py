@@ -39,7 +39,7 @@ class H5_Pdist():
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0,
                  H5save_out=None, Xsave_name=None, Ysave_name=None, Zsave_name=None, 
-                 data_proc=None, first_iter=1, last_iter=None,  step_iter=1, bins=(100,100), 
+                 data_proc=None, first_iter=1, last_iter=None, step_iter=1, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
                  histrange_x=None, histrange_y=None, no_pbar=False, *args, **kwargs):
         """
@@ -778,17 +778,17 @@ class H5_Pdist():
         if self.data_type == "evolution":
             # split iterations up to provide y-values for each x-value (pcoord)
             aux = self.get_coords(path, self.Xname, self.Xindex)
-            iters = np.arange(1, len(aux)+1)
-            ax.plot(aux[:,0], iters, c="black", lw=linewidth+1, linestyle=self.linestyle)
-            ax.plot(aux[:,0], iters, c=color, lw=linewidth, linestyle=self.linestyle)
+            iters = np.arange(1, len(aux)+1, self.step_iter)
+            ax.plot(aux[::self.step_iter,0], iters, c="black", lw=linewidth+1, linestyle=self.linestyle)
+            ax.plot(aux[::self.step_iter,0], iters, c=color, lw=linewidth, linestyle=self.linestyle)
             return
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[:,0], aux_y[:,0], c="black", lw=linewidth+1, linestyle=self.linestyle)
-        ax.plot(aux_x[:,0], aux_y[:,0], c=color, lw=linewidth, linestyle=self.linestyle)
+        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c="black", lw=linewidth+1, linestyle=self.linestyle)
+        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c=color, lw=linewidth, linestyle=self.linestyle)
 
     def w_succ(self):
         """
