@@ -324,8 +324,12 @@ class H5_Pdist():
         duplicates = set()
 
         for pair in pairs:
-            # Check if the pair has been seen before
-            if pair in seen_pairs:
+            # for input numpy arrays, skip this checking
+            if isinstance(pair[0], np.ndarray):
+                pass
+
+            # otherwise check if the pair has been seen before
+            elif pair in seen_pairs:
                 duplicates.add(pair)
             else:
                 seen_pairs.add(pair)
