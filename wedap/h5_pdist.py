@@ -388,8 +388,8 @@ class H5_Pdist():
                 # speeds seem pretty similar for both though
                 # and the np.atleast_3d will convert to array anyway
                 data = self.h5[f"iterations/iter_{iteration:08d}/{name}"]
-            except KeyError:
-                message = f"{name} is not a valid object in the h5 file. \n" + \
+            except KeyError as e:
+                message = f"{e}: {name} is not a valid object in the h5 file. \n" + \
                           f"Available datasets are: 'pcoord' "
                 # this t/e block is to catch the case where there are no aux datasets at all
                 try:
