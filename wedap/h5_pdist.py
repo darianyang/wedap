@@ -1256,6 +1256,20 @@ class H5_Pdist():
 
         return array
 
+    def make_new_h5(self):
+        """
+        If self.H5save_out is not None and X/Y/Zsave_name is not None.
+        Saves out a new h5 file of name self.H5save_out with the current
+        X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.
+        """
+        for iter in range(self.first_iter, self.last_iter + 1):
+            if self.Xsave_name:
+                self._get_data_array(self.Xname, self.Xindex, iter, self.H5save_out, self.Xsave_name)
+            if self.Ysave_name:
+                self._get_data_array(self.Yname, self.Yindex, iter, self.H5save_out, self.Ysave_name)
+            if self.Zsave_name:
+                self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
+
     def pdist(self, normalize=True):
         """
         Main public method with pdist generation controls.
@@ -1281,16 +1295,9 @@ class H5_Pdist():
                           f"Did you use the correct amount of bstates {self.n_bstates}?"
                 warn(message)
 
-        # TODO: could make this it's own method
         # if requested, save out a new H5 file with the input data array in new aux name
         if self.H5save_out is not None:
-            for iter in range(self.first_iter, self.last_iter + 1):
-                if self.Xsave_name:
-                    self._get_data_array(self.Xname, self.Xindex, iter, self.H5save_out, self.Xsave_name)
-                if self.Ysave_name:
-                    self._get_data_array(self.Yname, self.Yindex, iter, self.H5save_out, self.Ysave_name)
-                if self.Zsave_name:
-                    self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
+            self.make_new_h5()
 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
