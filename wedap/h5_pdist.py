@@ -1220,23 +1220,29 @@ class H5_Pdist():
         # TODO: change total particles to iteration range to be able to use iter args with data arrays
 
         try:
-            array = array.reshape(self.total_particles, self.tau, -1)
+            array = array.reshape(self.current_particles, self.tau, -1)
         # e.g. ValueError: cannot reshape array of size 303000 into shape (3000,100,newaxis)
         except ValueError as e:
-            array = array.reshape(self.total_particles, self.tau - 1, -1)
-            message = "\nYou may be using an input data array which did not include the rst file datapoints. " + \
-                      "\nThis will work, but note that you shouldn't create a new H5 file using this array."
-            warn(f"{e} {message}")
-            # the case where the array does not have rst data included
-            # put the new first column as the first value of each row (segment)
-            # TODO: this is a temp hack for the no rst shape data
-            # noting that both arrays must have same ndims for hstack
-            #print(f"original shape: {array.shape}")
-            #print(f"to stack shape: {np.atleast_3d(array[:,0,:]).shape}")
-            # make array for all first col vals reshape so that the columns go depth wise
-            firstcols = array[:,0,:].reshape(array.shape[0], 1, -1)
-            array = np.hstack((firstcols, array))
-            #print(f"new shape: {array.shape}")
+            try:
+                array = array.reshape(self.current_particles, self.tau - 1, -1)
+                message = "\nYou may be using an input data array which did not include the rst file datapoints. " + \
+                        "\nThis will work, but note that you shouldn't create a new H5 file using this array."
+                warn(f"{e} {message}")
+                # the case where the array does not have rst data included
+                # put the new first column as the first value of each row (segment)
+                # TODO: this is a temp hack for the no rst shape data
+                # noting that both arrays must have same ndims for hstack
+                #print(f"original shape: {array.shape}")
+                #print(f"to stack shape: {np.atleast_3d(array[:,0,:]).shape}")
+                # make array for all first col vals reshape so that the columns go depth wise
+                firstcols = array[:,0,:].reshape(array.shape[0], 1, -1)
+                array = np.hstack((firstcols, array))
+                #print(f"new shape: {array.shape}")
+            # for cases where the WE simulation didn't exit and make next empty iteration
+            except ValueError:
+                array = array.reshape(np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter-1]), 
+                                      self.tau - 1, -1)
+                
 
         # TODO: the above works to solve the shape issue but if I wanted to fill out a new dataset in
         # the h5 file, it would be missing the first value, which links walkers.
