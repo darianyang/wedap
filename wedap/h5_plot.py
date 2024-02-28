@@ -345,16 +345,40 @@ class H5_Plot(H5_Pdist):
 
     def plot_hexbin3d(self, gridsize=100):
         """
-        Hexbin plot?
+        Hexbin plot.
         """
         # TODO: test this and add grid?
         # reshape to 1D and then get rid of extra dimension
         self.X = np.squeeze(self.X.reshape(1, -1))
         self.Y = np.squeeze(self.Y.reshape(1, -1))
+        # self.Z = np.squeeze(self.Z.reshape(1, -1))
+
+        # for building a weighted C
+        flat_weights = np.concatenate([sub_array.flatten() for sub_array in self.weights])
+        full_flat_weights = np.repeat(flat_weights, repeats=self.Z.shape[1])
         self.Z = np.squeeze(self.Z.reshape(1, -1))
+        Z_and_weights = np.vstack((self.Z, full_flat_weights)).T
+        Zindices = list(range(len(self.X)))
+        #print(Z_and_weights.shape)
+
+        def reduce_C_function(C):
+            '''
+            Custom C function to account for weights in hexbins.
+            In this case, C is the Zindices.
+            '''
+            return np.average(Z_and_weights[C, 0], weights=Z_and_weights[C, 1])
+        
+        # if weighted attr is passed as False, don't weight hexbins
+        try:
+            if self.weighted is False:
+                reduce_C_function = np.mean
+                Zindices = self.Z
+        except AttributeError:
+            pass
+
         #print(self.X.shape, self.Y.shape, self.Z.shape)
-        self.plot_obj = self.ax.hexbin(self.X, self.Y, C=self.Z, gridsize=gridsize, 
-                                       edgecolors=self.color, 
+        self.plot_obj = self.ax.hexbin(self.X, self.Y, C=Zindices, gridsize=gridsize, 
+                                       edgecolors=self.color, reduce_C_function=reduce_C_function,
                                        linewidths=self.linewidth, linestyles=self.linestyle,
                                        cmap=self.cmap, vmin=self.p_min, vmax=self.p_max)
 
