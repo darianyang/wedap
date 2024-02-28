@@ -1263,7 +1263,7 @@ class H5_Pdist():
         X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.
         """
         for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
-                         desc="Building new h5:", disable=self.no_pbar):
+                         desc="Building new h5", disable=self.no_pbar):
             if self.Xsave_name:
                 self._get_data_array(self.Xname, self.Xindex, iter, self.H5save_out, self.Xsave_name)
             if self.Ysave_name:
