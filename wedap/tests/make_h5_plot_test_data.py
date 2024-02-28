@@ -13,7 +13,7 @@ h5 = "wedap/data/p53.h5"
 # for dt in ["evolution"]:
 #     for pm in ["hist"]:
 #         for x in ["pcoord", "dihedral_2"]:
-#             plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, show=True)
+#             plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, #show=True)
 #                           out=f"wedap/tests/data/plot_{dt}_{pm}_{x}.npy")
 # for dt in ["average", "instant"]:
 #     for pm in ["line"]:
@@ -34,8 +34,9 @@ h5 = "wedap/data/p53.h5"
 #         for x, y, z in [["pcoord", "dihedral_2", "dihedral_3"], 
 #                         ["dihedral_2", "pcoord", "dihedral_3"], 
 #                         ["dihedral_2", "dihedral_3", "pcoord"]]:
-#             #plot_data_gen(h5, dt, pm, x, y, z, out=f"wedap/tests/data/plot_{dt}_{pm}_{x}_{y}_{z}.npy")
-#             plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, Yname=y, Zname=z, show=True)
+#             plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, Yname=y, Zname=z, 
+#                           out=f"wedap/tests/data/plot_{dt}_{pm}_{x}_{y}_{z}.npy")
+#             #plot_data_gen(h5=h5, data_type=dt, plot_mode=pm, Xname=x, Yname=y, Zname=z, show=True)
 
 # tests for evolution arg options
 # for dt in ["evolution"]:
