@@ -154,6 +154,8 @@ class H5_Pdist():
         self.Xsave_name = Xsave_name
         self.Ysave_name = Ysave_name
         self.Zsave_name = Zsave_name
+        print(H5save_out)
+        print(type(H5save_out))
         if H5save_out is not None:
             shutil.copyfile(self.h5_name, str(H5save_out))
             self.H5save_out = h5py.File(H5save_out, "r+")
