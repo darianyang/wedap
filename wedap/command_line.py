@@ -288,7 +288,7 @@ def create_cmd_arguments():
                           help="List of binary values for skipping basis states, "
                                "e.g. 0 1 1 to skip all bstates except for first.",
                           type=int)
-    optional.add_argument("--succ-only", "--succonly", "-so", default=False,
+    optional.add_argument("-so", "--succ-only", "--succonly", default=False,
                           dest="succ_only",
                           help="Filter weights to only use successfull trajectories ",
                           action="store_true")
