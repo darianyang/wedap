@@ -37,10 +37,10 @@ class H5_Pdist():
     These class methods generate probability distributions from a WESTPA H5 file.
     """
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
-                 Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0, succ_only=False,
+                 Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0, 
                  H5save_out=None, Xsave_name=None, Ysave_name=None, Zsave_name=None, 
                  data_proc=None, first_iter=1, last_iter=None, step_iter=1, bins=(100,100), 
-                 p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
+                 p_units='kT', T=298, weighted=True, skip_basis=None, succ_only=False,
                  histrange_x=None, histrange_y=None, no_pbar=False, *args, **kwargs):
         """
         Parameters
@@ -69,13 +69,13 @@ class H5_Pdist():
             Target data for cbar axis when using 3d projection scatter, default None. 
         Cindex : int
             If C.ndim > 2, use this to index.
-        succ_only : bool
-            Default False, set True to filter weights to show only successfull trajectories.
         H5save_out : str
             Paths to save a new H5 file with this dataset name.
             Right now it saves the requested X Y or Z data into a new aux_name.
             Note if you use this feature the input data must be the same shape and formatting as the other
             H5 file datasets. (TODO: organization?)
+            Also can be name of the outfile h5 file for optionally outputting new skipped basis or succ_only
+            h5 dataset with updated weights.
         Xsave_name, Ysave_name, Zsave_name : str
             Respective names to call the new dataset saved into the new H5 file.
         data_proc : function or tuple of functions
@@ -103,8 +103,8 @@ class H5_Pdist():
             List of binaries for each basis state to determine if it is skipped.
             e.g. [0, 0, 1] would only consider the trajectory data from basis 
             states 1 and 2 but would skip basis state 3, applying zero weights.
-        skip_basis_out : str
-            Name of the outfile h5 file for optionally outputting new skipped basis h5 dataset.
+        succ_only : bool
+            Default False, set True to filter weights to show only successfull trajectories.
         histrange_x, histrange_y : list or tuple of 2 floats or ints
             Optionally put custom bin ranges.
         no_pbar : bool
@@ -190,7 +190,6 @@ class H5_Pdist():
             raise ValueError(f"Something may be wrong with bins input: {bins}")
 
         self.skip_basis = skip_basis
-        self.skip_basis_out = skip_basis_out
 
         # initialize weights
         self._init_weights()
@@ -605,14 +604,14 @@ class H5_Pdist():
         print("pdist calculation: ")
         # write new weights into skip_basis_out h5 file
         # TODO: wrap this into h5saveout and include succ_only
-        if self.skip_basis_out is not None:
-            shutil.copyfile(self.h5_name, self.skip_basis_out)
-            h5_skip_basis = h5py.File(self.skip_basis_out, "r+")
-            for idx, weight in enumerate(new_weights):
-                h5_skip_basis[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
+        # if self.skip_basis_out is not None:
+        #     shutil.copyfile(self.h5_name, self.skip_basis_out)
+        #     h5_skip_basis = h5py.File(self.skip_basis_out, "r+")
+        #     for idx, weight in enumerate(new_weights):
+        #         h5_skip_basis[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
             
         # only return portion of weights requested by user
-        return new_weights[self.first_iter-1:self.last_iter]
+        return new_weights[self.first_iter-1:self.last_iter:self.step_iter]
 
     # TODO: clean up and optimize
     def search_aux_xy_nn(self, val_x, val_y):
@@ -829,6 +828,11 @@ class H5_Pdist():
         TODO: Filter weights to be zero for all non successfull trajectories.
         Make an array of zero weights and fill out weights for succ trajs only.
         option to output new h5?
+
+        Returns
+        -------
+        succ_weights : numpy object array
+            Updated weight array.
         """
         # start with zero weight array and fill it with succ traj traces
         #succ_weights = np.zeros_like(self.weights, dtype=object)
@@ -845,6 +849,7 @@ class H5_Pdist():
         #print(self.weights.shape)
 
         # trace through each succ traj and fill in weights
+        # TODO: there is some redundancy here, no need to fill weight when previously filled
         succ_trajs = self.w_succ()
         for succ in tqdm(succ_trajs, disable=self.no_pbar,
                          desc="Creating succ only weight array"):
@@ -854,8 +859,8 @@ class H5_Pdist():
                 # -1 for indexing iters but regular indexing walkers
                 succ_weights[it-1][wlk] = self.weights[it-1][wlk]
 
-        # replace the original weight array with succ only
-        self.weights = succ_weights
+        # only return portion of weights requested by user
+        return succ_weights[self.first_iter-1:self.last_iter:self.step_iter]
 
     ###############################################################################
 
@@ -1289,21 +1294,35 @@ class H5_Pdist():
 
         return array
 
-    def make_new_h5(self):
+    def make_new_h5(self, new_weights=None):
         """
         TODO: actually make a new h5 file, see bstate filter code, integrate all.
         If self.H5save_out is not None and X/Y/Zsave_name is not None.
         Saves out a new h5 file of name self.H5save_out with the current
         X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.
+
+        Parameters
+        ----------
+        new_weights : numpy object array
+            Updated weight values, e.g. from skip_basis or succ_only.
         """
+        # make new h5 file copy
+        shutil.copyfile(self.h5_name, self.H5save_out)
+        h5_copy = h5py.File(self.H5save_out, "r+")
+        # replace weights
+        if new_weights is not None:
+            for idx, weight in enumerate(new_weights):
+                h5_copy[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
+
+        # create new dataset based on input XYZ data
         for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
-                         desc="Building new h5", disable=self.no_pbar):
+                         desc="Creating new h5 dataset(s)", disable=self.no_pbar):
             if self.Xsave_name:
-                self._get_data_array(self.Xname, self.Xindex, iter, self.H5save_out, self.Xsave_name)
+                self._get_data_array(self.Xname, self.Xindex, iter, h5_copy, self.Xsave_name)
             if self.Ysave_name:
-                self._get_data_array(self.Yname, self.Yindex, iter, self.H5save_out, self.Ysave_name)
+                self._get_data_array(self.Yname, self.Yindex, iter, h5_copy, self.Ysave_name)
             if self.Zsave_name:
-                self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
+                self._get_data_array(self.Zname, self.Zindex, iter, h5_copy, self.Zsave_name)
 
     def pdist(self, normalize=True):
         """
@@ -1319,11 +1338,13 @@ class H5_Pdist():
         -------
         X, Y, Z : arrays
         """ 
+        # empty object to pass to make_new_h5
+        new_weights = None
         # option to zero weight out specific basis states
         if self.skip_basis is not None:
             self.n_bstates = self.h5["ibstates/index"]["n_bstates"]
             try: 
-                self.weights = self._new_weights_from_skip_basis()
+                new_weights = self.weights = self._new_weights_from_skip_basis()
             # if the wrong amount of args are input and != n_bstates
             except IndexError as e:
                 message = f"IndexError ({e}) for bstate input ({self.skip_basis}): " + \
@@ -1332,11 +1353,12 @@ class H5_Pdist():
 
         # option to only use weights for succ trajs
         if self.succ_only is True:
-            self.succ_pdist_weight_filter() 
+            # replace the original weight array with succ only
+            new_weights = self.weights = self.succ_pdist_weight_filter()
 
         # if requested, save out a new H5 file with the input data array in new aux name
         if self.H5save_out is not None:
-            self.make_new_h5()
+            self.make_new_h5(new_weights)
 
         # TODO: need to consolidate the Y 2d vs 1d stuff somehow
 
