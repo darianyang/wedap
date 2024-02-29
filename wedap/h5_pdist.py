@@ -154,9 +154,9 @@ class H5_Pdist():
         self.Xsave_name = Xsave_name
         self.Ysave_name = Ysave_name
         self.Zsave_name = Zsave_name
-        if H5save_out is not None:
-            shutil.copyfile(self.h5_name, H5save_out)
-            self.H5save_out = h5py.File(H5save_out, "r+")
+        # if H5save_out is not None:
+        #     shutil.copyfile(self.h5_name, H5save_out)
+        #     self.H5save_out = h5py.File(H5save_out, "r+")
         
         # raw data processing function
         # TODO: allow for 2-3 functions as tuple input, right now one function only
@@ -1306,9 +1306,9 @@ class H5_Pdist():
         new_weights : numpy object array
             Updated weight values, e.g. from skip_basis or succ_only.
         """
-        # Note that the file copy was done in init
-        #shutil.copyfile(self.h5_name, self.H5save_out)
-        #h5_copy = h5py.File(self.H5save_out, "r+")
+        # make copy of h5 file and open copy
+        shutil.copyfile(self.h5_name, self.H5save_out)
+        self.H5save_out = h5py.File(self.H5save_out, "r+")
         # replace weights
         if new_weights is not None:
             for idx, weight in enumerate(new_weights):
