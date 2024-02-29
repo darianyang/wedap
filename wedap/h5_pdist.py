@@ -37,7 +37,7 @@ class H5_Pdist():
     These class methods generate probability distributions from a WESTPA H5 file.
     """
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
-                 Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0,
+                 Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0, succ_only=False,
                  H5save_out=None, Xsave_name=None, Ysave_name=None, Zsave_name=None, 
                  data_proc=None, first_iter=1, last_iter=None, step_iter=1, bins=(100,100), 
                  p_units='kT', T=298, weighted=True, skip_basis=None, skip_basis_out=None,
@@ -69,6 +69,8 @@ class H5_Pdist():
             Target data for cbar axis when using 3d projection scatter, default None. 
         Cindex : int
             If C.ndim > 2, use this to index.
+        succ_only : bool
+            Default False, set True to filter weights to show only successfull trajectories.
         H5save_out : str
             Paths to save a new H5 file with this dataset name.
             Right now it saves the requested X Y or Z data into a new aux_name.
@@ -209,6 +211,7 @@ class H5_Pdist():
         self.histrange_x = histrange_x
         self.histrange_y = histrange_y
         self.no_pbar = no_pbar
+        self.succ_only = succ_only
 
         # accounts for array and filename input XYZnames
         self._check_XYZnames()
@@ -601,6 +604,7 @@ class H5_Pdist():
         # TODO: prob can do better than these print statements
         print("pdist calculation: ")
         # write new weights into skip_basis_out h5 file
+        # TODO: wrap this into h5saveout and include succ_only
         if self.skip_basis_out is not None:
             shutil.copyfile(self.h5_name, self.skip_basis_out)
             h5_skip_basis = h5py.File(self.skip_basis_out, "r+")
@@ -809,7 +813,8 @@ class H5_Pdist():
         Could have this be an optional feature.
         """
         succ = []
-        for iter in range(self.last_iter):
+        for iter in tqdm(range(self.first_iter, self.last_iter + 1), 
+                         desc="Running w_succ", disable=self.no_pbar):
             # if the new_weights group exists in the h5 file
             if f"iterations/iter_{iter:08d}/new_weights" in self.h5:
                 prev_segs = self.h5[f"iterations/iter_{iter:08d}/new_weights/index"]["prev_seg_id"]
@@ -818,12 +823,40 @@ class H5_Pdist():
                     succ.append((iter-1, seg))
         # TODO: order this by iter and seg vals? currently segs not sorted but is iter ordered
         return succ
-    def succ_pdist(self):
+    
+    def succ_pdist_weight_filter(self):
         """
         TODO: Filter weights to be zero for all non successfull trajectories.
         Make an array of zero weights and fill out weights for succ trajs only.
+        option to output new h5?
         """
-        pass
+        # start with zero weight array and fill it with succ traj traces
+        #succ_weights = np.zeros_like(self.weights, dtype=object)
+        #succ_weights = np.vstack((np.zeros_like(w) for w in self.weights), dtype=object)
+
+        # find the per iter n_seg lengths along axis 1 for weights
+        seg_lengths = [len(arr) for arr in self.weights]
+        #print(seg_lengths)
+
+        # Create a new array filled with zeros with the same variable shape
+        succ_weights = np.array([np.zeros(length) for length in seg_lengths], dtype=object)
+    
+        #print(succ_weights.shape)
+        #print(self.weights.shape)
+
+        # trace through each succ traj and fill in weights
+        succ_trajs = self.w_succ()
+        for succ in tqdm(succ_trajs, disable=self.no_pbar,
+                         desc="Creating succ only weight array"):
+            trace_path = self.trace_walker(succ)
+            for it, wlk in trace_path:
+                #print(succ_weights[it][wlk], self.weights[it][wlk])
+                # -1 for indexing iters but regular indexing walkers
+                succ_weights[it-1][wlk] = self.weights[it-1][wlk]
+
+        # replace the original weight array with succ only
+        self.weights = succ_weights
+
     ###############################################################################
 
     def aux_to_pdist_1d(self, iteration):
@@ -1258,6 +1291,7 @@ class H5_Pdist():
 
     def make_new_h5(self):
         """
+        TODO: actually make a new h5 file, see bstate filter code, integrate all.
         If self.H5save_out is not None and X/Y/Zsave_name is not None.
         Saves out a new h5 file of name self.H5save_out with the current
         X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.
@@ -1295,6 +1329,10 @@ class H5_Pdist():
                 message = f"IndexError ({e}) for bstate input ({self.skip_basis}): " + \
                           f"Did you use the correct amount of bstates {self.n_bstates}?"
                 warn(message)
+
+        # option to only use weights for succ trajs
+        if self.succ_only is True:
+            self.succ_pdist_weight_filter() 
 
         # if requested, save out a new H5 file with the input data array in new aux name
         if self.H5save_out is not None:
@@ -1437,9 +1475,11 @@ class H5_Pdist():
         else:
             return X, Y, Z
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
     # total_array_out = np.loadtxt("p53_X_array.txt")
     # original_array = np.loadtxt("p53_X_array_noreshape.txt")
-    
-    # h5 = H5_Pdist("data/p53.h5", data_type="evolution")
     # TODO: test Zname with data_array
+
+    h5pd = H5_Pdist("wedap/data/nacl.h5", data_type="evolution")
+    #print(h5pd.w_succ())
+    h5pd.succ_pdist_weight_filter()
