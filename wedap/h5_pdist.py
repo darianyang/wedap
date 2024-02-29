@@ -1306,23 +1306,23 @@ class H5_Pdist():
         new_weights : numpy object array
             Updated weight values, e.g. from skip_basis or succ_only.
         """
-        # make new h5 file copy
-        shutil.copyfile(self.h5_name, self.H5save_out)
-        h5_copy = h5py.File(self.H5save_out, "r+")
+        # Note that the file copy was done in init
+        #shutil.copyfile(self.h5_name, self.H5save_out)
+        #h5_copy = h5py.File(self.H5save_out, "r+")
         # replace weights
         if new_weights is not None:
             for idx, weight in enumerate(new_weights):
-                h5_copy[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
+                self.H5save_out[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
 
         # create new dataset based on input XYZ data
         for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
                          desc="Creating new h5 dataset(s)", disable=self.no_pbar):
             if self.Xsave_name:
-                self._get_data_array(self.Xname, self.Xindex, iter, h5_copy, self.Xsave_name)
+                self._get_data_array(self.Xname, self.Xindex, iter, self.H5save_out, self.Xsave_name)
             if self.Ysave_name:
-                self._get_data_array(self.Yname, self.Yindex, iter, h5_copy, self.Ysave_name)
+                self._get_data_array(self.Yname, self.Yindex, iter, self.H5save_out, self.Ysave_name)
             if self.Zsave_name:
-                self._get_data_array(self.Zname, self.Zindex, iter, h5_copy, self.Zsave_name)
+                self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
 
     def pdist(self, normalize=True):
         """
