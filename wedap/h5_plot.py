@@ -366,7 +366,12 @@ class H5_Plot(H5_Pdist):
             Custom C function to account for weights in hexbins.
             In this case, C is the Zindices.
             '''
-            return np.average(Z_and_weights[C, 0], weights=Z_and_weights[C, 1])
+            # when I have a zeroed weight h5 e.g. from succ_only, this doesn't work
+            # need an extra checking step here likely (for all zero weights)
+            try:
+                return np.average(Z_and_weights[C, 0], weights=Z_and_weights[C, 1])
+            except ZeroDivisionError:
+                return np.nan
         
         # if weighted attr is passed as False, don't weight hexbins
         try:
