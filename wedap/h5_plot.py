@@ -367,7 +367,7 @@ class H5_Plot(H5_Pdist):
             In this case, C is the Zindices.
             '''
             # when I have a zeroed weight h5 e.g. from succ_only, this doesn't work
-            # need an extra checking step here likely (for all zero weights)
+            # need an extra checking step here (for all zero weights)
             try:
                 return np.average(Z_and_weights[C, 0], weights=Z_and_weights[C, 1])
             except ZeroDivisionError:
