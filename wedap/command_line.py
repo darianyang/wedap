@@ -292,7 +292,7 @@ def create_cmd_arguments():
                           dest="succ_only",
                           help="Filter weights to only use successfull trajectories ",
                           action="store_true")
-    optional.add_argument("--h5saveout", "--h5-save-out", "--H5save_out", default=None, nargs=1,
+    optional.add_argument("--h5saveout", "--h5-save-out", "--H5save_out", default=None, nargs="?",
                           dest="H5save_out",
                           help="Optionally output updated west.h5 file. Use if you are "
                                "weight filtering with skip_basis or succ_only.",
