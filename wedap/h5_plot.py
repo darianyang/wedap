@@ -415,6 +415,8 @@ class H5_Plot(H5_Pdist):
                 self.ax.set_xlabel(item)
             if key == "ylabel" and item:
                 self.ax.set_ylabel(item)
+            if key == "zlabel" and item:
+                self.ax.set_zlabel(item)
             if key == "xlim" and item:
                 self.ax.set_xlim(item)
                 if self.jointplot:

@@ -763,7 +763,7 @@ class H5_Pdist():
 
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
-    def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle="-", ax=None):
+    def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle="-", alpha=1, ax=None):
         """
         Plot trace.
 
@@ -801,8 +801,8 @@ class H5_Pdist():
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c="black", lw=linewidth+1, linestyle=linestyle)
-        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c=color, lw=linewidth, linestyle=linestyle)
+        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c="black", lw=linewidth+1, linestyle=linestyle, alpha=alpha)
+        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c=color, lw=linewidth, linestyle=linestyle, alpha=alpha)
 
     def w_succ(self):
         """

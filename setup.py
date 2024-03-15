@@ -10,7 +10,7 @@ packages = find_packages()
 
 setup(
     name='wedap',
-    version='0.0.16',
+    version='0.0.17',
     description='weighted ensemble data analysis and plotting',
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -23,7 +23,7 @@ setup(
     #packages = find_packages(where = 'src'),
     #Packages=find_packages(exclude="docs"),
     packages=find_packages(exclude="docs"),
-    package_data={"wedap": ["styles/*"]},
+    package_data={"wedap" : ["styles/*"], "mdap" :["styles/*"]},
     #py_modules=["wedap"],
     classifiers=[
         "Programming Language :: Python :: 3",
