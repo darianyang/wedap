@@ -681,7 +681,7 @@ class H5_Pdist():
         parent = self.h5[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
         return it-1, parent
 
-    def trace_walker(self, walker_tuple):
+    def trace_walker(self, walker_tuple, first_iter=1):
         """
         Get trace path of an input (iteration, walker).
 
@@ -689,6 +689,8 @@ class H5_Pdist():
         ----------
         walker_tuple : tuple
             (iteration, walker)
+        first_iter : int
+            Iter to trace back to. Default 1.
 
         Returns
         -------
@@ -700,7 +702,7 @@ class H5_Pdist():
         # Initialize our path
         path = [(it,wlk)]
         # And trace it
-        while it > 1: 
+        while it > first_iter: 
             it, wlk = self.get_parents((it, wlk))
             path.append((it,wlk))
         return np.array(sorted(path, key=lambda x: x[0]))
@@ -731,7 +733,7 @@ class H5_Pdist():
             coords[idx] = (self._get_data_array(data_name, data_index, it)[wlk][-1])
         return coords
     
-    def get_full_coords(self, walker_tuple, data_name, data_index=0):
+    def get_full_coords(self, walker_tuple, data_name, data_index=0, first_iter=1):
         """
         Returns a full 1D set of data for a single trace (path).
         This will be ordered from the first iter to the last.
@@ -744,7 +746,9 @@ class H5_Pdist():
             Name of dataset.
         data_index : int
             Index of dataset.
-
+        first_iter : int
+            Iter to trace back to. Default 1.
+            
         Returns
         -------
         coordinates : 1d array
@@ -754,7 +758,7 @@ class H5_Pdist():
         if data_name != "pcoord":
             data_name = "auxdata/" + data_name
 
-        path = self.trace_walker(walker_tuple)
+        path = self.trace_walker(walker_tuple, first_iter)
         # Initialize an array for the pcoords (each iter * tau)
         coords = np.zeros((len(path)*self.tau))
         
