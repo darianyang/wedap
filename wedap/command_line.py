@@ -187,7 +187,7 @@ def create_cmd_arguments():
                              "Various image formats are available. You " 
                              "may choose one by specifying an extension. "
                              "\nLeave this empty if you don't want to save "
-                             "the plot to a serperate file.",
+                             "the plot to a serparate file.",
                         type=str)
     # begin optional arg group
     optional.add_argument("-fi", "--first-iter", default=1, nargs="?",

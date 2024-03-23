@@ -82,7 +82,7 @@ class H5_Pdist():
             Of the form f(data) where data has rows=segments, columns=frames until tau, depth=data dims.
             The input function must return a processed array of the same shape and formatting.
         first_iter : int
-            Default start plot at iteration 1 data.
+            Default start pdist at iteration 1 data.
         last_iter : int
             Last iteration data to include, default is the last recorded iteration in the west.h5 file. 
             Note that `instant` type pdists only depend on last_iter.
@@ -758,7 +758,7 @@ class H5_Pdist():
         coords = []
         # Loop over the path and get the pcoords for each walker
         for it, wlk in path:
-            coords.append(self._get_data_array(data_name, data_index, it)[wlk][::10])
+            coords.append(self._get_data_array(data_name, data_index, it)[wlk][-1])
         return np.array(coords)
 
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
@@ -793,23 +793,20 @@ class H5_Pdist():
             # split iterations up to provide y-values for each x-value (pcoord)
             aux = self.get_coords(path, self.Xname, self.Xindex)
             iters = np.arange(1, len(aux)+1, self.step_iter)
-            ax.plot(aux[::self.step_iter,0], iters, c="black", lw=linewidth+1, linestyle=linestyle)
-            ax.plot(aux[::self.step_iter,0], iters, c=color, lw=linewidth, linestyle=linestyle)
+            ax.plot(aux[::self.step_iter], iters, c="black", lw=linewidth+1, linestyle=linestyle)
+            ax.plot(aux[::self.step_iter], iters, c=color, lw=linewidth, linestyle=linestyle)
             return
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c="black", lw=linewidth+1, linestyle=linestyle, alpha=alpha)
-        ax.plot(aux_x[::self.step_iter,0], aux_y[::self.step_iter,0], c=color, lw=linewidth, linestyle=linestyle, alpha=alpha)
+        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c="black", lw=linewidth+1, linestyle=linestyle, alpha=alpha)
+        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c=color, lw=linewidth, linestyle=linestyle, alpha=alpha)
 
     def w_succ(self):
         """
         Find and return all successfully recycled (iter, seg) pairs.
-        TODO eventually can use this to plot pdist of succ only trajs
-        note that I would have to norm by the overall pmax (not just succ pmax)
-        Could have this be an optional feature.
 
         Returns
         -------
@@ -1508,4 +1505,4 @@ if __name__ == "__main__":
 
     h5pd = H5_Pdist("wedap/data/nacl.h5", data_type="evolution")
     #print(h5pd.w_succ())
-    h5pd.succ_pdist_weight_filter()
+    #h5pd.succ_pdist_weight_filter()
