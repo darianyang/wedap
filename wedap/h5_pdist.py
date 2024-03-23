@@ -750,6 +750,10 @@ class H5_Pdist():
         coordinates : 1d array
             Array of coordinates from the list of (iteration, walker) tuples.
         """
+        # account for non-pcoord input strings
+        if data_name != "pcoord":
+            data_name = "auxdata/" + data_name
+
         path = self.trace_walker(walker_tuple)
         # Initialize an array for the pcoords (each iter * tau)
         coords = np.zeros((len(path)*self.tau))
@@ -1509,4 +1513,4 @@ if __name__ == "__main__":
     #h5pd.succ_pdist_weight_filter()
 
     h5pd = H5_Pdist("wedap/data/nacl.h5", data_type="average")
-    print(h5pd.get_full_coords((10,1), "pcoord"))
+    print(h5pd.get_full_coords((10,1), "pcoord").shape)
