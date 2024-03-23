@@ -739,6 +739,7 @@ class H5_Pdist():
     def get_coords(self, path, data_name, data_index):
         """
         Get a list of data coordinates for plotting traces.
+        Only grabs the last frames.
 
         Parameters
         ----------
@@ -751,15 +752,15 @@ class H5_Pdist():
 
         Returns
         -------
-        coordinates : array
+        coordinates : 1d array
             Array of coordinates from the list of (iteration, walker) tuples.
         """
-        # Initialize a list for the pcoords
-        coords = []
+        # Initialize an array for the pcoords
+        coords = np.zeros((len(path)))
         # Loop over the path and get the pcoords for each walker
-        for it, wlk in path:
-            coords.append(self._get_data_array(data_name, data_index, it)[wlk][-1])
-        return np.array(coords)
+        for idx, (it, wlk) in enumerate(path):
+            coords[idx] = (self._get_data_array(data_name, data_index, it)[wlk][-1])
+        return coords
 
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
