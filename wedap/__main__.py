@@ -79,7 +79,7 @@ def main():
     if args.trace_seg is not None:
         plot.plot_trace(args.trace_seg, color=args.color, ax=plot.ax)
     if args.trace_val is not None:
-        iter, seg = plot.search_aux_xy_nn(args.trace_val[0], args.trace_val[1])
+        iter, seg = plot.find_iter_seg_from_xy_vals(args.trace_val[0], args.trace_val[1])
         plot.plot_trace((iter,seg), color=args.color, ax=plot.ax)
 
     """

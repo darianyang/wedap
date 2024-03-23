@@ -613,13 +613,9 @@ class H5_Pdist():
         # only return portion of weights requested by user
         return new_weights[self.first_iter-1:self.last_iter:self.step_iter]
 
-    # TODO: clean up and optimize
-    def search_aux_xy_nn(self, val_x, val_y):
+    def find_iter_seg_from_xy_vals(self, val_x, val_y):
         """
-        Originally adapted from code by Jeremy Leung.
-        Tree search to find closest datapoint to input data value(s).
-
-        # TODO: add step size for searching, right now gets the last frame
+        Find and return (iter, seg) closest to input data value(s).
 
         Parameters
         ----------
@@ -627,70 +623,45 @@ class H5_Pdist():
             X dataset value to search for.
         val_y : int or float
             Y dataset value to search for.
+
+        Returns
+        -------
+        iter_num, seg_num : int, int
+            Iteration, segment number.
         """
-        # iter is already known when searching evo data
+        # for evolution plots, only need to search one iteration
         if self.data_type == "evolution":
-            iter_num = int(val_y)
-            
-            # These are the auxillary coordinates you're looking for
-            r1 = self._get_data_array(self.Xname, self.Xindex, iter_num)[:,-1]
+            # convert to int since it is an iteration number
+            val_y = int(val_y)
+            # Extract x values for the val_y iteration
+            x_data = self._get_data_array(self.Xname, self.Xindex, val_y)[:,-1]
+            # Calculate distances between input x values and all data points in the current iteration
+            dist = np.abs(x_data - val_x)
+            min_dist_idx = np.argmin(dist)
+            min_dist = dist[min_dist_idx]
+            # iter, seg return: iter is from y value, seg is from min dist
+            return val_y, min_dist_idx
 
-            # phase 2: finding seg number
+        # for e.g. average plots, search all iterations of both x and y values
+        distances = []
+        # always use iteration 1 to get full trace path
+        for i in tqdm(range(1, self.last_iter + 1, self.step_iter), 
+                      desc="Trace Search", disable=self.no_pbar): 
+            # Extract x and y values for the current iteration
+            x_data = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
+            y_data = self._get_data_array(self.Yname, self.Yindex, i)[:,-1]
+            # Calculate distances between input values and all data points in the current iteration
+            dist = np.sqrt((x_data - val_x)**2 + (y_data - val_y)**2)
 
-            # TODO: numpy array this
-            small_array2 = []
-            for j in range(0,len(r1)):
-                small_array2.append([r1[j]])
-            tree2 = KDTree(small_array2)
+            # Find the minimum distance and its index
+            min_dist_idx = np.argmin(dist)
+            min_dist = dist[min_dist_idx]
 
-            # TODO: these can be multiple points, maybe can parse these and filter later
-            d2, i2 = tree2.query([val_x],k=1)
-            seg_num = int(i2)
+            distances.append((min_dist, i, min_dist_idx))
 
-        else:
-            # phase 1: finding iteration number
-            distances = []
-            indices = []
+        # Find the iteration and segment with the minimum distance
+        min_distance, iter_num, seg_num = min(distances)
 
-            # change indices to number of iteration
-            #for i in range(self.first_iter, self.last_iter + 1): 
-            # always use iteration 1 to get full trace path
-            for i in range(1, self.last_iter + 1): 
-
-                # These are the auxillary coordinates you're looking for
-                r1 = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
-                r2 = self._get_data_array(self.Yname, self.Yindex, i)[:,-1]
-
-                small_array = []
-                for j in range(0,len(r1)):
-                    small_array.append([r1[j],r2[j]])
-                tree = KDTree(small_array)
-
-                # Outputs are distance from neighbour (dd) and indices of output (ii)
-                dd, ii = tree.query([val_x, val_y],k=1) 
-                distances.append(dd) 
-                indices.append(ii)
-
-            minimum = np.argmin(distances)
-            iter_num = int(minimum+1)
-
-            # These are the auxillary coordinates you're looking for
-            r1 = self._get_data_array(self.Xname, self.Xindex, iter_num)[:,-1]
-            r2 = self._get_data_array(self.Yname, self.Yindex, iter_num)[:,-1]
-
-            # phase 2: finding seg number
-
-            # TODO: numpy array this
-            small_array2 = []
-            for j in range(0,len(r1)):
-                small_array2.append([r1[j],r2[j]])
-            tree2 = KDTree(small_array2)
-
-            # TODO: these can be multiple points, maybe can parse these and filter later
-            d2, i2 = tree2.query([val_x, val_y],k=1)
-            seg_num = int(i2)
-
-        #print("go to iter " + str(iter_num) + ", " + "and seg " + str(seg_num))
         print(f"Tracing ITERATION: {iter_num}, SEGMENT: {seg_num}")
         return iter_num, seg_num
 
