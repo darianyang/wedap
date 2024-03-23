@@ -22,8 +22,6 @@ import h5py
 import numpy as np
 from tqdm.auto import tqdm
 
-from scipy.spatial import KDTree
-
 from warnings import warn
 
 # for copying h5 file
