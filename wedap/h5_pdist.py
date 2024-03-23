@@ -730,6 +730,37 @@ class H5_Pdist():
         for idx, (it, wlk) in enumerate(path):
             coords[idx] = (self._get_data_array(data_name, data_index, it)[wlk][-1])
         return coords
+    
+    def get_full_coords(self, walker_tuple, data_name, data_index=0):
+        """
+        Returns a full 1D set of data for a single trace (path).
+        This will be ordered from the first iter to the last.
+
+        Parameters
+        ----------
+        walker_tuple : tuple
+            (iteration, walker) start point to trace from.
+        data_name : str
+            Name of dataset.
+        data_index : int
+            Index of dataset.
+
+        Returns
+        -------
+        coordinates : 1d array
+            Array of coordinates from the list of (iteration, walker) tuples.
+        """
+        path = self.trace_walker(walker_tuple)
+        # Initialize an array for the pcoords (each iter * tau)
+        coords = np.zeros((len(path)*self.tau))
+        
+        # Loop over the path and get the pcoords for each walker
+        # path will be ordered from the first iter to the last.
+        for idx, (it, wlk) in enumerate(path):
+            # fill out the array in self.tau chunks
+            coords[idx*self.tau:(idx+1)*self.tau] = self._get_data_array(data_name, data_index, it)[wlk]
+
+        return coords            
 
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
@@ -1473,6 +1504,9 @@ if __name__ == "__main__":
     # original_array = np.loadtxt("p53_X_array_noreshape.txt")
     # TODO: test Zname with data_array
 
-    h5pd = H5_Pdist("wedap/data/nacl.h5", data_type="evolution")
+    #h5pd = H5_Pdist("wedap/data/nacl.h5", data_type="evolution")
     #print(h5pd.w_succ())
     #h5pd.succ_pdist_weight_filter()
+
+    h5pd = H5_Pdist("wedap/data/nacl.h5", data_type="average")
+    print(h5pd.get_full_coords((10,1), "pcoord"))
