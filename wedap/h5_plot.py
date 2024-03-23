@@ -25,7 +25,6 @@ Add postprocess function for quick fixes when using CLI? see feplotter
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.ndimage
 from warnings import warn
 from numpy import inf
 import importlib
@@ -520,6 +519,46 @@ class H5_Plot(H5_Pdist):
 
         return module
 
+    @staticmethod
+    def gaussian_filter(data, sigma):
+        """
+        Apply Gaussian smoothing to a 2D array.
+
+        Parameters
+        ----------
+        data : ndarray 
+            Input 2D array.
+        sigma : float 
+            Standard deviation of the Gaussian filter.
+
+        Returns
+        -------
+        ndarray
+            Smoothed 2D array.
+        """
+        # Create a Gaussian filter kernel
+        size = int(2 * np.ceil(3 * sigma) + 1)
+        kernel = np.fromfunction(lambda x, y: (1/(2*np.pi*sigma**2)) * 
+                                 np.exp(-((x - size//2)**2 + (y - size//2)**2)/(2*sigma**2)), 
+                                 (size, size))
+
+        # Normalize the kernel
+        kernel /= np.sum(kernel)
+
+        # Determine padding size
+        pad_width = size // 2
+
+        # Pad the input data array
+        padded_data = np.pad(data, pad_width, mode='constant')
+
+        # Convolve the padded data with the Gaussian kernel
+        smoothed_data = np.zeros_like(data)
+        for i in range(data.shape[0]):
+            for j in range(data.shape[1]):
+                smoothed_data[i, j] = np.sum(padded_data[i:i+size, j:j+size] * kernel)
+
+        return smoothed_data
+
     # TODO: cbar issues with 1d plots
     def plot(self, cbar=True):
         """
@@ -600,12 +639,7 @@ class H5_Plot(H5_Pdist):
             #self.Z = np.ma.masked_invalid(self.Z)
             self.Z[self.Z < 0] = 0
             self.Z[self.Z == np.inf] = 0
-            self.Z = scipy.ndimage.gaussian_filter(self.Z, sigma=self.smoothing_level)
-            #self.Z[self.Z == 0] = np.inf
-            # get rid of any negatives --> 0
-            #self.Z[self.Z < 0] = np.inf
-            #self.Z[self.Z == np.inf] = 0
-            #self.Z[self.Z < 0] = 0
+            self.Z = self.gaussian_filter(self.Z, sigma=self.smoothing_level)
 
         # get contour levels if needed
         if self.plot_mode in ["contour", "contour_l", "contour_f", "hist_l"]:
