@@ -50,5 +50,7 @@ class MD_Plot(H5_Plot, MD_Pdist):
                     kwargs["p_units"] = "kT"
                     self.p_units = "kT"
 
+        # don't use weights, e.g. for hexbin plots (TODO: might be a better way to account for this)
+        self.weighted = False
         # run H5_Plot initialization
         H5_Plot.__init__(self, self.X, self.Y, self.Z, *args, **kwargs)

@@ -351,32 +351,33 @@ class H5_Plot(H5_Pdist):
         self.X = np.squeeze(self.X.reshape(1, -1))
         self.Y = np.squeeze(self.Y.reshape(1, -1))
         # self.Z = np.squeeze(self.Z.reshape(1, -1))
-
-        # for building a weighted C
-        flat_weights = np.concatenate([sub_array.flatten() for sub_array in self.weights])
-        full_flat_weights = np.repeat(flat_weights, repeats=self.Z.shape[1])
-        self.Z = np.squeeze(self.Z.reshape(1, -1))
-        Z_and_weights = np.vstack((self.Z, full_flat_weights)).T
-        Zindices = list(range(len(self.X)))
-        #print(Z_and_weights.shape)
-
-        def reduce_C_function(C):
-            '''
-            Custom C function to account for weights in hexbins.
-            In this case, C is the Zindices.
-            '''
-            # when I have a zeroed weight h5 e.g. from succ_only, this doesn't work
-            # need an extra checking step here (for all zero weights)
-            try:
-                return np.average(Z_and_weights[C, 0], weights=Z_and_weights[C, 1])
-            except ZeroDivisionError:
-                return np.nan
         
         # if weighted attr is passed as False, don't weight hexbins
         try:
             if self.weighted is False:
                 reduce_C_function = np.mean
                 Zindices = self.Z
+            else:
+                # for building a weighted C
+                flat_weights = np.concatenate([sub_array.flatten() for sub_array in self.weights])
+                full_flat_weights = np.repeat(flat_weights, repeats=self.Z.shape[1])
+                self.Z = np.squeeze(self.Z.reshape(1, -1))
+                Z_and_weights = np.vstack((self.Z, full_flat_weights)).T
+                Zindices = list(range(len(self.X)))
+                #print(Z_and_weights.shape)
+
+                def reduce_C_function(C):
+                    '''
+                    Custom C function to account for weights in hexbins.
+                    In this case, C is the Zindices.
+                    '''
+                    # when I have a zeroed weight h5 e.g. from succ_only, this doesn't work
+                    # need an extra checking step here (for all zero weights)
+                    try:
+                        return np.average(Z_and_weights[C, 0], weights=Z_and_weights[C, 1])
+                    except ZeroDivisionError:
+                        return np.nan
+        # account for when self.weighted does not exist (TODO: this is only for MDAP, can probably separate it out)
         except AttributeError:
             pass
 
