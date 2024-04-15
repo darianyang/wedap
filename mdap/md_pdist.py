@@ -163,7 +163,7 @@ class MD_Pdist(H5_Pdist):
         X = self._get_md_data(self.Xname, self.Xindex, self.Xinterval)
 
         # or can just get it from n rows
-        time = np.arange(0, X.shape[0], self.Xinterval)
+        time = np.arange(0, X.shape[0])
         time = np.divide(time, self.timescale)
 
         return time, X
