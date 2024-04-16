@@ -2,3 +2,4 @@ numpy
 matplotlib
 h5py
 tqdm
+gif

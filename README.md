@@ -23,8 +23,8 @@ Or view the same demo notebook on the [documentation web page](https://darianyan
 - numpy
 - matplotlib
 - h5py
-- scipy
 - tqdm
+- gif
 
 ### Optional
 
