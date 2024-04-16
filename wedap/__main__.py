@@ -4,6 +4,7 @@ Main call.
 from wedap.h5_pdist import *
 from wedap.h5_plot import *
 from wedap.command_line import *
+from wedap.h5_gif import *
 
 # TODO: change to logging style instead of stdout
 #import logging
@@ -49,9 +50,18 @@ def main():
         args.weighted = False
     elif args.not_weighted is False:
         args.weighted = True
-    
-    # vars converts from Namespace object to dict
-    plot = H5_Plot(**vars(args))
+
+    #  make a gif instead of a single plot if gif_out is given
+    # e.g. $ wedap -h5 wedap/data/p53.h5 -y pcoord -yi 1 -dt average --last-iter 16 
+    #              --avg-plus 2 --gif-out test.gif --xlim 0 6 --ylim 0 36 --pmax 20
+    if args.gif_out is not None:
+        make_gif(**vars(args))
+        # exit prematurely since gif making
+        return
+    # otherwise carry on as normal for a single plot
+    else:
+        # vars converts from Namespace object to dict
+        plot = H5_Plot(**vars(args))
 
     # for 4d projected, adjust cbar position (this is a class attr)
     if args.proj4d is True:

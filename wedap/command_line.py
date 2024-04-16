@@ -407,6 +407,36 @@ def create_cmd_arguments():
                                  'Example: '
                                  '``--postprocess mymodule.myfunction``.')
 
+    #########################################################
+    ##################### GIF ARGUMENTS #####################
+    #########################################################
+
+    gif_maker = parser.add_argument_group("Gif Making Arguments",
+                                          description="Only needed if making a gif. "
+                                                      "Currently somewhat of an experimental feature, "
+                                                      "only tested with 1D or 2D avg pdist plots.",
+                                                      ) 
+    # avg_plus, duration, output path
+    gif_maker.add_argument("--avg-plus", default=100, nargs="?",
+                        dest="avg_plus",
+                        help="The +range of interations for each iter in range(first,last,step). "
+                             "So as the loop progresses, avg_plus is added to each iter to make the "
+                             "range that the average pdist is taken from. Important here is that you "
+                             "make sure avg_plus + last_iter does not exceed the total amount of iters "
+                             "you have available in the h5 file. If you set avg_plus to 0, it will "
+                             "make instant plots of each iter in the range requested. Default 100.",
+                        type=int)
+    gif_maker.add_argument("--duration", default=50, nargs="?",
+                        dest="duration", 
+                        help="Duration in milliseconds between frames of the gif, default 50ms.",
+                        type=int)
+    gif_maker.add_argument("--gif-out", default=None, nargs="?",
+                        dest="gif_out", 
+                        help="Out path to created gif file, e.g. 'example.gif'. "
+                             "Note this arg needs to be specified and not None for "
+                             "gif creation to begin.",
+                        type=str)
+
     # return the argument parser
     return parser 
 
