@@ -14,9 +14,6 @@ def make_gif(first_iter, last_iter, step_iter=1, avg_plus=100,
 
     Parameters
     ----------
-    we : wedap H5_Plot object
-        Input this object and the H5_Plot.plot() method is ran to generate the plot
-        for the gif at the specified iters
     first_iter : int
         Where to start the gif.
     last_iter : int
@@ -38,7 +35,7 @@ def make_gif(first_iter, last_iter, step_iter=1, avg_plus=100,
         Out path to created gif file, default 'example.gif'.
     **kwargs
         Can be useful to input dictionary of kwargs for H5_Plot init.
-        E.g. can put xlim, xlabel, grid, etc.
+        E.g. can put xlim, xlabel, grid, Xname, etc.
     """
     # plots for a gif should not be saved with any transparency
     mpl.rcParams["savefig.transparent"] = False
