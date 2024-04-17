@@ -22,13 +22,18 @@
       ~MD_Plot.average_pdist_1d
       ~MD_Plot.average_pdist_2d
       ~MD_Plot.evolution_pdist
+      ~MD_Plot.find_iter_seg_from_xy_vals
+      ~MD_Plot.gaussian_filter
       ~MD_Plot.get_all_weights
       ~MD_Plot.get_coords
+      ~MD_Plot.get_full_coords
       ~MD_Plot.get_parents
       ~MD_Plot.get_total_data_array
       ~MD_Plot.instant_datasets_3d
       ~MD_Plot.instant_pdist_1d
       ~MD_Plot.instant_pdist_2d
+      ~MD_Plot.load_module
+      ~MD_Plot.make_new_h5
       ~MD_Plot.pdist
       ~MD_Plot.pdist_1d
       ~MD_Plot.pdist_2d
@@ -44,8 +49,7 @@
       ~MD_Plot.plot_scatter3d
       ~MD_Plot.plot_trace
       ~MD_Plot.reshape_total_data_array
-      ~MD_Plot.search_aux_xy_nn
-      ~MD_Plot.succ_pdist
+      ~MD_Plot.succ_pdist_weight_filter
       ~MD_Plot.timeseries
       ~MD_Plot.trace_walker
       ~MD_Plot.w_succ

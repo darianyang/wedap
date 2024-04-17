@@ -207,6 +207,26 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.find_iter_seg_from_xy_vals">
+<span class="sig-name descname"><span class="pre">find_iter_seg_from_xy_vals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.find_iter_seg_from_xy_vals" title="Permalink to this definition"></a></dt>
+<dd><p>Find and return (iter, seg) closest to input data value(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val_x</strong> (<em>int or float</em>) – X dataset value to search for.</p></li>
+<li><p><strong>val_y</strong> (<em>int or float</em>) – Y dataset value to search for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>iter_num, seg_num</strong> – Iteration, segment number.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_all_weights">
 <span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_all_weights" title="Permalink to this definition"></a></dt>
 <dd><p>Returns an 1D array of the weight for every frame of each tau
@@ -224,7 +244,8 @@ for all segments of all iterations specified.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_coords">
 <span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_coords" title="Permalink to this definition"></a></dt>
-<dd><p>Get a list of data coordinates for plotting traces.</p>
+<dd><p>Get a list of data coordinates for plotting traces.
+Only grabs the last frames.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -237,7 +258,30 @@ for all segments of all iterations specified.</p>
 <dd class="field-even"><p><strong>coordinates</strong> – Array of coordinates from the list of (iteration, walker) tuples.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>array</p>
+<dd class="field-odd"><p>1d array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_full_coords">
+<span class="sig-name descname"><span class="pre">get_full_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_full_coords" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a full 1D set of data for a single trace (path).
+This will be ordered from the first iter to the last.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker) start point to trace from.</p></li>
+<li><p><strong>data_name</strong> (<em>str</em>) – Name of dataset.</p></li>
+<li><p><strong>data_index</strong> (<em>int</em>) – Index of dataset.</p></li>
+<li><p><strong>first_iter</strong> (<em>int</em>) – Iter to trace back to. Default 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>coordinates</strong> – Array of coordinates from the list of (iteration, walker) tuples.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1d array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -332,6 +376,20 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.make_new_h5">
+<span class="sig-name descname"><span class="pre">make_new_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.make_new_h5" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: actually make a new h5 file, see bstate filter code, integrate all.
+If self.H5save_out is not None and X/Y/Zsave_name is not None.
+Saves out a new h5 file of name self.H5save_out with the current
+X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_weights</strong> (<em>numpy object array</em>) – Updated weight values, e.g. from skip_basis or succ_only.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist">
 <span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist" title="Permalink to this definition"></a></dt>
 <dd><p>Main public method with pdist generation controls.</p>
@@ -383,7 +441,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.plot_trace">
-<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
 <dd><p>Plot trace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -415,26 +473,19 @@ iteration, and reshape them to make pdists.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.search_aux_xy_nn">
-<span class="sig-name descname"><span class="pre">search_aux_xy_nn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.search_aux_xy_nn" title="Permalink to this definition"></a></dt>
-<dd><p>Originally adapted from code by Jeremy Leung.
-Tree search to find closest datapoint to input data value(s).</p>
-<p># TODO: add step size for searching, right now gets the last frame</p>
+<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.succ_pdist_weight_filter">
+<span class="sig-name descname"><span class="pre">succ_pdist_weight_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.succ_pdist_weight_filter" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: Filter weights to be zero for all non successfull trajectories.
+Make an array of zero weights and fill out weights for succ trajs only.
+option to output new h5?</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>val_x</strong> (<em>int or float</em>) – X dataset value to search for.</p></li>
-<li><p><strong>val_y</strong> (<em>int or float</em>) – Y dataset value to search for.</p></li>
-</ul>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>succ_weights</strong> – Updated weight array.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy object array</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.succ_pdist">
-<span class="sig-name descname"><span class="pre">succ_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.succ_pdist" title="Permalink to this definition"></a></dt>
-<dd><p>TODO: Filter weights to be zero for all non successfull trajectories.
-Make an array of zero weights and fill out weights for succ trajs only.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -453,11 +504,14 @@ Make an array of zero weights and fill out weights for succ trajs only.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.trace_walker">
-<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.trace_walker" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.trace_walker" title="Permalink to this definition"></a></dt>
 <dd><p>Get trace path of an input (iteration, walker).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker)</p></li>
+<li><p><strong>first_iter</strong> (<em>int</em>) – Iter to trace back to. Default 1.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>trace</strong> – Tuples are (iteration, walker) traces.</p>
@@ -471,10 +525,15 @@ Make an array of zero weights and fill out weights for succ trajs only.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.w_succ">
 <span class="sig-name descname"><span class="pre">w_succ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.w_succ" title="Permalink to this definition"></a></dt>
-<dd><p>Find and return all successfully recycled (iter, seg) pairs.
-TODO eventually can use this to plot pdist of succ only trajs
-note that I would have to norm by the overall pmax (not just succ pmax)
-Could have this be an optional feature.</p>
+<dd><p>Find and return all successfully recycled (iter, seg) pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>succ</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of tuples (iter,wlk)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

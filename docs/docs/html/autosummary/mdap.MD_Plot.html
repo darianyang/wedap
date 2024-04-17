@@ -117,6 +117,10 @@ Only works with scatter plots.</p></li>
 <li><p><strong>C</strong> (<em>array</em>) – For color mapping of 3d projection plots.</p></li>
 <li><p><strong>scatter_interval</strong> (<em>int</em>) – Interval for displaying scatter plot data, default 1.</p></li>
 <li><p><strong>scatter_s</strong> (<em>float</em>) – Int for displaying scatter plot data marker size, default 1.</p></li>
+<li><p><strong>hexbin_grid</strong> (<em>int</em>) – Determines gridsize for hexbin plots.</p></li>
+<li><p><strong>linewidth</strong> (<em>float</em>) – Linewidth for 1D plots, contour lines, and hexbin edges.</p></li>
+<li><p><strong>linestyle</strong> (<em>str</em>) – Linestyle for 1D plots, contour lines, and hexbin edges.</p></li>
+<li><p><strong>postprocess_func</strong> (<em>func</em>) – User function to import.</p></li>
 <li><p><strong>** args</strong></p></li>
 <li><p><strong>** kwargs</strong></p></li>
 </ul>
@@ -154,31 +158,46 @@ Only works with scatter plots.</p></li>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolution_pdist</span></code>()</p></td>
 <td><p>Returns the pdist for 1 coordinate for the range iterations specified.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_iter_seg_from_xy_vals</span></code>(val_x, val_y)</p></td>
+<td><p>Find and return (iter, seg) closest to input data value(s).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">gaussian_filter</span></code>(data, sigma)</p></td>
+<td><p>Apply Gaussian smoothing to a 2D array.</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_weights</span></code>()</p></td>
 <td><p>Returns an 1D array of the weight for every frame of each tau for all segments of all iterations specified.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coords</span></code>(path, data_name, data_index)</p></td>
 <td><p>Get a list of data coordinates for plotting traces.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parents</span></code>(walker_tuple)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_full_coords</span></code>(walker_tuple, data_name[, ...])</p></td>
+<td><p>Returns a full 1D set of data for a single trace (path).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parents</span></code>(walker_tuple)</p></td>
 <td><p>Get parent of an input (iteration, walker).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_total_data_array</span></code>(name[, index, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_total_data_array</span></code>(name[, index, ...])</p></td>
 <td><p>Loop through all iterations specified and get a 1d raw data array.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_datasets_3d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_datasets_3d</span></code>()</p></td>
 <td><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_1d</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_1d</span></code>()</p></td>
 <td><p>Returns the x and y pdist datasets for a single iteration.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_2d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instant_pdist_2d</span></code>()</p></td>
 <td><p>Returns the xyz pdist datasets for a single iteration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_module</span></code>(module_name[, path])</p></td>
+<td><p>Load and return the given module, recursively loading containing packages as necessary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_new_h5</span></code>([new_weights])</p></td>
+<td><p>TODO: actually make a new h5 file, see bstate filter code, integrate all.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist</span></code>()</p></td>
 <td><p>Main public method with pdist generation controls.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_1d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_1d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -188,7 +207,7 @@ Only works with scatter plots.</p></li>
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_2d</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_2d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -198,7 +217,7 @@ Only works with scatter plots.</p></li>
 </dl>
 </p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_3d</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdist_3d</span></code>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -208,43 +227,40 @@ Only works with scatter plots.</p></li>
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>([cbar])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>([cbar])</p></td>
 <td><p>Main public method.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_bar</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_bar</span></code>()</p></td>
 <td><p>Simple bar plot.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_contour_f</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_contour_f</span></code>()</p></td>
 <td><p>2d contour plot, fill.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_contour_l</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_contour_l</span></code>()</p></td>
 <td><p>2d contour plot, lines.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hexbin3d</span></code>()</p></td>
-<td><p>Hexbin plot?</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hexbin3d</span></code>([gridsize])</p></td>
+<td><p>Hexbin plot.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hist</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hist</span></code>()</p></td>
 <td><p>2d hist plot.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_line</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_line</span></code>()</p></td>
 <td><p>1d line plot.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_margins</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_margins</span></code>()</p></td>
 <td><p>Joint plot of heatmap (pcolormesh).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_scatter3d</span></code>([interval, s])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_scatter3d</span></code>([interval, s])</p></td>
 <td><p>3d scatter plot.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code>(walker_tuple[, color, ax])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code>(walker_tuple[, color, linewidth, ...])</p></td>
 <td><p>Plot trace.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshape_total_data_array</span></code>(array)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshape_total_data_array</span></code>(array)</p></td>
 <td><p>Take an input 1d array of the data values at every segment for each iteration, and reshape them to make pdists.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_aux_xy_nn</span></code>(val_x, val_y)</p></td>
-<td><p>Originally adapted from code by Jeremy Leung.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">succ_pdist</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">succ_pdist_weight_filter</span></code>()</p></td>
 <td><p>TODO: Filter weights to be zero for all non successfull trajectories.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeseries</span></code>()</p></td>
@@ -257,7 +273,7 @@ Only works with scatter plots.</p></li>
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_walker</span></code>(walker_tuple)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_walker</span></code>(walker_tuple[, first_iter])</p></td>
 <td><p>Get trace path of an input (iteration, walker).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">w_succ</span></code>()</p></td>

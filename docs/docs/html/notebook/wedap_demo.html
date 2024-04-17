@@ -85,9 +85,10 @@
 <h1>WEDAP Demo<a class="headerlink" href="#WEDAP-Demo" title="Permalink to this heading"></a></h1>
 <hr class="docutils" />
 <p><strong>WEDAP</strong> : <strong>W</strong>eighted <strong>E</strong>nsemble <strong>D</strong>ata <strong>A</strong>nalysis and <strong>P</strong>lotting (pronounced we-dap)</p>
-<p><p><img alt="wedap logo" class="no-scaled-link" src="../_images/wedap_logo2.png" style="width: 300px;" /></p>
-</p><p>Here, we will go through many examples of how to use the Python API or the command line for various types of plots using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and <code class="docutils literal notranslate"><span class="pre">mdap</span></code>. Note that the CLI will tend to format and label more things for you, while the API starts as more of a “blank slate” format wise since the options can be more easily adjusted.</p>
-<p>Each of these examples are presented in the same order as in the <code class="docutils literal notranslate"><span class="pre">wedap</span></code> paper, which you can refer to for more details about each plot.</p>
+<p><p><img alt="wedap logo" class="no-scaled-link" src="../_images/wedap_logo4.png" style="width: 200px;" /></p>
+</p><p>Here, we will go through many examples of how to use the Python API or the command line for various types of plots using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and <code class="docutils literal notranslate"><span class="pre">mdap</span></code>.</p>
+<p>Note that the CLI will tend to format and label more things for you, while the API starts as more of a “blank slate” format wise since the options can be more easily adjusted.</p>
+<p>Before using the <code class="docutils literal notranslate"><span class="pre">wedap</span></code> API, make sure to import the following:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -152,7 +153,7 @@ Text(10.097222222222232, 0.5, &#39;WE Iteration&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_8_2.png" src="../_images/notebook_wedap_demo_8_2.png" />
+<img alt="../_images/notebook_wedap_demo_9_2.png" src="../_images/notebook_wedap_demo_9_2.png" />
 </div>
 </div>
 <p>We could also just directly place the plot formatting arguments into <code class="docutils literal notranslate"><span class="pre">wedap.H5_Plot()</span></code>, we can also plot the other dimension of the progress coordinate by setting <code class="docutils literal notranslate"><span class="pre">Xindex=1</span></code>.</p>
@@ -178,7 +179,7 @@ Text(10.097222222222232, 0.5, &#39;WE Iteration&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_11_1.png" src="../_images/notebook_wedap_demo_11_1.png" />
+<img alt="../_images/notebook_wedap_demo_12_1.png" src="../_images/notebook_wedap_demo_12_1.png" />
 </div>
 </div>
 <p>Alternatively we can use the mpl object-based interface, this offers more flexibility when making more complex plots, examples of which will be demonstrated later along in this notebook.</p>
@@ -217,7 +218,7 @@ Text(0.45, 1.02, &#39;Evolution Plot&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_13_2.png" src="../_images/notebook_wedap_demo_13_2.png" />
+<img alt="../_images/notebook_wedap_demo_14_2.png" src="../_images/notebook_wedap_demo_14_2.png" />
 </div>
 </div>
 <p>We can break the process down further to access the data being passed:</p>
@@ -259,7 +260,7 @@ Text(0.45, 1.02, &#39;Evolution Plot&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_15_2.png" src="../_images/notebook_wedap_demo_15_2.png" />
+<img alt="../_images/notebook_wedap_demo_16_2.png" src="../_images/notebook_wedap_demo_16_2.png" />
 </div>
 </div>
 </section>
@@ -297,7 +298,7 @@ Text(0.5, 7.222222222222218, &#39;Heavy Atom RMSD ($\\AA$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_19_2.png" src="../_images/notebook_wedap_demo_19_2.png" />
+<img alt="../_images/notebook_wedap_demo_20_2.png" src="../_images/notebook_wedap_demo_20_2.png" />
 </div>
 </div>
 </section>
@@ -337,7 +338,7 @@ Text(31.347222222222232, 0.5, &#39;End-to-end Distance ($\\AA$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_23_2.png" src="../_images/notebook_wedap_demo_23_2.png" />
+<img alt="../_images/notebook_wedap_demo_24_2.png" src="../_images/notebook_wedap_demo_24_2.png" />
 </div>
 </div>
 <p>Now we can try it with one progress coordinate and an auxiliary dataset saved during the WE simulation (or it could have been calculated post-simulation (e.g. using <code class="docutils literal notranslate"><span class="pre">w_crawl</span></code>)):</p>
@@ -374,7 +375,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_26_2.png" src="../_images/notebook_wedap_demo_26_2.png" />
+<img alt="../_images/notebook_wedap_demo_27_2.png" src="../_images/notebook_wedap_demo_27_2.png" />
 </div>
 </div>
 </section>
@@ -405,7 +406,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_30_1.png" src="../_images/notebook_wedap_demo_30_1.png" />
+<img alt="../_images/notebook_wedap_demo_31_1.png" src="../_images/notebook_wedap_demo_31_1.png" />
 </div>
 </div>
 </section>
@@ -460,7 +461,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_34_1.png" src="../_images/notebook_wedap_demo_34_1.png" />
+<img alt="../_images/notebook_wedap_demo_35_1.png" src="../_images/notebook_wedap_demo_35_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -524,7 +525,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_43_0.png" src="../_images/notebook_wedap_demo_43_0.png" />
+<img alt="../_images/notebook_wedap_demo_44_0.png" src="../_images/notebook_wedap_demo_44_0.png" />
 </div>
 </div>
 </section>
@@ -548,7 +549,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_47_0.png" src="../_images/notebook_wedap_demo_47_0.png" />
+<img alt="../_images/notebook_wedap_demo_48_0.png" src="../_images/notebook_wedap_demo_48_0.png" />
 </div>
 </div>
 </section>
@@ -573,7 +574,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_51_0.png" src="../_images/notebook_wedap_demo_51_0.png" />
+<img alt="../_images/notebook_wedap_demo_52_0.png" src="../_images/notebook_wedap_demo_52_0.png" />
 </div>
 </div>
 </section>
@@ -599,7 +600,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_55_0.png" src="../_images/notebook_wedap_demo_55_0.png" />
+<img alt="../_images/notebook_wedap_demo_56_0.png" src="../_images/notebook_wedap_demo_56_0.png" />
 </div>
 </div>
 </section>
@@ -650,7 +651,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_60_1.png" src="../_images/notebook_wedap_demo_60_1.png" />
+<img alt="../_images/notebook_wedap_demo_61_1.png" src="../_images/notebook_wedap_demo_61_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -691,7 +692,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_64_0.png" src="../_images/notebook_wedap_demo_64_0.png" />
+<img alt="../_images/notebook_wedap_demo_65_0.png" src="../_images/notebook_wedap_demo_65_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -746,7 +747,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_67_3.png" src="../_images/notebook_wedap_demo_67_3.png" />
+<img alt="../_images/notebook_wedap_demo_68_3.png" src="../_images/notebook_wedap_demo_68_3.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -813,7 +814,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_71_5.png" src="../_images/notebook_wedap_demo_71_5.png" />
+<img alt="../_images/notebook_wedap_demo_72_5.png" src="../_images/notebook_wedap_demo_72_5.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -883,7 +884,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_74_5.png" src="../_images/notebook_wedap_demo_74_5.png" />
+<img alt="../_images/notebook_wedap_demo_75_5.png" src="../_images/notebook_wedap_demo_75_5.png" />
 </div>
 </div>
 <p>But keep in mind that this example doesn’t make too much sense because the datasets between standard MD and WE are for different systems and metrics. Ideally, you could use this framework to compare the same calculation for the same system to see how (hopefully) the WE simulation was able to explore the landscape better than standard MD.</p>
@@ -929,7 +930,7 @@ Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_80_1.png" src="../_images/notebook_wedap_demo_80_1.png" />
+<img alt="../_images/notebook_wedap_demo_81_1.png" src="../_images/notebook_wedap_demo_81_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -979,7 +980,7 @@ Go to ITERATION: 19 and SEGMENT: 331
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_84_2.png" src="../_images/notebook_wedap_demo_84_2.png" />
+<img alt="../_images/notebook_wedap_demo_85_2.png" src="../_images/notebook_wedap_demo_85_2.png" />
 </div>
 </div>
 <p>We also get an output line of which iteration and segment the trace corresponds to.</p>
@@ -997,39 +998,57 @@ Go to ITERATION: 19 and SEGMENT: 331
 <section id="Example-4:-Making-a-GIF">
 <h3>Example 4: Making a GIF<a class="headerlink" href="#Example-4:-Making-a-GIF" title="Permalink to this heading"></a></h3>
 <p>Let’s now make a GIF of our data, here I am using the dihedral 11 aux dataset and looping through the averages of small sets of iteration ranges, but anything could be looped to make the GIF using this example as a template.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -h5 p53.h5 -y dihedral_11 -dt average --pmax 12 -pu kcal -li 19 --avg-plus 2 --gif-out example.gif --xlim 0 6 --ylim -180 180 --grid --cmap gnuplot_r --ylabel &quot;Dihedral Angle 11 (°)&quot; --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot;
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gif</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h5&quot;</span> <span class="p">:</span> <span class="s2">&quot;p53.h5&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Xname&quot;</span> <span class="p">:</span> <span class="s2">&quot;pcoord&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Yname&quot;</span> <span class="p">:</span> <span class="s2">&quot;dihedral_11&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;data_type&quot;</span> <span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;p_max&quot;</span> <span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+                <span class="s2">&quot;p_units&quot;</span> <span class="p">:</span> <span class="s2">&quot;kcal&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;first_iter&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;last_iter&quot;</span> <span class="p">:</span> <span class="mi">19</span><span class="p">,</span>
+                <span class="s2">&quot;plot_mode&quot;</span> <span class="p">:</span> <span class="s2">&quot;hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ylabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Dihedral Angle 11 (°)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;xlabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;xlim&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+                <span class="s2">&quot;ylim&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
+                <span class="s2">&quot;grid&quot;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;cmap&quot;</span> <span class="p">:</span> <span class="s2">&quot;gnuplot_r&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+<span class="n">wedap</span><span class="o">.</span><span class="n">make_gif</span><span class="p">(</span><span class="o">**</span><span class="n">plot_options</span><span class="p">,</span> <span class="n">avg_plus</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gif_out</span><span class="o">=</span><span class="s2">&quot;example.gif&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
-</pre></div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># for a progress bar</span>
-<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
-</pre></div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "6ee2df33dc074b01a0ba2c883d09c7d4", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plots should not be saved with any transparency</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;savefig.transparent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;savefig.facecolor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span>
-</pre></div>
-</div>
-</div>
+<p>The resulting GIF is shown below:</p>
+<p align="left"><p><img alt="example gif" class="no-scaled-link" src="../_images/example.gif" style="width: 400px;" /></p>
+</p><hr class="docutils" />
+<p>Here is an accessible version of the backend code for doing this, I provide it here since you can easily customize it with finer control to make more advanced gifs.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># decorate a plot function with @gif.frame (return not required):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gif</span>
+<span class="c1"># for a progress bar</span>
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="c1"># plots should not be saved with any transparency</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;savefig.transparent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;savefig.facecolor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span>
+
+<span class="c1"># decorate a plot function with @gif.frame (return not required):</span>
 <span class="nd">@gif</span><span class="o">.</span><span class="n">frame</span>
 <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">avg_plus</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1083,9 +1102,7 @@ Go to ITERATION: 19 and SEGMENT: 331
 <div class="output_area docutils container">
 <script type="application/vnd.jupyter.widget-view+json">{"model_id": "0adaaf35f28c4c919ff4e57a4142fd10", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-<p>The resulting GIF is shown below:</p>
-<p align="left"><p><img alt="example gif" class="no-scaled-link" src="../_images/example.gif" style="width: 400px;" /></p>
-</p></section>
+</section>
 <section id="Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn">
 <h3>Example 5: Data Extraction for Machine Learning with scikit-learn<a class="headerlink" href="#Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn" title="Permalink to this heading"></a></h3>
 <p>In this final example, I will go through how to extract data from a <code class="docutils literal notranslate"><span class="pre">west.h5</span></code> file using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and then we can directly pass the data to other Python libraries such as <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> to do some clustering and pca.</p>
@@ -1166,7 +1183,7 @@ Go to ITERATION: 19 and SEGMENT: 331
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebook_wedap_demo_98_2.png" src="../_images/notebook_wedap_demo_98_2.png" />
+<img alt="../_images/notebook_wedap_demo_99_2.png" src="../_images/notebook_wedap_demo_99_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
