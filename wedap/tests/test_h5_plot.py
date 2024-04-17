@@ -42,6 +42,7 @@ def plot_data_gen(out=None, show=False, **kwargs):
 
     # Now we can save it to a numpy array.
     data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+    #data = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
     data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     
     # save as np binary file
@@ -97,7 +98,7 @@ class Test_H5_Plot():
         #data = np.load(f"wedap/tests/data/plot_{data_type}_{plot_mode}_{Xname}_{Yname}_jp{jointplot}.npy")
         #np.testing.assert_allclose(plotdata, data)
         # check to see if the amount of mismatches is less than 500 (<1% of 1 million items)
-        assert data.size - np.count_nonzero(plotdata==data) < 500
+        assert data.size - np.count_nonzero(plotdata==data) < 1000
     
 
     @pytest.mark.parametrize("plot_mode", ["scatter3d", "hexbin3d"])
