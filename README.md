@@ -14,6 +14,8 @@
 
 `mdap` can be used to plot data files from analysis of standard MD simulations.
 
+`wekap` can be used to plot flux values as rates from a WESTPA created direct.h5 file. 
+
 For a demo and summary of features, see this [jupyter notebook](docs/notebook/wedap_demo.ipynb).
 
 Or view the same demo notebook on the [documentation web page](https://darianyang.github.io/wedap/docs/html/notebook/wedap_demo.html).
