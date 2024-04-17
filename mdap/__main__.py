@@ -27,6 +27,11 @@ def main():
     """
     Generate pdist and plot it
     """
+    # if not using screen use agg to be compatible with no display envs
+    if args.no_output_to_screen:
+        import matplotlib
+        matplotlib.use('agg')
+
     if args.style == "default":
         # get the style parameters from package data
         # currently writes into temp file, could be more efficient (TODO)
