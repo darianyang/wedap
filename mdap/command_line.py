@@ -36,7 +36,7 @@ if gooey is None or len(sys.argv) > 1:
 else:
     ArgumentParser = gooey.GooeyParser
     gui_decorator = gooey.Gooey(
-        program_name='mdap',
+        program_name='MDAP',
         #navigation='TABBED',
         #advanced=True,
         suppress_gooey_flag=True,
@@ -61,7 +61,7 @@ def create_cmd_arguments():
         An ArgumentParser that is used to retrieve command line arguments. 
     """
     mdap_desc = "======================================================= \n" + \
-                "=== molecular dynamics analysis and plotting (mdap) === \n" + \
+                "=== Molecular Dynamics Analysis and Plotting (MDAP) === \n" + \
                 "======================================================= \n" + \
                 "\nGiven an input (pre-calcualated) dataset from standard MD simulations, " + \
                 "prepare probability distributions and plots. " + \

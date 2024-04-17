@@ -41,7 +41,7 @@ if gooey is None or len(sys.argv) > 1:
 else:
     ArgumentParser = gooey.GooeyParser
     gui_decorator = gooey.Gooey(
-        program_name='wedap',
+        program_name='WEDAP',
         #navigation='TABBED',
         #advanced=True,
         suppress_gooey_flag=True,
@@ -66,7 +66,7 @@ def create_cmd_arguments():
         An ArgumentParser that is used to retrieve command line arguments. 
     """
     wedap_desc = "============================================================ \n" + \
-                 "=== weighted ensemble data analysis and plotting (wedap) === \n" + \
+                 "=== Weighted Ensemble Data Analysis and Plotting (WEDAP) === \n" + \
                  "============================================================ \n" + \
                  "\nGiven an input west.h5 file from a successful WESTPA simulation, " + \
                  "prepare probability distributions and plots." + \
