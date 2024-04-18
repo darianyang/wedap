@@ -34,6 +34,11 @@ The structure of these datasets is as follows:
   corr_len
     (Integer) Correlation length of the observable within this window, in units
     of tau.
+
+TODO:
+    * fix mfpt plots
+    * multi direct.h5/assign.h5 input and error using Bayesian bootstrapping
+
 """
 
 import numpy as np
@@ -228,8 +233,8 @@ class Kinetics:
         # WE iterations
         iterations = np.arange(0, len(rate_ab), 1)
         if self.moltime:
-            # multiply by tau (ps)
-            iterations *= 100
+            # multiply by tau seconds converted to ps
+            iterations = np.multiply(iterations, (self.tau * 1e12))
             # convert to ns
             iterations = np.divide(iterations, 1000)
 
