@@ -48,9 +48,11 @@
 <li class="toctree-l1 current"><a class="reference internal" href="wedap_modules.html">wedap modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">wedap.h5_pdist module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-wedap.h5_plot">wedap.h5_plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wedap.h5_gif">wedap.h5_gif module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="mdap_modules.html">mdap modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wekap_modules.html">wekap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebook/wedap_demo.html">WEDAP Demo</a></li>
 </ul>
 
@@ -643,6 +645,38 @@ Must input raw probabilities from H5_Pdist(p_units = ‘raw’).</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-wedap.h5_gif">
+<span id="wedap-h5-gif-module"></span><h1>wedap.h5_gif module<a class="headerlink" href="#module-wedap.h5_gif" title="Permalink to this heading"></a></h1>
+<p>Helper function for making gifs.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="wedap.h5_gif.make_gif">
+<span class="sig-prename descclassname"><span class="pre">wedap.h5_gif.</span></span><span class="sig-name descname"><span class="pre">make_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_plus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gif_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'example.gif'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_gif.make_gif" title="Permalink to this definition"></a></dt>
+<dd><p>Convenience function for gif making.
+Note that this is tailored for making average pdist plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first_iter</strong> (<em>int</em>) – Where to start the gif.</p></li>
+<li><p><strong>last_iter</strong> (<em>int</em>) – Where to end the gif. Important here is that you
+make sure avg_plus + last_iter does not exceed the total amount of iters
+you have available in the h5 file.</p></li>
+<li><p><strong>step_iter</strong> (<em>int</em>) – Interval for looping the first to last iter requested.</p></li>
+<li><p><strong>avg_plus</strong> (<em>int</em>) – The +range of interations for each iter in range(first,last,step).
+So as the loop progresses, avg_plus is added to each iter to make the
+range that the average pdist is taken from. Important here is that you
+make sure avg_plus + last_iter does not exceed the total amount of iters
+you have available in the h5 file. If you set avg_plus to 0, it will
+make instant plots of each iter in the range requested.</p></li>
+<li><p><strong>duration</strong> (<em>int</em>) – Duration in milliseconds between frames of the gif, default 50ms.</p></li>
+<li><p><strong>gif_out</strong> (<em>str</em>) – Out path to created gif file, default ‘example.gif’.</p></li>
+<li><p><strong>**kwargs</strong> – Can be useful to input dictionary of kwargs for H5_Plot init.
+E.g. can put xlim, xlabel, grid, Xname, etc.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

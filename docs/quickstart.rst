@@ -27,9 +27,8 @@ Dependencies
 * numpy
 * matplotlib
 * h5py
-* scipy
 * tqdm
-* gif (optional for making gifs)
+* gif
 * gooey (optional for GUI)
 
 Usage Examples

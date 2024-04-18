@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Documentation &mdash; wedap  documentation</title>
+  <title>wekap modules &mdash; wedap  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wedap.H5_Pdist" href="autosummary/wedap.H5_Pdist.html" />
-    <link rel="prev" title="Quickstart Guide" href="quickstart.html" /> 
+    <link rel="next" title="wekap.kinetics module" href="wekap.html" />
+    <link rel="prev" title="mdap.md_pdist module" href="mdap.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,17 +44,13 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autosummary/wedap.H5_Pdist.html">wedap.H5_Pdist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autosummary/wedap.H5_Plot.html">wedap.H5_Plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autosummary/mdap.MD_Pdist.html">mdap.MD_Pdist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autosummary/mdap.MD_Plot.html">mdap.MD_Plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autosummary/wekap.Kinetics.html">wekap.Kinetics</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wedap_modules.html">wedap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mdap_modules.html">mdap modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="wekap_modules.html">wekap modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">wekap modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wekap.html">wekap.kinetics module</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="notebook/wedap_demo.html">WEDAP Demo</a></li>
 </ul>
 
@@ -72,9 +68,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">API Documentation</li>
+      <li class="breadcrumb-item active">wekap modules</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/wekap_modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -82,35 +78,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="api-documentation">
-<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading"></a></h1>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="autosummary/wedap.H5_Pdist.html#wedap.H5_Pdist" title="wedap.H5_Pdist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wedap.H5_Pdist</span></code></a>([h5, data_type, Xname, ...])</p></td>
-<td><p>These class methods generate probability distributions from a WESTPA H5 file.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="autosummary/wedap.H5_Plot.html#wedap.H5_Plot" title="wedap.H5_Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wedap.H5_Plot</span></code></a>([X, Y, Z, plot_mode, cmap, ...])</p></td>
-<td><p>These methods provide various plotting options for pdist data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="autosummary/mdap.MD_Pdist.html#mdap.MD_Pdist" title="mdap.MD_Pdist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mdap.MD_Pdist</span></code></a>([data_type, Xname, Xindex, ...])</p></td>
-<td><p>These class methods generate probability distributions from input MD data files.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="autosummary/mdap.MD_Plot.html#mdap.MD_Plot" title="mdap.MD_Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mdap.MD_Plot</span></code></a>(*args, **kwargs)</p></td>
-<td><p>These methods provide various plotting options for pdist data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="autosummary/wekap.Kinetics.html#wekap.Kinetics" title="wekap.Kinetics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wekap.Kinetics</span></code></a>([direct, assign, statepop, ...])</p></td>
-<td><p>Plot the fluxes and rates from direct.h5 files.</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="wekap-modules">
+<h1>wekap modules<a class="headerlink" href="#wekap-modules" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wekap.html">wekap.kinetics module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wekap.html#wekap.kinetics.Kinetics"><code class="docutils literal notranslate"><span class="pre">Kinetics</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wekap.html#wekap.kinetics.Kinetics.extract_rate"><code class="docutils literal notranslate"><span class="pre">Kinetics.extract_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wekap.html#wekap.kinetics.Kinetics.load_module"><code class="docutils literal notranslate"><span class="pre">Kinetics.load_module()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wekap.html#wekap.kinetics.Kinetics.plot_exp_vals"><code class="docutils literal notranslate"><span class="pre">Kinetics.plot_exp_vals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wekap.html#wekap.kinetics.Kinetics.plot_rate"><code class="docutils literal notranslate"><span class="pre">Kinetics.plot_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wekap.html#wekap.kinetics.Kinetics.plot_statepop"><code class="docutils literal notranslate"><span class="pre">Kinetics.plot_statepop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="autosummary/wedap.H5_Pdist.html" class="btn btn-neutral float-right" title="wedap.H5_Pdist" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mdap.html" class="btn btn-neutral float-left" title="mdap.md_pdist module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wekap.html" class="btn btn-neutral float-right" title="wekap.kinetics module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

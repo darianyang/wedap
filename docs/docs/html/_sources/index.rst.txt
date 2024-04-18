@@ -16,6 +16,7 @@ Welcome to wedap's documentation!
    api
    wedap_modules
    mdap_modules
+   wekap_modules
    notebook/wedap_demo
 
 * :ref:`genindex`

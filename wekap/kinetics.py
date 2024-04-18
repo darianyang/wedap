@@ -48,6 +48,9 @@ import importlib
 # TODO: allow a list of input files for multi kinetics runs with bayesian bootstrapping
 # TODO: transition this to CLI program like mdap and wedap (eventually maybe make mkap)
 class Kinetics:
+    """
+    Plot the fluxes and rates from direct.h5 files.
+    """
 
     def __init__(self, direct="direct.h5", assign=None, statepop="direct", tau=100e-12, state=1, 
                  label=None, units="rates", ax=None, savefig=None, color=None, moltime=True,

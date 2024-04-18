@@ -12,3 +12,9 @@ wedap.h5\_plot module
 .. automodule:: wedap.h5_plot
    :members:                                    
    :show-inheritance:                           
+
+wedap.h5\_gif module
+---------------------
+
+.. automodule:: wedap.h5_gif
+   :members:                                    
