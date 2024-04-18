@@ -41,7 +41,7 @@ pip install wedap
 ```
 Otherwise you can install with `Gooey`, e.g. into a new conda env:
 ``` bash
-conda env create --name wedap python=3.8+
+conda env create --name wedap python=3.10+
 conda activate wedap
 conda install -c conda-forge gooey
 pip install wedap

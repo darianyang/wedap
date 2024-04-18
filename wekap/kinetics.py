@@ -38,7 +38,14 @@ The structure of these datasets is as follows:
 TODO:
     * fix mfpt plots
     * multi direct.h5/assign.h5 input and error using Bayesian bootstrapping
-
+    * account for assign.h5 populations implicitly using averaging info from 
+      direct.h5. E.g. auto use cumulative or window averaged assign.h5 populations.
+    * option to apply the RED scheme
+    
+    Other plots:
+    4 panel plot of P_A, P_B, rate_AB, rate_BA, all as function of WE iteration
+    Autocorrelation plot
+    Event durations and distributions
 """
 
 import numpy as np
@@ -48,10 +55,6 @@ import h5py
 import sys
 import importlib
 
-# TODO: function to make 4 panel plot
-    # Plot of P_A, P_B, rate_AB, rate_BA, all as function of WE iteration
-# TODO: allow a list of input files for multi kinetics runs with bayesian bootstrapping
-# TODO: transition this to CLI program like mdap and wedap (eventually maybe make mkap)
 class Kinetics:
     """
     Plot the fluxes and rates from direct.h5 files.
@@ -90,6 +93,7 @@ class Kinetics:
             Default True, use molecular time on X axis, otherwise use WE iteration.
         cumulative_avg : bool
             Set to True (default) when kinetics were calculated with cumulative averaging.
+            Only relevant with assign.h5 state populations.
         linewidth : float
         linestyle : str
         postprocess_func : func
@@ -100,9 +104,11 @@ class Kinetics:
         # read in direct.h5 file
         self.direct_h5 = h5py.File(direct, "r")
         if assign is None:
-            # temp solution for getting assign.h5, eventually can just get rid of it
-            # since I don't think the color/labeled population is as useful
-            self.assign_h5 = h5py.File(direct[:-9] + "assign.h5", "r")
+            try:
+                # temp solution for getting assign.h5 color/labeled population
+                self.assign_h5 = h5py.File(direct[:-9] + "assign.h5", "r")
+            except FileNotFoundError as e:
+                print(f"{e}: Note that an assign.h5 file is needed only when using assign.h5 labeled_populations for the state populations.")
         else:
              self.assign_h5 = assign
 
@@ -123,7 +129,7 @@ class Kinetics:
             # divide k_AB by P_A for equilibrium rate correction (AB and BA steady states)
             self.state_pops = np.array(self.assign_h5["labeled_populations"])
 
-            # when using cumulative averaging
+            # when using cumulative averaging and assign.h5 statepops
             if cumulative_avg:
                 # Replace 0 with the index of your source state here, 
                 # the order you defined states in west.cfg.

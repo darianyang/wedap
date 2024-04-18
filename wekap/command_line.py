@@ -141,7 +141,7 @@ def create_cmd_arguments():
         type=str,
         default="direct",
         choices=["direct", "assign"],
-        help="'direct' for state_population_evolution from direct.h5 or 'assign' for labeled_populations from assign.h5."
+        help="'direct' for state_population_evolution from direct.h5 or 'assign' for labeled_populations from assign.h5. By default will use populations from direct.h5, note that if you use the populations from assign.h5 instead, they will need to be consistent with any window or cumulative averaging schemes used for direct.h5 rate calculations."
     )
     optional.add_argument(
         "--units",
@@ -158,12 +158,6 @@ def create_cmd_arguments():
         default=None,
         help="Path to optionally save the figure."
     )
-    optional.add_argument(
-        "--cumulative-avg", "-cavg",
-        dest="cumulative_avg",
-        action="store_true",
-        help="Set to True when kinetics were calculated with cumulative averaging."
-    )
     # TODO: this isn't really needed for anyone else and can use hline instead
     optional.add_argument(
         "--exp-values", "-exp",
@@ -171,21 +165,24 @@ def create_cmd_arguments():
         action="store_true",
         help="Plot experimental D1-->D2 values."
     )
-    # TODO: moltime arg for WE iteration vs moltime
-#     optional.add_argument("-mt", "--molecular-time", "--moltime"
-#                         dest = "moltime",
-#                         help = "Include this argument to not output the plot to "
-#                         "your display.", 
-#                         action= "store_true") 
+    optional.add_argument(
+        "--no-cumulative-avg", "-ncavg", "-nca",
+        dest="cumulative_avg",
+        action="store_false",
+        help="Set when kinetics were NOT calculated with cumulative averaging. "
+             "E.g. if you have instantaneous flux. This is only when using the "
+             "assign.h5 file for state populations (--statepop assign)."
+    )
+    optional.add_argument("-nmt", "--no-molecular-time", "--no-moltime",
+                        dest = "moltime",
+                        help = "By default, wekap uses molecular time for the "
+                               "x-axis units, set this flag to use WE iteration instead.", 
+                        action= "store_false") 
     optional.add_argument("-nots", "--no-output-to-screen",
                         dest = "no_output_to_screen",
                         help = "Include this argument to not output the plot to "
                         "your display.", 
                         action= "store_true") 
-    optional.add_argument("-npb", "--no-progress-bar",
-                        dest = "no_pbar",
-                        help = "Include this argument to not output the tqdm progress bar.",
-                        action= "store_true")
 
     ##########################################################
     ############### FORMATTING ARGUMENTS #####################
