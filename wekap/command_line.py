@@ -1,10 +1,8 @@
 """
 Functions for handling command-line input using argparse module.
 
-TODO: add option to split pdist and plot once the pdist to txt feature is done
-      so the pdist txt file could be: X_column, Y_column, Z_matrix_columns.
-      This would be something like pdist.dap default and option to check and 
-      read in a wedap or westpa pdist file for pdist function.
+TODO: 
+     * add examples to desc
 """
 
 import argparse
@@ -14,8 +12,6 @@ import sys
 # adapted from https://github.com/chriskiehl/Gooey/issues/296
 try:
     import gooey
-    #from gooey import Gooey
-    #from gooey import GooeyParser
 except ImportError:
     gooey = None
 
@@ -68,7 +64,6 @@ def create_cmd_arguments():
                  "=== Weighted Ensemble Kinetics Analysis and Plotting (WEKAP) === \n" + \
                  "================================================================ \n" + \
                  "\nPlot flux values from a direct.h5 file as rates"
-                 # TODO: add examples to desc
 
     # create argument parser (gooey based if available)
     if gooey is None:
