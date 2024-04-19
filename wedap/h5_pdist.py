@@ -599,7 +599,7 @@ class H5_Pdist():
                             skip_parents_n.clear()
 
         # TODO: prob can do better than these print statements
-        print("pdist calculation: ")
+        #print("pdist calculation: ")
         # write new weights into skip_basis_out h5 file
         # TODO: wrap this into h5saveout and include succ_only
         # if self.skip_basis_out is not None:
@@ -610,58 +610,6 @@ class H5_Pdist():
             
         # only return portion of weights requested by user
         return new_weights[self.first_iter-1:self.last_iter:self.step_iter]
-
-    def find_iter_seg_from_xy_vals(self, val_x, val_y):
-        """
-        Find and return (iter, seg) closest to input data value(s).
-
-        Parameters
-        ----------
-        val_x : int or float
-            X dataset value to search for.
-        val_y : int or float
-            Y dataset value to search for.
-
-        Returns
-        -------
-        iter_num, seg_num : int, int
-            Iteration, segment number.
-        """
-        # for evolution plots, only need to search one iteration
-        if self.data_type == "evolution":
-            # convert to int since it is an iteration number
-            val_y = int(val_y)
-            # Extract x values for the val_y iteration
-            x_data = self._get_data_array(self.Xname, self.Xindex, val_y)[:,-1]
-            # Calculate distances between input x values and all data points in the current iteration
-            dist = np.abs(x_data - val_x)
-            min_dist_idx = np.argmin(dist)
-            min_dist = dist[min_dist_idx]
-            # iter, seg return: iter is from y value, seg is from min dist
-            return val_y, min_dist_idx
-
-        # for e.g. average plots, search all iterations of both x and y values
-        distances = []
-        # always use iteration 1 to get full trace path
-        for i in tqdm(range(1, self.last_iter + 1, self.step_iter), 
-                      desc="Trace Search", disable=self.no_pbar): 
-            # Extract x and y values for the current iteration
-            x_data = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
-            y_data = self._get_data_array(self.Yname, self.Yindex, i)[:,-1]
-            # Calculate distances between input values and all data points in the current iteration
-            dist = np.sqrt((x_data - val_x)**2 + (y_data - val_y)**2)
-
-            # Find the minimum distance and its index
-            min_dist_idx = np.argmin(dist)
-            min_dist = dist[min_dist_idx]
-
-            distances.append((min_dist, i, min_dist_idx))
-
-        # Find the iteration and segment with the minimum distance
-        min_distance, iter_num, seg_num = min(distances)
-
-        print(f"Tracing ITERATION: {iter_num}, SEGMENT: {seg_num}")
-        return iter_num, seg_num
 
     ##################### TODO: update or organize this #############################
     def get_parents(self, walker_tuple):
@@ -770,9 +718,62 @@ class H5_Pdist():
 
         return coords            
 
+    def find_iter_seg_from_xy_vals(self, val_x, val_y):
+        """
+        Find and return (iter, seg) closest to input data value(s).
+
+        Parameters
+        ----------
+        val_x : int or float
+            X dataset value to search for.
+        val_y : int or float
+            Y dataset value to search for.
+
+        Returns
+        -------
+        iter_num, seg_num : int, int
+            Iteration, segment number.
+        """
+        # for evolution plots, only need to search one iteration
+        if self.data_type == "evolution":
+            # convert to int since it is an iteration number
+            val_y = int(val_y)
+            # Extract x values for the val_y iteration
+            x_data = self._get_data_array(self.Xname, self.Xindex, val_y)[:,-1]
+            # Calculate distances between input x values and all data points in the current iteration
+            dist = np.abs(x_data - val_x)
+            min_dist_idx = np.argmin(dist)
+            min_dist = dist[min_dist_idx]
+            # iter, seg return: iter is from y value, seg is from min dist
+            return val_y, min_dist_idx
+
+        # for e.g. average plots, search all iterations of both x and y values
+        distances = []
+        # always use iteration 1 to get full trace path
+        for i in tqdm(range(1, self.last_iter + 1, self.step_iter), 
+                      desc="Trace Search", disable=self.no_pbar): 
+            # Extract x and y values for the current iteration
+            x_data = self._get_data_array(self.Xname, self.Xindex, i)[:,-1]
+            y_data = self._get_data_array(self.Yname, self.Yindex, i)[:,-1]
+            # Calculate distances between input values and all data points in the current iteration
+            dist = np.sqrt((x_data - val_x)**2 + (y_data - val_y)**2)
+
+            # Find the minimum distance and its index
+            min_dist_idx = np.argmin(dist)
+            min_dist = dist[min_dist_idx]
+
+            distances.append((min_dist, i, min_dist_idx))
+
+        # Find the iteration and segment with the minimum distance
+        min_distance, iter_num, seg_num = min(distances)
+
+        print(f"Tracing ITERATION: {iter_num}, SEGMENT: {seg_num}")
+        return iter_num, seg_num
+
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
-    def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle="-", alpha=1, ax=None):
+    def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle='-', ax=None, 
+                   find_iter_seg=False, **kwargs):
         """
         Plot trace.
 
@@ -780,8 +781,17 @@ class H5_Pdist():
         ----------
         walker_tuple : tuple
             (iteration, walker) start point to trace from.
+            Can also find the closest iteration/seg using input as (X_value,Y_value).
+            `find_iter_seg` must be True to use this setting.
         color : str
+        linewidth : int
+        linestyle : str
         ax : mpl axes object
+        find_iter_seg : bool
+            Default False and use walker tuple as (iter, seg). 
+            Set True to look for (iter, seg) using walker_tuple input as (X_value,Y_value).
+        **kwargs
+            Passed to mpl plt.plot line plots. E.g. alpha parameter.
         """
         # TODO: update/streamline this
         if ax is None:
@@ -796,22 +806,26 @@ class H5_Pdist():
         if hasattr(self, 'linestyle'):
             linestyle = self.linestyle
 
+        # search for iter_seg if specified
+        if find_iter_seg:
+            walker_tuple = self.find_iter_seg_from_xy_vals(walker_tuple[0], walker_tuple[1])
+
         path = self.trace_walker(walker_tuple)
         # adjustments for plothist evolution of only aux_x data
         if self.data_type == "evolution":
             # split iterations up to provide y-values for each x-value (pcoord)
             aux = self.get_coords(path, self.Xname, self.Xindex)
             iters = np.arange(1, len(aux)+1, self.step_iter)
-            ax.plot(aux[::self.step_iter], iters, c="black", lw=linewidth+1, linestyle=linestyle)
-            ax.plot(aux[::self.step_iter], iters, c=color, lw=linewidth, linestyle=linestyle)
+            ax.plot(aux[::self.step_iter], iters, c="black", lw=linewidth+1, linestyle=linestyle, **kwargs)
+            ax.plot(aux[::self.step_iter], iters, c=color, lw=linewidth, linestyle=linestyle, **kwargs)
             return
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c="black", lw=linewidth+1, linestyle=linestyle, alpha=alpha)
-        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c=color, lw=linewidth, linestyle=linestyle, alpha=alpha)
+        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c="black", lw=linewidth+1, linestyle=linestyle, **kwargs)
+        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c=color, lw=linewidth, linestyle=linestyle, **kwargs)
 
     def w_succ(self):
         """
