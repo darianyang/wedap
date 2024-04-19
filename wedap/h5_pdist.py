@@ -312,11 +312,11 @@ class H5_Pdist():
         Warnings if there are duplicate XYZ name/index pairs.
         """
         # only check all of them if Cname is not None
-        if self.Cname:
+        if self.Cname is not None:
             pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex), 
                      (self.Zname, self.Zindex), (self.Cname, self.Cindex)]
         # only check if Zname is not None
-        elif self.Zname:
+        elif self.Zname is not None:
             pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex), (self.Zname, self.Zindex)]
         else:
             pairs = [(self.Xname, self.Xindex), (self.Yname, self.Yindex)]
