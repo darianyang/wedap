@@ -429,6 +429,8 @@ class H5_Plot(H5_Pdist):
                 self.ax.set_title(item)
             if key == "suptitle" and item:
                 plt.suptitle(item)
+            # if key == "style" and item:
+            #     plt.style.use(item)
             if key == "grid" and item:
                 self.ax.grid(item, alpha=0.5)
                 if self.jointplot:

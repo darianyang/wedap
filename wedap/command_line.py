@@ -262,11 +262,12 @@ def create_cmd_arguments():
                              " levels) using a gaussian filter with sigma="
                              "SMOOTHING_LEVEL.",
                         type=float)
-    optional.add_argument("-sci", "--scatter-iterval", default=10, nargs="?",
+    optional.add_argument("-sci", "--scatter-int", "--scatter-interval", default=10, nargs="?",
                         dest="scatter_interval",
                         help="Adjust to use less data for scatter plots.",
                         type=int)
-    optional.add_argument("-scs", "--scatter-s", default=1, nargs="?",
+    optional.add_argument("-scs", "--scatter-s", "--scatter-size",
+                        default=1, nargs="?",
                         dest="scatter_s",
                         help="Adjust scatter plot marker size",
                         type=float)
@@ -384,6 +385,7 @@ def create_cmd_arguments():
     formatting.add_argument("--xlim", help="LB UB", dest="xlim", nargs=2, type=float)
     formatting.add_argument("--ylabel", dest="ylabel", type=str)
     formatting.add_argument("--ylim", help="LB UB", dest="ylim", nargs=2, type=float)
+    formatting.add_argument("--zlabel", dest="zlabel", type=str)
     formatting.add_argument("--title", dest="title", type=str)
     formatting.add_argument("--suptitle", dest="suptitle", type=str)
     formatting.add_argument("--cbar-label", dest="cbar_label", type=str)
