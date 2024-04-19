@@ -1,0 +1,5 @@
+savefig.dpi : 600
+savefig.transparent : True
+#axes.labelsize : 11
+axes.labelsize : 14
+#figure.figsize: 4.5, 3
