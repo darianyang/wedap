@@ -1,19 +1,19 @@
-font.size : 12
+font.size : 10
 figure.titleweight: bold
 axes.titleweight: bold
 axes.titlepad: 10.0 
-axes.linewidth : 3
-axes.labelsize : 16
+axes.linewidth : 2
+axes.labelsize : 11
 axes.labelweight : bold
-axes.labelpad : 8
+axes.labelpad : 6
 xtick.major.size : 8.5
-xtick.major.width : 3
+xtick.major.width : 2
 xtick.minor.size : 6
-xtick.minor.width : 3
+xtick.minor.width : 2
 ytick.major.size : 8.5
-ytick.major.width : 3
+ytick.major.width : 2
 ytick.minor.size : 4
-ytick.minor.width : 3
-savefig.dpi : 300
-#savefig.transparent : True
-figure.figsize: 6, 4
+ytick.minor.width : 2
+savefig.dpi : 600
+savefig.transparent : True
+figure.figsize: 4.5, 3
