@@ -178,10 +178,10 @@ class H5_Plot(H5_Pdist):
         # otherwise check if p_units are there
         if hasattr(self, "p_units"):
             if self.p_units == "kT":
-                self.cbar_label = "$-\ln\,P(x)$"
+                self.cbar_label = r"$-\ln\,P(x)$"
                 #self.cbar_label = "-ln (P(x))"
             elif self.p_units == "kcal":
-                self.cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+                self.cbar_label = r"$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
             elif self.p_units == "raw":
                 self.cbar_label = "Counts"
             elif self.p_units == "raw_norm":
