@@ -61,6 +61,10 @@ class H5_Plot(H5_Pdist):
 
         Alternatively the X, Y, and Z arrays can be generated in a separate line by H5_Pdist 
         and then passed to H5_Plot.
+        ``` Python
+        X, Y, Z = H5_Pdist(**kwargs).pdist()
+        H5_Plot(X, Y, Z, **kwargs).plot()
+        ```
 
         The main method you will call is the H5_Plot.plot() method, which will update the 
         self.ax and self.fig instance attributes with the desired plotting options specified.
@@ -590,6 +594,11 @@ class H5_Plot(H5_Pdist):
         ----------
         cbar : bool
             Whether or not to include a colorbar.
+        
+        Returns
+        -------
+        self.fig, self.ax : mpl figure and axes objects
+            Generates, updates, and returns figure and axes objects.
         """
         # special settings for joint plots
         if self.jointplot:
@@ -729,6 +738,8 @@ class H5_Plot(H5_Pdist):
         # fig vs plt shouldn't matter here (needed to go plt for mosaic)
         #self.fig.tight_layout()
         plt.tight_layout()
+
+        return self.fig, self.ax
 
 if __name__ == "__main__":
     # testing of postprocess function
