@@ -9,7 +9,6 @@ pdist.h5 --plothist(with --postprocess-functions hist_settings.py)--> plot.pdf
 TODO: 
     - maybe add option to output pdist as file, this would speed up subsequent plotting
         of the same data. H5_Plot could then use this data.
-    - add option for a list of equivalent h5 files, alternative to w_multi_west.
     - method to return pdist of a single trace, leading into option to plot all succ traces.
 """
 
@@ -41,30 +40,49 @@ class H5_Pdist():
                  p_units='kT', T=298, weighted=True, skip_basis=None, succ_only=False,
                  histrange_x=None, histrange_y=None, no_pbar=False, *args, **kwargs):
         """
+        Initialize this class with an `h5` file and `data_type`. The `X/Y/Zname` args
+        Can be a pcoord or aux dataset name in a west.h5 file, a 1D or 2D numpy array,
+        or the path to and name of a file (with a .dat, .txt, .pkl, .npz, .npy ending).
+
+        After instantiating this class, input args are saved as instance attributes.
+
+        These can then be updated if needed. The main method you will call is the
+        H5_Pdist.pdist() method, which will return the X, Y, and Z arrays to be plotted.
+        The X and Y arrays are 1D and represent the X and Y axis values to be plotted.
+        The Z array is empty with 2D output but otherwise will be a 2D array.
+
         Parameters
         ----------
         h5 : str or list of str
             Path(s) to west.h5 file(s).
         data_type : str
             'evolution' (1 dataset); 'average' or 'instant' (1 or 2 datasets)
-        Xname : str
-            Target data for x axis, default pcoord.
+        Xname : str or array
+            Target data for x axis, default pcoord. Can be a pcoord or aux dataset name 
+            in a west.h5 file, a 1D or 2D numpy array, or the path to and name of a file 
+            (with a .dat, .txt, .pkl, .npz, .npy ending).
         Xindex : int
             If X.ndim > 2, use this to index.
-        Yname : str
-            Target data for y axis, default None.
+        Yname : str or array
+            Target data for y axis, default None. Can be a pcoord or aux dataset name 
+            in a west.h5 file, a 1D or 2D numpy array, or the path to and name of a file 
+            (with a .dat, .txt, .pkl, .npz, .npy ending).
         Yindex : int
             If Y.ndim > 2, use this to index.
-        Zname : str
-            Target data for z axis, default None. 
+        Zname : str or array
+            Target data for z axis, default None. Can be a pcoord or aux dataset name 
+            in a west.h5 file, a 1D or 2D numpy array, or the path to and name of a file 
+            (with a .dat, .txt, .pkl, .npz, .npy ending).
             Use this if you want to use a dataset instead of pdist for Z axis.
             This will be best plotted as a scatter plot with Z as the marker color.
             Instead of returning the pdist, only the XYZ datasets will be returned.
             This is becasue the weights/pdist isn't considered.
         Zindex : int
             If Z.ndim > 2, use this to index.
-        Cname : str
+        Cname : str or array
             Target data for cbar axis when using 3d projection scatter, default None. 
+            Can be a pcoord or aux dataset name in a west.h5 file, a 1D or 2D numpy array, 
+            or the path to and name of a file (with a .dat, .txt, .pkl, .npz, .npy ending).
         Cindex : int
             If C.ndim > 2, use this to index.
         H5save_out : str
@@ -1361,6 +1379,7 @@ class H5_Pdist():
         Returns
         -------
         X, Y, Z : arrays
+            Output probability distributions.
         """ 
         # empty object to pass to make_new_h5
         new_weights = None
