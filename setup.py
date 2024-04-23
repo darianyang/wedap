@@ -10,8 +10,8 @@ packages = find_packages()
 
 setup(
     name='wedap',
-    version='0.0.20',
-    description='weighted ensemble data analysis and plotting',
+    version='1.0.0',
+    description='Weighted Ensemble Data Analysis and Plotting',
     long_description=readme,
     long_description_content_type="text/markdown",
     author='Darian T. Yang',
