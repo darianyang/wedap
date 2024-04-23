@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wedap.H5_Pdist &mdash; wedap  documentation</title>
+  <title>wedap.H5_Pdist &mdash; WEDAP  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            wedap
+            WEDAP
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../mdap_modules.html">mdap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wekap_modules.html">wekap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebook/wedap_demo.html">WEDAP Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paper_figures/paper_figures.html">WEDAP Figures</a></li>
 </ul>
 
         </div>
@@ -64,7 +65,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">wedap</a>
+          <a href="../index.html">WEDAP</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -92,22 +93,38 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.H5_Pdist.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'west.h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H5save_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ysave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">succ_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.H5_Pdist.__init__" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Initialize this class with an <cite>h5</cite> file and <cite>data_type</cite>. The <cite>X/Y/Zname</cite> args
+Can be a pcoord or aux dataset name in a west.h5 file, a 1D or 2D numpy array,
+or the path to and name of a file (with a .dat, .txt, .pkl, .npz, .npy ending).</p>
+<p>After instantiating this class, input args are saved as instance attributes.</p>
+<p>These can then be updated if needed. The main method you will call is the
+H5_Pdist.pdist() method, which will return the X, Y, and Z arrays to be plotted.
+The X and Y arrays are 1D and represent the X and Y axis values to be plotted.
+The Z array is empty with 2D output but otherwise will be a 2D array.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>h5</strong> (<em>str or list of str</em>) – Path(s) to west.h5 file(s).</p></li>
 <li><p><strong>data_type</strong> (<em>str</em>) – ‘evolution’ (1 dataset); ‘average’ or ‘instant’ (1 or 2 datasets)</p></li>
-<li><p><strong>Xname</strong> (<em>str</em>) – Target data for x axis, default pcoord.</p></li>
+<li><p><strong>Xname</strong> (<em>str or array</em>) – Target data for x axis, default pcoord. Can be a pcoord or aux dataset name
+in a west.h5 file, a 1D or 2D numpy array, or the path to and name of a file
+(with a .dat, .txt, .pkl, .npz, .npy ending).</p></li>
 <li><p><strong>Xindex</strong> (<em>int</em>) – If X.ndim &gt; 2, use this to index.</p></li>
-<li><p><strong>Yname</strong> (<em>str</em>) – Target data for y axis, default None.</p></li>
+<li><p><strong>Yname</strong> (<em>str or array</em>) – Target data for y axis, default None. Can be a pcoord or aux dataset name
+in a west.h5 file, a 1D or 2D numpy array, or the path to and name of a file
+(with a .dat, .txt, .pkl, .npz, .npy ending).</p></li>
 <li><p><strong>Yindex</strong> (<em>int</em>) – If Y.ndim &gt; 2, use this to index.</p></li>
-<li><p><strong>Zname</strong> (<em>str</em>) – Target data for z axis, default None.
+<li><p><strong>Zname</strong> (<em>str or array</em>) – Target data for z axis, default None. Can be a pcoord or aux dataset name
+in a west.h5 file, a 1D or 2D numpy array, or the path to and name of a file
+(with a .dat, .txt, .pkl, .npz, .npy ending).
 Use this if you want to use a dataset instead of pdist for Z axis.
 This will be best plotted as a scatter plot with Z as the marker color.
 Instead of returning the pdist, only the XYZ datasets will be returned.
 This is becasue the weights/pdist isn’t considered.</p></li>
 <li><p><strong>Zindex</strong> (<em>int</em>) – If Z.ndim &gt; 2, use this to index.</p></li>
-<li><p><strong>Cname</strong> (<em>str</em>) – Target data for cbar axis when using 3d projection scatter, default None.</p></li>
+<li><p><strong>Cname</strong> (<em>str or array</em>) – Target data for cbar axis when using 3d projection scatter, default None.
+Can be a pcoord or aux dataset name in a west.h5 file, a 1D or 2D numpy array,
+or the path to and name of a file (with a .dat, .txt, .pkl, .npz, .npy ending).</p></li>
 <li><p><strong>Cindex</strong> (<em>int</em>) – If C.ndim &gt; 2, use this to index.</p></li>
 <li><p><strong>H5save_out</strong> (<em>str</em>) – Paths to save a new H5 file with this dataset name.
 Right now it saves the requested X Y or Z data into a new aux_name.
@@ -145,14 +162,7 @@ states 1 and 2 but would skip basis state 3, applying zero weights.</p></li>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#wedap.H5_Pdist.__init__" title="wedap.H5_Pdist.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([h5, data_type, Xname, Xindex, ...])</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>h5</strong> (<em>str or list of str</em>) -- Path(s) to west.h5 file(s).</p></li>
-</ul>
-</dd>
-</dl>
-</p></td>
+<td><p>Initialize this class with an <cite>h5</cite> file and <cite>data_type</cite>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aux_to_pdist_1d</span></code>(iteration)</p></td>
 <td><p>Take the auxiliary dataset for a single iteration and generate a weighted 1D probability distribution.</p></td>
@@ -240,7 +250,7 @@ states 1 and 2 but would skip basis state 3, applying zero weights.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Darian Yang.</p>
+    <p>&#169; Copyright 2024, Darian Yang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -1,13 +1,13 @@
 Quickstart Guide
 =============================
 
-To install with the GUI:
-
-``conda install -c conda-forge gooey``
+If you don't need the GUI, then you can just pip install.
 
 ``pip install wedap``
 
-If you don't need the GUI, then you can just pip install.
+To install with the GUI:
+
+``conda install -c conda-forge gooey``
 
 ``pip install wedap``
 
@@ -33,6 +33,8 @@ Dependencies
 
 Usage Examples
 **************
+For more detailed examples, see the WEDAP Demo or Paper Figures Jupyter notebook tabs.
+
 After installation, to run the CLI version and view available options:
 
 ``wedap --help``

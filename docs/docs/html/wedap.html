@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wedap.h5_pdist module &mdash; wedap  documentation</title>
+  <title>wedap.h5_pdist module &mdash; WEDAP  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            wedap
+            WEDAP
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="mdap_modules.html">mdap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wekap_modules.html">wekap modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebook/wedap_demo.html">WEDAP Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paper_figures/paper_figures.html">WEDAP Figures</a></li>
 </ul>
 
         </div>
@@ -62,7 +63,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">wedap</a>
+          <a href="index.html">WEDAP</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -95,7 +96,6 @@ pdist.h5 –plothist(with –postprocess-functions hist_settings.py)–&gt; plot
 </dd>
 </dl>
 </li>
-<li><p>add option for a list of equivalent h5 files, alternative to w_multi_west.</p></li>
 <li><p>method to return pdist of a single trace, leading into option to plot all succ traces.</p></li>
 </ul>
 </dd>
@@ -413,7 +413,7 @@ X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.</p>
 Must be True when using multiple h5 input files.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>X, Y, Z</strong></p>
+<dd class="field-even"><p><strong>X, Y, Z</strong> – Output probability distributions.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>arrays</p>
@@ -423,14 +423,21 @@ Must be True when using multiple h5 input files.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.plot_trace">
-<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find_iter_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
 <dd><p>Plot trace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker) start point to trace from.</p></li>
+<li><p><strong>walker_tuple</strong> (<em>tuple</em>) – (iteration, walker) start point to trace from.
+Can also find the closest iteration/seg using input as (X_value,Y_value).
+<cite>find_iter_seg</cite> must be True to use this setting.</p></li>
 <li><p><strong>color</strong> (<em>str</em>)</p></li>
+<li><p><strong>linewidth</strong> (<em>int</em>)</p></li>
+<li><p><strong>linestyle</strong> (<em>str</em>)</p></li>
 <li><p><strong>ax</strong> (<em>mpl axes object</em>)</p></li>
+<li><p><strong>find_iter_seg</strong> (<em>bool</em>) – Default False and use walker tuple as (iter, seg).
+Set True to look for (iter, seg) using walker_tuple input as (X_value,Y_value).</p></li>
+<li><p><strong>**kwargs</strong> – Passed to mpl plt.plot line plots. E.g. alpha parameter.</p></li>
 </ul>
 </dd>
 </dl>
@@ -519,22 +526,23 @@ Plot all of the datasets generated with H5_Pdist.</p>
 <li><p>contour_f – plot contour levels</p></li>
 <li><p>contour_l – plot contour lines only.</p></li>
 <li><p>scatter3d – plot 3 datasets in a scatter plot.</p></li>
+<li><p>hexbin3d – plot 3 datasets in a hexbin plot.</p></li>
 </ul>
 <p>maybe a ridgeline plot?
 - This would be maybe for 1D avg of every 100 iterations
 - <a class="reference external" href="https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/">https://matplotlib.org/matplotblog/posts/create-ridgeplots-in-matplotlib/</a>
 Option to overlay different datasets, could be done easily with python but maybe a cli option?</p>
-<dl class="simple">
-<dt>TODO: plot clustering centroids option?</dt><dd><p>can then grab the search_aux at the centroid</p>
-</dd>
-</dl>
-<p>TODO: bin visualizer? and maybe show the trajectories as just dots?
-Add postprocess function for quick fixes when using CLI? see feplotter</p>
+<p>TODO: bin visualizer? and maybe show the trajectories as just dots?</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_plot.</span></span><span class="sig-name descname"><span class="pre">H5_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hist'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jointplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj3d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj4d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hexbin_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#wedap.h5_pdist.H5_Pdist" title="wedap.h5_pdist.H5_Pdist"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5_Pdist</span></code></a></p>
 <p>These methods provide various plotting options for pdist data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cbar_pad</strong> (<em>float</em>) – Default 0.05, can update this attribute to change cbar padding.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.add_cbar">
 <span class="sig-name descname"><span class="pre">add_cbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.add_cbar" title="Permalink to this definition"></a></dt>
@@ -584,6 +592,12 @@ Parse plot type and add cbars/tightlayout/plot_options/smoothing</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cbar</strong> (<em>bool</em>) – Whether or not to include a colorbar.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self.fig, self.ax</strong> – Generates, updates, and returns figure and axes objects.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mpl figure and axes objects</p>
 </dd>
 </dl>
 </dd></dl>
@@ -692,7 +706,7 @@ E.g. can put xlim, xlabel, grid, Xname, etc.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Darian Yang.</p>
+    <p>&#169; Copyright 2024, Darian Yang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

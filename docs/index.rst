@@ -2,7 +2,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to wedap's documentation!
+Welcome to WEDAP's documentation!
 =========================================================
 .. image:: _static/wedap_logo.png
   :width: 400
@@ -18,6 +18,7 @@ Welcome to wedap's documentation!
    mdap_modules
    wekap_modules
    notebook/wedap_demo
+   paper_figures/paper_figures
 
 * :ref:`genindex`
 

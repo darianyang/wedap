@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wekap.kinetics module &mdash; wedap  documentation</title>
+  <title>wekap.kinetics module &mdash; WEDAP  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            wedap
+            WEDAP
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -52,6 +52,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebook/wedap_demo.html">WEDAP Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paper_figures/paper_figures.html">WEDAP Figures</a></li>
 </ul>
 
         </div>
@@ -60,7 +61,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">wedap</a>
+          <a href="index.html">WEDAP</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -97,7 +98,7 @@ varying width, as in /rate_evolution.</p>
 </dd>
 </dl>
 </div></blockquote>
-<dl class="simple">
+<dl>
 <dt>The structure of these datasets is as follows:</dt><dd><dl class="simple">
 <dt>iter_start</dt><dd><p>(Integer) Iteration at which the averaging window begins (inclusive).</p>
 </dd>
@@ -120,10 +121,22 @@ of tau.</p>
 </dd>
 </dl>
 </dd>
+<dt>TODO:</dt><dd><ul class="simple">
+<li><p>fix mfpt plots</p></li>
+<li><p>multi direct.h5/assign.h5 input and error using Bayesian bootstrapping</p></li>
+<li><p>account for assign.h5 populations implicitly using averaging info from
+direct.h5. E.g. auto use cumulative or window averaged assign.h5 populations.</p></li>
+<li><p>option to apply the RED scheme</p></li>
+</ul>
+<p>Other plots:
+4 panel plot of P_A, P_B, rate_AB, rate_BA, all as function of WE iteration
+Autocorrelation plot
+Event durations and distributions</p>
+</dd>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="wekap.kinetics.Kinetics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wekap.kinetics.</span></span><span class="sig-name descname"><span class="pre">Kinetics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'direct.h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statepop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'direct'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rates'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moltime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cumulative_avg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wekap.kinetics.Kinetics" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wekap.kinetics.</span></span><span class="sig-name descname"><span class="pre">Kinetics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statepop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'direct'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rates'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moltime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cumulative_avg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wekap.kinetics.Kinetics" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Plot the fluxes and rates from direct.h5 files.</p>
 <dl class="py method">
@@ -135,6 +148,19 @@ of tau.</p>
 <dd class="field-odd"><p>rate_ab, ci_lb_ab, ci_ub_ab</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wekap.kinetics.Kinetics.format_rate_plot">
+<span class="sig-name descname"><span class="pre">format_rate_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wekap.kinetics.Kinetics.format_rate_plot" title="Permalink to this definition"></a></dt>
+<dd><p>General formatting options for rate plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wekap.kinetics.Kinetics.get_state_pop">
+<span class="sig-name descname"><span class="pre">get_state_pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wekap.kinetics.Kinetics.get_state_pop" title="Permalink to this definition"></a></dt>
+<dd><p>Update self.state_pops, self.state_pop_a, and self.state_pop_b based
+on self.direct_h5 and self.assign_h5</p>
 </dd></dl>
 
 <dl class="py method">
@@ -155,8 +181,23 @@ of tau.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="wekap.kinetics.Kinetics.plot_multi_rates">
+<span class="sig-name descname"><span class="pre">plot_multi_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multi_direct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wekap.kinetics.Kinetics.plot_multi_rates" title="Permalink to this definition"></a></dt>
+<dd><p>Plot multiple direct.h5 flux evolution datasets.
+Use Bayesian bootstrapping for error estimates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>multi_direct</strong> (<em>list</em>) – List of paths to multiple <cite>direct.h5</cite> files.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>multi_k, multi_k_avg, multi_k_uncertainty</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="wekap.kinetics.Kinetics.plot_rate">
-<span class="sig-name descname"><span class="pre">plot_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wekap.kinetics.Kinetics.plot_rate" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_rate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wekap.kinetics.Kinetics.plot_rate" title="Permalink to this definition"></a></dt>
 <dd><p>Plot the rate constant = target flux evolution AB / P_A</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -189,7 +230,7 @@ of tau.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Darian Yang.</p>
+    <p>&#169; Copyright 2024, Darian Yang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
