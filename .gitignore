@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
+.ipynb_checkpoints
 *.pyc
 *.pyo
 *.swp
