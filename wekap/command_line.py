@@ -89,6 +89,7 @@ def create_cmd_arguments():
         dest="direct",
         type=str,
         default="direct.h5",
+        nargs="*", # optional multi args
         help="Name of output direct.h5 file from WESTPA w_direct or w_ipa.",
         widget="FileChooser"
     )
@@ -97,7 +98,10 @@ def create_cmd_arguments():
         dest="assign",
         type=str,
         default=None,
-        help="Name of specific assign.h5 file. Needed for labeled population data.",
+        #nargs="*", # optional multi args (TODO: account for multi assign files as well)
+        help="Name of specific assign.h5 file. Needed for labeled population data. "
+             "But only if your `statepop` choice is `assign`. By default will use "
+             "state populations from `direct.h5`.",
         widget="FileChooser"
     )
     main.add_argument(

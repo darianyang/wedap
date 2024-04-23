@@ -8,3 +8,4 @@ Description:
 
 # Welcome to the wekap module! 
 from .kinetics import *
+from .bootstrap import *

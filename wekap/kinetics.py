@@ -52,6 +52,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 
+from .bootstrap import get_CR_multi
+#from wekap.bootstrap import get_CR_multi
+
 import sys
 import importlib
 
@@ -60,7 +63,7 @@ class Kinetics:
     Plot the fluxes and rates from direct.h5 files.
     """
 
-    def __init__(self, direct="direct.h5", assign=None, statepop="direct", tau=100e-12, state=1, 
+    def __init__(self, direct=None, assign=None, statepop="direct", tau=100e-12, state=1, 
                  label=None, units="rates", ax=None, savefig=None, color=None, moltime=True,
                  cumulative_avg=True, linewidth=None, linestyle="-", postprocess_func=None,
                  *args, **kwargs):
@@ -101,16 +104,20 @@ class Kinetics:
         ** args
         ** kwargs
         """
-        # read in direct.h5 file
-        self.direct_h5 = h5py.File(direct, "r")
+        # try to read in direct.h5 file
+        self.direct = direct
+        self.assign = assign
+        try:
+            self.direct_h5 = h5py.File(direct, "r")
+        except FileNotFoundError as e:
+            raise ValueError(e)
+
         if assign is None:
-            try:
-                # temp solution for getting assign.h5 color/labeled population
-                self.assign_h5 = h5py.File(direct[:-9] + "assign.h5", "r")
-            except FileNotFoundError as e:
-                print(f"{e}: Note that an assign.h5 file is needed only when using assign.h5 labeled_populations for the state populations.")
+            # solution for getting assign.h5 color/labeled population
+            # from direct.h5 path
+            self._find_assign_h5()
         else:
-             self.assign_h5 = assign
+             self.assign_h5 = h5py.File(assign, "r")
 
         self.tau = tau
         self.state = state
@@ -119,6 +126,45 @@ class Kinetics:
         self.statepop = statepop
         self.color = color
 
+        # set state pop instance attrs
+        self.get_state_pop()
+
+        # create new fig or plot onto existing
+        if ax is None:
+            self.fig, self.ax = plt.subplots()
+        else:
+            self.ax = ax
+            self.fig = plt.gcf()
+
+        self.savefig = savefig
+
+        self.moltime = moltime
+        self.linewidth = linewidth
+        self.linestyle = linestyle
+        self.cumulative_avg = cumulative_avg
+        self.postprocess_func = postprocess_func
+        self.kwargs = kwargs
+
+    def _find_assign_h5(self):
+        """
+        Look for assign.h5 file in same dir as direct.h5 input.
+        
+        Updates
+        -------
+        self.assign_h5
+        """
+        try:
+            # temp solution for getting assign.h5 color/labeled population
+            # TODO: obv doesn't work when file is not called 'direct.h5'
+            self.assign_h5 = h5py.File(self.direct[:-9] + "assign.h5", "r")
+        except (FileNotFoundError, TypeError) as e:
+            print(f"{e}: Note that an assign.h5 file is needed only when using assign.h5 labeled_populations for the state populations.")
+
+    def get_state_pop(self):
+        """
+        Update self.state_pops, self.state_pop_a, and self.state_pop_b based
+        on self.direct_h5 and self.assign_h5
+        """
         if self.statepop == "direct":
             # divide k_AB by P_A for equilibrium rate correction (AB and BA steady states)
             self.state_pops = np.array(self.direct_h5["state_pop_evolution"])
@@ -130,7 +176,7 @@ class Kinetics:
             self.state_pops = np.array(self.assign_h5["labeled_populations"])
 
             # when using cumulative averaging and assign.h5 statepops
-            if cumulative_avg:
+            if self.cumulative_avg:
                 # Replace 0 with the index of your source state here, 
                 # the order you defined states in west.cfg.
                 state_pop = self.assign_h5['labeled_populations'][:,0]
@@ -153,21 +199,6 @@ class Kinetics:
                 self.state_pop_a = np.sum(self.state_pops[:,0], axis=1)
                 self.state_pop_b = np.sum(self.state_pops[:,1], axis=1)
 
-        # create new fig or plot onto existing
-        if ax is None:
-            self.fig, self.ax = plt.subplots()
-        else:
-            self.ax = ax
-            self.fig = plt.gcf()
-
-        self.savefig = savefig
-
-        self.moltime = moltime
-        self.linewidth = linewidth
-        self.linestyle = linestyle
-        self.postprocess_func = postprocess_func
-        self.kwargs = kwargs
-
     def extract_rate(self):
         """
         Get the raw rate array from one direct.h5 file.
@@ -176,7 +207,6 @@ class Kinetics:
         -------
         rate_ab, ci_lb_ab, ci_ub_ab
         """
-
         # flux evolution dataset from cumulative evolution mode:
         # When calculating time evolution of rate estimates, 
         # ``cumulative`` evaluates rates over windows starting with --start-iter and 
@@ -225,7 +255,7 @@ class Kinetics:
         
         return rate_ab, ci_lb_ab, ci_ub_ab
 
-    def plot_rate(self, title=None):
+    def plot_rate(self):
         """
         Plot the rate constant = target flux evolution AB / P_A 
 
@@ -249,24 +279,34 @@ class Kinetics:
             self.ax.plot(iterations, mfpt_ab, label=self.label,
                          linewidth=self.linewidth, linestyle=self.linestyle)
             #ax.fill_between(iterations, mfpt_ab - (1/ci_lb_ab), mfpt_ab + (1/ci_ub_ab), alpha=0.5)
-            self.ax.set_ylabel("MFPT ($s$)")
+            #self.ax.set_ylabel("MFPT ($s$)")
         elif self.units == "rates":
             self.ax.plot(iterations, rate_ab, color=self.color, label=self.label, 
                          linewidth=self.linewidth, linestyle=self.linestyle)
             self.ax.fill_between(iterations, rate_ab - ci_lb_ab, rate_ab + ci_ub_ab, alpha=0.5,
                                  label=self.label, color=self.color)
+            #self.ax.set_ylabel("Rate Constant ($s^{-1}$)")
+
+        self.format_rate_plot()
+
+        return rate_ab
+
+    def format_rate_plot(self):
+        """
+        General formatting options for rate plots.
+        """
+        if self.units == "mfpts":
+            self.ax.set_ylabel("MFPT ($s$)")
+        elif self.units == "rates":
             self.ax.set_ylabel("Rate Constant ($s^{-1}$)")
 
         if self.moltime:
-            self.ax.set_xlabel(r"Molecular Time (ns)")
+            self.ax.set_xlabel("Molecular Time (ns)")
         else:
-            # TODO: add tau here in short form
-            self.ax.set_xlabel(r"WE Iteration")
+            # TODO: add tau here in short form?
+            self.ax.set_xlabel("WE Iteration")
         
         self.ax.set_yscale("log", subs=[2, 3, 4, 5, 6, 7, 8, 9])
-        self.ax.set_title(title)
-
-        return rate_ab
 
     def plot_statepop(self):
         """
@@ -425,7 +465,65 @@ class Kinetics:
 
         return module
 
-# if __name__ == "__main__":
+    def plot_multi_rates(self, multi_direct):
+        """
+        Plot multiple direct.h5 flux evolution datasets.
+        Use Bayesian bootstrapping for error estimates.
+
+        Parameters
+        ----------
+        multi_direct : list
+            List of paths to multiple `direct.h5` files.
+
+        Returns
+        -------
+        multi_k, multi_k_avg, multi_k_uncertainty
+        """
+        # multi rate list per replicate
+        multi_k = []
+
+        # calc and append the 1st item which is the rates
+        for dh5 in multi_direct:
+            # update direct_h5, assign_h5, and state_pops before extracting new rate
+            self.direct_h5 = h5py.File(dh5, "r")
+            self.assign = None
+            self._find_assign_h5()
+            self.get_state_pop()
+            multi_k.append(self.extract_rate()[0])
+
+        # arithmetic mean
+        multi_k_avg = np.average(multi_k, axis=0)
+        # credibility regions from n_repeat trials Bayesian bootstrapping
+        multi_k_uncertainty = get_CR_multi(multi_k, repeat=1000)
+
+        # other error options (TODO: note these are avg+/-)
+        #print(multi_k_uncertainty.shape)
+        #multi_k_std = np.std(multi_k, axis=0)
+        #multi_k_stderr = multi_k_std / np.sqrt(len(multi_k))
+        #multi_k_stderr = np.rot90(np.vstack((multi_k_stderr,multi_k_stderr)))
+        #print(multi_k_stderr.shape)
+
+        # X-axis
+        # WE iterations
+        iterations = np.arange(0, len(multi_k_avg), 1)
+        if self.moltime:
+            # multiply by tau seconds converted to ps
+            iterations = np.multiply(iterations, (self.tau * 1e12))
+            # convert to ns
+            iterations = np.divide(iterations, 1000)
+
+        # plot the replicates avg and error 
+        self.ax.plot(iterations, multi_k_avg, color=self.color)
+        self.ax.fill_between(iterations, multi_k_uncertainty[:,0],
+                             multi_k_uncertainty[:,1], alpha=0.5, 
+                             label=self.label, color=self.color)
+
+        # general formatting
+        self.format_rate_plot()
+
+        return multi_k, multi_k_avg, multi_k_uncertainty
+
+if __name__ == "__main__":
 #     #fig, ax = plt.subplots()
 #     #k = Kinetics(f"D1D2_lt16oa/WT_v00/12oa/direct.h5", state=1, statepop="direct", ax=ax)
 #     args = parse_arguments()
@@ -448,5 +546,11 @@ class Kinetics:
 #     # option to save figure output
 #     if args.savefig is not None:
 #         plt.savefig(args.savefig)
-    
-#     plt.show()
+
+
+    # testing multi direct.h5
+    k = Kinetics("data/direct.h5")
+    #k.plot_rate()
+    k.plot_multi_rates(["data/direct.h5", "data/direct2.h5", "data/direct3.h5"])
+    plt.show()
+

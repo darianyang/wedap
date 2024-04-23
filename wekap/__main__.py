@@ -44,9 +44,20 @@ def main():
     elif args.style != "default" and args.style != "None":
         plt.style.use(args.style)
 
-    # vars converts from Namespace object to dict
-    k = Kinetics(**vars(args))
-    k.plot_rate()
+    # if the list of direct h5 files is just one, carry on as normal
+    if len(args.direct) == 1:
+        # use first item in list of 1 item
+        args.direct = args.direct[0]
+        # vars converts from Namespace object to dict
+        k = Kinetics(**vars(args))
+        k.plot_rate()
+    else:
+        # use temp None but save original dh5 list
+        multi_dh5 = args.direct
+        # use temp as first item to get through init
+        args.direct = args.direct[0]
+        k = Kinetics(**vars(args))
+        k.plot_multi_rates(multi_dh5)
 
     # plot formatting
     # take kwargs and unpack to look for plot option items
