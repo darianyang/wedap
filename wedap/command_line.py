@@ -19,6 +19,15 @@ try:
 except ImportError:
     gooey = None
 
+import pkg_resources
+
+# for auto filling version arg
+def get_version():
+    try:
+        return pkg_resources.get_distribution('wedap').version
+    except pkg_resources.DistributionNotFound:
+        return None
+
 def flex_add_argument(f):
     """Make the add_argument accept (and ignore) the widget option."""
 
@@ -336,6 +345,7 @@ def create_cmd_arguments():
                         dest = "no_pbar",
                         help = "Include this argument to not output the tqdm progress bar.",
                         action= "store_true")
+    optional.add_argument('--version', '-V', action='version', version='%(prog)s ' + get_version())
 
     # plot tracing arg group
     trace = parser.add_argument_group("Optional Plot Tracing", 
