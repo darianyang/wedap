@@ -248,10 +248,10 @@ class MD_Pdist(H5_Pdist):
         # TODO: t/e block to catch mismatched data lengths and print lengths?
         elif self.data_type == "pdist":
             # for 3D datasets, e.g. scatter
-            if self.Yname and self.Zname:
+            if self.Yname is not None and self.Zname is not None:
                 return self.pdist_3d()
             # if 2D, return 2D dataset
-            if self.Yname:
+            if self.Yname is not None:
                 return self.pdist_2d()
             # otherwise return 1D
             else:
