@@ -141,7 +141,7 @@ class MD_Pdist(H5_Pdist):
                 data.append(data_item[::interval, index])
             except IndexError as e:
                 message = f"{e}: Note that by default MDAP uses the 2nd column of the input data, " + \
-                          "which cooresponds to an X/Y/Zindex of 1. If your dataset only has 1 column, " + \
+                          "which cooresponds to an X/Y/Zindex of 1. E.g. if your dataset only had 1 column, " + \
                           "the X/Y/Zindex should be set to 0."
                 raise IndexError(message)
 
