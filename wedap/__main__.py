@@ -51,6 +51,10 @@ def main():
     elif args.not_weighted is False:
         args.weighted = True
 
+    # when using scatter3d or hexbin3d: always default to average
+    if args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d":
+        args.data_type = "average"
+
     #  make a gif instead of a single plot if gif_out is given
     # e.g. $ wedap -h5 wedap/data/p53.h5 -y pcoord -yi 1 -dt average --last-iter 16 
     #              --avg-plus 2 --gif-out test.gif --xlim 0 6 --ylim 0 36 --pmax 20
