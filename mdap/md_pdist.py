@@ -140,10 +140,10 @@ class MD_Pdist(H5_Pdist):
             try:
                 data.append(data_item[::interval, index])
             except IndexError as e:
-                print(f"{e}: Note that by default MDAP uses the 2nd column of the input data, \
-                        which cooresponds to an X/Y/Zindex of 1. Your dataset may only have 1 column, \
-                        and in that case the X/Y/Zindex should be set to 0. Exiting...")
-                sys.exit(0)
+                message = f"{e}: Note that by default MDAP uses the 2nd column of the input data, " + \
+                          "which cooresponds to an X/Y/Zindex of 1. If your dataset only has 1 column, " + \
+                          "the X/Y/Zindex should be set to 0."
+                raise IndexError(message)
 
         # combine into a single array
         data = np.concatenate(data)
