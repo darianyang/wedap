@@ -51,8 +51,8 @@ def main():
     elif args.not_weighted is False:
         args.weighted = True
 
-    # when using scatter3d or hexbin3d: always default to average
-    if args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d":
+    # when using scatter3d or hexbin3d: always default to average, if Yname is provided, also only if dt is wrong
+    if args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d" or args.Yname is not None and args.data_type == "evolution":
         args.data_type = "average"
 
     #  make a gif instead of a single plot if gif_out is given
