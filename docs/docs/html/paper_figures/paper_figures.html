@@ -66,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Example-12:-Plotting-flux-evolutions">Example 12: Plotting flux evolutions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Example-13:-Making-a-GIF">Example 13: Making a GIF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Other-WEDAP-features-not-demonstrated:">Other WEDAP features not demonstrated:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#TOC-Figure">TOC Figure</a></li>
 </ul>
 </li>
 </ul>
@@ -120,7 +121,7 @@
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># optionally apply default wedap matplotlib style sheet</span>
@@ -1156,6 +1157,94 @@ Tracing ITERATION: 200, SEGMENT: 58
 </ul>
 </li>
 </ul>
+</section>
+<section id="TOC-Figure">
+<h2>TOC Figure<a class="headerlink" href="#TOC-Figure" title="Permalink to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># if there is alot of plotting choices, it can be easier to just put it all into a dictionary</span>
+<span class="n">plot_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h5&quot;</span> <span class="p">:</span> <span class="s2">&quot;west.h5&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;data_type&quot;</span> <span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;plot_mode&quot;</span> <span class="p">:</span> <span class="s2">&quot;contour_f&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;contour_interval&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;Xname&quot;</span> <span class="p">:</span> <span class="s2">&quot;pcoord&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Yname&quot;</span> <span class="p">:</span> <span class="s2">&quot;RoG&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;jointplot&quot;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;p_units&quot;</span> <span class="p">:</span> <span class="s2">&quot;kcal&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;p_max&quot;</span> <span class="p">:</span> <span class="mf">17.5</span><span class="p">,</span>
+                <span class="c1">#&quot;smoothing_level&quot; : 1,</span>
+                <span class="c1"># the input plot_options kwarg dict is also parsed for matplotlib formatting keywords</span>
+                <span class="s2">&quot;xlabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Heavy Atom RMSD ($\AA$)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ylabel&quot;</span> <span class="p">:</span> <span class="s2">&quot;Radius of Gyration ($\AA$)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;histrange_x&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">),</span>
+                <span class="s2">&quot;histrange_y&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mf">20.5</span><span class="p">),</span>
+                <span class="c1">#&quot;grid&quot; : True,</span>
+                <span class="c1">#&quot;color&quot; : &quot;k&quot;,</span>
+                <span class="p">}</span>
+<span class="c1"># change size since joint plots take more space</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">wedap_obj</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="o">**</span><span class="n">plot_options</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">plt</span><span class="o">.</span><span class="n">xkcd</span><span class="p">():</span>
+    <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">fig</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;-RT ln P (kcal mol$^{-1}$)&quot;</span><span class="p">)</span>
+
+<span class="c1">#wedap_obj.plot_trace((5.5, 19.5), ax=wedap_obj.ax, linewidth=0.5, find_iter_seg=True)</span>
+<span class="c1">#wedap_obj.plot_trace((200, 20), ax=wedap_obj.ax, color=&quot;snow&quot;, linewidth=0.5)</span>
+
+<span class="c1"># save the resulting figure</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;toc.pdf&quot;</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e357d13f200e46a2a38fdde4fd1c22d5", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/paper_figures_paper_figures_95_1.png" src="../_images/paper_figures_paper_figures_95_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.rcParams[&quot;figure.figsize&quot;] = (4.5,3)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mf">3.8</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">plt</span><span class="o">.</span><span class="n">xkcd</span><span class="p">():</span>
+    <span class="n">wedap_obj</span> <span class="o">=</span> <span class="n">wedap</span><span class="o">.</span><span class="n">H5_Plot</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="s2">&quot;../notebook/p53.h5&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;evolution&quot;</span><span class="p">)</span>
+    <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+    <span class="n">wedap_obj</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">find_iter_seg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Progress Coordinate&quot;</span><span class="p">)</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Weighted Ensemble Iteration&quot;</span><span class="p">)</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s2">&quot;-ln P(x)&quot;</span><span class="p">)</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">cbar</span><span class="o">.</span><span class="n">frac</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">wedap_obj</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;toc2.pdf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d84224988d3445a4a72cdcd522ce499c", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/paper_figures_paper_figures_96_1.png" src="../_images/paper_figures_paper_figures_96_1.png" />
+</div>
+</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
