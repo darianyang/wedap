@@ -53,8 +53,8 @@ def main():
 
     # default avg: when using scatter3d or hexbin3d, if Yname is provided (hence 2d and not evo),
     # or if requesting line plot, all these conditions only if dt is wrong (default evolution)
-    if args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d" or args.Yname is not None \
-       or args.plot_mode == "line" and args.data_type == "evolution" :
+    if (args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d" or args.Yname is not None \
+       or args.plot_mode == "line") and args.data_type == "evolution" :
         args.data_type = "average"
 
     #  make a gif instead of a single plot if gif_out is given
