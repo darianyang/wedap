@@ -791,7 +791,8 @@ class H5_Pdist():
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
     def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle='-', ax=None, 
-                   find_iter_seg=False, mark_points=False, **kwargs):
+                   find_iter_seg=False, mark_points=False, 
+                   mp_size=80, mp_color=None, mp_markers=('o','v'), **kwargs):
         """
         Plot trace.
 
@@ -810,8 +811,19 @@ class H5_Pdist():
             Set True to look for (iter, seg) using walker_tuple input as (X_value,Y_value).
         mark_points : bool
             Default False, set to true to mark the starting and end points of the trace path.
+        mp_size : int
+            Size of the marked points, default 80.
+        mp_color : str
+            Color of the marked points, if None, defaults to `color` arg.
+        mp_markers : tuple
+            Two item tuple: start point marker style, end point marker style.
         **kwargs
             Passed to mpl plt.plot line plots. E.g. alpha parameter.
+
+        Returns
+        -------
+        aux or aux_x, aux_y : 1D arrays
+            The coordinate values at each point in the trace.
         """
         # TODO: update/streamline this
         if ax is None:
@@ -825,6 +837,10 @@ class H5_Pdist():
         # if object has linestyle specified, use it, otherwise use arg
         if hasattr(self, 'linestyle'):
             linestyle = self.linestyle
+
+        # optional separate marker color
+        if mp_color is None:
+            mp_color = color
 
         # search for iter_seg if specified
         if find_iter_seg:
@@ -841,10 +857,10 @@ class H5_Pdist():
             # optionally marking start and end
             if mark_points is True:
                 # find and plot the starting point
-                ax.scatter(aux[0], iters[0], marker="o", color=color, s=80, edgecolor="k", zorder=1, **kwargs)
+                ax.scatter(aux[0], iters[0], marker=mp_markers[0], color=mp_color, s=mp_size, edgecolor="k", zorder=1)
                 # find and plot the end point
-                ax.scatter(aux[-1], iters[-1], marker="v", color=color, s=80, edgecolor="k", zorder=1, **kwargs)
-            return
+                ax.scatter(aux[-1], iters[-1], marker=mp_markers[1], color=mp_color, s=mp_size, edgecolor="k", zorder=1)
+            return aux
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
@@ -856,9 +872,11 @@ class H5_Pdist():
         # optionally marking start and end
         if mark_points is True:
             # find and plot the starting point
-            ax.scatter(aux_x[0], aux_y[0], marker="o", color=color, s=80, edgecolor="k", zorder=1)
+            ax.scatter(aux_x[0], aux_y[0], marker=mp_markers[0], color=mp_color, s=mp_size, edgecolor="k", zorder=1)
             # find and plot the end point
-            ax.scatter(aux_x[-1], aux_y[-1], marker="v", color=color, s=80, edgecolor="k", zorder=1)
+            ax.scatter(aux_x[-1], aux_y[-1], marker=mp_markers[1], color=mp_color, s=mp_size, edgecolor="k", zorder=1)
+        
+        return aux_x, aux_y
 
     def w_succ(self):
         """
