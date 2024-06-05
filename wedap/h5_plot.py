@@ -239,7 +239,7 @@ class H5_Plot(H5_Pdist):
     #     if self.axis_list[0] > self.axis_list[1]:
     #         self.H = self.H.transpose()
 
-    def add_cbar(self, cax=None, pad=0.05):
+    def add_cbar(self, cax=None, pad=0.05, fontsize=None):
         """
         Add cbar.
 
@@ -249,6 +249,8 @@ class H5_Plot(H5_Pdist):
             Optionally specify the cbar axis.
         pad : float
             cbar padding level.
+        fontsize : float
+            Use custom value if fontsize is specified, otherwise use style default.
         """
         # fig vs plt should be the same, tests run fine (needed to go plt for mosaic)
         #cbar = self.fig.colorbar(self.plot, cax=cax)
@@ -258,7 +260,12 @@ class H5_Plot(H5_Pdist):
             cbar.add_lines(self.lines)
 
         # TODO: move labelpad here to style?
-        cbar.set_label(self.cbar_label, labelpad=14)
+        if fontsize is not None:
+            # use custom param fontsize
+            cbar.set_label(self.cbar_label, labelpad=14, fontsize=fontsize)
+        else:
+            # otherwise use style defaults
+            cbar.set_label(self.cbar_label, labelpad=14)
 
         # allow for cbar object manipulation (e.g. removal in movie)
         self.cbar = cbar
