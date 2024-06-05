@@ -791,7 +791,7 @@ class H5_Pdist():
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
     def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle='-', ax=None, 
-                   find_iter_seg=False, **kwargs):
+                   find_iter_seg=False, mark_points=False, **kwargs):
         """
         Plot trace.
 
@@ -808,6 +808,8 @@ class H5_Pdist():
         find_iter_seg : bool
             Default False and use walker tuple as (iter, seg). 
             Set True to look for (iter, seg) using walker_tuple input as (X_value,Y_value).
+        mark_points : bool
+            Default False, set to true to mark the starting and end points of the trace path.
         **kwargs
             Passed to mpl plt.plot line plots. E.g. alpha parameter.
         """
@@ -834,16 +836,29 @@ class H5_Pdist():
             # split iterations up to provide y-values for each x-value (pcoord)
             aux = self.get_coords(path, self.Xname, self.Xindex)
             iters = np.arange(1, len(aux)+1, self.step_iter)
-            ax.plot(aux[::self.step_iter], iters, c="black", lw=linewidth+1, linestyle=linestyle, **kwargs)
-            ax.plot(aux[::self.step_iter], iters, c=color, lw=linewidth, linestyle=linestyle, **kwargs)
+            ax.plot(aux[::self.step_iter], iters, c="black", lw=linewidth+1, linestyle=linestyle, zorder=1, **kwargs)
+            ax.plot(aux[::self.step_iter], iters, c=color, lw=linewidth, linestyle=linestyle, zorder=1, **kwargs)
+            # optionally marking start and end
+            if mark_points is True:
+                # find and plot the starting point
+                ax.scatter(aux[0], iters[0], marker="o", color=color, s=80, edgecolor="k", zorder=1)
+                # find and plot the end point
+                ax.scatter(aux[-1], iters[-1], marker="v", color=color, s=80, edgecolor="k", zorder=1)
             return
 
         # And pull aux_coords for the path calculated
         aux_x = self.get_coords(path, self.Xname, self.Xindex)
         aux_y = self.get_coords(path, self.Yname, self.Yindex)
 
-        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c="black", lw=linewidth+1, linestyle=linestyle, **kwargs)
-        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c=color, lw=linewidth, linestyle=linestyle, **kwargs)
+        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c="black", lw=linewidth+1, linestyle=linestyle, zorder=1, **kwargs)
+        ax.plot(aux_x[::self.step_iter], aux_y[::self.step_iter], c=color, lw=linewidth, linestyle=linestyle, zorder=1, **kwargs)
+
+        # optionally marking start and end
+        if mark_points is True:
+            # find and plot the starting point
+            ax.scatter(aux_x[0], aux_y[0], marker="o", color=color, s=80, edgecolor="k", zorder=1)
+            # find and plot the end point
+            ax.scatter(aux_x[-1], aux_y[-1], marker="v", color=color, s=80, edgecolor="k", zorder=1)
 
     def w_succ(self):
         """

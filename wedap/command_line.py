@@ -363,6 +363,10 @@ def create_cmd_arguments():
                              help="Trace and plot a single continuous trajectory based "
                                   "off of 2 space-seprated floats : Xvalue Yvalue",
                              type=float)
+    trace.add_argument("--mark-points", "-mp",
+                        dest = "mark_points",
+                        help = "Include this argument to mark start and end point of the trace.",
+                        action= "store_true")
 
     ##########################################################
     ############### FORMATTING ARGUMENTS #####################

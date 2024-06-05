@@ -96,7 +96,7 @@ def main():
         plot.plot_trace(args.trace_seg, color=args.color, ax=plot.ax)
     if args.trace_val is not None:
         iter, seg = plot.find_iter_seg_from_xy_vals(args.trace_val[0], args.trace_val[1])
-        plot.plot_trace((iter,seg), color=args.color, ax=plot.ax)
+        plot.plot_trace((iter,seg), color=args.color, ax=plot.ax, mark_points=args.mark_points)
 
     """
     Plot formatting

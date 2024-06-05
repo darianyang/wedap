@@ -120,7 +120,7 @@ class MD_Pdist(H5_Pdist):
             names = [names]
 
         # handle multiple file name list
-        # TODO: handle direct ndarray inputs as well as file str
+        # TODO: ensure this can handle direct ndarray inputs as well as file str
         for name in names:
             # if the input is a numpy array
             if isinstance(name, np.ndarray):
@@ -157,6 +157,7 @@ class MD_Pdist(H5_Pdist):
         X : ndarray
         Y : ndarray
         """
+        # TODO: add option to stack plots instead of continuous line
         # could get time from frame column
         #time = np.concatenate([np.genfromtxt(i)[::self.Xinterval, 0] for i in self.Xname])
 
