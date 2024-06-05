@@ -841,9 +841,9 @@ class H5_Pdist():
             # optionally marking start and end
             if mark_points is True:
                 # find and plot the starting point
-                ax.scatter(aux[0], iters[0], marker="o", color=color, s=80, edgecolor="k", zorder=1)
+                ax.scatter(aux[0], iters[0], marker="o", color=color, s=80, edgecolor="k", zorder=1, **kwargs)
                 # find and plot the end point
-                ax.scatter(aux[-1], iters[-1], marker="v", color=color, s=80, edgecolor="k", zorder=1)
+                ax.scatter(aux[-1], iters[-1], marker="v", color=color, s=80, edgecolor="k", zorder=1, **kwargs)
             return
 
         # And pull aux_coords for the path calculated
