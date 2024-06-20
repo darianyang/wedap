@@ -30,7 +30,6 @@ Or view the same demo notebook on the [documentation web page](https://darianyan
 
 ### Optional
 
-- gif (optional for making gifs)
 - gooey (optional for GUI)
 
 ## Installation
