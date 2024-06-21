@@ -178,16 +178,29 @@ class H5_Pdist():
         # TODO: allow for 2-3 functions as tuple input, right now one function only
         self.data_proc = data_proc
 
+        # current iteration variable
+        west_current_iteration = self.h5.attrs["west_current_iteration"]
+
         # default to last
         if last_iter is not None:
             self.last_iter = int(last_iter)
         elif last_iter is None:
-            self.last_iter = self.h5.attrs["west_current_iteration"] - 1
-
+            self.last_iter = west_current_iteration - 1
+        
+        # set first_iter inst attr
         if data_type == "instant":
             self.first_iter = self.last_iter
         else:
             self.first_iter = int(first_iter)
+
+        # check that last_iter is not > current iteration
+        if self.last_iter > self.h5.attrs["west_current_iteration"]:
+            raise ValueError(f"last_iter of {self.last_iter} > current WE iteration {west_current_iteration}")
+
+        # check that first_iter is not 0 or negative
+        if self.first_iter <= 0:
+            raise ValueError(f"Using first_iter value of {self.first_iter}, this should be >= 1")
+        
 
         self.step_iter = step_iter
         
