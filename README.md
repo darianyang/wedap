@@ -6,7 +6,10 @@
 [![docs](https://img.shields.io/website?label=docs&up_color=brightgreen&up_message=online&url=https%3A%2F%2Fdarianyang.github.io%2Fwedap%2Fdocs%2Fhtml%2Findex.html)](https://darianyang.github.io/wedap/docs/html/index.html)
 [![PyPI version](https://badge.fury.io/py/wedap.svg)](https://badge.fury.io/py/wedap)
 [![Downloads](https://static.pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
+
 [![DOI](https://zenodo.org/badge/405205357.svg)](https://zenodo.org/doi/10.5281/zenodo.11051656)
+![BioRxiv](https://img.shields.io/badge/BioRxiv-https%3A%2F%2Fdoi.org%2F10.1101%2F2024.05.18.594829-crimson)
+
 
 **WEDAP** : **w**eighted **e**nsemble **d**ata **a**nalysis and **p**lotting (pronounced we-dap)
 
