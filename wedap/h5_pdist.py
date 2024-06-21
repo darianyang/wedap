@@ -196,11 +196,9 @@ class H5_Pdist():
         # check that last_iter is not > current iteration
         if self.last_iter > self.h5.attrs["west_current_iteration"]:
             raise ValueError(f"last_iter of {self.last_iter} > current WE iteration {west_current_iteration}")
-
         # check that first_iter is not 0 or negative
         if self.first_iter <= 0:
             raise ValueError(f"Using first_iter value of {self.first_iter}, this should be >= 1")
-        
 
         self.step_iter = step_iter
         
