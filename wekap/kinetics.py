@@ -66,7 +66,7 @@ class Kinetics:
     def __init__(self, direct=None, assign=None, statepop="direct", tau=100e-12, state=1, 
                  label=None, units="rates", ax=None, savefig=None, color=None, moltime=True,
                  cumulative_avg=True, linewidth=None, linestyle="-", postprocess_func=None,
-                 *args, **kwargs):
+                 red=False, *args, **kwargs):
         """
         Parameters
         ----------
@@ -101,6 +101,9 @@ class Kinetics:
         linestyle : str
         postprocess_func : func
             User function to import.
+        red : bool
+            Optionally use flux evolution data calculated using the Rate from Event Durations (RED) scheme.
+            Set to True to use the `red_flux_evolution` dataset.
         ** args
         ** kwargs
         """
@@ -143,6 +146,7 @@ class Kinetics:
         self.linestyle = linestyle
         self.cumulative_avg = cumulative_avg
         self.postprocess_func = postprocess_func
+        self.red = red
         self.kwargs = kwargs
 
     def _find_assign_h5(self):
@@ -220,7 +224,10 @@ class Kinetics:
         #fluxes = np.array(h5["conditional_flux_evolution"])[:,:,1]
 
         # third column (expected) of the state (A(0) or B(1)) flux dataset (flux into state b = 1)
-        flux_ab = np.array([expected[2] for expected in fluxes[:,self.state]])
+        if self.red:
+            flux_ab = np.array(self.direct_h5["red_flux_evolution"])
+        else:
+            flux_ab = np.array([expected[2] for expected in fluxes[:,self.state]])
         # CIs in rate (s^-1) format (divided by tau)
         ci_lb_ab = np.array([expected[3] for expected in fluxes[:,self.state]]) * (1/self.tau)
         ci_ub_ab = np.array([expected[4] for expected in fluxes[:,self.state]]) * (1/self.tau)

@@ -182,6 +182,11 @@ def create_cmd_arguments():
                         help = "Include this argument to not output the plot to "
                         "your display.", 
                         action= "store_true") 
+    optional.add_argument("-red", "--red",
+                        dest = "red",
+                        help = "Optionally use flux evolution data calculated using the "
+                               "Rate from Event Durations (RED) scheme",
+                        action= "store_true")
 
     ##########################################################
     ############### FORMATTING ARGUMENTS #####################
