@@ -196,4 +196,4 @@ To submit your feature to be incorporated into the main branch, you should submi
 
 ## Copyright
 
-Copyright (c) 2021, Darian Yang
+Copyright (c) 2021-2024, Darian Yang
