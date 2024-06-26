@@ -8,6 +8,8 @@ Welcome to WEDAP's documentation!
   :width: 400
   :alt: wedap logo
 
+`Github Repository <http://github.com/darianyang/wedap>`_
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
@@ -22,4 +24,3 @@ Welcome to WEDAP's documentation!
 
 * :ref:`genindex`
 
-`Github Repository <http://github.com/darianyang/wedap>`_

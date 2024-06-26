@@ -423,7 +423,7 @@ Must be True when using multiple h5 input files.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.plot_trace">
-<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find_iter_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find_iter_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('o',</span> <span class="pre">'v')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
 <dd><p>Plot trace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -437,8 +437,18 @@ Can also find the closest iteration/seg using input as (X_value,Y_value).
 <li><p><strong>ax</strong> (<em>mpl axes object</em>)</p></li>
 <li><p><strong>find_iter_seg</strong> (<em>bool</em>) – Default False and use walker tuple as (iter, seg).
 Set True to look for (iter, seg) using walker_tuple input as (X_value,Y_value).</p></li>
+<li><p><strong>mark_points</strong> (<em>bool</em>) – Default False, set to true to mark the starting and end points of the trace path.</p></li>
+<li><p><strong>mp_size</strong> (<em>int</em>) – Size of the marked points, default 80.</p></li>
+<li><p><strong>mp_color</strong> (<em>str</em>) – Color of the marked points, if None, defaults to <cite>color</cite> arg.</p></li>
+<li><p><strong>mp_markers</strong> (<em>tuple</em>) – Two item tuple: start point marker style, end point marker style.</p></li>
 <li><p><strong>**kwargs</strong> – Passed to mpl plt.plot line plots. E.g. alpha parameter.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>aux or aux_x, aux_y</strong> – The coordinate values at each point in the trace.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1D arrays</p>
 </dd>
 </dl>
 </dd></dl>
@@ -545,13 +555,14 @@ Option to overlay different datasets, could be done easily with python but maybe
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.add_cbar">
-<span class="sig-name descname"><span class="pre">add_cbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.add_cbar" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_cbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.add_cbar" title="Permalink to this definition"></a></dt>
 <dd><p>Add cbar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cax</strong> (<em>mpl cbar axis</em>) – Optionally specify the cbar axis.</p></li>
 <li><p><strong>pad</strong> (<em>float</em>) – cbar padding level.</p></li>
+<li><p><strong>fontsize</strong> (<em>float</em>) – Use custom value if fontsize is specified, otherwise use style default.</p></li>
 </ul>
 </dd>
 </dl>
