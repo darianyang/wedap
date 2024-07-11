@@ -307,7 +307,7 @@ class Kinetics:
             self.ax.plot(x_data, rate_ab, color=self.color, label=self.label, 
                          linewidth=self.linewidth, linestyle=self.linestyle)
             self.ax.fill_between(x_data, rate_ab - ci_lb_ab, rate_ab + ci_ub_ab, alpha=0.5,
-                                 label=self.label, color=self.color)
+                                 color=self.color)
             #self.ax.set_ylabel("Rate Constant ($s^{-1}$)")
         else:
             raise ValueError(f"input flux_units={self.flux_units}, must be `rates` or `mfpts`.")
