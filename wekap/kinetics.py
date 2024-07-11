@@ -130,7 +130,7 @@ class Kinetics:
         self.color = color
 
         self.cumulative_avg = cumulative_avg
-        print(f"CAVG: {self.cumulative_avg}")
+        #print(f"CAVG: {self.cumulative_avg}")
 
         # set state pop instance attrs
         self.get_state_pop()
