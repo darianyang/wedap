@@ -143,12 +143,12 @@ def create_cmd_arguments():
         help="'direct' for state_population_evolution from direct.h5 or 'assign' for labeled_populations from assign.h5. By default will use populations from direct.h5, note that if you use the populations from assign.h5 instead, they will need to be consistent with any window or cumulative averaging schemes used for direct.h5 rate calculations."
     )
     optional.add_argument(
-        "--units",
-        dest="units",
+        "-fu", "--flux-units",
+        dest="flux_units",
         type=str,
         default="rates",
         choices=["rates", "mfpts"],
-        help="Measurement units. Can be `rates` (default) or `mfpts`."
+        help="Flux measurement units. Can be `rates` (default) or `mfpts`."
     )
     optional.add_argument(
         "--savefig",
@@ -172,11 +172,10 @@ def create_cmd_arguments():
              "E.g. if you have instantaneous flux. This is only when using the "
              "assign.h5 file for state populations (--statepop assign)."
     )
-    optional.add_argument("-nmt", "--no-molecular-time", "--no-moltime",
-                        dest = "moltime",
-                        help = "By default, wekap uses molecular time for the "
-                               "x-axis units, set this flag to use WE iteration instead.", 
-                        action= "store_false") 
+    optional.add_argument("-xu", "--x-units", "--xunits",
+                        dest = "x_units", type=str, default="iterations",
+                        choices=["iterations", "moltime", "agg"],
+                        help = "X units can be `iteration`, `moltime`, or `agg`.") 
     optional.add_argument("-nots", "--no-output-to-screen",
                         dest = "no_output_to_screen",
                         help = "Include this argument to not output the plot to "

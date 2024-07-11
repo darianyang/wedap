@@ -3,7 +3,7 @@ figure.titleweight: bold
 axes.titleweight: bold
 axes.titlepad: 10.0 
 axes.linewidth : 3
-axes.labelsize : 16
+axes.labelsize : 14
 axes.labelweight : bold
 axes.labelpad : 8
 xtick.major.size : 8.5

@@ -64,7 +64,7 @@ class Kinetics:
     """
 
     def __init__(self, direct=None, assign=None, statepop="direct", tau=100e-12, state=1, 
-                 label=None, units="rates", ax=None, savefig=None, color=None, moltime=True,
+                 label=None, flux_units="rates", ax=None, savefig=None, color=None, x_units="iterations",
                  cumulative_avg=True, linewidth=None, linestyle="-", postprocess_func=None,
                  red=False, *args, **kwargs):
         """
@@ -85,15 +85,15 @@ class Kinetics:
         statepop : str
             'direct' for state_population_evolution from direct.h5 or
             'assign' for labeled_populations from assign.h5.
-        units : str
+        flux_units : str
             Can be `rates` (default) or `mfpts`.
         ax : mpl axes object
         savefig : str
             Path to optionally save the figure.
         color : str
             Color of the line plot. Default None for mpl tab10 colors.
-        moltime : bool
-            Default True, use molecular time on X axis, otherwise use WE iteration.
+        x_units : str
+            Default "iterations" for WE iterations, use "moltime" for molecular time and "agg" for agg sim time.
         cumulative_avg : bool
             Set to True (default) when kinetics were calculated with cumulative averaging.
             Only relevant with assign.h5 state populations.
@@ -125,9 +125,12 @@ class Kinetics:
         self.tau = tau
         self.state = state
         self.label = label
-        self.units = units
+        self.flux_units = flux_units
         self.statepop = statepop
         self.color = color
+
+        self.cumulative_avg = cumulative_avg
+        print(f"CAVG: {self.cumulative_avg}")
 
         # set state pop instance attrs
         self.get_state_pop()
@@ -141,10 +144,9 @@ class Kinetics:
 
         self.savefig = savefig
 
-        self.moltime = moltime
+        self.x_units = x_units
         self.linewidth = linewidth
         self.linestyle = linestyle
-        self.cumulative_avg = cumulative_avg
         self.postprocess_func = postprocess_func
         self.red = red
         self.kwargs = kwargs
@@ -180,7 +182,7 @@ class Kinetics:
             self.state_pops = np.array(self.assign_h5["labeled_populations"])
 
             # when using cumulative averaging and assign.h5 statepops
-            if self.cumulative_avg:
+            if self.cumulative_avg is True:
                 # Replace 0 with the index of your source state here, 
                 # the order you defined states in west.cfg.
                 state_pop = self.assign_h5['labeled_populations'][:,0]
@@ -273,26 +275,42 @@ class Kinetics:
         """
         rate_ab, ci_lb_ab, ci_ub_ab = self.extract_rate()
 
-        # WE iterations
+        # X-axis labels: WE iterations
         iterations = np.arange(0, len(rate_ab), 1)
-        if self.moltime:
+        if self.x_units == "iterations":
+            x_data = iterations
+        elif self.x_units == "moltime":
             # multiply by tau seconds converted to ps
-            iterations = np.multiply(iterations, (self.tau * 1e12))
+            x_data = np.multiply(iterations, (self.tau * 1e12))
             # convert to ns
-            iterations = np.divide(iterations, 1000)
+            x_data = np.divide(x_data, 1000)
+        # agg sim time from assign.h5 data
+        elif self.x_units == "agg":
+            # tau per iter
+            #npts = self.assign_h5["npts"][:]
+            # segs per iter
+            nsegs = self.assign_h5["nsegs"][:]
+            # cumulative frames per iter
+            x_data = np.cumsum(self.tau * nsegs)
+            # convert from per second to per microsecond
+            x_data *= 1e6
+        else:
+            raise ValueError(f"input x_units={self.x_units}, must be `iterations`, `moltime`, or `agg`.")
 
-        if self.units == "mfpts":
+        if self.flux_units == "mfpts":
             mfpt_ab = 1 / rate_ab
-            self.ax.plot(iterations, mfpt_ab, label=self.label,
+            self.ax.plot(x_data, mfpt_ab, label=self.label,
                          linewidth=self.linewidth, linestyle=self.linestyle)
-            #ax.fill_between(iterations, mfpt_ab - (1/ci_lb_ab), mfpt_ab + (1/ci_ub_ab), alpha=0.5)
+            #ax.fill_between(x_data, mfpt_ab - (1/ci_lb_ab), mfpt_ab + (1/ci_ub_ab), alpha=0.5)
             #self.ax.set_ylabel("MFPT ($s$)")
-        elif self.units == "rates":
-            self.ax.plot(iterations, rate_ab, color=self.color, label=self.label, 
+        elif self.flux_units == "rates":
+            self.ax.plot(x_data, rate_ab, color=self.color, label=self.label, 
                          linewidth=self.linewidth, linestyle=self.linestyle)
-            self.ax.fill_between(iterations, rate_ab - ci_lb_ab, rate_ab + ci_ub_ab, alpha=0.5,
+            self.ax.fill_between(x_data, rate_ab - ci_lb_ab, rate_ab + ci_ub_ab, alpha=0.5,
                                  label=self.label, color=self.color)
             #self.ax.set_ylabel("Rate Constant ($s^{-1}$)")
+        else:
+            raise ValueError(f"input flux_units={self.flux_units}, must be `rates` or `mfpts`.")
 
         self.format_rate_plot()
 
@@ -302,16 +320,17 @@ class Kinetics:
         """
         General formatting options for rate plots.
         """
-        if self.units == "mfpts":
+        if self.flux_units == "mfpts":
             self.ax.set_ylabel("MFPT ($s$)")
-        elif self.units == "rates":
+        elif self.flux_units == "rates":
             self.ax.set_ylabel("Rate Constant ($s^{-1}$)")
 
-        if self.moltime:
-            self.ax.set_xlabel("Molecular Time (ns)")
-        else:
-            # TODO: add tau here in short form?
+        if self.x_units == "iterations":
             self.ax.set_xlabel("WE Iteration")
+        elif self.x_units == "moltime":
+            self.ax.set_xlabel("Molecular Time (ns)")
+        elif self.x_units == "agg":
+            self.ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
         
         self.ax.set_yscale("log", subs=[2, 3, 4, 5, 6, 7, 8, 9])
 
@@ -362,9 +381,9 @@ class Kinetics:
                     ax.axhspan(135, 179, alpha=0.25, color="tan", label="NMR k$_{D2D1}$")
             else:
                 # D1-->D2 ~ 20-50, D2-->D1 ~ 100-150
-                ax.axhline(150, color="k", ls="--", label="k$_{D2D1}$")
+                ax.axhline(60, color="k", ls="--", label="k$_{D2D1}$")
                 if d2d1:
-                    ax.axhline(25, color="red", ls="--", label="k$_{D1D2}$")
+                    ax.axhline(134, color="red", ls="--", label="k$_{D1D2}$")
         elif self.units == "mfpts":
             # converted to mfpt = 1 / rate
             ax.axhline(1/150, color="k", ls="--", label="MFPT$_{D2D1}$")
