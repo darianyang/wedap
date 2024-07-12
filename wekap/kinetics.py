@@ -366,7 +366,7 @@ class Kinetics:
         """
         if ax is None:
             ax = self.ax
-        if self.units == "rates":
+        if self.x_units == "rates":
             if f_range_all:
                 # ax.axhline(60, alpha=1, color="tab:orange", label="4F k$_{D1D2}$", ls="--")
                 # ax.axhline(25, alpha=1, color="tab:green", label="7F k$_{D1D2}$", ls="--")
@@ -384,7 +384,7 @@ class Kinetics:
                 ax.axhline(60, color="k", ls="--", label="k$_{D2D1}$")
                 if d2d1:
                     ax.axhline(134, color="red", ls="--", label="k$_{D1D2}$")
-        elif self.units == "mfpts":
+        elif self.x_units == "mfpts":
             # converted to mfpt = 1 / rate
             ax.axhline(1/150, color="k", ls="--", label="MFPT$_{D2D1}$")
             if d2d1:
