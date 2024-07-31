@@ -306,7 +306,7 @@ class Kinetics:
         elif self.flux_units == "rates":
             self.ax.plot(x_data, rate_ab, color=self.color, label=self.label, 
                          linewidth=self.linewidth, linestyle=self.linestyle)
-            self.ax.fill_between(x_data, rate_ab - ci_lb_ab, rate_ab + ci_ub_ab, alpha=0.5,
+            self.ax.fill_between(x_data, rate_ab - ci_lb_ab, rate_ab + ci_ub_ab, alpha=0.25,
                                  color=self.color)
             #self.ax.set_ylabel("Rate Constant ($s^{-1}$)")
         else:
@@ -328,7 +328,7 @@ class Kinetics:
         if self.x_units == "iterations":
             self.ax.set_xlabel("WE Iteration")
         elif self.x_units == "moltime":
-            self.ax.set_xlabel("Molecular Time (ns)")
+            self.ax.set_xlabel("Molecular Time ($ns$)")
         elif self.x_units == "agg":
             self.ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
         
@@ -491,7 +491,7 @@ class Kinetics:
 
         return module
 
-    def plot_multi_rates(self, multi_direct):
+    def plot_multi_rates(self, multi_direct, plotting=True):
         """
         Plot multiple direct.h5 flux evolution datasets.
         Use Bayesian bootstrapping for error estimates.
@@ -532,22 +532,27 @@ class Kinetics:
         # X-axis
         # WE iterations
         iterations = np.arange(0, len(multi_k_avg), 1)
-        if self.moltime:
+        if self.x_units == "moltime":
             # multiply by tau seconds converted to ps
             iterations = np.multiply(iterations, (self.tau * 1e12))
             # convert to ns
             iterations = np.divide(iterations, 1000)
+        # TODO: add agg and consolidate to a x_unit getter method
 
-        # plot the replicates avg and error 
-        self.ax.plot(iterations, multi_k_avg, color=self.color)
-        self.ax.fill_between(iterations, multi_k_uncertainty[:,0],
-                             multi_k_uncertainty[:,1], alpha=0.5, 
-                             label=self.label, color=self.color)
+        if plotting:
+            # plot the replicates avg and error 
+            self.ax.plot(iterations, multi_k_avg, color=self.color)
+            self.ax.fill_between(iterations, multi_k_uncertainty[:,0],
+                                multi_k_uncertainty[:,1], alpha=0.25, 
+                                label=self.label, color=self.color)
+            # self.ax.fill_between(iterations, multi_k_uncertainty[:,0],
+            #                     multi_k_uncertainty[:,1], alpha=0.25, 
+            #                     label=self.label, color='gray')
 
         # general formatting
         self.format_rate_plot()
 
-        return multi_k, multi_k_avg, multi_k_uncertainty
+        return iterations, multi_k, multi_k_avg, multi_k_uncertainty
 
 if __name__ == "__main__":
 #     #fig, ax = plt.subplots()
