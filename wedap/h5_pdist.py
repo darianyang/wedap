@@ -1492,26 +1492,27 @@ class H5_Pdist():
             # at first I thought that was the case, but because the above loop to generate the histrange
             # ends at the last h5 file, we need to reset here
             ### if i != 0:
-            # close and re-open, keeping the class attribute for method calls
-            # but allowing the loop to propagate through each file
-            self.h5.close()
-            self.h5 = h5py.File(h5, mode="r")
-            self._init_weights()
-            
-            # TODO: instead of just opening h5 and re-init weights, need to also account for
-            # cases like with 3D dataset returns which use self.n_particles (segs per iter)
-            # perhaps I can just reinit the entire set of attrs
-            #self.h5 = h5
-            #self.__init__(self)
-            
-            # TODO: maybe this could go into a _particle_init method?
-            # for now just going to save a new self.n_particles attribute
-            self.n_particles = self.h5["summary"]["n_particles"]
-            # these may not be needed, 
-            self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
-            # do not include the final (empty) iteration
-            self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
-            ### fi
+            # but I can still skip this step, which is redundant when the list is length one
+            if len(self.h5_list) > 1:
+                # close and re-open, keeping the class attribute for method calls
+                # but allowing the loop to propagate through each file
+                self.h5.close()
+                self.h5 = h5py.File(h5, mode="r")
+                self._init_weights()
+                
+                # TODO: instead of just opening h5 and re-init weights, need to also account for
+                # cases like with 3D dataset returns which use self.n_particles (segs per iter)
+                # perhaps I can just reinit the entire set of attrs
+                #self.h5 = h5
+                #self.__init__(self)
+                
+                # TODO: maybe this could go into a _particle_init method?
+                # for now just going to save a new self.n_particles attribute
+                self.n_particles = self.h5["summary"]["n_particles"]
+                # these may not be needed, 
+                self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+                # do not include the final (empty) iteration
+                self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
 
             # scale weights by n h5 files
             self.weights /= len(self.h5_list)
