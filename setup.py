@@ -10,7 +10,7 @@ packages = find_packages()
 
 setup(
     name='wedap',
-    version='1.0.4',
+    version='1.0.5',
     description='Weighted Ensemble Data Analysis and Plotting',
     long_description=readme,
     long_description_content_type="text/markdown",
