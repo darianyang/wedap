@@ -264,19 +264,20 @@ class Kinetics:
         
         return rate_ab, ci_lb_ab, ci_ub_ab
 
-    def plot_rate(self):
-        """
-        Plot the rate constant = target flux evolution AB / P_A 
-
+    def _get_x_data(self, n_iters):
+        """        
+        Parameters
+        ----------
+        n_iters : int
+            Total iteration number to calc X-axis units from.
+        
         Returns
         -------
-        rate_ab : ndarray
-            Array of rates from A -> B in seconds^-1.
+        x_data : array
+            Units will depend on self.x_units
         """
-        rate_ab, ci_lb_ab, ci_ub_ab = self.extract_rate()
-
         # X-axis labels: WE iterations
-        iterations = np.arange(0, len(rate_ab), 1)
+        iterations = np.arange(0, n_iters, 1)
         if self.x_units == "iterations":
             x_data = iterations
         elif self.x_units == "moltime":
@@ -296,6 +297,21 @@ class Kinetics:
             x_data *= 1e6
         else:
             raise ValueError(f"input x_units={self.x_units}, must be `iterations`, `moltime`, or `agg`.")
+        return x_data
+
+    def plot_rate(self):
+        """
+        Plot the rate constant = target flux evolution AB / P_A 
+
+        Returns
+        -------
+        rate_ab : ndarray
+            Array of rates from A -> B in seconds^-1.
+        """
+        rate_ab, ci_lb_ab, ci_ub_ab = self.extract_rate()
+
+        # grab data for x-axis
+        x_data = self._get_x_data(len(rate_ab))
 
         if self.flux_units == "mfpts":
             mfpt_ab = 1 / rate_ab
@@ -530,19 +546,12 @@ class Kinetics:
         #print(multi_k_stderr.shape)
 
         # X-axis
-        # WE iterations
-        iterations = np.arange(0, len(multi_k_avg), 1)
-        if self.x_units == "moltime":
-            # multiply by tau seconds converted to ps
-            iterations = np.multiply(iterations, (self.tau * 1e12))
-            # convert to ns
-            iterations = np.divide(iterations, 1000)
-        # TODO: add agg and consolidate to a x_unit getter method
+        x_data = self._get_x_data(len(multi_k_avg))
 
         if plotting:
             # plot the replicates avg and error 
-            self.ax.plot(iterations, multi_k_avg, color=self.color)
-            self.ax.fill_between(iterations, multi_k_uncertainty[:,0],
+            self.ax.plot(x_data, multi_k_avg, color=self.color)
+            self.ax.fill_between(x_data, multi_k_uncertainty[:,0],
                                 multi_k_uncertainty[:,1], alpha=0.25, 
                                 label=self.label, color=self.color)
             # self.ax.fill_between(iterations, multi_k_uncertainty[:,0],
@@ -552,7 +561,7 @@ class Kinetics:
         # general formatting
         self.format_rate_plot()
 
-        return iterations, multi_k, multi_k_avg, multi_k_uncertainty
+        return x_data, multi_k, multi_k_avg, multi_k_uncertainty
 
 if __name__ == "__main__":
 #     #fig, ax = plt.subplots()
