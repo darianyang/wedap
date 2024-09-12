@@ -108,7 +108,7 @@ plt.show()
 ```
 The resulting `p53.h5` file evolution plot will look like this:
 <p align="left">
-    <img src="https://github.com/darianyang/wedap/blob/main/examples/p53_evo.png?raw=true" alt="p53 evo plot" width="400">
+    <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/p53_evo.png?raw=true" alt="p53 evo plot" width="400">
 </p>
 
 See the examples directory for more realistic applications using the Python API.
@@ -124,7 +124,7 @@ wedap -h5 wedap/data/p53.h5 -dt average -X dihedral_10 -Y dihedral_11
 
 The resulting `p53.h5` file average plot of the dihedral aux datasets will look like this:
 <p align="left">
-    <img src="https://github.com/darianyang/wedap/blob/main/examples/p53_avg_aux.png?raw=true" alt="p53 avg aux plot" width="400">
+    <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/p53_avg_aux.png?raw=true" alt="p53 avg aux plot" width="400">
 </p>
 
 If you used a multi-dimensional progress coordinate and you want to use your pcoord for both the X and Y dimensions in a 2D average or instant plot, just use `pcoord` with the corresponding index set to the appropriate dimension (this also works with aux datasets which may have an additional dimension):
@@ -142,7 +142,7 @@ wedap -h5 wedap/data/p53.h5 -dt average -Y pcoord -Yi 1
 
 The resulting `p53.h5` file average plot of the pcoord datasets will look like this:
 <p align="left">
-    <img src="https://github.com/darianyang/wedap/blob/main/examples/p53_avg_pcoord.png?raw=true" alt="p53 avg pcoord plot" width="400">
+    <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/p53_avg_pcoord.png?raw=true" alt="p53 avg pcoord plot" width="400">
 </p>
 
 ## Motivation
