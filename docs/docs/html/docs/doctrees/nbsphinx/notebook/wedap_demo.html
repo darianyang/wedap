@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WEDAP Demo &mdash; WEDAP  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            WEDAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../wedap_modules.html">wedap modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mdap_modules.html">mdap modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../wekap_modules.html">wekap modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebook/wedap_demo.html">WEDAP Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../paper_figures/paper_figures.html">WEDAP Figures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">WEDAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">WEDAP Demo</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/docs/doctrees/nbsphinx/notebook/wedap_demo.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="WEDAP-Demo">
+<h1>WEDAP Demo<a class="headerlink" href="#WEDAP-Demo" title="Link to this heading"></a></h1>
+<hr class="docutils" />
+<p><strong>WEDAP</strong> : <strong>W</strong>eighted <strong>E</strong>nsemble <strong>D</strong>ata <strong>A</strong>nalysis and <strong>P</strong>lotting (pronounced we-dap)</p>
+<p><p><img alt="wedap logo" class="no-scaled-link" src="docs/doctrees/nbsphinx/notebook/wedap_logo4.png" style="width: 200px;" /></p>
+</p><p>Here, we will go through many examples of how to use the Python API or the command line for various types of plots using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and <code class="docutils literal notranslate"><span class="pre">mdap</span></code>.</p>
+<p>Note that the CLI will tend to format and label more things for you, while the API starts as more of a “blank slate” format wise since the options can be more easily adjusted.</p>
+<p>Before using the <code class="docutils literal notranslate"><span class="pre">wedap</span></code> API, make sure to import the following:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import wedap
+import matplotlib.pyplot as plt
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># optionally apply default wedap matplotlib style sheet
+plt.style.use(&quot;default.mplstyle&quot;)
+</pre></div>
+</div>
+</div>
+<section id="Basic-WEDAP-usages-with-WESTPA-H5-data">
+<h2>Basic WEDAP usages with WESTPA H5 data<a class="headerlink" href="#Basic-WEDAP-usages-with-WESTPA-H5-data" title="Link to this heading"></a></h2>
+<hr class="docutils" />
+<p>Note that if the command line can generate the example plot, the shell command will be shown before the Python code. Also note that the command line arguments will all use a hyphen to separate multi-word arguments while in Python these will be represented by underscores, e.g. <code class="docutils literal notranslate"><span class="pre">--data-type</span></code> or <code class="docutils literal notranslate"><span class="pre">--p-units</span></code> as command line arguments will be equivalently in Python <code class="docutils literal notranslate"><span class="pre">data_type</span></code> or <code class="docutils literal notranslate"><span class="pre">p_units</span></code>.</p>
+<p>Running <code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">-h</span></code> or <code class="docutils literal notranslate"><span class="pre">wedap</span> <span class="pre">--help</span></code> on the command line is very useful for a summary of the command options, along with some basic usage examples.</p>
+<p align="left"><p><img alt="CLI --help" class="no-scaled-link" src="docs/doctrees/nbsphinx/notebook/cli2.png" style="width: 600px;" /></p>
+</p><p>To use the GUI, simply run <code class="docutils literal notranslate"><span class="pre">wedap</span></code> in the command line with no arguments and the popup should look something this:</p>
+<p align="left"><p><img alt="GUI" class="no-scaled-link" src="docs/doctrees/nbsphinx/notebook/gui3_postproc.png" style="width: 550px;" /></p>
+</p><p>Reading through the GUI options and their associated descriptions can also be useful to find out more about them.</p>
+<p>We note that wedap is compatible with multiple HDF5 data files passed into the <code class="docutils literal notranslate"><span class="pre">-W</span></code> or <code class="docutils literal notranslate"><span class="pre">-h5</span></code> flag, which corresponds to passing a list instead of a string into the <code class="docutils literal notranslate"><span class="pre">h5</span></code> argument in Python. For simplicity we only use a single file for our examples.</p>
+<section id="Example-1:-Evolution-Plot">
+<h3>Example 1: Evolution Plot<a class="headerlink" href="#Example-1:-Evolution-Plot" title="Link to this heading"></a></h3>
+<p>This is a classic plot of the evolution of a WE simulation, plotting the probability distribution on the X axis as you progress through each iteration of the WE simulation on the Y axis. The colorbar is showing the probability values of each bin in the histogram. The probability values are derived from the raw data count values of the multiple segments in each WE iteration in the west.h5 file, weighted by each segment weight. This weighted histogram is normalized and shown on an inverted natural
+log scale: <span class="math notranslate nohighlight">\(-\ln(\frac{P(x)}{P(max)})\)</span></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --data-type evolution --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;evolution&quot;).plot()
+plt.xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+plt.ylabel(&quot;WE Iteration&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7ae8a787998b415fbbf1b8444ac0c2fc", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(10.097222222222232, 0.5, &#39;WE Iteration&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_9_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_9_2.png" />
+</div>
+</div>
+<p>We could also just directly place the plot formatting arguments into <code class="docutils literal notranslate"><span class="pre">wedap.H5_Plot()</span></code>, we can also plot the other dimension of the progress coordinate by setting <code class="docutils literal notranslate"><span class="pre">Xindex=1</span></code>.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --data-type evolution -X pcoord -Xi 1 --xlabel &quot;End-to-end Distance ($\AA$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;evolution&quot;, Xname=&quot;pcoord&quot;, Xindex=1,
+              xlabel=&quot;End-to-end Distance ($\AA$)&quot;, ylabel=&quot;WE Iteration&quot;).plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "513b1314553e42ba917fa49b4c870298", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&lt;Figure size 700x500 with 2 Axes&gt;,
+ &lt;Axes: xlabel=&#39;End-to-end Distance ($\\AA$)&#39;, ylabel=&#39;WE Iteration&#39;&gt;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_12_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_12_2.png" />
+</div>
+</div>
+<p>Alternatively we can use the mpl object-based interface, this offers more flexibility when making more complex plots, examples of which will be demonstrated later along in this notebook.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># instantiate the wedap H5_Plot class
+wedap_obj = wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;evolution&quot;)
+# run the main plotting method
+wedap_obj.plot()
+# call the mpl axes object (ax) from wedap class object and format
+wedap_obj.ax.set_xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+wedap_obj.ax.set_ylabel(&quot;WE Iteration&quot;)
+# the fig object can also be called
+wedap_obj.fig.suptitle(&quot;Evolution Plot&quot;, x=0.45, y=1.02)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "cc64fdbdf6934367abcb172ee2f9cb4a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.45, 1.02, &#39;Evolution Plot&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_14_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_14_2.png" />
+</div>
+</div>
+<p>We can break the process down further to access the data being passed:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># run the wedap H5_Pdist class main method
+X, Y, Z = wedap.H5_Pdist(h5=&quot;p53.h5&quot;, data_type=&quot;evolution&quot;).pdist()
+
+# pass datasets to H5_Plot
+wedap_obj = wedap.H5_Plot(X, Y, Z)
+wedap_obj.plot()
+
+# call the mpl axes object (ax) from wedap class object and format
+wedap_obj.ax.set_xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+wedap_obj.ax.set_ylabel(&quot;WE Iteration&quot;)
+# the fig object can also be called
+wedap_obj.fig.suptitle(&quot;Evolution Plot&quot;, x=0.45, y=1.02)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "42926df839af43b4b06d382046052213", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.45, 1.02, &#39;Evolution Plot&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_16_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_16_2.png" />
+</div>
+</div>
+</section>
+<section id="Example-2:-1D-Probability-Distribution">
+<h3>Example 2: 1D Probability Distribution<a class="headerlink" href="#Example-2:-1D-Probability-Distribution" title="Link to this heading"></a></h3>
+<p>You can also make simple 1D plots for a single iteration <code class="docutils literal notranslate"><span class="pre">--data-type</span> <span class="pre">instant</span></code> || <code class="docutils literal notranslate"><span class="pre">data_type='instant'</span></code> or for the average of a range of iterations <code class="docutils literal notranslate"><span class="pre">--data-type</span> <span class="pre">average</span></code> || <code class="docutils literal notranslate"><span class="pre">data_type='average'</span></code>. Here we show the average probability distribution for the entire range of WE iterations in the input <code class="docutils literal notranslate"><span class="pre">west.h5</span></code> file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 -dt average --plot-mode line --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, plot_mode=&quot;line&quot;).plot()
+plt.xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "2199a90a71fa421f9f047b7d07cbca3d", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 7.222222222222218, &#39;Heavy Atom RMSD ($\\AA$)&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_20_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_20_2.png" />
+</div>
+</div>
+</section>
+<section id="Example-3:-2D-Probability-Distribution">
+<h3>Example 3: 2D Probability Distribution<a class="headerlink" href="#Example-3:-2D-Probability-Distribution" title="Link to this heading"></a></h3>
+<p>We can also make probability distributions using two datasets, first we can try this with just our two dimensional progress coordinates. Note that you can set the progress coordinate or any aux dataset index using <code class="docutils literal notranslate"><span class="pre">Xindex</span></code>, <code class="docutils literal notranslate"><span class="pre">Yindex</span></code>, and <code class="docutils literal notranslate"><span class="pre">Zindex</span></code>. This can be useful for multi-dimensional progress coordinates, but also for multi-dimensional auxiliary data.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -dt average  \
+        -y pcoord -yi 1 --ylabel &quot;End-to-end Distance ($\AA$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, Xindex=0, Yname=&quot;pcoord&quot;, Yindex=1).plot()
+plt.xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+plt.ylabel(&quot;End-to-end Distance ($\AA$)&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "5b65aebe535c4fd7975c9ca64a4b71ea", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(31.347222222222232, 0.5, &#39;End-to-end Distance ($\\AA$)&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_24_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_24_2.png" />
+</div>
+</div>
+<p>Now we can try it with one progress coordinate and an auxiliary dataset saved during the WE simulation (or it could have been calculated post-simulation (e.g. using <code class="docutils literal notranslate"><span class="pre">w_crawl</span></code>)):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;End-to-end Distance ($\AA$)&quot; -xi 1 -dt average  \
+        -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, Xindex=1, Yname=&quot;dihedral_11&quot;).plot()
+plt.xlabel(&quot;End-to-end Distance ($\AA$)&quot;)
+plt.ylabel(&quot;Dihedral 11 ($\degree$)&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "30342dbbefed4c5f807b45a68667ab35", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(-1.527777777777768, 0.5, &#39;Dihedral 11 ($\\degree$)&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_27_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_27_2.png" />
+</div>
+</div>
+</section>
+<section id="Example-4:-3D-Scatter-Plot">
+<h3>Example 4: 3D Scatter Plot<a class="headerlink" href="#Example-4:-3D-Scatter-Plot" title="Link to this heading"></a></h3>
+<p>What if you don’t want to show the probability axis? Well, you can also just show how three different datasets are related in a 3D scatter plot. Here we can put two different aux datasets on the X and Y axes and we can set the colorbar to show the progress coordinate values in comparison:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Dihedral 11 ($\degree$)&quot; -x dihedral_11  -dt average  -y dihedral_12 --ylabel &quot;Dihedral 12 ($\degree$)&quot; -z pcoord --cbar-label &quot;Heavy Atom RMSD ($\AA$)&quot; -pm scatter3d
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, plot_mode=&quot;scatter3d&quot;,
+              Xname=&quot;dihedral_11&quot;, Yname=&quot;dihedral_12&quot;, Zname=&quot;pcoord&quot;,
+              cbar_label=&quot;Heavy Atom RMSD ($\AA$)&quot;,
+              xlabel=&quot;Dihedral 11 ($\degree$)&quot;, ylabel=&quot;Dihedral 12 ($\degree$)&quot;).plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8ebce380407b4051a77787136e0c9212", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&lt;Figure size 700x500 with 2 Axes&gt;,
+ &lt;Axes: xlabel=&#39;Dihedral 11 ($\\degree$)&#39;, ylabel=&#39;Dihedral 12 ($\\degree$)&#39;&gt;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_31_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_31_2.png" />
+</div>
+</div>
+</section>
+<section id="Example-5:-Joint-Plot-with-Multiple-Extra-Features">
+<h3>Example 5: Joint Plot with Multiple Extra Features<a class="headerlink" href="#Example-5:-Joint-Plot-with-Multiple-Extra-Features" title="Link to this heading"></a></h3>
+<p>Here, I want to demonstrate some of the additional features available by making a more complicated joint plot. This is using a contour plot instead of a histogram, as set by <code class="docutils literal notranslate"><span class="pre">--plot-mode</span> <span class="pre">contour</span></code> || <code class="docutils literal notranslate"><span class="pre">plot_mode='contour'</span></code>, there is also custom colormapping (<code class="docutils literal notranslate"><span class="pre">--cmap</span></code>), probability units (<code class="docutils literal notranslate"><span class="pre">--p-units</span></code>), iteration ranges (<code class="docutils literal notranslate"><span class="pre">--first-iter</span></code>, <code class="docutils literal notranslate"><span class="pre">--last-iter</span></code>), probability limits (<code class="docutils literal notranslate"><span class="pre">--pmin</span></code>, <code class="docutils literal notranslate"><span class="pre">--pmax</span></code>), plot style (<code class="docutils literal notranslate"><span class="pre">--style</span></code>), data smoothing (<code class="docutils literal notranslate"><span class="pre">--smoothing-level</span></code>), and plot limits
+(<code class="docutils literal notranslate"><span class="pre">--xlim</span></code>, <code class="docutils literal notranslate"><span class="pre">--ylim</span></code>).</p>
+<p>Available <code class="docutils literal notranslate"><span class="pre">--plot-mode</span></code> || <code class="docutils literal notranslate"><span class="pre">plot_mode</span></code> options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">line</span></code> – plot 1D lines.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hist</span></code> – plot histogram (default).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hist_l</span></code> – plot histogram and contour lines.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contour</span></code> – plot contour levels and lines.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contour_f</span></code> – plot contour levels only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contour_l</span></code> – plot contour lines only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scatter3d</span></code> – plot 3 datasets in a scatter plot.</p></li>
+</ul>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -xi 0  -dt average  -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot; --joint-plot -pm contour_f --cmap gnuplot_r --style ggplot --p-units kcal --first-iter 3 --last-iter 15 --pmin 1 --pmax 10 --smoothing-level 1 --xlim -1 7 --ylim -180 180
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># if there is alot of plotting choices, it can be easier to just put it all into a dictionary
+plot_options = {&quot;h5&quot; : &quot;p53.h5&quot;,
+                &quot;data_type&quot; : &quot;average&quot;,
+                &quot;plot_mode&quot; : &quot;contour_f&quot;,
+                &quot;Xname&quot; : &quot;pcoord&quot;,
+                &quot;Yname&quot; : &quot;dihedral_11&quot;,
+                &quot;cmap&quot; : &quot;gnuplot_r&quot;,
+                &quot;jointplot&quot; : True,
+                &quot;p_units&quot; : &quot;kcal&quot;,
+                &quot;first_iter&quot; : 3,
+                &quot;last_iter&quot; : 15,
+                &quot;p_min&quot; : 0.1,
+                &quot;p_max&quot; : 10,
+                &quot;smoothing_level&quot; :1,
+                # the input plot_options kwarg dict is also parsed for matplotlib formatting keywords
+                &quot;xlabel&quot; : &quot;Heavy Atom RMSD ($\AA$)&quot;,
+                &quot;ylabel&quot; : &quot;Dihedral 11 ($\degree$)&quot;,
+                &quot;xlim&quot; : (-1, 7),
+                &quot;ylim&quot; : (-180, 180),
+                }
+plt.style.use(&quot;ggplot&quot;)
+wedap.H5_Plot(**plot_options).plot()
+
+# save the resulting figure
+plt.tight_layout()
+plt.savefig(&quot;wedap_jp.pdf&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ae845f30e2b44b21b435117cdab3f3bb", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_35_1.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_35_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># change style back to wedap default
+import matplotlib as mpl
+mpl.rcParams.update(mpl.rcParamsDefault)
+plt.style.use(&quot;default.mplstyle&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="MDAP:-plotting-directly-from-standard-MD-data">
+<h2>MDAP: plotting directly from standard MD data<a class="headerlink" href="#MDAP:-plotting-directly-from-standard-MD-data" title="Link to this heading"></a></h2>
+<hr class="docutils" />
+<p><strong>MDAP</strong> : <strong>M</strong>olecular dynamics <strong>D</strong>ata <strong>A</strong>nalysis and <strong>P</strong>lotting (pronounced em-dap)</p>
+<p>Similarly to <code class="docutils literal notranslate"><span class="pre">wedap</span></code>, running <code class="docutils literal notranslate"><span class="pre">mdap</span> <span class="pre">-h</span></code> or <code class="docutils literal notranslate"><span class="pre">mdap</span> <span class="pre">--help</span></code> on the command line is very useful for a summary of the command options, along with some basic usage examples. To use the GUI, simply run <code class="docutils literal notranslate"><span class="pre">mdap</span></code> in the command line with no arguments.</p>
+<p>The input data from standard MD simulations must be in &gt;=2 column format: use hash symbols (#) at top of data file to indicate comments (skipped lines)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>COL1:Frame | COL2:Data | COL3:Data...
+</pre></div>
+</div>
+<p>This data can be output from anywhere, but just as long as it’s formatted as a text, numpy binary (<code class="docutils literal notranslate"><span class="pre">.npy</span></code>), or pickle (<code class="docutils literal notranslate"><span class="pre">.pkl</span></code>) file, it can be read into <code class="docutils literal notranslate"><span class="pre">mdap</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import mdap
+import matplotlib.pyplot as plt
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># optionally apply default wedap matplotlib style sheet
+plt.style.use(&quot;default.mplstyle&quot;)
+</pre></div>
+</div>
+</div>
+<section id="Example-1:-1D-Timeseries">
+<h3>Example 1: 1D Timeseries<a class="headerlink" href="#Example-1:-1D-Timeseries" title="Link to this heading"></a></h3>
+<p>The first plotting example shows a standard 1D timeseries plot for any input dataset, where the dataset or quantity of interest on the Y axis varies over time on the X axis. The <code class="docutils literal notranslate"><span class="pre">--timescale</span></code> flag is optional to convert the frame numbers to a specific timescale depending on the time interval that the data was saved.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat --ylabel &quot;RMSD to XTAL ($\AA$)&quot; --plot-mode line --data-type time --timescale 10e4 --xlabel &quot;Time (µs)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdap.MD_Plot(plot_mode=&quot;line&quot;, data_type=&quot;time&quot;, Xname=[&quot;rms_bb_xtal.dat&quot;],
+             timescale=10e4, xlabel=&quot;Time (µs)&quot;, ylabel=&quot;RMSD to XTAL ($\AA$)&quot;).plot()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_44_0.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_44_0.png" />
+</div>
+</div>
+</section>
+<section id="id1">
+<h3>Example 2: 1D Probability Distribution<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>We can make the same 1D line plot of the probability from any input data file. Note that if you have multiple replicates that you want to plot together, you can just include more data files after the X axis data input flag (<code class="docutils literal notranslate"><span class="pre">-X</span> <span class="pre">or</span> <span class="pre">--Xname</span> <span class="pre">file1.txt</span> <span class="pre">file2.txt</span> <span class="pre">...</span></code> and in Python you can input a list of file names into <code class="docutils literal notranslate"><span class="pre">mdap.MD_Pdist(Xname=[])</span></code>). Here, I am including just one file for the examples.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; -pm line
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdap.MD_Plot(plot_mode=&quot;line&quot;, Xname=[&quot;rms_bb_xtal.dat&quot;], data_type=&quot;pdist&quot;).plot()
+plt.xlabel(&quot;RMSD to XTAL ($\AA$)&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_48_0.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_48_0.png" />
+</div>
+</div>
+</section>
+<section id="id2">
+<h3>Example 3: 2D Probability Distribution<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>Again, if we include another dataset for the Y axis, a 2D probability distribution can be plotted.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y rms_bb_nmr.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; --ylabel &quot;RMSD to NMR ($\AA$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdap.MD_Plot(Xname=[&quot;rms_bb_xtal.dat&quot;], Yname=[&quot;rms_bb_nmr.dat&quot;], data_type=&quot;pdist&quot;).plot()
+plt.xlabel(&quot;RMSD to XTAL ($\AA$)&quot;)
+plt.ylabel(&quot;RMSD to NMR ($\AA$)&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_52_0.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_52_0.png" />
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>Example 4: 3D Scatter Plot<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Next, a scatter plot using 3 input datasets and notice how we can use a numpy binary file as input (<code class="docutils literal notranslate"><span class="pre">.npy</span></code>):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y rms_bb_nmr.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; --ylabel &quot;RMSD to NMR ($\AA$)&quot; -z c_angle.npy --cbar-label &quot;Helix Angle ($\degree$)&quot; -pm scatter3d
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdap.MD_Plot(Xname=[&quot;rms_bb_xtal.dat&quot;], Yname=[&quot;rms_bb_nmr.dat&quot;], Zname=[&quot;c_angle.npy&quot;],
+             data_type=&quot;pdist&quot;, cbar_label=&quot;Helix Angle ($\degree$)&quot;, plot_mode=&quot;scatter3d&quot;).plot()
+plt.xlabel(&quot;RMSD to XTAL ($\AA$)&quot;)
+plt.ylabel(&quot;RMSD to NMR ($\AA$)&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_56_0.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_56_0.png" />
+</div>
+</div>
+</section>
+<section id="Example-5:-Joint-Plot-with-Extra-Features">
+<h3>Example 5: Joint Plot with Extra Features<a class="headerlink" href="#Example-5:-Joint-Plot-with-Extra-Features" title="Link to this heading"></a></h3>
+<p>For the last example in the <code class="docutils literal notranslate"><span class="pre">mdap</span></code> set, we can again demonsrate a variety of extra features, many of which are the same as with <code class="docutils literal notranslate"><span class="pre">wedap</span></code>. Something that is unique with <code class="docutils literal notranslate"><span class="pre">mdap</span></code> is that you can set <code class="docutils literal notranslate"><span class="pre">--Xinterval</span></code> || <code class="docutils literal notranslate"><span class="pre">MD_Plot.Xinterval</span></code> to apply to X Y or Z data (changing X to Y or Z in the arguments). This can adjust the size of your datasets if there is a mismatch (e.g. if you saved one dataset every 10 frames and the other every single frame). We can also see here that the
+<code class="docutils literal notranslate"><span class="pre">--contour-interval</span></code> or <code class="docutils literal notranslate"><span class="pre">-ci</span></code> argument was used, which sets the interval of each contour level. The Y axis data is also being indexed to position 2, so if the input dataset has multiple columns they can all be accessed like this. Finally we set the <code class="docutils literal notranslate"><span class="pre">--style</span></code> argument to <code class="docutils literal notranslate"><span class="pre">None</span></code>, which sets everything back to the matplotlib plotting defaults.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mdap -x rms_bb_xtal.dat -y o_angle12.dat --xlabel &quot;RMSD to XTAL ($\AA$)&quot; --ylabel &quot;Dimer Angle 2 ($\degree$)&quot; --Yindex 2 --Xinterval 10 -pm contour --color k --style None --p-units kT --contour-interval 0.5 --smoothing-level 2 --cmap gnuplot_r -jp --xlim 2 8 --ylim 20 60 --pmin 0.5
+</pre></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># change to mpl default plotting settings
+import matplotlib as mpl
+mpl.rcParams.update(mpl.rcParamsDefault)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot = mdap.MD_Plot(Xname=[&quot;rms_bb_xtal.dat&quot;], Yname=[&quot;o_angle12.dat&quot;], Yindex=2, color=&quot;k&quot;, p_min=0.5,
+                    contour_interval=0.5, smoothing_level=2, cmap=&quot;gnuplot_r&quot;, jointplot=True,
+                    data_type=&quot;pdist&quot;, Xinterval=10, plot_mode=&quot;contour&quot;, p_units=&quot;kT&quot;,
+                    xlabel=&quot;RMSD to XTAL ($\AA$)&quot;, ylabel=&quot;Dimer Angle 2 ($\degree$)&quot;, xlim=(2, 8), ylim=(20, 60))
+plot.plot()
+
+# save the resulting figure
+plt.tight_layout()
+plt.savefig(&quot;mdap_jp.pdf&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/darian/github/wedap/wedap/h5_plot.py:288: UserWarning: With &#39;contour&#39; plot_type, p_max should be set. Otherwise max Z is used.
+  warn(&#34;With &#39;contour&#39; plot_type, p_max should be set. Otherwise max Z is used.&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_61_1.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_61_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># optionally apply default wedap matplotlib style sheet
+plt.style.use(&quot;default.mplstyle&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Advanced-wedap-examples">
+<h2>Advanced wedap examples<a class="headerlink" href="#Advanced-wedap-examples" title="Link to this heading"></a></h2>
+<hr class="docutils" />
+<section id="Example-1:-Multi-panel-Probability-Distributions">
+<h3>Example 1: Multi-panel Probability Distributions<a class="headerlink" href="#Example-1:-Multi-panel-Probability-Distributions" title="Link to this heading"></a></h3>
+<p>Here, we can make a plot showcasing multiple aux datasets and how they relate to the progress coordinate.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, axs = plt.subplots(ncols=3, nrows=1, sharex=True, sharey=True, figsize=(15,4))
+
+for i, ax in enumerate(axs):
+    wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;instant&quot;, ax=ax,
+                  Xname=&quot;pcoord&quot;, Yname=f&quot;dihedral_{i+10}&quot;).plot(cbar=False)
+    ax.set_title(f&quot;Dihedral {i+10}&quot;)
+
+axs[1].set_xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+axs[0].set_ylabel(&quot;Dihedral Angle (°)&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_65_0.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_65_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># save the resulting figure
+fig.tight_layout()
+fig.savefig(&quot;multi-panel-aux.pdf&quot;)
+</pre></div>
+</div>
+</div>
+<p>Since dihedral 11 looks interesting, we can make another multi-panel plot to showcase the time evolution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, axs = plt.subplots(ncols=3, nrows=1, sharex=True, sharey=True, figsize=(15,4))
+
+i = 1
+for ax in axs:
+    wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, ax=ax, first_iter=i, last_iter=i+6,
+                  Xname=&quot;pcoord&quot;, Yname=&quot;dihedral_11&quot;).plot(cbar=False)
+    ax.set_title(f&quot;Iteration {i}-{i+5}&quot;)
+    i += 6
+
+axs[1].set_xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+axs[0].set_ylabel(&quot;Dihedral Angle 11 (°)&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "5d6b4bdead324992882f9629d941918a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a0b3118966ff41de87bd774ea9ada31e", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1a823c1482a94806a3e2c44013fe6f91", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_68_3.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_68_3.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># save the resulting figure
+fig.tight_layout()
+fig.savefig(&quot;multi-panel-iters.pdf&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Example-2:-Multiple-Datasets-on-One-Plot">
+<h3>Example 2: Multiple Datasets on One Plot<a class="headerlink" href="#Example-2:-Multiple-Datasets-on-One-Plot" title="Link to this heading"></a></h3>
+<p>We can also directly compare multiple aux or pcoord datasets on a single axis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots()
+
+for i in range(8, 13):
+    wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, ax=ax, plot_mode=&quot;line&quot;,
+                  Xname=f&quot;dihedral_{i}&quot;, data_label=f&quot;Dihedral {i}&quot;).plot()
+
+ax.set_xlabel(&quot;Dihedral Angle (°)&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f135c78cd0ab411190fbb9f83e94f92f", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ca02c11f4a6b4533b210487589c085cd", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "88aa756773e34909b29a47de7f414ea4", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "08c385391ea44a298803918e87385b2f", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7f22fc6a46c340cc9e5821e3482a3c1f", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_72_5.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_72_5.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># save the resulting figure
+fig.tight_layout()
+fig.savefig(&quot;multi-aux-1d.pdf&quot;)
+</pre></div>
+</div>
+</div>
+<p>If we wanted to, mdap could then be used to compare standard MD data to WE data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import mdap
+
+fig, ax = plt.subplots()
+
+for i in range(8, 13):
+    wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, ax=ax, plot_mode=&quot;line&quot;,
+                  Xname=f&quot;dihedral_{i}&quot;, data_label=f&quot;Dihedral {i}&quot;).plot()
+
+# extra line needed to also plot the standard MD distribution data
+mdap.MD_Plot(Xname=&quot;c_angle.dat&quot;, data_type=&quot;pdist&quot;, plot_mode=&quot;line&quot;,
+             data_label=&quot;From MD&quot;, ax=ax).plot()
+
+ax.set_xlabel(&quot;Dihedral Angle (°)&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8257b39c654146e69b1f3aafecc3d903", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "326df87593264b6c8e3a0b4ca84ab2e1", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "51219f2f73744a9a9970181af7a9e2f7", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e16edc84bc1b4e70b379e5dde8393afb", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f4d4cfc5c0c94849b967520e086afe73", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_75_5.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_75_5.png" />
+</div>
+</div>
+<p>But keep in mind that this example doesn’t make too much sense because the datasets between standard MD and WE are for different systems and metrics. Ideally, you could use this framework to compare the same calculation for the same system to see how (hopefully) the WE simulation was able to explore the landscape better than standard MD.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># save the resulting figure
+fig.tight_layout()
+fig.savefig(&quot;multi-aux-1d-w-md.pdf&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Example-3:-Tracing-Trajectories">
+<h3>Example 3: Tracing Trajectories<a class="headerlink" href="#Example-3:-Tracing-Trajectories" title="Link to this heading"></a></h3>
+<p>We often want to see how a single continuous trajectory evolves as the WE simulation progresses.</p>
+<p>If we want to trace the path to get to iteration 18 and segment 1:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -dt average  \
+        -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot; --trace-seg 18 1
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap_obj = wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, Xindex=0, Yname=&quot;dihedral_11&quot;)
+wedap_obj.plot()
+wedap_obj.plot_trace((18,1), ax=wedap_obj.ax)
+plt.xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+plt.ylabel(&quot;Dihedral 11 ($\degree$)&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "34f7ea7e1b164bccb98989204542a528", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_81_1.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_81_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># save the resulting figure
+wedap_obj.fig.tight_layout()
+wedap_obj.fig.savefig(&quot;trace-seg.pdf&quot;)
+</pre></div>
+</div>
+</div>
+<p>Or we can trace by values, let’s say we want to find a walker that goes to a pcoord value of 5.8 and an aux value of 50:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -W p53.h5 --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot; -dt average  \
+        -y dihedral_11 --ylabel &quot;Dihedral 11 ($\degree$)&quot; --trace-val 5.8 50
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wedap_obj = wedap.H5_Plot(h5=&quot;p53.h5&quot;, data_type=&quot;average&quot;, Xindex=0, Yname=&quot;dihedral_11&quot;)
+wedap_obj.plot()
+wedap_obj.plot_trace((5.8, 50), ax=wedap_obj.ax, find_iter_seg=True)
+plt.xlabel(&quot;Heavy Atom RMSD ($\AA$)&quot;)
+plt.ylabel(&quot;Dihedral 11 ($\degree$)&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1a0975ac02444ee7964e7c2919222fb3", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "74afbd3cbc9643abb059b045e82bcf90", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Tracing ITERATION: 19, SEGMENT: 331
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_85_3.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_85_3.png" />
+</div>
+</div>
+<p>We also get an output line of which iteration and segment the trace corresponds to.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># save the resulting figure
+wedap_obj.fig.tight_layout()
+wedap_obj.fig.savefig(&quot;trace-val.pdf&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Example-4:-Making-a-GIF">
+<h3>Example 4: Making a GIF<a class="headerlink" href="#Example-4:-Making-a-GIF" title="Link to this heading"></a></h3>
+<p>Let’s now make a GIF of our data, here I am using the dihedral 11 aux dataset and looping through the averages of small sets of iteration ranges, but anything could be looped to make the GIF using this example as a template.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ wedap -h5 p53.h5 -y dihedral_11 -dt average --pmax 12 -pu kcal -li 19 --avg-plus 2 --gif-out example.gif --xlim 0 6 --ylim -180 180 --grid --cmap gnuplot_r --ylabel &quot;Dihedral Angle 11 (°)&quot; --xlabel &quot;Heavy Atom RMSD ($\AA$)&quot;
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_options = {&quot;h5&quot; : &quot;p53.h5&quot;,
+                &quot;Xname&quot; : &quot;pcoord&quot;,
+                &quot;Yname&quot; : &quot;dihedral_11&quot;,
+                &quot;data_type&quot; : &quot;average&quot;,
+                &quot;p_max&quot; : 12,
+                &quot;p_units&quot; : &quot;kcal&quot;,
+                &quot;first_iter&quot; : 1,
+                &quot;last_iter&quot; : 19,
+                &quot;plot_mode&quot; : &quot;hist&quot;,
+                &quot;ylabel&quot; : &quot;Dihedral Angle 11 (°)&quot;,
+                &quot;xlabel&quot; : &quot;Heavy Atom RMSD ($\AA$)&quot;,
+                &quot;xlim&quot; : (0, 6),
+                &quot;ylim&quot; : (-180, 180),
+                &quot;grid&quot; : True,
+                &quot;cmap&quot; : &quot;gnuplot_r&quot;,
+                }
+wedap.make_gif(**plot_options, avg_plus=2, gif_out=&quot;example.gif&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "6ee2df33dc074b01a0ba2c883d09c7d4", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>The resulting GIF is shown below:</p>
+<p align="left"><p><img alt="example gif" class="no-scaled-link" src="docs/doctrees/nbsphinx/notebook/example.gif" style="width: 400px;" /></p>
+</p><hr class="docutils" />
+<p>Here is an accessible version of the backend code for doing this, I provide it here since you can easily customize it with finer control to make more advanced gifs.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import gif
+# for a progress bar
+from tqdm.auto import tqdm
+
+# plots should not be saved with any transparency
+import matplotlib as mpl
+mpl.rcParams[&quot;savefig.transparent&quot;] = False
+mpl.rcParams[&quot;savefig.facecolor&quot;] = &quot;white&quot;
+
+# decorate a plot function with @gif.frame (return not required):
+@gif.frame
+def plot(iteration, avg_plus=100):
+    &quot;&quot;&quot;
+    Make a gif of multiple wedap plots.
+
+    Parameters
+    ----------
+    iteration : int
+        Plot a specific iteration.
+    avg_plus : int
+        With an average plot, this is the value added to iteration.
+    &quot;&quot;&quot;
+    plot_options = {&quot;h5&quot; : &quot;p53.h5&quot;,
+                    &quot;Xname&quot; : &quot;pcoord&quot;,
+                    &quot;Yname&quot; : &quot;dihedral_11&quot;,
+                    &quot;data_type&quot; : &quot;average&quot;,
+                    &quot;p_max&quot; : 12,
+                    &quot;p_units&quot; : &quot;kcal&quot;,
+                    &quot;first_iter&quot; : iteration,
+                    &quot;last_iter&quot; : iteration + avg_plus,
+                    &quot;plot_mode&quot; : &quot;hist&quot;,
+                    &quot;ylabel&quot; : &quot;Dihedral Angle 11 (°)&quot;,
+                    &quot;xlabel&quot; : &quot;Heavy Atom RMSD ($\AA$)&quot;,
+                    &quot;title&quot; : f&quot;WE Iteration {iteration} to {iteration + avg_plus}&quot;,
+                    &quot;xlim&quot; : (0, 6),
+                    &quot;ylim&quot; : (-180, 180),
+                    &quot;grid&quot; : True,
+                    &quot;cmap&quot; : &quot;gnuplot_r&quot;,
+                    &quot;no_pbar&quot; : True,
+                    }
+
+    we = wedap.H5_Plot(**plot_options)
+    we.plot()
+
+# build a bunch of &quot;frames&quot;
+# having at least 100 frames makes for a good length gif
+frames = []
+# set the range to be the iterations at a specified interval
+for i in tqdm(range(1, 19)):
+    frame = plot(i, avg_plus=2)
+    frames.append(frame)
+
+# specify the duration between frames (milliseconds) and save to file:
+gif.save(frames, &quot;example.gif&quot;, duration=50)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "0adaaf35f28c4c919ff4e57a4142fd10", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+</section>
+<section id="Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn">
+<h3>Example 5: Data Extraction for Machine Learning with scikit-learn<a class="headerlink" href="#Example-5:-Data-Extraction-for-Machine-Learning-with-scikit-learn" title="Link to this heading"></a></h3>
+<p>In this final example, I will go through how to extract data from a <code class="docutils literal notranslate"><span class="pre">west.h5</span></code> file using <code class="docutils literal notranslate"><span class="pre">wedap</span></code> and then we can directly pass the data to other Python libraries such as <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> to do some clustering and pca.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># load h5 file into pdist class
+data = wedap.H5_Pdist(&quot;p53.h5&quot;, data_type=&quot;average&quot;)
+
+# extract weights
+weights = data.get_all_weights()
+
+# extract data arrays (can be pcoord or any aux data name)
+X = data.get_total_data_array(&quot;pcoord&quot;, 0)
+Y = data.get_total_data_array(&quot;pcoord&quot;, 1)
+
+# put X and Y together column wise
+XY = np.hstack((X,Y))
+
+# scale data
+scaler = StandardScaler()
+XY = scaler.fit_transform(XY)
+
+# use 10x less data for easier plotting
+XY = XY[::10,:]
+
+# -ln(W/W(max)) weights
+weights_expanded = -np.log(weights/np.max(weights))[::10]
+
+# cluster pdist using weighted k-means
+clust = KMeans(n_clusters=5).fit(XY, sample_weight=weights_expanded)
+
+# create plot base
+fig, ax = plt.subplots()
+
+# get color labels
+cmap = np.array([&quot;#377eb8&quot;, &quot;#ff7f00&quot;, &quot;#4daf4a&quot;, &quot;#f781bf&quot;, &quot;#a65628&quot;])
+colors = [cmap[label] for label in clust.labels_.astype(int)]
+
+# plot on PCs
+pca = PCA(n_components=2)
+PCs = pca.fit_transform(XY)
+ax.scatter(PCs[:,0], PCs[:,1], c=colors, s=1)
+
+# labels
+ax.set_xlabel(&quot;PC1&quot;)
+ax.set_ylabel(&quot;PC2&quot;)
+
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1434e9ab06a84282ab10fb6f11f6a42c", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "412b3f55e44343bba3a439e57d95e87d", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_99_2.png" src="../../../../_images/docs_doctrees_nbsphinx_notebook_wedap_demo_99_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># save the resulting figure
+fig.tight_layout()
+fig.savefig(&quot;km_pca.pdf&quot;)
+</pre></div>
+</div>
+</div>
+<p>Now we have a plot along the first two principal components with cluster labels as the colors. Note that this isn’t necessarily the most rigorous example, but more of a demonstration of how to use <code class="docutils literal notranslate"><span class="pre">wedap</span></code> with a library like <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Darian Yang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

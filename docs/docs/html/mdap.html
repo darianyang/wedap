@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>mdap.md_pdist module &mdash; WEDAP  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -82,7 +86,7 @@
            <div itemprop="articleBody">
              
   <section id="module-mdap.md_pdist">
-<span id="mdap-md-pdist-module"></span><h1>mdap.md_pdist module<a class="headerlink" href="#module-mdap.md_pdist" title="Permalink to this heading"></a></h1>
+<span id="mdap-md-pdist-module"></span><h1>mdap.md_pdist module<a class="headerlink" href="#module-mdap.md_pdist" title="Link to this heading"></a></h1>
 <p>Convert MD analyzed data to pdists.</p>
 <dl class="simple">
 <dt>TODO:</dt><dd><p>Maybe could include an arg for custom weights</p>
@@ -90,12 +94,12 @@
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdap.md_pdist.</span></span><span class="sig-name descname"><span class="pre">MD_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdap.md_pdist.</span></span><span class="sig-name descname"><span class="pre">MD_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zinterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="wedap.html#wedap.h5_pdist.H5_Pdist" title="wedap.h5_pdist.H5_Pdist"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5_Pdist</span></code></a></p>
 <p>These class methods generate probability distributions from input MD data files.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.aux_to_pdist_1d">
-<span class="sig-name descname"><span class="pre">aux_to_pdist_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.aux_to_pdist_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">aux_to_pdist_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.aux_to_pdist_1d" title="Link to this definition"></a></dt>
 <dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
 1D probability distribution.</p>
 <dl class="field-list simple">
@@ -115,7 +119,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.aux_to_pdist_2d">
-<span class="sig-name descname"><span class="pre">aux_to_pdist_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.aux_to_pdist_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">aux_to_pdist_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.aux_to_pdist_2d" title="Link to this definition"></a></dt>
 <dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
 2D probability distribution.</p>
 <dl class="field-list simple">
@@ -135,7 +139,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.average_datasets_3d">
-<span class="sig-name descname"><span class="pre">average_datasets_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_datasets_3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_datasets_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_datasets_3d" title="Link to this definition"></a></dt>
 <dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
 Averaged over the iteration range.</p>
 <dl class="field-list simple">
@@ -150,7 +154,7 @@ Averaged over the iteration range.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.average_datasets_4d">
-<span class="sig-name descname"><span class="pre">average_datasets_4d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_datasets_4d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_datasets_4d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_datasets_4d" title="Link to this definition"></a></dt>
 <dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
 Averaged over the iteration range. With <cite>Cname</cite>, 4d.</p>
 <dl class="field-list simple">
@@ -165,7 +169,7 @@ Averaged over the iteration range. With <cite>Cname</cite>, 4d.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.average_pdist_1d">
-<span class="sig-name descname"><span class="pre">average_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_pdist_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_pdist_1d" title="Link to this definition"></a></dt>
 <dd><p>1 dataset: average pdist for a range of iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -179,7 +183,7 @@ Averaged over the iteration range. With <cite>Cname</cite>, 4d.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.average_pdist_2d">
-<span class="sig-name descname"><span class="pre">average_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_pdist_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.average_pdist_2d" title="Link to this definition"></a></dt>
 <dd><p>2 datasets: average pdist for a range of iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -194,7 +198,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.evolution_pdist">
-<span class="sig-name descname"><span class="pre">evolution_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.evolution_pdist" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">evolution_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.evolution_pdist" title="Link to this definition"></a></dt>
 <dd><p>Returns the pdist for 1 coordinate for the range iterations specified.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -210,7 +214,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.find_iter_seg_from_xy_vals">
-<span class="sig-name descname"><span class="pre">find_iter_seg_from_xy_vals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.find_iter_seg_from_xy_vals" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_iter_seg_from_xy_vals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.find_iter_seg_from_xy_vals" title="Link to this definition"></a></dt>
 <dd><p>Find and return (iter, seg) closest to input data value(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -230,7 +234,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_all_weights">
-<span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_all_weights" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_all_weights" title="Link to this definition"></a></dt>
 <dd><p>Returns an 1D array of the weight for every frame of each tau
 for all segments of all iterations specified.</p>
 <dl class="field-list simple">
@@ -245,7 +249,7 @@ for all segments of all iterations specified.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_coords">
-<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_coords" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_coords" title="Link to this definition"></a></dt>
 <dd><p>Get a list of data coordinates for plotting traces.
 Only grabs the last frames.</p>
 <dl class="field-list simple">
@@ -267,7 +271,7 @@ Only grabs the last frames.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_full_coords">
-<span class="sig-name descname"><span class="pre">get_full_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_full_coords" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_full_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_full_coords" title="Link to this definition"></a></dt>
 <dd><p>Returns a full 1D set of data for a single trace (path).
 This will be ordered from the first iter to the last.</p>
 <dl class="field-list simple">
@@ -290,7 +294,7 @@ This will be ordered from the first iter to the last.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_parents">
-<span class="sig-name descname"><span class="pre">get_parents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_parents" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_parents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_parents" title="Link to this definition"></a></dt>
 <dd><p>Get parent of an input (iteration, walker).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -307,7 +311,7 @@ This will be ordered from the first iter to the last.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.get_total_data_array">
-<span class="sig-name descname"><span class="pre">get_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_total_data_array" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.get_total_data_array" title="Link to this definition"></a></dt>
 <dd><p>Loop through all iterations specified and get a 1d raw data array.
 # TODO: this could be organized better with my other methods
 maybe I can separate the helper functions into another class
@@ -334,7 +338,7 @@ array input that is handled by the H5_Processing class</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.instant_datasets_3d">
-<span class="sig-name descname"><span class="pre">instant_datasets_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_datasets_3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">instant_datasets_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_datasets_3d" title="Link to this definition"></a></dt>
 <dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
 For single iteration.</p>
 <dl class="field-list simple">
@@ -349,7 +353,7 @@ For single iteration.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.instant_pdist_1d">
-<span class="sig-name descname"><span class="pre">instant_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_pdist_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">instant_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_pdist_1d" title="Link to this definition"></a></dt>
 <dd><p>Returns the x and y pdist datasets for a single iteration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -363,7 +367,7 @@ For single iteration.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.instant_pdist_2d">
-<span class="sig-name descname"><span class="pre">instant_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_pdist_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">instant_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.instant_pdist_2d" title="Link to this definition"></a></dt>
 <dd><p>Returns the xyz pdist datasets for a single iteration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -379,7 +383,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.make_new_h5">
-<span class="sig-name descname"><span class="pre">make_new_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.make_new_h5" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">make_new_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.make_new_h5" title="Link to this definition"></a></dt>
 <dd><p>TODO: actually make a new h5 file, see bstate filter code, integrate all.
 If self.H5save_out is not None and X/Y/Zsave_name is not None.
 Saves out a new h5 file of name self.H5save_out with the current
@@ -393,13 +397,13 @@ X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist">
-<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist" title="Link to this definition"></a></dt>
 <dd><p>Main public method with pdist generation controls.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist_1d">
-<span class="sig-name descname"><span class="pre">pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_1d" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
@@ -413,7 +417,7 @@ X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist_2d">
-<span class="sig-name descname"><span class="pre">pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_2d" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
@@ -428,7 +432,7 @@ X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.pdist_3d">
-<span class="sig-name descname"><span class="pre">pdist_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdist_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.pdist_3d" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
@@ -443,7 +447,7 @@ X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.plot_trace">
-<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find_iter_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('o',</span> <span class="pre">'v')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find_iter_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('o',</span> <span class="pre">'v')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.plot_trace" title="Link to this definition"></a></dt>
 <dd><p>Plot trace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -475,7 +479,7 @@ Set True to look for (iter, seg) using walker_tuple input as (X_value,Y_value).<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.reshape_total_data_array">
-<span class="sig-name descname"><span class="pre">reshape_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.reshape_total_data_array" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reshape_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.reshape_total_data_array" title="Link to this definition"></a></dt>
 <dd><p>Take an input 1d array of the data values at every segment for each
 iteration, and reshape them to make pdists.</p>
 <dl class="field-list simple">
@@ -493,7 +497,7 @@ iteration, and reshape them to make pdists.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.succ_pdist_weight_filter">
-<span class="sig-name descname"><span class="pre">succ_pdist_weight_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.succ_pdist_weight_filter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">succ_pdist_weight_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.succ_pdist_weight_filter" title="Link to this definition"></a></dt>
 <dd><p>TODO: Filter weights to be zero for all non successfull trajectories.
 Make an array of zero weights and fill out weights for succ trajs only.
 option to output new h5?</p>
@@ -509,7 +513,7 @@ option to output new h5?</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.timeseries">
-<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.timeseries" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.timeseries" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
@@ -523,7 +527,7 @@ option to output new h5?</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.trace_walker">
-<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.trace_walker" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.trace_walker" title="Link to this definition"></a></dt>
 <dd><p>Get trace path of an input (iteration, walker).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -543,7 +547,7 @@ option to output new h5?</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdap.md_pdist.MD_Pdist.w_succ">
-<span class="sig-name descname"><span class="pre">w_succ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.w_succ" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">w_succ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_pdist.MD_Pdist.w_succ" title="Link to this definition"></a></dt>
 <dd><p>Find and return all successfully recycled (iter, seg) pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -559,7 +563,7 @@ option to output new h5?</p>
 
 </section>
 <section id="module-mdap.md_plot">
-<span id="mdap-md-plot-module"></span><h1>mdap.md_plot module<a class="headerlink" href="#module-mdap.md_plot" title="Permalink to this heading"></a></h1>
+<span id="mdap-md-plot-module"></span><h1>mdap.md_plot module<a class="headerlink" href="#module-mdap.md_plot" title="Link to this heading"></a></h1>
 <p>Plot MD pdists.</p>
 <dl class="simple">
 <dt>TODO: specify option for:</dt><dd><p>timeseries (option for KDE side plot and option for stdev vs all reps)
@@ -569,7 +573,7 @@ others?</p>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="mdap.md_plot.MD_Plot">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdap.md_plot.</span></span><span class="sig-name descname"><span class="pre">MD_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_plot.MD_Plot" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdap.md_plot.</span></span><span class="sig-name descname"><span class="pre">MD_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mdap.md_plot.MD_Plot" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="wedap.html#wedap.h5_plot.H5_Plot" title="wedap.h5_plot.H5_Plot"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5_Plot</span></code></a>, <a class="reference internal" href="#mdap.md_pdist.MD_Pdist" title="mdap.md_pdist.MD_Pdist"><code class="xref py py-class docutils literal notranslate"><span class="pre">MD_Pdist</span></code></a></p>
 <p>These methods provide various plotting options for pdist data.</p>
 </dd></dl>

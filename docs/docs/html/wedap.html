@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>wedap.h5_pdist module &mdash; WEDAP  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -83,7 +87,7 @@
            <div itemprop="articleBody">
              
   <section id="module-wedap.h5_pdist">
-<span id="wedap-h5-pdist-module"></span><h1>wedap.h5_pdist module<a class="headerlink" href="#module-wedap.h5_pdist" title="Permalink to this heading"></a></h1>
+<span id="wedap-h5-pdist-module"></span><h1>wedap.h5_pdist module<a class="headerlink" href="#module-wedap.h5_pdist" title="Link to this heading"></a></h1>
 <p>Convert auxillary data recorded during WESTPA simulation and stored in west.h5 file
 to various probability density datasets.</p>
 <p>This script effectively replaces the need to use the native WESTPA plotting pipeline:
@@ -102,12 +106,12 @@ pdist.h5 –plothist(with –postprocess-functions hist_settings.py)–&gt; plot
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_pdist.</span></span><span class="sig-name descname"><span class="pre">H5_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'west.h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H5save_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ysave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">succ_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_pdist.</span></span><span class="sig-name descname"><span class="pre">H5_Pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'west.h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pcoord'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H5save_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ysave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zsave_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">298</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">succ_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histrange_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>These class methods generate probability distributions from a WESTPA H5 file.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.aux_to_pdist_1d">
-<span class="sig-name descname"><span class="pre">aux_to_pdist_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">aux_to_pdist_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_1d" title="Link to this definition"></a></dt>
 <dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
 1D probability distribution.</p>
 <dl class="field-list simple">
@@ -127,7 +131,7 @@ pdist.h5 –plothist(with –postprocess-functions hist_settings.py)–&gt; plot
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.aux_to_pdist_2d">
-<span class="sig-name descname"><span class="pre">aux_to_pdist_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">aux_to_pdist_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.aux_to_pdist_2d" title="Link to this definition"></a></dt>
 <dd><p>Take the auxiliary dataset for a single iteration and generate a weighted
 2D probability distribution.</p>
 <dl class="field-list simple">
@@ -147,7 +151,7 @@ pdist.h5 –plothist(with –postprocess-functions hist_settings.py)–&gt; plot
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_datasets_3d">
-<span class="sig-name descname"><span class="pre">average_datasets_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_datasets_3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_datasets_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_datasets_3d" title="Link to this definition"></a></dt>
 <dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
 Averaged over the iteration range.</p>
 <dl class="field-list simple">
@@ -162,7 +166,7 @@ Averaged over the iteration range.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_datasets_4d">
-<span class="sig-name descname"><span class="pre">average_datasets_4d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_datasets_4d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_datasets_4d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_datasets_4d" title="Link to this definition"></a></dt>
 <dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
 Averaged over the iteration range. With <cite>Cname</cite>, 4d.</p>
 <dl class="field-list simple">
@@ -177,7 +181,7 @@ Averaged over the iteration range. With <cite>Cname</cite>, 4d.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_pdist_1d">
-<span class="sig-name descname"><span class="pre">average_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_1d" title="Link to this definition"></a></dt>
 <dd><p>1 dataset: average pdist for a range of iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -191,7 +195,7 @@ Averaged over the iteration range. With <cite>Cname</cite>, 4d.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.average_pdist_2d">
-<span class="sig-name descname"><span class="pre">average_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">average_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.average_pdist_2d" title="Link to this definition"></a></dt>
 <dd><p>2 datasets: average pdist for a range of iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -206,7 +210,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.evolution_pdist">
-<span class="sig-name descname"><span class="pre">evolution_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.evolution_pdist" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">evolution_pdist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.evolution_pdist" title="Link to this definition"></a></dt>
 <dd><p>Returns the pdist for 1 coordinate for the range iterations specified.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -222,7 +226,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.find_iter_seg_from_xy_vals">
-<span class="sig-name descname"><span class="pre">find_iter_seg_from_xy_vals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.find_iter_seg_from_xy_vals" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_iter_seg_from_xy_vals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.find_iter_seg_from_xy_vals" title="Link to this definition"></a></dt>
 <dd><p>Find and return (iter, seg) closest to input data value(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -242,7 +246,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_all_weights">
-<span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_all_weights" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_all_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_all_weights" title="Link to this definition"></a></dt>
 <dd><p>Returns an 1D array of the weight for every frame of each tau
 for all segments of all iterations specified.</p>
 <dl class="field-list simple">
@@ -257,7 +261,7 @@ for all segments of all iterations specified.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_coords">
-<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_coords" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_coords" title="Link to this definition"></a></dt>
 <dd><p>Get a list of data coordinates for plotting traces.
 Only grabs the last frames.</p>
 <dl class="field-list simple">
@@ -279,7 +283,7 @@ Only grabs the last frames.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_full_coords">
-<span class="sig-name descname"><span class="pre">get_full_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_full_coords" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_full_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_full_coords" title="Link to this definition"></a></dt>
 <dd><p>Returns a full 1D set of data for a single trace (path).
 This will be ordered from the first iter to the last.</p>
 <dl class="field-list simple">
@@ -302,7 +306,7 @@ This will be ordered from the first iter to the last.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_parents">
-<span class="sig-name descname"><span class="pre">get_parents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_parents" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_parents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_parents" title="Link to this definition"></a></dt>
 <dd><p>Get parent of an input (iteration, walker).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -319,7 +323,7 @@ This will be ordered from the first iter to the last.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.get_total_data_array">
-<span class="sig-name descname"><span class="pre">get_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_total_data_array" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.get_total_data_array" title="Link to this definition"></a></dt>
 <dd><p>Loop through all iterations specified and get a 1d raw data array.
 # TODO: this could be organized better with my other methods
 maybe I can separate the helper functions into another class
@@ -346,7 +350,7 @@ array input that is handled by the H5_Processing class</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_datasets_3d">
-<span class="sig-name descname"><span class="pre">instant_datasets_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_datasets_3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">instant_datasets_3d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_datasets_3d" title="Link to this definition"></a></dt>
 <dd><p>Unique case where <cite>Zname</cite> is specified and the XYZ datasets are returned.
 For single iteration.</p>
 <dl class="field-list simple">
@@ -361,7 +365,7 @@ For single iteration.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_pdist_1d">
-<span class="sig-name descname"><span class="pre">instant_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">instant_pdist_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_1d" title="Link to this definition"></a></dt>
 <dd><p>Returns the x and y pdist datasets for a single iteration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -375,7 +379,7 @@ For single iteration.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.instant_pdist_2d">
-<span class="sig-name descname"><span class="pre">instant_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">instant_pdist_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.instant_pdist_2d" title="Link to this definition"></a></dt>
 <dd><p>Returns the xyz pdist datasets for a single iteration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -391,7 +395,7 @@ norm_hist is a 2-D matrix of the normalized histogram values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.make_new_h5">
-<span class="sig-name descname"><span class="pre">make_new_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.make_new_h5" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">make_new_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.make_new_h5" title="Link to this definition"></a></dt>
 <dd><p>TODO: actually make a new h5 file, see bstate filter code, integrate all.
 If self.H5save_out is not None and X/Y/Zsave_name is not None.
 Saves out a new h5 file of name self.H5save_out with the current
@@ -405,7 +409,7 @@ X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.pdist">
-<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.pdist" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.pdist" title="Link to this definition"></a></dt>
 <dd><p>Main public method with pdist generation controls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -423,7 +427,7 @@ Must be True when using multiple h5 input files.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.plot_trace">
-<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find_iter_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('o',</span> <span class="pre">'v')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.plot_trace" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find_iter_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('o',</span> <span class="pre">'v')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.plot_trace" title="Link to this definition"></a></dt>
 <dd><p>Plot trace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -455,7 +459,7 @@ Set True to look for (iter, seg) using walker_tuple input as (X_value,Y_value).<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.reshape_total_data_array">
-<span class="sig-name descname"><span class="pre">reshape_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.reshape_total_data_array" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reshape_total_data_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.reshape_total_data_array" title="Link to this definition"></a></dt>
 <dd><p>Take an input 1d array of the data values at every segment for each
 iteration, and reshape them to make pdists.</p>
 <dl class="field-list simple">
@@ -473,7 +477,7 @@ iteration, and reshape them to make pdists.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.succ_pdist_weight_filter">
-<span class="sig-name descname"><span class="pre">succ_pdist_weight_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.succ_pdist_weight_filter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">succ_pdist_weight_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.succ_pdist_weight_filter" title="Link to this definition"></a></dt>
 <dd><p>TODO: Filter weights to be zero for all non successfull trajectories.
 Make an array of zero weights and fill out weights for succ trajs only.
 option to output new h5?</p>
@@ -489,7 +493,7 @@ option to output new h5?</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.trace_walker">
-<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.trace_walker" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trace_walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walker_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.trace_walker" title="Link to this definition"></a></dt>
 <dd><p>Get trace path of an input (iteration, walker).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -509,7 +513,7 @@ option to output new h5?</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_pdist.H5_Pdist.w_succ">
-<span class="sig-name descname"><span class="pre">w_succ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.w_succ" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">w_succ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_pdist.H5_Pdist.w_succ" title="Link to this definition"></a></dt>
 <dd><p>Find and return all successfully recycled (iter, seg) pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -525,7 +529,7 @@ option to output new h5?</p>
 
 </section>
 <section id="module-wedap.h5_plot">
-<span id="wedap-h5-plot-module"></span><h1>wedap.h5_plot module<a class="headerlink" href="#module-wedap.h5_plot" title="Permalink to this heading"></a></h1>
+<span id="wedap-h5-plot-module"></span><h1>wedap.h5_plot module<a class="headerlink" href="#module-wedap.h5_plot" title="Link to this heading"></a></h1>
 <p>Main plotting class of wedap.
 Plot all of the datasets generated with H5_Pdist.</p>
 <ul class="simple">
@@ -545,7 +549,7 @@ Option to overlay different datasets, could be done easily with python but maybe
 <p>TODO: bin visualizer? and maybe show the trajectories as just dots?</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_plot.</span></span><span class="sig-name descname"><span class="pre">H5_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hist'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jointplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj3d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj4d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hexbin_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wedap.h5_plot.</span></span><span class="sig-name descname"><span class="pre">H5_Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hist'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jointplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj3d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj4d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hexbin_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#wedap.h5_pdist.H5_Pdist" title="wedap.h5_pdist.H5_Pdist"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5_Pdist</span></code></a></p>
 <p>These methods provide various plotting options for pdist data.</p>
 <dl class="field-list simple">
@@ -555,7 +559,7 @@ Option to overlay different datasets, could be done easily with python but maybe
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.add_cbar">
-<span class="sig-name descname"><span class="pre">add_cbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.add_cbar" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_cbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.add_cbar" title="Link to this definition"></a></dt>
 <dd><p>Add cbar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -570,7 +574,7 @@ Option to overlay different datasets, could be done easily with python but maybe
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.gaussian_filter">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gaussian_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.gaussian_filter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gaussian_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.gaussian_filter" title="Link to this definition"></a></dt>
 <dd><p>Apply Gaussian smoothing to a 2D array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -590,13 +594,13 @@ Option to overlay different datasets, could be done easily with python but maybe
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.load_module">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.load_module" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.load_module" title="Link to this definition"></a></dt>
 <dd><p>Load and return the given module, recursively loading containing packages as necessary.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot" title="Link to this definition"></a></dt>
 <dd><p>Main public method.
 Master plotting run function
 Parse plot type and add cbars/tightlayout/plot_options/smoothing</p>
@@ -615,50 +619,50 @@ Parse plot type and add cbars/tightlayout/plot_options/smoothing</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_bar">
-<span class="sig-name descname"><span class="pre">plot_bar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_bar" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_bar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_bar" title="Link to this definition"></a></dt>
 <dd><p>Simple bar plot.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_contour_f">
-<span class="sig-name descname"><span class="pre">plot_contour_f</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_contour_f" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_contour_f</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_contour_f" title="Link to this definition"></a></dt>
 <dd><p>2d contour plot, fill.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_contour_l">
-<span class="sig-name descname"><span class="pre">plot_contour_l</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_contour_l" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_contour_l</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_contour_l" title="Link to this definition"></a></dt>
 <dd><p>2d contour plot, lines.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_hexbin3d">
-<span class="sig-name descname"><span class="pre">plot_hexbin3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gridsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_hexbin3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_hexbin3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gridsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_hexbin3d" title="Link to this definition"></a></dt>
 <dd><p>Hexbin plot.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_hist">
-<span class="sig-name descname"><span class="pre">plot_hist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_hist" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_hist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_hist" title="Link to this definition"></a></dt>
 <dd><p>2d hist plot.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_line">
-<span class="sig-name descname"><span class="pre">plot_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_line" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_line" title="Link to this definition"></a></dt>
 <dd><p>1d line plot.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_margins">
-<span class="sig-name descname"><span class="pre">plot_margins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_margins" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_margins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_margins" title="Link to this definition"></a></dt>
 <dd><p>Joint plot of heatmap (pcolormesh).
 Must input raw probabilities from H5_Pdist(p_units = ‘raw’).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wedap.h5_plot.H5_Plot.plot_scatter3d">
-<span class="sig-name descname"><span class="pre">plot_scatter3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_scatter3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_scatter3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_plot.H5_Plot.plot_scatter3d" title="Link to this definition"></a></dt>
 <dd><p>3d scatter plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -674,11 +678,11 @@ Must input raw probabilities from H5_Pdist(p_units = ‘raw’).</p>
 
 </section>
 <section id="module-wedap.h5_gif">
-<span id="wedap-h5-gif-module"></span><h1>wedap.h5_gif module<a class="headerlink" href="#module-wedap.h5_gif" title="Permalink to this heading"></a></h1>
+<span id="wedap-h5-gif-module"></span><h1>wedap.h5_gif module<a class="headerlink" href="#module-wedap.h5_gif" title="Link to this heading"></a></h1>
 <p>Helper function for making gifs.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="wedap.h5_gif.make_gif">
-<span class="sig-prename descclassname"><span class="pre">wedap.h5_gif.</span></span><span class="sig-name descname"><span class="pre">make_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_plus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gif_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'example.gif'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_gif.make_gif" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">wedap.h5_gif.</span></span><span class="sig-name descname"><span class="pre">make_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_plus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gif_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'example.gif'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wedap.h5_gif.make_gif" title="Link to this definition"></a></dt>
 <dd><p>Convenience function for gif making.
 Note that this is tailored for making average pdist plots.</p>
 <dl class="field-list simple">
