@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wedap"
+version = "1.0.5"
+description = "Weighted Ensemble Data Analysis and Plotting"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Darian T. Yang", email = "dty7@pitt.edu" }
+]
+requires-python = ">=3.8"
+dependencies = ["numpy<2", "matplotlib<=3.7.0", "h5py", "gif", "tqdm"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Chemistry"
+]
+
+[tool.setuptools.packages.find]
+exclude = ["docs"]
+
+[tool.setuptools.package-data]
+"wedap" = ["styles/*"]
+"mdap" = ["styles/*"]
+"wekap" = ["styles/*"]
+
+[tool.pytest.ini_options]
+filterwarnings = "ignore::UserWarning"
+
+[project.urls]
+"Source" = "https://github.com/darianyang/wedap"
+"Documentation" = "https://darianyang.github.io/wedap"
+
+[project.scripts]
+wedap = "wedap.__main__:main"
+mdap = "mdap.__main__:main"
+wekap = "wekap.__main__:main"

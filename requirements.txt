@@ -1,5 +1,0 @@
-numpy <= 1.26.4
-matplotlib
-h5py
-tqdm
-gif
