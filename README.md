@@ -25,8 +25,8 @@ Or view the same demo notebook on the [documentation web page](https://darianyan
 
 ### Requirements
 
-- numpy
-- matplotlib
+- numpy<2
+- matplotlib<=3.7.0
 - h5py
 - tqdm
 - gif
