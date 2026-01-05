@@ -7,7 +7,7 @@
 [![PyPI version](https://badge.fury.io/py/wedap.svg)](https://badge.fury.io/py/wedap)
 [![Downloads](https://static.pepy.tech/badge/wedap)](https://pepy.tech/project/wedap)
 
-[![DOI](https://zenodo.org/badge/405205357.svg)](https://zenodo.org/doi/10.5281/zenodo.11051656)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11051657.svg)]([https://doi.org/10.5281/zenodo.11051657](https://doi.org/10.5281/zenodo.11051657))
 [![JCIM Paper](https://img.shields.io/badge/JCIM_Paper-https%3A%2F%2Fdoi.org%2F10.1021%2Facs.jcim.4c00867-crimson)](https://doi.org/10.1021/acs.jcim.4c00867)
 
 
