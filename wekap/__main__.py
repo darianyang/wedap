@@ -44,6 +44,12 @@ def main():
     elif args.style != "default" and args.style != "None":
         plt.style.use(args.style)
 
+    # warning if using default tau value
+    if args.tau is None:
+        args.tau = 100e-12
+        print("WARNING: Using the default tau value of 100 ps. "
+              "\n\t Set with the --tau option if this is not correct.")
+
     # if the list of direct h5 files is just one, carry on as normal
     if len(args.direct) == 1:
         # use first item in list of 1 item

@@ -108,7 +108,7 @@ def create_cmd_arguments():
         "--tau", "-t",
         dest="tau",
         type=float,
-        default=100e-12,
+        default=None,
         help="The resampling interval of the WE simulation in seconds. "
              "Default: 100ps = 100 * 10^-12 (s).",
     )
@@ -140,7 +140,11 @@ def create_cmd_arguments():
         type=str,
         default="direct",
         choices=["direct", "assign"],
-        help="'direct' for state_population_evolution from direct.h5 or 'assign' for labeled_populations from assign.h5. By default will use populations from direct.h5, note that if you use the populations from assign.h5 instead, they will need to be consistent with any window or cumulative averaging schemes used for direct.h5 rate calculations."
+        help="'direct' for state_population_evolution from direct.h5 or 'assign' for "
+             "labeled_populations from assign.h5. By default will use populations from "
+             "direct.h5, note that if you use the populations from assign.h5 instead, "
+             "they will need to be consistent with any window or cumulative averaging schemes "
+             "used for direct.h5 rate calculations."
     )
     optional.add_argument(
         "-fu", "--flux-units",
