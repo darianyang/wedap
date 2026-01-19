@@ -63,10 +63,9 @@ def main():
     # take kwargs and unpack to look for plot option items
     k._unpack_plot_options()
 
-    # option to plot exp D1D2 values
-    # TODO: remove this since I can use avhline instead
-    if args.exp_values:
-        k.plot_exp_vals()
+    # option to plot reference values
+    if args.ref_values is not None:
+        k.plot_ref_vals(args.ref_values)
 
     # post process option before saving
     if args.postprocess_func is not None:

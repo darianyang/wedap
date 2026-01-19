@@ -157,12 +157,13 @@ def create_cmd_arguments():
         default=None,
         help="Path to optionally save the figure."
     )
-    # TODO: this isn't really needed for anyone else and can use hline instead
+    # TODO: could expand this option better
     optional.add_argument(
-        "--exp-values", "-exp",
-        dest="exp_values",
-        action="store_true",
-        help="Plot experimental D1-->D2 values."
+        "--ref-values", "-ref",
+        dest="ref_values",
+        type=float,
+        default=None,
+        help="Plot reference (e.g. experimental) rate value as a black dashed horizontal line."
     )
     optional.add_argument(
         "--no-cumulative-avg", "-ncavg", "-nca",
@@ -203,13 +204,13 @@ def create_cmd_arguments():
                              "change default wedap plotting style options.",
                         type=str)
     formatting.add_argument("--color",
-                        dest="color", help="Color for 1D plots, contour lines, and trace plots.",
+                        dest="color", help="Color of lines.",
                         widget="ColourChooser")
     formatting.add_argument("--linewidth", "-lw", default=None, nargs="?",
-                        dest="linewidth", help="Linewidth for 1D plots, contour lines, and trace plots.",
+                        dest="linewidth", help="Linewidth thickness.",
                         type=float)
     formatting.add_argument("--linestyle", "-ls", default="-", nargs="?",
-                        dest="linestyle", help="Linestyle for 1D plots, contour lines, and trace plots.",
+                        dest="linestyle", help="Linestyle.",
                         type=str)
     formatting.add_argument("--xlabel", dest="xlabel", type=str)
     formatting.add_argument("--xlim", help="LB UB", dest="xlim", nargs=2, type=float)

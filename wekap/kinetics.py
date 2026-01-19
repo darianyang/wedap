@@ -373,40 +373,20 @@ class Kinetics:
 
         #return self.state_pop_a, self.state_pop_b
 
-    def plot_exp_vals(self, ax=None, f_range=False, d2d1=False, f_range_all=False):
+    def plot_ref_vals(self, ref_val, ax=None):
         """
-        f_range : bool
-            Set to True to use mark 25-67 s^-1 as the k_D1D2 rate.
-        d2d1 : bool
-            Set to True to also include k_D2D1.
+        Plot reference (e.g. experimental) rate values as a black dashed horizontal line.
+
+        Parameters
+        ----------
+        ref_val : float
+            Reference rate value to plot as horizontal line.
+        ax : mpl axes object
+            Axes to plot on, default None uses self.ax.
         """
         if ax is None:
             ax = self.ax
-        if self.flux_units == "rates":
-            if f_range_all:
-                # ax.axhline(60, alpha=1, color="tab:orange", label="4F k$_{D1D2}$", ls="--")
-                # ax.axhline(25, alpha=1, color="tab:green", label="7F k$_{D1D2}$", ls="--")
-                # ax.axhline(60, alpha=1, color="tab:red", ls="--")
-                # ax.axhline(25, alpha=1, color="tab:green", ls="--")
-                ax.axhline(60, alpha=1, color="tab:orange", ls="--")
-                ax.axhline(25, alpha=1, color="tab:green", ls="--")
-            elif f_range:
-                # DTY 19F rates of 25-60 for k_D1D2
-                ax.axhspan(25, 60, alpha=0.25, color="grey", label="NMR k$_{D1D2}$")
-                if d2d1:
-                    ax.axhspan(135, 179, alpha=0.25, color="tan", label="NMR k$_{D2D1}$")
-            else:
-                # D1-->D2 ~ 20-50, D2-->D1 ~ 100-150
-                ax.axhline(60, color="k", ls="--", label="k$_{D2D1}$")
-                if d2d1:
-                    ax.axhline(134, color="red", ls="--", label="k$_{D1D2}$")
-        elif self.flux_units == "mfpts":
-            # converted to mfpt = 1 / rate
-            ax.axhline(1/150, color="k", ls="--", label="MFPT$_{D2D1}$")
-            if d2d1:
-                ax.axhline(1/25, color="red", ls="--", label="MFPT$_{D1D2}$")
-        else:
-            raise ValueError(f"You put {self.flux_units} for flux_unit, which must be `mfpts` or `rates`.") 
+        ax.axhline(ref_val, color="k", ls="--")
 
     def _unpack_plot_options(self):
         """
