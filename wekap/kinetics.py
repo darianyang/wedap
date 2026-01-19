@@ -191,10 +191,10 @@ class Kinetics:
                 self.state_pop_a = np.cumsum(temp) / np.arange(1, len(temp)+1)
 
                 # state b
-                state_pop = self.assign_h5['labeled_populations'][:,0]
+                state_pop = self.assign_h5['labeled_populations'][:,1]
                 temp = np.sum(state_pop, axis=1)
                 #state_pop_cum_avg = np.cumsum(temp) / np.arange(1, len(temp)+1)
-                self.state_pop_a = np.cumsum(temp) / np.arange(1, len(temp)+1)
+                self.state_pop_b = np.cumsum(temp) / np.arange(1, len(temp)+1)
             # or if you're using e.g. instantaneous fluxes, can grab the state pops directly
             else:
                 # state A = label 0, state B = label 1
