@@ -253,6 +253,10 @@ class Kinetics:
         else:
             print("Currently only support state 0 or state 1.")
 
+        # ignore below runtime warning for division by zero
+        # RuntimeWarning: invalid value encountered in divide
+        np.seterr(invalid='ignore')
+
         # 2 different approaches here, can norm by state_pop_a (sum of weights in a)
         # but since 2 state system, could also use 1 - state_pop_b since all not in b are in a
         flux_ab = flux_ab / state_pop
