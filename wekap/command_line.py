@@ -117,7 +117,8 @@ def create_cmd_arguments():
         dest="state",
         type=int,
         default=1,
-        help="State for flux calculations (flux into `state`), 0 = A and 1 = B, etc."
+        help="State for flux calculations (flux into `state`), 0 = A and 1 = B, etc. "
+             "By default, state = 1 (flux into state B)."
     )
     main.add_argument("-o", "--output", default=None,
                         dest="output_path",
