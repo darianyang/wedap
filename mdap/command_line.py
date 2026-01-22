@@ -197,18 +197,18 @@ def create_cmd_arguments():
                              "the plot to a serperate file.",
                         type=str)
     # begin optional arg group
-    # TODO: update to be first/last frame and add an interval arg
-    optional.add_argument("-fi", "--first-iter", default=1, nargs="?",
-                        dest="first_iter",
-                        help="Plot data starting at iteration FIRST_ITER. "
+    # for first and last frames, eventually could specifiy for each input
+    optional.add_argument("-ff", "--first-frame", default=None, nargs="?",
+                        dest="first_frame",
+                        help="Plot data starting at frame FIRST_FRAME. "
                              "By default, plot data starting at the first "
-                             "iteration in the specified west.h5 file.",
+                             "frame in the specified data file.",
                         type=int)
-    optional.add_argument("-li", "--last-iter", default=None, nargs="?",
-                        dest="last_iter",
-                        help="Plot data up to and including iteration LAST_ITER. "
+    optional.add_argument("-lf", "--last-frame", default=None, nargs="?",
+                        dest="last_frame",
+                        help="Plot data up to and including frame LAST_FRAME. "
                              "By default, plot data up to and including the last "
-                             "iteration in the specified H5 file.",
+                             "frame in the specified data file.",
                         type=int)
     # *: a flexible number of values, which will be gathered into a list
     # +: like *, but requiring at least one value

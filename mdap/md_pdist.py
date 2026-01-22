@@ -20,7 +20,8 @@ class MD_Pdist(H5_Pdist):
     # TODO: add step-iter
     def __init__(self, data_type=None, Xname=None, Xindex=1, Yname=None, Yindex=1, 
                  Zname=None, Zindex=1, Xinterval=1, Yinterval=1, Zinterval=1, data_proc=None, 
-                 first_iter=1, last_iter=None, bins=(100,100), p_units='kT', T=298, 
+                 first_frame=None, last_frame=None, bins=(100,100), 
+                 p_units='kT', T=298, 
                  histrange_x=None, histrange_y=None, no_pbar=False, timescale=10**6,
                  *args, **kwargs):
         """
@@ -51,11 +52,10 @@ class MD_Pdist(H5_Pdist):
         data_proc : function or tuple of functions
             Of the form f(data) where data has rows=segments, columns=frames until tau, depth=data dims.
             The input function must return a processed array of the same shape and formatting.
-        first_iter : int
-            Default start plot at iteration 1 data.
-        last_iter : int
-            Last iteration data to include, default is the last recorded iteration in the west.h5 file. 
-            Note that `instant` type pdists only depend on last_iter.
+        first_frame : int
+            First frame data to include, default is None, includes all.
+        last_frame : int
+            Last frame data to include, default is None, includes all.
         bins : tuple of ints (TODO: maybe the tuple isn't user friendly for 1 dim?)
             Histogram bins in pdist data to be generated for x and y datasets, default both 100.
         p_units : str
@@ -94,12 +94,9 @@ class MD_Pdist(H5_Pdist):
         # TODO: allow for 1-3 functions as tuple input, right now one function only
         self.data_proc = data_proc
 
-        # default to last
-        if last_iter is not None:
-            self.last_iter = last_iter
-        elif last_iter is None:
-            pass # entire trajectory
-        self.first_iter = first_iter
+        # frame range
+        self.first_frame = first_frame
+        self.last_frame = last_frame
 
         self.bins = bins
         self.histrange_x = histrange_x
@@ -138,7 +135,8 @@ class MD_Pdist(H5_Pdist):
 
             # if indexing is wrong (e.g. 1 for 1 column dataset when 0 index is needed)
             try:
-                data.append(data_item[::interval, index])
+                # frame None handling should work here
+                data.append(data_item[self.first_frame:self.last_frame:interval, index])
             except IndexError as e:
                 message = f"{e}: Note that by default MDAP uses the 2nd column of the input data, " + \
                           "which cooresponds to an X/Y/Zindex of 1. E.g. if your dataset only had 1 column, " + \
