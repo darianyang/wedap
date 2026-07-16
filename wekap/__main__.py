@@ -3,15 +3,22 @@ Main call.
 """
 from wekap.kinetics import *
 from wekap.command_line import *
-import pkgutil 
-import os
 
-# TODO: change to logging style instead of stdout
-#import logging
+from wedap.logger import get_logger, set_log_level, format_call
+from wedap.utils import apply_style
 
-# for accessing package data: mpl styles
-import pkgutil 
-import os
+# use the package name (not __name__, which is "__main__" under `python -m wekap`)
+logger = get_logger("wekap")
+
+def _echo_call(args):
+    """
+    Build a copy-pasteable ``Kinetics(...)`` string from the parsed args, keeping
+    only the arguments that are actual Kinetics constructor parameters.
+    """
+    import inspect
+    params = set(inspect.signature(Kinetics.__init__).parameters) - {"self", "args", "kwargs"}
+    kwargs = {k: v for k, v in vars(args).items() if k in params and v is not None}
+    return "wekap." + format_call("Kinetics", kwargs)
 
 def main():
 
@@ -23,6 +30,10 @@ def main():
     # Retrieve list of args
     args = handle_command_line(argument_parser)
 
+    # configure logging verbosity from CLI flags
+    set_log_level(verbose=getattr(args, "verbose", False),
+                  debug=getattr(args, "debug", False))
+
     """
     Generate pdist and plot it
     """
@@ -31,29 +42,21 @@ def main():
         import matplotlib
         matplotlib.use('agg')
 
-    if args.style == "default":
-        # get the style parameters from package data
-        # currently writes into temp file, could be more efficient (TODO)
-        style = pkgutil.get_data(__name__, "styles/default.mplstyle")
-        # pkgutil returns binary string, decode it first and make temp file
-        with open("style.temp", "w+") as f:
-            f.write(style.decode())
-        plt.style.use("style.temp")
-        # clean up temp style file
-        os.remove("style.temp")
-    elif args.style != "default" and args.style != "None":
-        plt.style.use(args.style)
+    # apply the requested matplotlib style (packaged default, named style, or path)
+    apply_style(args.style, "wekap")
 
     # warning if using default tau value
     if args.tau is None:
         args.tau = 100e-12
-        print("WARNING: Using the default tau value of 100 ps. "
-              "\n\t Set with the --tau option if this is not correct.")
+        logger.warning("Using the default tau value of 100 ps. "
+                       "Set with the --tau option if this is not correct.")
 
     # if the list of direct h5 files is just one, carry on as normal
     if len(args.direct) == 1:
         # use first item in list of 1 item
         args.direct = args.direct[0]
+        # echo the resolved Kinetics() call so it can be lifted into a script/notebook
+        logger.info(_echo_call(args))
         # vars converts from Namespace object to dict
         k = Kinetics(**vars(args))
         k.plot_rate()
@@ -62,6 +65,7 @@ def main():
         multi_dh5 = args.direct
         # use temp as first item to get through init
         args.direct = args.direct[0]
+        logger.info(_echo_call(args))
         k = Kinetics(**vars(args))
         k.plot_multi_rates(multi_dh5)
 

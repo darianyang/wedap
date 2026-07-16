@@ -8,46 +8,7 @@ TODO:
 import argparse
 import sys
 
-# import and use gooey conditionally
-# adapted from https://github.com/chriskiehl/Gooey/issues/296
-try:
-    import gooey
-except ImportError:
-    gooey = None
-
-def flex_add_argument(f):
-    """Make the add_argument accept (and ignore) the widget option."""
-
-    def f_decorated(*args, **kwargs):
-        kwargs.pop('widget', None)
-        return f(*args, **kwargs)
-
-    return f_decorated
-
-# Monkey-patching a private class…
-argparse._ActionsContainer.add_argument = \
-    flex_add_argument(argparse.ArgumentParser.add_argument)
-
-# Do not run GUI if it is not available or if command-line arguments are given.
-if gooey is None or len(sys.argv) > 1:
-    ArgumentParser = argparse.ArgumentParser
-
-    def gui_decorator(f):
-        return f
-else:
-    ArgumentParser = gooey.GooeyParser
-    gui_decorator = gooey.Gooey(
-        program_name='WEKAP',
-        #navigation='TABBED',
-        #advanced=True,
-        suppress_gooey_flag=True,
-        optional_cols=4, 
-        default_size=(1000, 600),
-        #tabbed_groups=True,
-    )
-
-@gui_decorator
-def create_cmd_arguments(): 
+def create_cmd_arguments():
     """
     Use the `argparse` module to make the optional and required command-line
     arguments for the `wekap`. 
@@ -65,13 +26,9 @@ def create_cmd_arguments():
                  "================================================================ \n" + \
                  "\nPlot flux values from a direct.h5 file as rates"
 
-    # create argument parser (gooey based if available)
-    if gooey is None:
-        parser = argparse.ArgumentParser(description=wekap_desc, 
-                                        formatter_class=argparse.RawDescriptionHelpFormatter)
-    else:
-        parser = gooey.GooeyParser(description=wekap_desc, 
-                                   formatter_class=argparse.RawDescriptionHelpFormatter)
+    # create argument parser
+    parser = argparse.ArgumentParser(description=wekap_desc,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
 
     ###########################################################
     ######################## ARGUMENTS ########################
@@ -91,7 +48,6 @@ def create_cmd_arguments():
         default="direct.h5",
         nargs="*", # optional multi args
         help="Name of output direct.h5 file from WESTPA w_direct or w_ipa.",
-        widget="FileChooser"
     )
     main.add_argument(
         "--assign", "--assign-h5", "-ah5",
@@ -102,7 +58,6 @@ def create_cmd_arguments():
         help="Name of specific assign.h5 file. Needed for labeled population data. "
              "But only if your `statepop` choice is `assign`. By default will use "
              "state populations from `direct.h5`.",
-        widget="FileChooser"
     )
     main.add_argument(
         "--tau", "-t",
@@ -119,6 +74,15 @@ def create_cmd_arguments():
         default=1,
         help="State for flux calculations (flux into `state`), 0 = A and 1 = B, etc. "
              "By default, state = 1 (flux into state B)."
+    )
+    main.add_argument(
+        "-c", "--concentration", "--conc",
+        dest="concentration",
+        type=float,
+        default=1,
+        help="Concentration (in Molar) to normalize the rate by. Default 1 (no-op). "
+             "Divide the rate by this value, e.g. for a bimolecular (2nd order) rate "
+             "constant from a pseudo-first-order WE simulation."
     )
     main.add_argument("-o", "--output", default=None,
                         dest="output_path",
@@ -189,8 +153,24 @@ def create_cmd_arguments():
                         action= "store_true") 
     optional.add_argument("-red", "--red",
                         dest = "red",
-                        help = "Optionally use flux evolution data calculated using the "
-                               "Rate from Event Durations (RED) scheme",
+                        help = "Optionally correct the rate using the Rate from Event "
+                               "Durations (RED) scheme, computed from the `durations` "
+                               "dataset in the direct.h5 file.",
+                        action= "store_true")
+    optional.add_argument("-rtp", "--red-timepoints",
+                        dest = "red_timepoints",
+                        type=int, default=None,
+                        help = "Number of timepoints (pcoord frames) per iteration for "
+                               "the RED correction resolution, including first and last "
+                               "(e.g. 21 for a pcoord saved every 1 ps with tau=20 ps). "
+                               "Default auto-detects from assign.h5 `npts`, else uses 2.")
+    optional.add_argument("-v", "--verbose",
+                        dest = "verbose",
+                        help = "Enable verbose (INFO level) logging output.",
+                        action= "store_true")
+    optional.add_argument("--debug",
+                        dest = "debug",
+                        help = "Enable debug level logging output.",
                         action= "store_true")
 
     ##########################################################
@@ -205,12 +185,11 @@ def create_cmd_arguments():
                              "input `None` for basic mpl settings, can use a custom "
                              "path to a mpl.style text file, or could use a mpl included "
                              "named style, e.g. `ggplot`. "
-                             "Edit the wedap/styles/default.mplstyle file to "
-                             "change default wedap plotting style options.",
+                             "Edit the wekap/styles/default.mplstyle file to "
+                             "change default wekap plotting style options.",
                         type=str)
     formatting.add_argument("--color",
-                        dest="color", help="Color of lines.",
-                        widget="ColourChooser")
+                        dest="color", help="Color of lines.")
     formatting.add_argument("--linewidth", "-lw", default=None, nargs="?",
                         dest="linewidth", help="Linewidth thickness.",
                         type=float)

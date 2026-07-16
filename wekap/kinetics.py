@@ -54,19 +54,22 @@ import h5py
 
 from .bootstrap import get_CR_multi
 #from wekap.bootstrap import get_CR_multi
+from wedap.logger import get_logger
 
 import sys
 import importlib
+
+logger = get_logger(__name__)
 
 class Kinetics:
     """
     Plot the fluxes and rates from direct.h5 files.
     """
 
-    def __init__(self, direct=None, assign=None, statepop="direct", tau=100e-12, state=1, 
+    def __init__(self, direct=None, assign=None, statepop="direct", tau=100e-12, state=1,
                  label=None, flux_units="rates", ax=None, savefig=None, color=None, x_units="iterations",
                  cumulative_avg=True, linewidth=None, linestyle="-", postprocess_func=None,
-                 red=False, *args, **kwargs):
+                 red=False, red_timepoints=None, concentration=1, *args, **kwargs):
         """
         Parameters
         ----------
@@ -102,8 +105,19 @@ class Kinetics:
         postprocess_func : func
             User function to import.
         red : bool
-            Optionally use flux evolution data calculated using the Rate from Event Durations (RED) scheme.
-            Set to True to use the `red_flux_evolution` dataset.
+            Optionally correct the rate using the Rate from Event Durations (RED) scheme.
+            The correction factor is computed from the `durations` dataset in the
+            direct.h5 file (no separate `w_red` run or `red_flux_evolution` dataset needed).
+        red_timepoints : int
+            Number of timepoints (pcoord frames) per iteration, including both the
+            first and last, used for the RED duration-correction resolution. E.g. a
+            pcoord saved every 1 ps with tau=20 ps has red_timepoints=21. Default None
+            will try to auto-detect from the assign.h5 `npts` dataset, else fall back
+            to 2 (per-iteration resolution). Only used when `red=True`.
+        concentration : float
+            Concentration (in Molar) to normalize the rate by, default 1 (no-op).
+            The rate is divided by this value, e.g. to obtain a bimolecular (2nd order)
+            rate constant from a pseudo-first-order WE simulation.
         ** args
         ** kwargs
         """
@@ -149,6 +163,8 @@ class Kinetics:
         self.linestyle = linestyle
         self.postprocess_func = postprocess_func
         self.red = red
+        self.red_timepoints = red_timepoints
+        self.concentration = concentration
         self.kwargs = kwargs
 
     def _find_assign_h5(self):
@@ -225,11 +241,12 @@ class Kinetics:
         # I want 0 -> 1
         #fluxes = np.array(h5["conditional_flux_evolution"])[:,:,1]
 
-        # third column (expected) of the state (A(0) or B(1)) flux dataset (flux into state b = 1)
+        # RED scheme uses a separate rate_evolution-based calculation (see _extract_rate_red)
         if self.red:
-            flux_ab = np.array(self.direct_h5["red_flux_evolution"])
-        else:
-            flux_ab = np.array([expected[2] for expected in fluxes[:,self.state]])
+            return self._extract_rate_red()
+
+        # third column (expected) of the state (A(0) or B(1)) flux dataset (flux into state b = 1)
+        flux_ab = np.array([expected[2] for expected in fluxes[:,self.state]])
         # CIs in rate (s^-1) format (divided by tau)
         ci_lb_ab = np.array([expected[3] for expected in fluxes[:,self.state]]) * (1/self.tau)
         ci_ub_ab = np.array([expected[4] for expected in fluxes[:,self.state]]) * (1/self.tau)
@@ -265,7 +282,144 @@ class Kinetics:
 
         # convert from tau^-1 to seconds^-1
         rate_ab = flux_ab * (1/self.tau)
-        
+
+        # optionally normalize by concentration (e.g. for a 2nd order rate constant)
+        rate_ab = rate_ab / self.concentration
+        ci_lb_ab = ci_lb_ab / self.concentration
+        ci_ub_ab = ci_ub_ab / self.concentration
+
+        return rate_ab, ci_lb_ab, ci_ub_ab
+
+    def _get_red_timepoints(self):
+        """
+        Determine the number of timepoints per iteration for the RED correction.
+
+        Returns
+        -------
+        int
+            self.red_timepoints if set, else auto-detected from the assign.h5 `npts`
+            dataset, else a fallback of 2 (per-iteration resolution).
+        """
+        if self.red_timepoints is not None:
+            return int(self.red_timepoints)
+        # try to auto-detect from assign.h5 npts (frames per iteration)
+        try:
+            npts = int(np.asarray(self.assign_h5["npts"]).flat[0])
+            logger.info(f"RED: auto-detected {npts} timepoints per iteration from assign.h5")
+            return npts
+        except (AttributeError, KeyError, TypeError, IndexError):
+            logger.warning(
+                "RED: could not determine timepoints per iteration; falling back to 2 "
+                "(per-iteration resolution). Set --red-timepoints for finer resolution."
+            )
+            return 2
+
+    def _red_correction(self, n_iters, timepoints):
+        """
+        Compute the per-iteration RED (Rate from Event Durations) correction factors
+        from the `durations` dataset in the direct.h5 file.
+
+        Reimplements the DurationCorrection scheme from
+        https://github.com/westpa/user_submitted_scripts/tree/main/RED_scheme
+        in a vectorized, numpy>=2 safe form (no np.trapz).
+
+        Parameters
+        ----------
+        n_iters : int
+            Total number of iterations (length of the rate evolution).
+        timepoints : int
+            Number of timepoints per iteration (including first and last).
+
+        Returns
+        -------
+        corrections : ndarray
+            Length n_iters array of correction factors (cumulative, one per iteration).
+        """
+        durations = self.direct_h5["durations"]
+        dur_all = np.array(durations["duration"])
+        wt_all = np.array(durations["weight"])
+        fst_all = np.array(durations["fstate"])
+
+        # keep events with positive weight that end in the target state
+        mask = (wt_all > 0) & (fst_all == self.state)
+        rows, cols = np.where(mask)
+        dur_vals = dur_all[rows, cols]
+        wt_vals = wt_all[rows, cols]
+        # for non-positive durations, substitute the iteration (row) index, as in the ref
+        dur_vals = np.where(dur_vals > 0, dur_vals, rows.astype(float))
+
+        dtau = 1.0 / (timepoints - 1)
+
+        corrections = np.zeros(n_iters, dtype=float)
+        for it in range(1, n_iters + 1):
+            maxduration = it
+            # only events observed up to this iteration
+            sel = rows < it
+            d = dur_vals[sel]
+            w = wt_vals[sel]
+
+            # tau grid: left bin edges from 0 to maxduration (exclusive) in dtau steps
+            taugrid = np.arange(0, maxduration, dtau, dtype=float)
+            if taugrid.size < 2:
+                corrections[it - 1] = 0.0
+                continue
+
+            # ~f(tau): weighted counts of durations in [tau, tau+dtau), scaled by 1/(theta-tau+1)
+            edges = np.append(taugrid, taugrid[-1] + dtau)
+            counts, _ = np.histogram(d, bins=edges, weights=w)
+            f_tilde = counts / (maxduration - taugrid + 1)
+            total = f_tilde.sum()
+            if total != 0:
+                f_tilde = f_tilde / (total * dtau)
+
+            # first integral: cumulative trapezoid of f_tilde
+            integral1 = np.concatenate(
+                ([0.0], np.cumsum((f_tilde[1:] + f_tilde[:-1]) / 2.0 * dtau))
+            )
+            # second integral: trapezoid of integral1 over the tau grid
+            integral2 = np.sum((integral1[1:] + integral1[:-1]) / 2.0 * dtau)
+
+            corrections[it - 1] = 0.0 if integral2 == 0 else maxduration / integral2
+
+        return corrections
+
+    def _extract_rate_red(self):
+        """
+        Compute the RED-corrected rate evolution from the `rate_evolution` and
+        `durations` datasets.
+
+        Returns
+        -------
+        rate_ab, ci_lb_ab, ci_ub_ab
+        """
+        # rate_evolution[iter][istate][fstate]['expected'] is the rate (per tau)
+        # from istate -> fstate. Target (fstate) is self.state; for a 2-state system
+        # the source (istate) is the other state.
+        rate_evo = self.direct_h5["rate_evolution"]
+        target = self.state
+        source = 1 - self.state
+        n_iters = rate_evo.shape[0]
+
+        raw_rate = np.array([rate_evo[i][source][target]["expected"]
+                             for i in range(n_iters)])
+        ci_lb = np.array([rate_evo[i][source][target]["ci_lbound"]
+                          for i in range(n_iters)])
+        ci_ub = np.array([rate_evo[i][source][target]["ci_ubound"]
+                          for i in range(n_iters)])
+
+        # compute the cumulative RED correction factor per iteration
+        timepoints = self._get_red_timepoints()
+        corrections = self._red_correction(n_iters, timepoints)
+        logger.info(f"RED: applied correction (final factor = {corrections[-1]:.4g})")
+
+        np.seterr(invalid='ignore')
+
+        # apply correction, convert tau^-1 -> s^-1, and normalize by concentration
+        scale = corrections * (1 / self.tau) / self.concentration
+        rate_ab = raw_rate * scale
+        ci_lb_ab = ci_lb * scale
+        ci_ub_ab = ci_ub * scale
+
         return rate_ab, ci_lb_ab, ci_ub_ab
 
     def _get_x_data(self, n_iters):
@@ -350,7 +504,7 @@ class Kinetics:
         elif self.x_units == "moltime":
             self.ax.set_xlabel("Molecular Time ($ns$)")
         elif self.x_units == "agg":
-            self.ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
+            self.ax.set_xlabel(r"Aggregate Simulation Time ($\mu$$s$)")
         
         self.ax.set_yscale("log", subs=[2, 3, 4, 5, 6, 7, 8, 9])
 
@@ -548,33 +702,15 @@ class Kinetics:
         return x_data, multi_k, multi_k_avg, multi_k_uncertainty
 
 if __name__ == "__main__":
-#     #fig, ax = plt.subplots()
-#     #k = Kinetics(f"D1D2_lt16oa/WT_v00/12oa/direct.h5", state=1, statepop="direct", ax=ax)
-#     args = parse_arguments()
-
-#     # plot style
-#     if args.style == "default":
-#         plt.style.use("/Users/darian/github/wedap/wedap/styles/default.mplstyle")
-#     elif args.style is not None:
-#         plt.style.use(args.style)
-
-#     # make plot
-#     k = Kinetics(**vars(args))
-#     k.plot_rate()
-
-#     # option to plot exp D1D2 values
-#     if args.exp_values:
-#         k.plot_exp_vals()
-    
-#     plt.tight_layout()
-#     # option to save figure output
-#     if args.savefig is not None:
-#         plt.savefig(args.savefig)
-
+    import os
+    # build paths relative to this file so the demo works from any cwd
+    data_dir = os.path.join(os.path.dirname(__file__), "data")
 
     # testing multi direct.h5
-    k = Kinetics("data/direct.h5")
+    k = Kinetics(os.path.join(data_dir, "direct.h5"))
     #k.plot_rate()
-    k.plot_multi_rates(["data/direct.h5", "data/direct2.h5", "data/direct3.h5"])
+    k.plot_multi_rates([os.path.join(data_dir, "direct.h5"),
+                        os.path.join(data_dir, "direct2.h5"),
+                        os.path.join(data_dir, "direct3.h5")])
     plt.show()
 
