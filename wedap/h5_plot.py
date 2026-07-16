@@ -26,7 +26,27 @@ from warnings import warn
 from numpy import inf
 import importlib
 
+from matplotlib.lines import Line2D
+from matplotlib.collections import QuadMesh, PathCollection, Collection, PolyCollection
+from matplotlib.patches import Rectangle
+
 from .h5_pdist import *
+from .logger import get_logger
+
+logger = get_logger(__name__)
+
+# keys consumed by _unpack_plot_options (reserved, not forwarded to mpl artists)
+_PLOT_OPTION_KEYS = frozenset({
+    "xlabel", "ylabel", "zlabel", "xlim", "ylim", "title", "suptitle",
+    "grid", "minima", "axvline", "axhline",
+})
+
+# keys managed explicitly by the plot methods (avoid duplicate-kwarg collisions)
+_EXPLICIT_ARTIST_KEYS = frozenset({
+    "color", "cmap", "label", "linewidth", "linestyle", "linewidths", "linestyles",
+    "colors", "vmin", "vmax", "levels", "c", "s", "gridsize", "C",
+    "reduce_C_function", "edgecolors",
+})
 
 # TODO: maybe put the pdist object into the plot class and have this object be flexible
 # so it could just be a pdist.h5 file from westpa or make your own
@@ -186,6 +206,8 @@ class H5_Plot(H5_Pdist):
                 self.cbar_label = "Counts"
             elif self.p_units == "raw_norm":
                 self.cbar_label = "Normalized Counts"
+            elif self.p_units == "raw_norm_tot":
+                self.cbar_label = "Probability"
         # if using 3 datasets, put blank name as default cbar
         if self.plot_mode == "scatter3d" or self.plot_mode == "hexbin3d":
             self.cbar_label = ""
@@ -204,6 +226,38 @@ class H5_Plot(H5_Pdist):
         self.linestyle = linestyle
         self.postprocess_func = postprocess_func
         self.kwargs = kwargs
+        # leftover kwargs to forward to the individual mpl plotting calls
+        # (e.g. alpha, zorder, edgecolor); excludes reserved plot-option keys and
+        # keys already managed explicitly by the plot methods
+        self.plot_kwargs = {k: v for k, v in kwargs.items()
+                            if k not in _PLOT_OPTION_KEYS and k not in _EXPLICIT_ARTIST_KEYS}
+
+    def _artist_kwargs(self, artist_cls):
+        """
+        Filter self.plot_kwargs to those the given mpl artist class accepts (i.e. it
+        has a corresponding ``set_<key>`` method), so arbitrary matplotlib artist
+        kwargs (alpha, zorder, edgecolor, ...) passed to the main class are forwarded
+        to the underlying plotting call without risking a bad-keyword crash.
+
+        Parameters
+        ----------
+        artist_cls : type
+            The matplotlib artist class produced by the plotting primitive
+            (e.g. Line2D, QuadMesh, PathCollection).
+
+        Returns
+        -------
+        dict
+            The subset of self.plot_kwargs valid for that artist.
+        """
+        valid = {}
+        for key, value in self.plot_kwargs.items():
+            if hasattr(artist_cls, "set_" + key):
+                valid[key] = value
+            else:
+                logger.debug(f"Ignoring kwarg '{key}': not a valid property for "
+                             f"{artist_cls.__name__}.")
+        return valid
 
     # TODO: load from w_pdist, also can add method to load from wedap pdist output
     # def _load_from_pdist_file(self):
@@ -279,7 +333,8 @@ class H5_Plot(H5_Pdist):
         # if self.p_max:
         #     self.Z[self.Z > self.p_max] = inf
         self.plot_obj = self.ax.pcolormesh(self.X, self.Y, self.Z, cmap=self.cmap,
-                                           shading="auto", vmin=self.p_min, vmax=self.p_max)
+                                           shading="auto", vmin=self.p_min, vmax=self.p_max,
+                                           **self._artist_kwargs(QuadMesh))
 
     def _get_contour_levels(self):
         """
@@ -307,12 +362,14 @@ class H5_Plot(H5_Pdist):
         Warning("contour_l lines are set to mpl defaults, set can be changed with `--color` or `--cmap`")
         # can control linewidths using rc params (lines.linewidths (default 1.5))
         if self.color:
-            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, 
-                                         colors=self.color, linewidths=self.linewidth, linestyles=self.linestyle)
+            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels,
+                                         colors=self.color, linewidths=self.linewidth, linestyles=self.linestyle,
+                                         **self._artist_kwargs(Collection))
             #self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=[5], colors=self.color)
         else:
-            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels, 
-                                         cmap=self.cmap, linewidths=self.linewidth, linestyles=self.linestyle)
+            self.lines = self.ax.contour(self.X, self.Y, self.Z, levels=self.contour_levels,
+                                         cmap=self.cmap, linewidths=self.linewidth, linestyles=self.linestyle,
+                                         **self._artist_kwargs(Collection))
         # set to call both lines and cbar plot_obj
         self.plot_obj = self.lines
 
@@ -320,14 +377,16 @@ class H5_Plot(H5_Pdist):
         """
         2d contour plot, fill.
         """
-        self.plot_obj = self.ax.contourf(self.X, self.Y, self.Z, levels=self.contour_levels, cmap=self.cmap)
+        self.plot_obj = self.ax.contourf(self.X, self.Y, self.Z, levels=self.contour_levels,
+                                         cmap=self.cmap, **self._artist_kwargs(Collection))
 
     def plot_bar(self):
         """
         Simple bar plot.
         """
         # 1D data
-        self.ax.bar(self.X, self.Y, color=self.color, label=self.data_label)
+        self.ax.bar(self.X, self.Y, color=self.color, label=self.data_label,
+                    **self._artist_kwargs(Rectangle))
         self.ax.set_ylabel("P(x)")
 
     def plot_line(self):
@@ -337,8 +396,9 @@ class H5_Plot(H5_Pdist):
         # 1D data
         if self.p_max:
             self.Y[self.Y > self.p_max] = inf
-        self.ax.plot(self.X, self.Y, color=self.color, label=self.data_label, 
-                     linewidth=self.linewidth, linestyle=self.linestyle)
+        self.ax.plot(self.X, self.Y, color=self.color, label=self.data_label,
+                     linewidth=self.linewidth, linestyle=self.linestyle,
+                     **self._artist_kwargs(Line2D))
         self.ax.set_ylabel(self.cbar_label)
     
     def plot_scatter3d(self, interval=10, s=1):
@@ -357,18 +417,20 @@ class H5_Plot(H5_Pdist):
                 C = self.C[::interval]
             else:
                 C = self.Z[::interval]
-            self.plot_obj = self.ax.scatter(self.X[::interval], 
-                                            self.Y[::interval], 
+            self.plot_obj = self.ax.scatter(self.X[::interval],
+                                            self.Y[::interval],
                                             self.Z[::interval],
                                             c=C,
                                             cmap=self.cmap, s=s,
-                                            vmin=self.p_min, vmax=self.p_max)
+                                            vmin=self.p_min, vmax=self.p_max,
+                                            **self._artist_kwargs(PathCollection))
         else:
-            self.plot_obj = self.ax.scatter(self.X[::interval], 
-                                            self.Y[::interval], 
-                                            c=self.Z[::interval], 
+            self.plot_obj = self.ax.scatter(self.X[::interval],
+                                            self.Y[::interval],
+                                            c=self.Z[::interval],
                                             cmap=self.cmap, s=s,
-                                            vmin=self.p_min, vmax=self.p_max)
+                                            vmin=self.p_min, vmax=self.p_max,
+                                            **self._artist_kwargs(PathCollection))
 
     def plot_hexbin3d(self, gridsize=100):
         """
@@ -410,10 +472,11 @@ class H5_Plot(H5_Pdist):
             pass
 
         #print(self.X.shape, self.Y.shape, self.Z.shape)
-        self.plot_obj = self.ax.hexbin(self.X, self.Y, C=Zindices, gridsize=gridsize, 
+        self.plot_obj = self.ax.hexbin(self.X, self.Y, C=Zindices, gridsize=gridsize,
                                        edgecolors=self.color, reduce_C_function=reduce_C_function,
                                        linewidths=self.linewidth, linestyles=self.linestyle,
-                                       cmap=self.cmap, vmin=self.p_min, vmax=self.p_max)
+                                       cmap=self.cmap, vmin=self.p_min, vmax=self.p_max,
+                                       **self._artist_kwargs(PolyCollection))
 
     def plot_margins(self):
         """

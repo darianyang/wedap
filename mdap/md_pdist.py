@@ -59,9 +59,11 @@ class MD_Pdist(H5_Pdist):
         bins : tuple of ints (TODO: maybe the tuple isn't user friendly for 1 dim?)
             Histogram bins in pdist data to be generated for x and y datasets, default both 100.
         p_units : str
-            Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
+            Can be 'kT' (default), 'kcal', 'raw', 'raw_norm', or 'raw_norm_tot'.
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
-            'raw' is the raw probabilities and 'raw_norm' is the raw probabilities P(max) normalized.
+            'raw' is the raw probabilities, 'raw_norm' is the raw probabilities
+            normalized by the max P(max), and 'raw_norm_tot' is the raw probabilities
+            normalized by the total population (sums to 1, i.e. a probability density).
         T : int
             Temperature if using kcal/mol.
         histrange_x, histrange_y : list or tuple of 2 floats or ints
@@ -133,10 +135,18 @@ class MD_Pdist(H5_Pdist):
             if data_item.ndim < 2:
                 data_item = data_item[:, np.newaxis]
 
+            # a single-column dataset only has index 0 available; the default index
+            # of 1 assumes a leading frame/time column (as in typical .dat files), so
+            # fall back to 0 for single-column inputs. This lets a 1D numpy array be
+            # fed directly into the API without needing to also set X/Y/Zindex=0.
+            item_index = index
+            if data_item.shape[1] == 1:
+                item_index = 0
+
             # if indexing is wrong (e.g. 1 for 1 column dataset when 0 index is needed)
             try:
                 # frame None handling should work here
-                data.append(data_item[self.first_frame:self.last_frame:interval, index])
+                data.append(data_item[self.first_frame:self.last_frame:interval, item_index])
             except IndexError as e:
                 message = f"{e}: Note that by default MDAP uses the 2nd column of the input data, " + \
                           "which cooresponds to an X/Y/Zindex of 1. E.g. if your dataset only had 1 column, " + \

@@ -5,49 +5,7 @@ Functions for handling command-line input using argparse module.
 import argparse
 import sys
 
-# import and use gooey conditionally
-# adapted from https://github.com/chriskiehl/Gooey/issues/296
-try:
-    import gooey
-    #from gooey import Gooey
-    #from gooey import GooeyParser
-except ImportError:
-    gooey = None
-
-def flex_add_argument(f):
-    """Make the add_argument accept (and ignore) the widget option."""
-
-    def f_decorated(*args, **kwargs):
-        kwargs.pop('widget', None)
-        return f(*args, **kwargs)
-
-    return f_decorated
-
-# Monkey-patching a private class…
-argparse._ActionsContainer.add_argument = \
-    flex_add_argument(argparse.ArgumentParser.add_argument)
-
-# Do not run GUI if it is not available or if command-line arguments are given.
-if gooey is None or len(sys.argv) > 1:
-    ArgumentParser = argparse.ArgumentParser
-
-    def gui_decorator(f):
-        return f
-else:
-    ArgumentParser = gooey.GooeyParser
-    gui_decorator = gooey.Gooey(
-        program_name='MDAP',
-        #navigation='TABBED',
-        #advanced=True,
-        suppress_gooey_flag=True,
-        optional_cols=4, 
-        default_size=(1000, 600),
-        #tabbed_groups=True,
-    )
-
-# TODO: make tabs?
-@gui_decorator
-def create_cmd_arguments(): 
+def create_cmd_arguments():
     """
     Use the `argparse` module to make the optional and required command-line
     arguments for `mdap`. 
@@ -89,13 +47,9 @@ def create_cmd_arguments():
                 "\n\n2D average contour plot of 2 input datasets probability limits in kcal/mol:" + \
                 "\n\t$ mdap -pm contour -X input_data_0.dat -Y input_data_1.dat --pmin 0 --pmax 5 --p-units kcal"
 
-    # create argument parser (gooey based if available)
-    if gooey is None:
-        parser = argparse.ArgumentParser(description=mdap_desc, 
-                                        formatter_class=argparse.RawDescriptionHelpFormatter)
-    else:
-        parser = gooey.GooeyParser(description=mdap_desc, 
-                                   formatter_class=argparse.RawDescriptionHelpFormatter)
+    # create argument parser
+    parser = argparse.ArgumentParser(description=mdap_desc,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
 
     ##########################################################
     ############### REQUIRED ARGUMENTS #######################
@@ -118,14 +72,6 @@ def create_cmd_arguments():
     # sub_main.add_argument("test")
     # sub_main2 = main.add_parser('option2')
     # sub_main2.add_argument("test")
-
-    # test out gooey specific widgets
-#     required = parser.add_argument_group("Required Arguments")
-#     required.add_argument("-h5", "--h5file", #required=True, nargs="?",
-#         default="west.h5", action="store", dest="h5", type=str,
-#         help="The WESTPA west.h5 output file that will be analyzed. "
-#              "Default 'west.h5'.", 
-#         widget="FileChooser")
 
     ###########################################################
     ############### OPTIONAL ARGUMENTS ########################
@@ -230,10 +176,11 @@ def create_cmd_arguments():
                              "This determines the cbar limits and contour levels.",
                         type=float)
     optional.add_argument("-pu", "--p-units", default="kT", nargs="?",
-                        dest="p_units", choices=("kT", "kcal", "raw", "raw_norm"),
-                        help="Can be 'kT' (default) or 'kcal'. "
-                             "kT = -lnP, kcal/mol = -RT(lnP), "
-                             "where RT=0.5922 at T(298K).",
+                        dest="p_units", choices=("kT", "kcal", "raw", "raw_norm", "raw_norm_tot"),
+                        help="Can be 'kT' (default), 'kcal', 'raw', 'raw_norm', or 'raw_norm_tot'. "
+                             "kT = -lnP, kcal/mol = -RT(lnP), where RT=0.5922 at T(298K). "
+                             "'raw' is the raw probabilities, 'raw_norm' normalizes by the max, "
+                             "and 'raw_norm_tot' normalizes by the total population (sums to 1).",
                         type=str)
     optional.add_argument("-ts", "--timescale", "--time-scale", default=10e6, nargs="?",
                         dest="timescale",
@@ -303,6 +250,14 @@ def create_cmd_arguments():
                         dest = "no_pbar",
                         help = "Include this argument to not output the tqdm progress bar.",
                         action= "store_true")
+    optional.add_argument("-v", "--verbose",
+                        dest = "verbose",
+                        help = "Enable verbose (INFO level) logging output.",
+                        action= "store_true")
+    optional.add_argument("--debug",
+                        dest = "debug",
+                        help = "Enable debug level logging output.",
+                        action= "store_true")
 
     # plot tracing arg group (TODO: include this as trace-frame and can also trace-val)
     trace = parser.add_argument_group("Optional Plot Tracing", 
@@ -333,15 +288,19 @@ def create_cmd_arguments():
                              "input `None` for basic mpl settings, can use a custom "
                              "path to a mpl.style text file, or could use a mpl included "
                              "named style, e.g. `ggplot`. "
-                             "Edit the wedap/styles/default.mplstyle file to "
-                             "change default wedap plotting style options.",
+                             "Edit the mdap/styles/default.mplstyle file to "
+                             "change default mdap plotting style options.",
                         type=str)
     # TODO: prob cant use custom outside of list
     formatting.add_argument("--cmap", default="viridis", nargs="?",
                         dest="cmap", help="mpl colormap name.", type=str)
     formatting.add_argument("--color",
-                        dest="color", help="Color for 1D plots, contour lines, and trace plots.",
-                        widget="ColourChooser")
+                        dest="color", help="Color for 1D plots, contour lines, and trace plots.")
+    formatting.add_argument("--alpha", default=None, nargs="?",
+                        dest="alpha", type=float,
+                        help="Opacity (0-1) forwarded to the plot. Additional matplotlib "
+                             "artist kwargs (e.g. alpha, zorder) can also be passed via the "
+                             "Python API.")
     formatting.add_argument("--linewidth", "-lw", default=None, nargs="?",
                         dest="linewidth", help="Linewidth for 1D plots, contour lines, and trace plots.",
                         type=float)

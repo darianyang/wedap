@@ -25,56 +25,24 @@ Or view the same demo notebook on the [documentation web page](https://darianyan
 
 ### Requirements
 
-- numpy<2
-- matplotlib<=3.7.0
+- numpy
+- matplotlib
 - h5py
 - tqdm
 - gif
 
-### Optional
-
-- gooey (optional for GUI)
-
 ## Installation
 
-If you don't need the GUI, then installing `Gooey` is not required and you can just pip install.
 ``` bash
 pip install wedap
 ```
-Otherwise you can install with `Gooey`, e.g. into a new conda env:
+
+Or install the latest development version from source:
 ``` bash
-conda env create --name wedap python=3.10+
-conda activate wedap
-conda install -c conda-forge gooey
-pip install wedap
+git clone https://github.com/darianyang/wedap.git
+cd wedap
+pip install -e .
 ```
-Or update an existing environmnent:
-``` bash
-conda activate ENV_NAME
-conda install -c conda-forge gooey
-pip install wedap
-```
-
-Note that `Gooey` is kindof troublesome to pip install in some systems, which is also why it's not included in the requirements (although it is required for the GUI). For now, I recommend conda installing `Gooey`.
-
-## GUI
-
-`wedap` has a GUI built using [Gooey](https://github.com/chriskiehl/Gooey) which can be launched from the command line by simply running 
-``` bash
-wedap
-```
-or 
-`python wedap` if you're in the main `wedap` directory of this repository. 
-
-
-If you're using MacOSX, you'll need to run `pythonw wedap` in the main directory since conda prevents wxPython from accessing the display on Mac. 
-If you pip install (instead of conda installing) `wxPython` and `Gooey` on Mac you may be able to just run `wedap`. 
-
-For MacOSX, you can set up an alias in your `.bash_profile` by running the following:
-``` bash
-echo "alias wedap=pythonw /Path/to/wedap/git/repo/wedap/wedap" >> ~/.bash_profile
-```
-Then simply type `wedap` in the terminal to run the wedap GUI.
 
 ## Examples
 
@@ -85,14 +53,6 @@ wedap --help
 Or:
 ``` bash
 wedap -h
-```
-To start the GUI simply input:
-``` bash
-wedap
-```
-To start the GUI on MacOSX:
-``` bash
-pythonw /"Path to wedap git repo"/wedap/wedap
 ```
 To visualize the evolution of the pcoord for the example p53.h5 file via CLI:
 ``` bash
@@ -113,7 +73,7 @@ The resulting `p53.h5` file evolution plot will look like this:
 
 See the examples directory for more realistic applications using the Python API.
 
-Evolution plots are created by default using the CLI and GUI but average and instant probability distribution options are also available. To use one of your auxiliary datasets instead of the progress coordinate, just include the name of the aux dataset from your h5 file in the `--Xname` or `--Yname` fields:
+Evolution plots are created by default using the CLI but average and instant probability distribution options are also available. To use one of your auxiliary datasets instead of the progress coordinate, just include the name of the aux dataset from your h5 file in the `--Xname` or `--Yname` fields:
 ``` bash
 wedap -h5 wedap/data/p53.h5 --data_type average --Xname dihedral_10 --Yname dihedral_11
 ```
@@ -160,15 +120,14 @@ Native `WESTPA` CLI-based Analysis Tools:
 
 Analysis using `wedap`:
 
-    ┌───────┐     wedap       ┌────────┐
-    │west.h5├────────────────►│plot.pdf│
-    └───────┘ CLI/GUI/Python  └────────┘
+    ┌───────┐     wedap      ┌────────┐
+    │west.h5├───────────────►│plot.pdf│
+    └───────┘  CLI/Python    └────────┘
 
 So `wedap` can generate plots with more flexibilty and less intermediate files, providing an especially useful way to plot aux datasets and explore your h5 file. 
 * The Python interface allows for advanced users to quickly generate a plot as a matplotlib axes object which can be further customized all in one Python script.
     * For example, the `moviepy` or `gif` package can be used with wedap to easily create a gif of your h5 file (see an example of this in `wedap/h5_movie.py`).
     * The actual data can also be easily extracted and then analyzed (see `wedap/h5_cluster.py` for an example of k-means clustering using the data from a WESTPA west.h5 file). 
-* The GUI allows for users who may not be comfortable with command line tools or Python to be able to quickly analyze their simulation results.
 * A CLI is also available if using wedap on a system without access to a display.
 
 Since the original implementation of `wedap`, many more features have been added that are not available using the `WESTPA` `w_pdist` and `plothist` tools, these include the following:
@@ -196,4 +155,4 @@ To submit your feature to be incorporated into the main branch, you should submi
 
 ## Copyright
 
-Copyright (c) 2021-2024, Darian Yang
+Copyright (c) 2021-2026, Darian Yang

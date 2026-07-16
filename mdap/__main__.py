@@ -7,12 +7,23 @@ from mdap.md_pdist import *
 from mdap.md_plot import *
 from mdap.command_line import *
 
-# TODO: change to logging style instead of stdout
-#import logging
+from wedap.logger import get_logger, set_log_level, format_call
+from wedap.utils import apply_style
 
-# for accessing package data: mpl styles
-import pkgutil 
-import os
+# use the package name (not __name__, which is "__main__" under `python -m mdap`)
+logger = get_logger("mdap")
+
+def _echo_call(args):
+    """
+    Build a copy-pasteable ``MD_Plot(...)`` string from the parsed args, keeping
+    only the arguments that are actual MD_Plot/MD_Pdist constructor parameters.
+    """
+    import inspect
+    params = set(inspect.signature(MD_Plot.__init__).parameters)
+    params |= set(inspect.signature(MD_Pdist.__init__).parameters)
+    params -= {"self", "args", "kwargs"}
+    kwargs = {k: v for k, v in vars(args).items() if k in params and v is not None}
+    return "mdap." + format_call("MD_Plot", kwargs)
 
 def main():
 
@@ -24,6 +35,10 @@ def main():
     # Retrieve list of args
     args = handle_command_line(argument_parser)
 
+    # configure logging verbosity from CLI flags
+    set_log_level(verbose=getattr(args, "verbose", False),
+                  debug=getattr(args, "debug", False))
+
     """
     Generate pdist and plot it
     """
@@ -32,18 +47,8 @@ def main():
         import matplotlib
         matplotlib.use('agg')
 
-    if args.style == "default":
-        # get the style parameters from package data
-        # currently writes into temp file, could be more efficient (TODO)
-        style = pkgutil.get_data(__name__, "styles/default.mplstyle")
-        # pkgutil returns binary string, decode it first and make temp file
-        with open("style.temp", "w+") as f:
-            f.write(style.decode())
-        plt.style.use("style.temp")
-        # clean up temp style file
-        os.remove("style.temp")
-    elif args.style != "default" and args.style != "None":
-        plt.style.use(args.style)
+    # apply the requested matplotlib style (packaged default, named style, or path)
+    apply_style(args.style, "mdap")
 
     # # for jointplots, save original p_units and run pdist with raw
     # og_p_units = args.p_units
@@ -68,6 +73,9 @@ def main():
     #     args.p_units = og_p_units
     # plot = H5_Plot(X, Y, Z, **vars(args))
     # plot.plot()
+
+    # echo the resolved call so it can be lifted into a script/notebook
+    logger.info(_echo_call(args))
 
     # MD_Plot use with implicit use of MD_Pdist
     plot = MD_Plot(**vars(args))
@@ -97,13 +105,15 @@ def main():
     if args.cbar_label:
         cbar_label = args.cbar_label
     elif args.p_units == "kT":
-        cbar_label = "$-\ln\,P(x)$"
+        cbar_label = r"$-\ln\,P(x)$"
     elif args.p_units == "kcal":
-        cbar_label = "$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
+        cbar_label = r"$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
     elif args.p_units == "raw":
         cbar_label = "Counts"
     elif args.p_units == "raw_norm":
         cbar_label = "Normalized Counts"
+    elif args.p_units == "raw_norm_tot":
+        cbar_label = "Probability"
     # if using scatter3d and no label is given, create default label
     if (args.plot_mode == "scatter3d" or args.plot_mode == "hexbin3d") and args.cbar_label is None:
         cbar_label = plot.Zname[0] + " i" + str(plot.Zindex)
@@ -146,7 +156,7 @@ def main():
         # fig vs plt shouldn't matter here (needed to go plt for mosaic)
         #plot.fig.savefig(args.output_path)
         plt.savefig(args.output_path)
-        #logging.info(f"Plot was saved to {args.output_path}")
+        logger.info(f"Plot was saved to {args.output_path}")
         print(f"Plot was saved to {args.output_path}")
     if args.no_output_to_screen:
         pass

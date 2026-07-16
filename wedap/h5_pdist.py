@@ -108,9 +108,11 @@ class H5_Pdist():
         bins : tuple of ints (TODO: maybe the tuple isn't user friendly for 1 dim? Could check items like md_pdist)
             Histogram bins in pdist data to be generated for x and y datasets, default both 100.
         p_units : str
-            Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
+            Can be 'kT' (default), 'kcal', 'raw', 'raw_norm', or 'raw_norm_tot'.
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
-            'raw' is the raw probabilities and 'raw_norm' is the raw probabilities P(max) normalized.
+            'raw' is the raw probabilities, 'raw_norm' is the raw probabilities
+            normalized by the max P(max), and 'raw_norm_tot' is the raw probabilities
+            normalized by the total population (sums to 1, i.e. a probability density).
         T : int
             Temperature if using kcal/mol.
         weighted : bool
@@ -503,14 +505,16 @@ class H5_Pdist():
         hist : ndarray
             Array containing the histogram count values to be normalized.
         p_units : str
-            Can be 'kT' (default), 'kcal', 'raw', or 'raw_norm'.
+            Can be 'kT' (default), 'kcal', 'raw', 'raw_norm', or 'raw_norm_tot'.
             kT = -lnP, kcal/mol = -RT(lnP), where RT = 0.5922 at `T` Kelvin.
-            'raw' is the raw probabilities and 'raw_norm' is the raw probabilities P(max) normalized.
+            'raw' is the raw probabilities, 'raw_norm' is the raw probabilities
+            normalized by the max P(max), and 'raw_norm_tot' is the raw probabilities
+            normalized by the total population (sums to 1, i.e. a probability density).
 
         Returns
         -------
         hist : ndarray
-            The hist array is normalized according to the p_units argument. 
+            The hist array is normalized according to the p_units argument.
         """
         # -lnP
         if p_units == "kT":
@@ -525,8 +529,12 @@ class H5_Pdist():
         # raw normalized probability (P(x)/P(max))
         elif p_units == "raw_norm":
             hist = hist / np.max(hist)
+        # raw probability normalized by the total population (sums to 1)
+        elif p_units == "raw_norm_tot":
+            hist = hist / np.sum(hist)
         else:
-            raise ValueError("Invalid p_units value, must be 'kT', 'kcal', 'raw', or 'raw_norm'.")
+            raise ValueError("Invalid p_units value, must be 'kT', 'kcal', 'raw', "
+                             "'raw_norm', or 'raw_norm_tot'.")
         return hist
 
     def _get_children_indices(self, parent):

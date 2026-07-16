@@ -6,12 +6,23 @@ from wedap.h5_plot import *
 from wedap.command_line import *
 from wedap.h5_gif import *
 
-# TODO: change to logging style instead of stdout
-#import logging
+from wedap.logger import get_logger, set_log_level, format_call
+from wedap.utils import apply_style
 
-# for accessing package data: mpl styles
-import pkgutil 
-import os
+# use the package name (not __name__, which is "__main__" under `python -m wedap`)
+logger = get_logger("wedap")
+
+def _echo_call(args):
+    """
+    Build a copy-pasteable ``H5_Plot(...)`` string from the parsed args, keeping
+    only the arguments that are actual H5_Plot/H5_Pdist constructor parameters.
+    """
+    import inspect
+    params = set(inspect.signature(H5_Plot.__init__).parameters)
+    params |= set(inspect.signature(H5_Pdist.__init__).parameters)
+    params -= {"self", "args", "kwargs"}
+    kwargs = {k: v for k, v in vars(args).items() if k in params and v is not None}
+    return "wedap." + format_call("H5_Plot", kwargs)
 
 def main():
 
@@ -23,6 +34,10 @@ def main():
     # Retrieve list of args
     args = handle_command_line(argument_parser)
 
+    # configure logging verbosity from CLI flags
+    set_log_level(verbose=getattr(args, "verbose", False),
+                  debug=getattr(args, "debug", False))
+
     """
     Generate pdist and plot it
     """
@@ -31,21 +46,10 @@ def main():
         import matplotlib
         matplotlib.use('agg')
 
-    if args.style == "default":
-        # get the style parameters from package data
-        # currently writes into temp file, could be more efficient (TODO)
-        style = pkgutil.get_data(__name__, "styles/default.mplstyle")
-        # pkgutil returns binary string, decode it first and make temp file
-        with open("style.temp", "w+") as f:
-            f.write(style.decode())
-        plt.style.use("style.temp")
-        # clean up temp style file
-        os.remove("style.temp")
-    elif args.style != "default" and args.style != "None":
-        plt.style.use(args.style)
+    # apply the requested matplotlib style (packaged default, named style, or path)
+    apply_style(args.style, "wedap")
 
     # a poor workaround for now for the weighted arg
-    # this is only to make the gooey formatting look nicer in terms of the checkbox
     if args.not_weighted is True:
         args.weighted = False
     elif args.not_weighted is False:
@@ -66,6 +70,8 @@ def main():
         return
     # otherwise carry on as normal for a single plot
     else:
+        # echo the resolved call so it can be lifted into a script/notebook
+        logger.info(_echo_call(args))
         # vars converts from Namespace object to dict
         plot = H5_Plot(**vars(args))
 
@@ -79,8 +85,8 @@ def main():
         try:
             plot.plot(cbar=True)
         except AttributeError as e:
-            print(f"{e}: Attempting to plot an {args.data_type} dataset using ")
-            print(f"a {args.plot_mode} type plot. Is this what you meant to do?")
+            logger.error(f"{e}: Attempting to plot an {args.data_type} dataset using "
+                         f"a {args.plot_mode} type plot. Is this what you meant to do?")
             sys.exit(0)
     # 1D plot that isn't evolution
     elif args.Yname is None and args.Zname is None and args.data_type != "evolution":
@@ -142,7 +148,7 @@ def main():
         # fig vs plt shouldn't matter here (needed to go plt for mosaic)
         #plot.fig.savefig(args.output_path)
         plt.savefig(args.output_path)
-        #logging.info(f"Plot was saved to {args.output_path}")
+        logger.info(f"Plot was saved to {args.output_path}")
         print(f"Plot was saved to {args.output_path}")
     if args.no_output_to_screen:
         pass

@@ -20,6 +20,22 @@ class MD_Plot(H5_Plot, MD_Pdist):
     """
     def __init__(self, *args, **kwargs):
 
+        # If precomputed X/Y/Z arrays are provided (e.g. from MD_Pdist().pdist()),
+        # skip the pdist generation entirely and plot the arrays directly. This makes
+        # the two-step workflow work as expected:
+        #     X, Y, Z = mdap.MD_Pdist(...).pdist()
+        #     mdap.MD_Plot(X=X, Y=Y, Z=Z, plot_mode="hist").plot()
+        # (previously MD_Plot always recomputed the pdist and ignored X/Y/Z.)
+        X = kwargs.pop("X", None)
+        Y = kwargs.pop("Y", None)
+        Z = kwargs.pop("Z", None)
+        if X is not None or Y is not None or Z is not None:
+            self.X, self.Y, self.Z = X, Y, Z
+            # MD pdists are already weighted during pdist generation; don't re-weight
+            self.weighted = False
+            H5_Plot.__init__(self, X, Y, Z, *args, **kwargs)
+            return
+
         # for jointplots, save original p_units and run pdist with raw
         # only if jointplot var exists and is True
         if "jointplot" in kwargs:
