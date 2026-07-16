@@ -13,13 +13,25 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # cover the legacy numpy 1.x leg and the modern numpy 2.x leg across a
+        # range of supported Python versions
+        include:
+          - python-version: "3.10"
+            numpy: "numpy<2"
+          - python-version: "3.12"
+            numpy: "numpy>=2"
+          - python-version: "3.13"
+            numpy: "numpy>=2"
 
     steps:
     - uses: actions/checkout@v7
-    - name: Set up Python 3.10.14
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
-        python-version: 3.10.14
+        python-version: ${{ matrix.python-version }}
 ### tests using conda
 #    - name: Add conda to system path
 #      run: |
@@ -44,11 +56,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        # pin numpy to the matrix leg (1.x or 2.x) before installing the package
+        pip install "${{ matrix.numpy }}"
         pip install .
         pip install flake8 pytest pytest-cov
-        # gooey has extra dependencies not installed by pip so skip gooey
-        #pip install numpy h5py matplotlib scipy tqdm
-        #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -59,3 +70,4 @@ jobs:
       run: |
         pytest wedap/tests/
         pytest mdap/tests/
+        pytest wekap/tests/

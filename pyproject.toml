@@ -4,24 +4,31 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wedap"
-version = "1.0.5"
+version = "1.1.0"
 description = "Weighted Ensemble Data Analysis and Plotting"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
     { name = "Darian T. Yang", email = "dty7@pitt.edu" }
 ]
-requires-python = ">=3.8"
-dependencies = ["numpy<2", "matplotlib<=3.7.0", "h5py", "gif", "tqdm"]
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.23", "matplotlib>=3.7", "h5py", "gif", "tqdm"]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering :: Chemistry"
 ]
 
 [tool.setuptools.packages.find]
-exclude = ["docs"]
+# only ship the three real packages (and their subpackages); this also keeps the
+# redundant top-level styles/ dir and docs/ out of the installed distribution
+include = ["wedap*", "mdap*", "wekap*"]
 
 [tool.setuptools.package-data]
 "wedap" = ["styles/*"]
