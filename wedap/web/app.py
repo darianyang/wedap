@@ -58,9 +58,25 @@ def main():
     # a `st-key-plot_sticky_*` CSS class); we make the *column* that contains it
     # sticky. `align-self: flex-start` stops the flex row from stretching the
     # column to full height, which is what gives sticky room to actually pin.
+    #
+    # Also cap the content width so there's breathing room on the edges of wide
+    # monitors. `max-width` (not a fixed width) means narrower viewports still use
+    # all available space and reflow down — so it adapts as the window shrinks.
     st.markdown(
         """
         <style>
+        div[data-testid="stMainBlockContainer"] {
+            max-width: 1400px;
+            margin-inline: auto;
+            padding-left: 3rem;
+            padding-right: 3rem;
+        }
+        @media (max-width: 900px) {
+            div[data-testid="stMainBlockContainer"] {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
         div[data-testid="stColumn"]:has([class*="st-key-plot_sticky"]) {
             position: sticky;
             top: 3rem;
