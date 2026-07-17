@@ -27,7 +27,9 @@ classifiers = [
 
 [project.optional-dependencies]
 # optional browser front-end: `pip install wedap[web]`, launch with `wedap-web`
-web = ["streamlit>=1.30"]
+# (>=1.39 for st.container(key=...) and the `st-key-*` CSS class used for the
+# sticky plot column)
+web = ["streamlit>=1.39"]
 
 [tool.setuptools.packages.find]
 # only ship the three real packages (and their subpackages); this also keeps the

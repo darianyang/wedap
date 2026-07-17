@@ -111,7 +111,12 @@ The resulting `p53.h5` file average plot of the pcoord datasets will look like t
 
 ## Web app (Streamlit)
 
-`wedap` ships with an optional browser-based interface built on [Streamlit](https://streamlit.io/), providing a point-and-click alternative to the CLI for exploring `west.h5` files (dataset dropdowns, live plot options, a downloadable figure, and a copy-pasteable equivalent Python snippet).
+`wedap` ships with an optional browser-based interface built on [Streamlit](https://streamlit.io/), providing a point-and-click alternative to the CLI (dataset dropdowns, live plot options, a downloadable figure, and a copy-pasteable equivalent Python snippet).
+
+The app bundles all three tools as tabs (each tab keeps its own inputs when you switch between them):
+- **wedap** — WESTPA `west.h5` probability distributions and plots (1D/2D/3D, plot tracing, gif making).
+- **mdap** — probability distributions and plots from standard MD analysis data files (`.dat`/`.npy`/...).
+- **wekap** — WE kinetics: rates/MFPTs from a `direct.h5` file (RED correction, multi-replicate averaging).
 
 Install the optional `web` extra and launch it:
 ``` bash

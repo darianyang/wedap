@@ -13,13 +13,19 @@ changes are backwards-compatible.
 ### Added
 
 - **Optional Streamlit web app** (`pip install "wedap[web]"`, launch with `wedap-web`
-  or `streamlit run wedap/web/app.py`). A browser-based front-end for the `wedap` H5
-  workflow: server-path/upload/example input, auto-discovered pcoord + aux dataset
-  dropdowns, all plot modes (1D/2D/3D), the full formatting arg set, plot tracing,
-  gif making, postprocessing (file path or inline code), a PNG download, and a
-  copy-pasteable equivalent Python snippet. Streamlit is only pulled in via the `web`
-  extra, so the core dependency tree is unchanged. See the README for local vs. remote
-  (SSH-tunnel) launch instructions.
+  or `streamlit run wedap/web/app.py`). A browser-based front-end covering **all three
+  tools** as tabs (each tab keeps its own inputs when switching between them):
+  - **wedap** — the `west.h5` workflow: server-path/upload/example input, auto-discovered
+    pcoord + aux dataset dropdowns, all plot modes (1D/2D/3D), the full formatting arg
+    set, plot tracing, gif making, and postprocessing (file path or inline code).
+  - **mdap** — probability distributions/plots from MD analysis data files (`pdist`/`time`
+    data types, 1D/2D/3D modes, shared formatting).
+  - **wekap** — WE kinetics rates/MFPTs from a `direct.h5` file (tau/state/concentration,
+    the RED correction, and multi-replicate averaging with bootstrapped error).
+
+  Each tool provides a PNG download and a copy-pasteable equivalent Python snippet.
+  Streamlit is only pulled in via the `web` extra, so the core dependency tree is
+  unchanged. See the README for local vs. remote (SSH-tunnel) launch instructions.
 - **`H5_Plot.set_cbar_label()`** — a class method that sets the colorbar label from
   the probability units (`self.p_units`).
 
