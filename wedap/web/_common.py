@@ -310,9 +310,20 @@ def plot_formatting_controls(prefix, dim, plot_mode, default_xlabel="",
 
 
 def figure_download_button(fig, prefix, filename):
-    """Render a 'Download PNG' button for a finished figure."""
+    """Render side-by-side 'Download PNG' (raster) and 'Download PDF' (vector) buttons."""
     import io
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=300, bbox_inches="tight")
-    st.download_button("Download PNG", data=buf.getvalue(), file_name=filename,
-                       mime="image/png", key=f"{prefix}_dl_png")
+    import os
+
+    png_buf = io.BytesIO()
+    fig.savefig(png_buf, format="png", dpi=300, bbox_inches="tight")
+    pdf_buf = io.BytesIO()
+    fig.savefig(pdf_buf, format="pdf", bbox_inches="tight")
+
+    stem = os.path.splitext(filename)[0]
+    # narrow button columns + a wide spacer keep the two buttons adjacent rather
+    # than spread across the full plot width
+    c1, c2, _ = st.columns([1, 1, 3], gap="small")
+    c1.download_button("Download PNG", data=png_buf.getvalue(), file_name=f"{stem}.png",
+                       mime="image/png", key=f"{prefix}_dl_png", use_container_width=True)
+    c2.download_button("Download PDF", data=pdf_buf.getvalue(), file_name=f"{stem}.pdf",
+                       mime="application/pdf", key=f"{prefix}_dl_pdf", use_container_width=True)
