@@ -47,11 +47,10 @@ TOOLS = {
 
 
 def main():
-    st.set_page_config(page_title="wedap suite", page_icon="📊", layout="wide")
+    st.set_page_config(page_title="wedap", page_icon="📊", layout="wide")
 
-    st.title("wedap suite — weighted ensemble & MD data analysis and plotting")
-    st.caption("A browser-based front-end for the wedap, mdap, and wekap CLIs. "
-               "Each tab keeps its own inputs — switch freely between tools.")
+    st.title("WEDAP — weighted ensemble & MD data analysis and plotting")
+    st.caption("A browser-based front-end for the wedap, mdap, and wekap CLIs.")
 
     # Keep each tool's plot pinned while its (taller) options column is scrolled.
     # The plot content is wrapped in st.container(key="plot_sticky_*") (exposed as
