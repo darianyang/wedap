@@ -23,6 +23,16 @@ For a demo and summary of features, see this [jupyter notebook](docs/notebook/we
 
 Or view the same demo notebook on the [documentation web page](https://darianyang.github.io/wedap/docs/html/notebook/wedap_demo.html).
 
+## What's New in v1.1.0
+
+This release modernizes the tooling and adds several requested features. Most changes are **backwards-compatible**; the breaking items below are limited to environment/dependency requirements and the removal of the deprecated GUI. See CHANGELOG.md for more info.
+
+### Breaking changes
+
+- **GUI removed.** The `Gooey`-based graphical interface (unmaintained upstream since 2021) and all of its mentions have been removed. Use the CLI or Python API instead. If you relied on the GUI, pin to `wedap<1.1.0`.
+- **Python & dependency floors raised.** Minimum Python is now **3.9** (numpy 2 floor). The old `numpy<2` / `matplotlib<=3.7.0` upper caps have been **dropped** — `wedap` now supports **numpy 2.x** and recent matplotlib (tested through numpy 2.5 / matplotlib 3.11 on Python 3.12). If you must stay on an older interpreter, pin to `wedap<1.1.0`.
+
+
 ### Requirements
 
 - numpy
