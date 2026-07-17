@@ -25,6 +25,10 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Chemistry"
 ]
 
+[project.optional-dependencies]
+# optional browser front-end: `pip install wedap[web]`, launch with `wedap-web`
+web = ["streamlit>=1.30"]
+
 [tool.setuptools.packages.find]
 # only ship the three real packages (and their subpackages); this also keeps the
 # redundant top-level styles/ dir and docs/ out of the installed distribution
@@ -46,3 +50,4 @@ filterwarnings = "ignore::UserWarning"
 wedap = "wedap.__main__:main"
 mdap = "mdap.__main__:main"
 wekap = "wekap.__main__:main"
+wedap-web = "wedap.web:launch"
