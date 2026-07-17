@@ -23,15 +23,9 @@ For a demo and summary of features, see this [jupyter notebook](docs/notebook/we
 
 Or view the same demo notebook on the [documentation web page](https://darianyang.github.io/wedap/docs/html/notebook/wedap_demo.html).
 
-## What's New in v1.1.0
+## What's New in v1.2.0
 
-This release modernizes the tooling and adds several requested features. Most changes are **backwards-compatible**; the breaking items below are limited to environment/dependency requirements and the removal of the deprecated GUI. See CHANGELOG.md for more info.
-
-### Breaking changes
-
-- **GUI removed.** The `Gooey`-based graphical interface (unmaintained upstream since 2021) and all of its mentions have been removed. Use the CLI or Python API instead. If you relied on the GUI, pin to `wedap<1.1.0`.
-- **Python & dependency floors raised.** Minimum Python is now **3.9** (numpy 2 floor). The old `numpy<2` / `matplotlib<=3.7.0` upper caps have been **dropped** — `wedap` now supports **numpy 2.x** and recent matplotlib (tested through numpy 2.5 / matplotlib 3.11 on Python 3.12). If you must stay on an older interpreter, pin to `wedap<1.1.0`.
-
+This release replaces the previously removed/deprecated gooey-based GUI with a streamlit app (see web app section below). See CHANGELOG.md for more info.
 
 ### Requirements
 
@@ -114,6 +108,42 @@ The resulting `p53.h5` file average plot of the pcoord datasets will look like t
 <p align="left">
     <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/p53_avg_pcoord.png?raw=true" alt="p53 avg pcoord plot" width="400">
 </p>
+
+## Web app (Streamlit)
+
+`wedap` ships with an optional browser-based interface built on [Streamlit](https://streamlit.io/), providing a point-and-click alternative to the CLI for exploring `west.h5` files (dataset dropdowns, live plot options, a downloadable figure, and a copy-pasteable equivalent Python snippet).
+
+Install the optional `web` extra and launch it:
+``` bash
+pip install "wedap[web]"
+wedap-web
+```
+Or run it directly on the app module:
+``` bash
+streamlit run wedap/web/app.py
+```
+This starts a local server (default port `8501`) and opens the app in your browser at `http://localhost:8501`.
+
+### Running on a remote cluster
+
+If you run `wedap-web` on a remote machine (e.g. an HPC login or compute node), the server runs there but your browser is local, so you need to forward the port over SSH.
+
+First launch it headless on the cluster (optionally pick a port to avoid clashes):
+``` bash
+wedap-web --server.headless true --server.port 8501
+```
+
+Then, from your **local** machine, open an SSH tunnel and browse to `http://localhost:8501`:
+``` bash
+# from a login node:
+ssh -L 8501:localhost:8501 user@cluster
+
+# from a compute node (two-hop; cNODE is the node's hostname):
+ssh -L 8501:cNODE:8501 user@cluster-login
+```
+Keep the SSH session open while you use the app. If port `8501` is already in use locally, forward to a different local port, e.g. `-L 8600:localhost:8501`, and browse `http://localhost:8600`.
+
+> **Tip:** For large `west.h5` files, use the app's "Server path" input mode (point it at a path on the cluster) rather than the file uploader, which holds the file in memory.
 
 ## Motivation
 `WESTPA` already comes with some excellent analysis tools for generating probability distributions, so why is `wedap` needed?
