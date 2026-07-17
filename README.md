@@ -23,9 +23,9 @@ For a demo and summary of features, see this [jupyter notebook](docs/notebook/we
 
 Or view the same demo notebook on the [documentation web page](https://darianyang.github.io/wedap/docs/html/notebook/wedap_demo.html).
 
-## What's New in v1.2.0
+### What's New in v1.2.0
 
-This release replaces the previously removed/deprecated gooey-based GUI with a streamlit app (see web app section below). See CHANGELOG.md for more info.
+This release replaces the previously removed/deprecated gooey-based GUI with a streamlit app (see the [Web app (Streamlit)](#web-app-streamlit) section below). See CHANGELOG.md for more info.
 
 ### Requirements
 
