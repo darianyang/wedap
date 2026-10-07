@@ -23,9 +23,11 @@ For a demo and summary of features, see this [jupyter notebook](docs/notebook/we
 
 Or view the same demo notebook on the [documentation web page](https://darianyang.github.io/wedap/docs/html/notebook/wedap_demo.html).
 
-### What's New in v1.2.0
+### What's New in v1.3.0
 
-This release replaces the previously removed/deprecated gooey-based GUI with a streamlit app (see the [Web app (Streamlit)](#web-app-streamlit) section below). See CHANGELOG.md for more info.
+This release fixes h5 files being left open and locked by wedap (e.g. after an error in a Jupyter notebook), which could block other programs like `w_multi_west` from writing to them (see the [H5 file access](#h5-file-access) section below), along with fixes to the `H5save_out`, `succ_only`, `skip_basis` and multiple h5 file options.
+
+v1.2.0 replaced the previously removed/deprecated gooey-based GUI with a streamlit app (see the [Web app (Streamlit)](#web-app-streamlit) section below). See CHANGELOG.md for more info.
 
 ### Requirements
 
