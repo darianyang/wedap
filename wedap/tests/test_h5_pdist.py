@@ -164,6 +164,57 @@ class Test_H5_Pdist_File_Handling():
             result = subprocess.run([sys.executable, "-c", writer], capture_output=True, text=True)
         assert result.returncode == 0, result.stderr
 
+class Test_Succ_Only_Weights():
+    """
+    succ_only weights should line up with the iterations from first_iter to last_iter.
+    p53.h5 has no recycling events, so w_succ is stubbed with a few walkers to trace back.
+    """
+    h5 = "wedap/data/p53.h5"
+    succ = [(12, 0), (14, 2)]
+
+    def _stub_w_succ(self, monkeypatch):
+        succ = self.succ
+        monkeypatch.setattr(wedap.H5_Pdist, "w_succ", lambda pdist: succ)
+
+    def _succ_weights(self, monkeypatch, **kwargs):
+        self._stub_w_succ(monkeypatch)
+        with wedap.H5_Pdist(h5=self.h5, data_type="average", last_iter=15,
+                            no_pbar=True, **kwargs) as pdist:
+            return pdist.succ_pdist_weight_filter()
+
+    def test_first_iter(self, monkeypatch):
+        ref = self._succ_weights(monkeypatch, first_iter=1)
+        weights = self._succ_weights(monkeypatch, first_iter=5)
+        assert len(weights) == 11
+        for iteration in range(5, 16):
+            np.testing.assert_array_equal(weights[iteration - 5], ref[iteration - 1])
+        # the traced walkers keep their weight
+        assert np.count_nonzero(weights[12 - 5]) > 0
+
+    def test_step_iter(self, monkeypatch):
+        ref = self._succ_weights(monkeypatch, first_iter=1)
+        weights = self._succ_weights(monkeypatch, first_iter=1, step_iter=2)
+        # step_iter is applied when indexing the weights, not to the weight array
+        assert len(weights) == len(ref) == 15
+        for w, r in zip(weights, ref):
+            np.testing.assert_array_equal(w, r)
+
+    def test_h5_save_out(self, monkeypatch, tmp_path):
+        out = str(tmp_path / "succ.h5")
+        self._stub_w_succ(monkeypatch)
+        with wedap.H5_Pdist(h5=self.h5, data_type="average", first_iter=5, last_iter=15,
+                            succ_only=True, H5save_out=out, no_pbar=True) as pdist:
+            pdist.pdist()
+            weights = pdist.weights
+        with h5py.File(self.h5, "r") as f_in, h5py.File(out, "r") as f_out:
+            # weights before first_iter are untouched
+            for iteration in range(1, 5):
+                path = f"iterations/iter_{iteration:08d}/seg_index"
+                np.testing.assert_array_equal(f_out[path]["weight"], f_in[path]["weight"])
+            for iteration in range(5, 16):
+                path = f"iterations/iter_{iteration:08d}/seg_index"
+                np.testing.assert_array_equal(f_out[path]["weight"], weights[iteration - 5])
+
 # TODO: test for trace, search_aux, skip_basis, get_total_data_array, get_all_weights
 # maybe test more args like first_iter, last_iter, step_iter, H5save_out, data_proc, bins, histrange, p_units
 # could also change to 1/2/3 dataset format
