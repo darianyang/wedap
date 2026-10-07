@@ -5,6 +5,8 @@ Unit and regression tests for the H5_Pdist class.
 # Import package, test suite, and other packages as needed
 import wedap
 
+import h5py
+import shutil
 import numpy as np
 import pytest
 
@@ -62,6 +64,53 @@ def assert_close(actual, desired, rtol=1e-5, atol=1e-4,
     assert max_diff <= max_bad_abs, \
         f"max abs diff {max_diff:.4g} exceeds {max_bad_abs}"
 
+
+def _assert_writable(h5_path):
+    """
+    Opening for writing fails if another handle (e.g. a leaked H5_Pdist.h5) is still open.
+    """
+    with h5py.File(h5_path, "a"):
+        pass
+
+class Test_H5_Pdist_File_Handling():
+    """
+    The h5 file should not be left open (and locked) after errors or explicit closing.
+    """
+    @pytest.fixture
+    def h5_copy(self, tmp_path):
+        h5_path = tmp_path / "p53.h5"
+        shutil.copyfile("wedap/data/p53.h5", h5_path)
+        return str(h5_path)
+
+    def test_closed_after_init_error(self, h5_copy):
+        # keep the exception (and its traceback) alive, like an interactive session would
+        with pytest.raises(ValueError, match="last_iter") as excinfo:
+            wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=10_000)
+        _assert_writable(h5_copy)
+        assert excinfo is not None
+
+    def test_closed_after_plot_init_error(self, h5_copy):
+        with pytest.raises(ValueError, match="not a valid object") as excinfo:
+            wedap.H5_Plot(h5=h5_copy, data_type="evolution", Xname="not_a_dataset")
+        _assert_writable(h5_copy)
+        assert excinfo is not None
+
+    def test_context_manager(self, h5_copy):
+        with wedap.H5_Pdist(h5=h5_copy, data_type="evolution") as pdist:
+            pdist.pdist()
+        _assert_writable(h5_copy)
+        # closing again is a no-op
+        pdist.close()
+
+    def test_h5_save_out_closed(self, h5_copy, tmp_path):
+        out = str(tmp_path / "saved.h5")
+        with wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                            H5save_out=out, Xsave_name="pcoord_copy") as pdist:
+            pdist.pdist()
+        assert pdist.H5save_out == out
+        _assert_writable(out)
+        with h5py.File(out, "r") as f:
+            assert "iterations/iter_00000005/auxdata/pcoord_copy" in f
 
 # TODO: test for trace, search_aux, skip_basis, get_total_data_array, get_all_weights
 # maybe test more args like first_iter, last_iter, step_iter, H5save_out, data_proc, bins, histrange, p_units
