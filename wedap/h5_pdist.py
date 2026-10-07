@@ -1418,6 +1418,27 @@ class H5_Pdist():
 
         return array
 
+    def _check_h5_save_out(self):
+        """
+        Check the make_new_h5 inputs before anything is copied or written.
+        """
+        # don't overwrite the input file
+        if os.path.exists(self.H5save_out) and os.path.samefile(self.H5save_out, self.h5_name):
+            raise ValueError(f"H5save_out ({self.H5save_out}) must be different from the input h5 file")
+
+        if len(self.h5_list) > 1:
+            warn(f"Multiple h5 files were input, but only the first file ({self.h5_name}) "
+                 f"will be copied to {self.H5save_out}.")
+
+        # the new datasets can't already exist in the input file
+        for save_name in (self.Xsave_name, self.Ysave_name, self.Zsave_name):
+            if not save_name:
+                continue
+            for iter in range(self.first_iter, self.last_iter + 1, self.step_iter):
+                if f"iterations/iter_{iter:08d}/auxdata/{save_name}" in self.h5:
+                    raise ValueError(f"auxdata/{save_name} already exists in {self.h5_name} "
+                                     f"(e.g. iteration {iter}), choose a different save name.")
+
     def make_new_h5(self, new_weights=None):
         """
         TODO: actually make a new h5 file, see bstate filter code, integrate all.
@@ -1430,6 +1451,8 @@ class H5_Pdist():
         new_weights : numpy object array
             Updated weight values, e.g. from skip_basis or succ_only.
         """
+        self._check_h5_save_out()
+
         # make copy of h5 file and open copy
         # (keep self.H5save_out as the filename and close the copy when done)
         shutil.copyfile(self.h5_name, self.H5save_out)
