@@ -190,28 +190,19 @@ class H5_Plot(H5_Pdist):
         self.color = color # 1D color
         #self.plot_options = plot_options
 
-        # set cbar_label to default to blank if None
-        if cbar_label is None:
-            self.cbar_label = ""
+        # ensure p_units is available for cbar labeling even when X/Y/Z arrays are
+        # passed in directly: that path skips H5_Pdist.__init__ (which normally sets
+        # self.p_units), so fall back to the p_units kwarg or the kT default here
+        if not hasattr(self, "p_units"):
+            self.p_units = kwargs.get("p_units", "kT")
 
-        # if no p_units are there then no label is fine
-        # otherwise check if p_units are there
-        if hasattr(self, "p_units"):
-            if self.p_units == "kT":
-                self.cbar_label = r"$-\ln\,P(x)$"
-                #self.cbar_label = "-ln (P(x))"
-            elif self.p_units == "kcal":
-                self.cbar_label = r"$-RT\ \ln\, P\ (kcal\ mol^{-1})$"
-            elif self.p_units == "raw":
-                self.cbar_label = "Counts"
-            elif self.p_units == "raw_norm":
-                self.cbar_label = "Normalized Counts"
-            elif self.p_units == "raw_norm_tot":
-                self.cbar_label = "Probability"
-        # if using 3 datasets, put blank name as default cbar
+        # set the default cbar label from the probability units
+        self.set_cbar_label()
+        # if using 3 datasets, default to a blank cbar (the Z dataset name is set
+        # by the caller, e.g. __main__, since it isn't known from p_units)
         if self.plot_mode == "scatter3d" or self.plot_mode == "hexbin3d":
             self.cbar_label = ""
-        # overwrite and apply cbar_label attr if available/specified
+        # overwrite and apply cbar_label attr if explicitly specified
         if cbar_label:
             self.cbar_label = cbar_label
 
@@ -292,6 +283,29 @@ class H5_Plot(H5_Pdist):
     #     # Make sure that the axis ordering is correct.
     #     if self.axis_list[0] > self.axis_list[1]:
     #         self.H = self.H.transpose()
+
+    def set_cbar_label(self):
+        """
+        Set ``self.cbar_label`` to the default label for the current probability
+        units (``self.p_units``). This is used to label the colorbar (or the
+        z-axis of a 1D plot) to match the CLI output.
+
+        Returns
+        -------
+        str
+            The cbar label chosen for ``self.p_units`` (also stored on the
+            instance as ``self.cbar_label``). Empty string if p_units is unset or
+            unrecognized.
+        """
+        labels = {
+            "kT": r"$-\ln\,P(x)$",
+            "kcal": r"$-RT\ \ln\, P\ (kcal\ mol^{-1})$",
+            "raw": "Counts",
+            "raw_norm": "Normalized Counts",
+            "raw_norm_tot": "Probability",
+        }
+        self.cbar_label = labels.get(getattr(self, "p_units", None), "")
+        return self.cbar_label
 
     def add_cbar(self, cax=None, pad=0.05, fontsize=None):
         """

@@ -4,18 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wedap"
-version = "1.1.0"
+version = "1.2.0"
 description = "Weighted Ensemble Data Analysis and Plotting"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
     { name = "Darian T. Yang", email = "dty7@pitt.edu" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["numpy>=1.23", "matplotlib>=3.7", "h5py", "gif", "tqdm"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -24,6 +23,12 @@ classifiers = [
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering :: Chemistry"
 ]
+
+[project.optional-dependencies]
+# optional browser front-end: `pip install wedap[web]`, launch with `wedap-web`
+# (>=1.39 for st.container(key=...) and the `st-key-*` CSS class used for the
+# sticky plot column)
+web = ["streamlit>=1.39"]
 
 [tool.setuptools.packages.find]
 # only ship the three real packages (and their subpackages); this also keeps the
@@ -46,3 +51,4 @@ filterwarnings = "ignore::UserWarning"
 wedap = "wedap.__main__:main"
 mdap = "mdap.__main__:main"
 wekap = "wekap.__main__:main"
+wedap-web = "wedap.web:launch"

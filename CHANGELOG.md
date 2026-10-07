@@ -5,6 +5,37 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-07-17
+
+Adds the optional Streamlit web app and a related fix to colorbar labeling. All
+changes are backwards-compatible.
+
+### Added
+
+- **Optional Streamlit web app** (`pip install "wedap[web]"`, launch with `wedap-web`
+  or `streamlit run wedap/web/app.py`). A browser-based front-end covering **all three
+  tools** as tabs (each tab keeps its own inputs when switching between them):
+  - **wedap** — the `west.h5` workflow: server-path/upload/example input, auto-discovered
+    pcoord + aux dataset dropdowns, all plot modes (1D/2D/3D), the full formatting arg
+    set, plot tracing, gif making, and postprocessing (file path or inline code).
+  - **mdap** — probability distributions/plots from MD analysis data files (`pdist`/`time`
+    data types, 1D/2D/3D modes, shared formatting).
+  - **wekap** — WE kinetics rates/MFPTs from a `direct.h5` file (tau/state/concentration,
+    the RED correction, and multi-replicate averaging with bootstrapped error).
+
+  Each tool provides a PNG download and a copy-pasteable equivalent Python snippet.
+  Streamlit is only pulled in via the `web` extra, so the core dependency tree is
+  unchanged. See the README for local vs. remote (SSH-tunnel) launch instructions.
+- **`H5_Plot.set_cbar_label()`** — a class method that sets the colorbar label from
+  the probability units (`self.p_units`).
+
+### Fixed
+
+- **Colorbar label with precomputed arrays.** `wedap.Plot(X, Y, Z, p_units=...)` (and
+  the web app) left the colorbar blank because the array-input path skipped
+  `H5_Pdist.__init__` and never set `self.p_units`. `H5_Plot` now falls back to the
+  `p_units` kwarg so the label (e.g. "Probability", `$-\ln P(x)$`) is applied.
+
 ## [1.1.0] - 2026-07-17
 
 Modernizes the tooling and adds several requested features. Most changes are
@@ -78,5 +109,6 @@ requirements and the removal of the deprecated GUI.
 
 - Initial tagged release.
 
+[1.2.0]: https://github.com/darianyang/wedap/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/darianyang/wedap/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/darianyang/wedap/releases/tag/v1.0.0
