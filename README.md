@@ -109,20 +109,13 @@ The resulting `p53.h5` file average plot of the pcoord datasets will look like t
     <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/p53_avg_pcoord.png?raw=true" alt="p53 avg pcoord plot" width="400">
 </p>
 
-### H5 file locking
+### H5 file access
 
-While an `H5_Pdist` or `H5_Plot` object exists (e.g. in a Jupyter notebook), wedap keeps its
-h5 file open so that methods like plot tracing can still read from it. HDF5 file locking then
-prevents other programs like `w_run` or `w_multi_west` from writing to that file. To release
-the file, call `close()` or use a `with` block:
-``` python
-with wedap.H5_Pdist(h5="west.h5", data_type="evolution") as pdist:
-    X, Y, Z = pdist.pdist()
-```
-
-Alternatively, set the environment variable `HDF5_USE_FILE_LOCKING=FALSE` (before starting
-Python) to turn off HDF5 file locking for all h5 files opened in that session. Only do this if
-the files you read are not being written to at the same time, e.g. by a running simulation.
+wedap only keeps an h5 file open while one of its methods is running (e.g. `pdist()` or
+`plot_trace()`), and closes it again afterwards, even if there was an error. So an `H5_Pdist`
+or `H5_Plot` object left in a Jupyter notebook does not lock the file or block other programs
+like `w_run` or `w_multi_west` from writing to it. If you read from the `h5` attribute of these
+objects directly, call `close()` when you are done.
 
 ## Web app (Streamlit)
 
