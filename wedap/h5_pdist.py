@@ -676,7 +676,8 @@ class H5_Pdist():
         #         h5_skip_basis[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
             
         # only return portion of weights requested by user
-        return new_weights[self.first_iter-1:self.last_iter:self.step_iter]
+        # (every iteration from first_iter, step_iter is applied when indexing later)
+        return new_weights[self.first_iter-1:self.last_iter]
 
     ##################### TODO: update or organize this #############################
     def get_parents(self, walker_tuple):
@@ -977,14 +978,17 @@ class H5_Pdist():
         succ_trajs = self.w_succ()
         for succ in tqdm(succ_trajs, disable=self.no_pbar,
                          desc="Creating succ only weight array"):
-            trace_path = self.trace_walker(succ)
+            # self.weights starts at first_iter, so only trace back to there
+            trace_path = self.trace_walker(succ, first_iter=self.first_iter)
             for it, wlk in trace_path:
-                #print(succ_weights[it][wlk], self.weights[it][wlk])
-                # -1 for indexing iters but regular indexing walkers
-                succ_weights[it-1][wlk] = self.weights[it-1][wlk]
+                # recycled walkers found at first_iter are from first_iter - 1
+                if it < self.first_iter:
+                    continue
+                # offset by first_iter for indexing iters but regular indexing walkers
+                succ_weights[it-self.first_iter][wlk] = self.weights[it-self.first_iter][wlk]
 
-        # only return portion of weights requested by user
-        return succ_weights[self.first_iter-1:self.last_iter:self.step_iter]
+        # same shape as self.weights: every iteration from first_iter to last_iter
+        return succ_weights
 
     ###############################################################################
 
@@ -1463,8 +1467,9 @@ class H5_Pdist():
             with h5py.File(tmp_out, "r+") as h5_out:
                 # replace weights
                 if new_weights is not None:
+                    # new_weights starts at first_iter
                     for idx, weight in enumerate(new_weights):
-                        h5_out[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
+                        h5_out[f"iterations/iter_{self.first_iter+idx:08d}/seg_index"]["weight"] = weight
 
                 # create new dataset based on input XYZ data
                 for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
