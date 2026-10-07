@@ -7,6 +7,8 @@ import wedap
 
 import h5py
 import shutil
+import subprocess
+import sys
 import numpy as np
 import pytest
 
@@ -111,6 +113,14 @@ class Test_H5_Pdist_File_Handling():
         _assert_writable(out)
         with h5py.File(out, "r") as f:
             assert "iterations/iter_00000005/auxdata/pcoord_copy" in f
+
+    def test_open_file_does_not_block_other_processes(self, h5_copy, monkeypatch):
+        # file locks only apply between processes, so write from a subprocess
+        monkeypatch.delenv("HDF5_USE_FILE_LOCKING", raising=False)
+        writer = f"import h5py; h5py.File({h5_copy!r}, 'a').close()"
+        with wedap.H5_Pdist(h5=h5_copy, data_type="evolution"):
+            result = subprocess.run([sys.executable, "-c", writer], capture_output=True, text=True)
+        assert result.returncode == 0, result.stderr
 
 # TODO: test for trace, search_aux, skip_basis, get_total_data_array, get_all_weights
 # maybe test more args like first_iter, last_iter, step_iter, H5save_out, data_proc, bins, histrange, p_units
