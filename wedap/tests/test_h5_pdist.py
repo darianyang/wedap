@@ -189,6 +189,21 @@ class Test_Succ_Only_Weights():
         for w, r in zip(weights, ref):
             np.testing.assert_array_equal(w, r)
 
+    def test_multiple_h5(self, monkeypatch, tmp_path):
+        # two copies of the same file should give the same succ_only pdist as one file
+        h5_copy = str(tmp_path / "p53_copy.h5")
+        shutil.copyfile(self.h5, h5_copy)
+        self._stub_w_succ(monkeypatch)
+        def pdist(h5, succ_only):
+            with wedap.H5_Pdist(h5=h5, data_type="average", last_iter=15,
+                                succ_only=succ_only, no_pbar=True) as pdist:
+                return pdist.pdist()[1]
+        single = pdist(self.h5, succ_only=True)
+        multi = pdist([self.h5, h5_copy], succ_only=True)
+        np.testing.assert_allclose(multi, single)
+        # and the filter should actually change the result
+        assert not np.allclose(multi, pdist(self.h5, succ_only=False))
+
     def test_h5_save_out(self, monkeypatch, tmp_path):
         out = str(tmp_path / "succ.h5")
         self._stub_w_succ(monkeypatch)
