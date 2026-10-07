@@ -10,13 +10,13 @@ import io
 import os
 import tempfile
 
-import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 
 import wedap
 from wedap.h5_gif import make_gif
+from wedap.h5_pdist import open_h5_read
 
 from ._common import (
     MODE_DIM, PLOT_MODES, P_UNITS, P_UNITS_LABELS,
@@ -35,7 +35,7 @@ def list_datasets(h5_path, first_iter=1):
     """Return (pcoord_options, aux_options) available in a west.h5 file."""
     aux = []
     try:
-        with h5py.File(h5_path, "r") as f:
+        with open_h5_read(h5_path) as f:
             grp = f.get(f"iterations/iter_{first_iter:08d}/auxdata")
             if grp is not None:
                 aux = sorted(grp.keys())
