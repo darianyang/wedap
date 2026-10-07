@@ -293,10 +293,15 @@ class H5_Pdist():
             h5.close()
 
     def __enter__(self):
+        # keep the h5 file open across all method calls inside the with block
+        # (e.g. calling get_parents in a loop), instead of reopening it for each call
+        self._h5_depth = getattr(self, "_h5_depth", 0) + 1
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.close()
+        self._h5_depth -= 1
+        if self._h5_depth == 0:
+            self.close()
 
     def _process_name_and_index(self, name, index, Xname, Yname):
         """
