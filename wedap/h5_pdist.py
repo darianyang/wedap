@@ -250,6 +250,20 @@ class H5_Pdist():
             self.h5.close()
             raise
 
+    def close(self):
+        """
+        Close the h5 file (releasing its file lock). Safe to call more than once.
+        """
+        h5 = getattr(self, "h5", None)
+        if isinstance(h5, h5py.File) and h5.id.valid:
+            h5.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def _process_name_and_index(self, name, index, Xname, Yname):
         """
         Consolidated logic for taking input XYZnames and outputting the 
