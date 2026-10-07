@@ -252,6 +252,32 @@ class Test_Succ_Only_Weights():
         # and the filter should actually change the result
         assert not np.allclose(multi, pdist(self.h5, succ_only=False))
 
+    def test_multiple_h5_save_out_repeated_pdist(self, monkeypatch, tmp_path):
+        # H5save_out copies the first file, so its weights should come from the first file,
+        # also on a repeated pdist call (which would otherwise start from the last file)
+        h5_first = str(tmp_path / "p53_first.h5")
+        h5_last = str(tmp_path / "p53_last.h5")
+        shutil.copyfile(self.h5, h5_first)
+        shutil.copyfile(self.h5, h5_last)
+        with h5py.File(h5_last, "r+") as f:
+            for iteration in range(1, 16):
+                seg_index = f[f"iterations/iter_{iteration:08d}/seg_index"]
+                seg_index["weight"] = seg_index["weight"] * 0.5
+        out = str(tmp_path / "succ.h5")
+        self._stub_w_succ(monkeypatch)
+        pdist = wedap.H5_Pdist(h5=[h5_first, h5_last], data_type="average", last_iter=15,
+                               succ_only=True, H5save_out=out, no_pbar=True)
+        with pytest.warns(UserWarning, match="only the first file"):
+            pdist.pdist()
+        with h5py.File(out, "r") as f:
+            first_weights = f["iterations/iter_00000012/seg_index"]["weight"][:]
+        with pytest.warns(UserWarning, match="only the first file"):
+            pdist.pdist()
+        with h5py.File(out, "r") as f:
+            np.testing.assert_array_equal(f["iterations/iter_00000012/seg_index"]["weight"],
+                                          first_weights)
+        assert np.count_nonzero(first_weights) > 0
+
     def test_h5_save_out(self, monkeypatch, tmp_path):
         out = str(tmp_path / "succ.h5")
         self._stub_w_succ(monkeypatch)
