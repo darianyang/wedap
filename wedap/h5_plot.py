@@ -158,16 +158,21 @@ class H5_Plot(H5_Pdist):
         # user inputs XYZ
         if X is None and Y is None and Z is None and C is None:
             super().__init__(*args, **kwargs)
-            # save the user requested p_units and changes p_units to raw
-            if self.jointplot:
-                # will be re-normed later on
-                X, Y, Z = self.pdist(normalize=False)
-            # when requesting a projection plot with 4d cbar additional dataset
-            elif proj4d:
-                X, Y, Z, C = self.pdist()
-            else:
-                # TODO: tuple unpacking to deal with variable item return
-                X, Y, Z = self.pdist()
+            # close the h5 file if pdist generation fails during init
+            try:
+                # save the user requested p_units and changes p_units to raw
+                if self.jointplot:
+                    # will be re-normed later on
+                    X, Y, Z = self.pdist(normalize=False)
+                # when requesting a projection plot with 4d cbar additional dataset
+                elif proj4d:
+                    X, Y, Z, C = self.pdist()
+                else:
+                    # TODO: tuple unpacking to deal with variable item return
+                    X, Y, Z = self.pdist()
+            except BaseException:
+                self.close()
+                raise
         # need to set this when using mdap, shouldn't affect anything else
         # since joint plot dists must be changed from raw to requested p_units
         if self.jointplot and "p_units" in kwargs:
