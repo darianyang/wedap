@@ -7,8 +7,6 @@ import wedap
 
 import h5py
 import shutil
-import subprocess
-import sys
 import numpy as np
 import pytest
 
@@ -155,14 +153,6 @@ class Test_H5_Pdist_File_Handling():
         # existing output untouched and no leftover temp file
         assert out.read_bytes() == b"previous output"
         assert sorted(p.name for p in tmp_path.iterdir()) == ["p53.h5", "saved.h5"]
-
-    def test_open_file_does_not_block_other_processes(self, h5_copy, monkeypatch):
-        # file locks only apply between processes, so write from a subprocess
-        monkeypatch.delenv("HDF5_USE_FILE_LOCKING", raising=False)
-        writer = f"import h5py; h5py.File({h5_copy!r}, 'a').close()"
-        with wedap.H5_Pdist(h5=h5_copy, data_type="evolution"):
-            result = subprocess.run([sys.executable, "-c", writer], capture_output=True, text=True)
-        assert result.returncode == 0, result.stderr
 
 class Test_Succ_Only_Weights():
     """

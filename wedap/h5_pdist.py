@@ -29,16 +29,6 @@ import shutil
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
-def open_h5_read(h5):
-    """
-    Open an h5 file read-only without HDF5 file locking, so that wedap holding the
-    file open does not block other processes (e.g. w_run or w_multi_west) from
-    writing to it. Set the environment variable HDF5_USE_FILE_LOCKING=TRUE to
-    restore strict locking, e.g. when reading a west.h5 file that is actively
-    being written to by a running simulation.
-    """
-    return h5py.File(h5, mode="r", locking=False)
-
 class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
@@ -159,7 +149,7 @@ class H5_Pdist():
 
         # save both the name and the h5 file
         self.h5_name = h5
-        self.h5 = open_h5_read(h5)
+        self.h5 = h5py.File(h5, mode="r")
 
         # close the h5 file if anything below fails, otherwise the file lock is held
         # (e.g. in an interactive session where the traceback keeps this object alive)
@@ -1539,7 +1529,7 @@ class H5_Pdist():
                 # close and re-open, keeping the class attribute for method calls
                 # but allowing the loop to propagate through each file
                 self.h5.close()
-                self.h5 = open_h5_read(h5)
+                self.h5 = h5py.File(h5, mode="r")
             if self.histrange_x is None:
                 # get the optimal histrange
                 xranges.append(self._get_histrange(self.Xname, self.Xindex))
@@ -1573,7 +1563,7 @@ class H5_Pdist():
                 # close and re-open, keeping the class attribute for method calls
                 # but allowing the loop to propagate through each file
                 self.h5.close()
-                self.h5 = open_h5_read(h5)
+                self.h5 = h5py.File(h5, mode="r")
                 self._init_weights()
                 
                 # TODO: instead of just opening h5 and re-init weights, need to also account for

@@ -12,7 +12,7 @@ authors = [
     { name = "Darian T. Yang", email = "dty7@pitt.edu" }
 ]
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.23", "matplotlib>=3.7", "h5py>=3.5", "gif", "tqdm"]
+dependencies = ["numpy>=1.23", "matplotlib>=3.7", "h5py", "gif", "tqdm"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
