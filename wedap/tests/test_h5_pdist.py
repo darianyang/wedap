@@ -114,6 +114,48 @@ class Test_H5_Pdist_File_Handling():
         with h5py.File(out, "r") as f:
             assert "iterations/iter_00000005/auxdata/pcoord_copy" in f
 
+    def test_h5_save_out_same_as_input(self, h5_copy):
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                               H5save_out=h5_copy, Xsave_name="pcoord_copy")
+        with pdist, pytest.raises(ValueError, match="must be different"):
+            pdist.pdist()
+
+    def test_h5_save_out_existing_save_name(self, h5_copy, tmp_path):
+        out = tmp_path / "saved.h5"
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                               H5save_out=str(out), Xsave_name="dihedral_2")
+        with pdist, pytest.raises(ValueError, match="already exists"):
+            pdist.pdist()
+        assert not out.exists()
+
+    def test_h5_save_out_multiple_h5_warns(self, h5_copy, tmp_path):
+        h5_copy_2 = str(tmp_path / "p53_2.h5")
+        shutil.copyfile(h5_copy, h5_copy_2)
+        out = str(tmp_path / "saved.h5")
+        with wedap.H5_Pdist(h5=[h5_copy, h5_copy_2], data_type="evolution", last_iter=5,
+                            H5save_out=out, Xsave_name="pcoord_copy") as pdist:
+            with pytest.warns(UserWarning, match="only the first file"):
+                pdist.pdist()
+
+    def test_h5_save_out_failure_keeps_existing_output(self, h5_copy, tmp_path, monkeypatch):
+        out = tmp_path / "saved.h5"
+        out.write_bytes(b"previous output")
+        # fail partway through writing the new datasets
+        get_data_array = wedap.H5_Pdist._get_data_array
+        def failing_get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
+            if h5_create is not None and iteration == 3:
+                raise RuntimeError("simulated failure")
+            return get_data_array(self, name, index, iteration, h5_create, h5_create_name)
+        monkeypatch.setattr(wedap.H5_Pdist, "_get_data_array", failing_get_data_array)
+
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                               H5save_out=str(out), Xsave_name="pcoord_copy")
+        with pdist, pytest.raises(RuntimeError, match="simulated failure"):
+            pdist.pdist()
+        # existing output untouched and no leftover temp file
+        assert out.read_bytes() == b"previous output"
+        assert sorted(p.name for p in tmp_path.iterdir()) == ["p53.h5", "saved.h5"]
+
     def test_open_file_does_not_block_other_processes(self, h5_copy, monkeypatch):
         # file locks only apply between processes, so write from a subprocess
         monkeypatch.delenv("HDF5_USE_FILE_LOCKING", raising=False)
