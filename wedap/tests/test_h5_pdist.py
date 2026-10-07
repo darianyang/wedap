@@ -7,6 +7,8 @@ import wedap
 
 import h5py
 import shutil
+import subprocess
+import sys
 import numpy as np
 import pytest
 
@@ -111,6 +113,41 @@ class Test_H5_Pdist_File_Handling():
         _assert_writable(out)
         with h5py.File(out, "r") as f:
             assert "iterations/iter_00000005/auxdata/pcoord_copy" in f
+
+    def test_closed_between_calls(self, h5_copy):
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution")
+        _assert_writable(h5_copy)
+        pdist.pdist()
+        _assert_writable(h5_copy)
+        pdist.trace_walker((10, 0))
+        _assert_writable(h5_copy)
+        # the file is reopened as needed
+        pdist.pdist()
+        _assert_writable(h5_copy)
+
+    def test_closed_after_chained_pdist_error(self, h5_copy):
+        # the object is only kept alive by the traceback, so it can't be closed by the user
+        with pytest.raises(ValueError, match="not a valid object") as excinfo:
+            wedap.H5_Pdist(h5=h5_copy, data_type="average", Yname="not_a_dataset").pdist()
+        _assert_writable(h5_copy)
+        assert excinfo is not None
+
+    def test_closed_after_multiple_h5(self, h5_copy, tmp_path):
+        h5_copy_2 = str(tmp_path / "p53_2.h5")
+        shutil.copyfile(h5_copy, h5_copy_2)
+        pdist = wedap.H5_Pdist(h5=[h5_copy, h5_copy_2], data_type="evolution")
+        pdist.pdist()
+        _assert_writable(h5_copy)
+        _assert_writable(h5_copy_2)
+
+    def test_other_process_can_write_while_plot_exists(self, h5_copy):
+        # e.g. running w_multi_west while an H5_Plot object still exists in a notebook,
+        # file locks only apply between processes, so write from a subprocess
+        plot = wedap.H5_Plot(h5=h5_copy, data_type="evolution")
+        writer = f"import h5py; h5py.File({h5_copy!r}, 'a').close()"
+        result = subprocess.run([sys.executable, "-c", writer], capture_output=True, text=True)
+        assert result.returncode == 0, result.stderr
+        assert plot is not None
 
     def test_h5_save_out_same_as_input(self, h5_copy):
         pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
