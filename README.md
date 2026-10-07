@@ -31,7 +31,7 @@ This release replaces the previously removed/deprecated gooey-based GUI with a s
 
 - numpy
 - matplotlib
-- h5py
+- h5py (>=3.5)
 - tqdm
 - gif
 
@@ -108,6 +108,19 @@ The resulting `p53.h5` file average plot of the pcoord datasets will look like t
 <p align="left">
     <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/p53_avg_pcoord.png?raw=true" alt="p53 avg pcoord plot" width="400">
 </p>
+
+### H5 file locking
+
+wedap opens h5 files read-only and without HDF5 file locking, so a file held open by wedap
+(e.g. in a Jupyter notebook) does not block other programs like `w_run` or `w_multi_west`
+from writing to it. If you are reading a `west.h5` file that a running simulation is actively
+writing to, you can restore strict locking by setting `HDF5_USE_FILE_LOCKING=TRUE`.
+
+To release an h5 file in an interactive session, call `close()` or use a `with` block:
+``` python
+with wedap.H5_Pdist(h5="west.h5", data_type="evolution") as pdist:
+    X, Y, Z = pdist.pdist()
+```
 
 ## Web app (Streamlit)
 
