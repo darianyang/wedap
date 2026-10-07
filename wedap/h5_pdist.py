@@ -142,107 +142,113 @@ class H5_Pdist():
         else:
             raise ValueError(f"Something may be wrong with the h5 file name input: {h5}")
 
-        # save both the name and the h5 file
-        self.h5_name = h5
-        self.h5 = h5py.File(h5, mode="r")
-
         if data_type is None or data_type not in ["evolution", "average", "instant"]:
             raise ValueError("Must input valid data_type str: `evolution`, `average`, or `instant`")
         else:
             self.data_type = data_type
 
-        self.p_units = str(p_units)
+        # save both the name and the h5 file
+        self.h5_name = h5
+        self.h5 = h5py.File(h5, mode="r")
 
-        self.T = int(T)
-        self.weighted = weighted
+        # close the h5 file if anything below fails, otherwise the file lock is held
+        # (e.g. in an interactive session where the traceback keeps this object alive)
+        try:
+            self.p_units = str(p_units)
 
-        # process XYZ names and indicies (TODO: maybe a more efficient way to go about this)
-        self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
-        self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
-        self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
+            self.T = int(T)
+            self.weighted = weighted
 
-        # for 3d proj plot cbar
-        self.Cname, self.Cindex = self._process_name_and_index(Cname, Cindex, Xname, Yname)
+            # process XYZ names and indicies (TODO: maybe a more efficient way to go about this)
+            self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
+            self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
+            self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
 
-        # check to make sure none of the Name / Index pairs are identical
-        self._check_duplicate_name_index_pairs()
+            # for 3d proj plot cbar
+            self.Cname, self.Cindex = self._process_name_and_index(Cname, Cindex, Xname, Yname)
 
-        # XYZ save into new h5 file options
-        self.H5save_out = H5save_out
-        self.Xsave_name = Xsave_name
-        self.Ysave_name = Ysave_name
-        self.Zsave_name = Zsave_name
-        # if H5save_out is not None:
-        #     shutil.copyfile(self.h5_name, str(H5save_out))
-        #     self.H5save_out = h5py.File(H5save_out, "r+")
+            # check to make sure none of the Name / Index pairs are identical
+            self._check_duplicate_name_index_pairs()
+
+            # XYZ save into new h5 file options
+            self.H5save_out = H5save_out
+            self.Xsave_name = Xsave_name
+            self.Ysave_name = Ysave_name
+            self.Zsave_name = Zsave_name
+            # if H5save_out is not None:
+            #     shutil.copyfile(self.h5_name, str(H5save_out))
+            #     self.H5save_out = h5py.File(H5save_out, "r+")
         
-        # raw data processing function
-        # TODO: allow for 2-3 functions as tuple input, right now one function only
-        self.data_proc = data_proc
+            # raw data processing function
+            # TODO: allow for 2-3 functions as tuple input, right now one function only
+            self.data_proc = data_proc
 
-        # current iteration variable
-        west_current_iteration = self.h5.attrs["west_current_iteration"]
+            # current iteration variable
+            west_current_iteration = self.h5.attrs["west_current_iteration"]
 
-        # default to last
-        if last_iter is not None:
-            self.last_iter = int(last_iter)
-        elif last_iter is None:
-            self.last_iter = west_current_iteration - 1
+            # default to last
+            if last_iter is not None:
+                self.last_iter = int(last_iter)
+            elif last_iter is None:
+                self.last_iter = west_current_iteration - 1
         
-        # set first_iter inst attr
-        if data_type == "instant":
-            self.first_iter = self.last_iter
-        else:
-            self.first_iter = int(first_iter)
+            # set first_iter inst attr
+            if data_type == "instant":
+                self.first_iter = self.last_iter
+            else:
+                self.first_iter = int(first_iter)
 
-        # check that last_iter is not > current iteration
-        if self.last_iter > self.h5.attrs["west_current_iteration"]:
-            raise ValueError(f"last_iter of {self.last_iter} > current WE iteration {west_current_iteration}")
-        # check that first_iter is not 0 or negative
-        if self.first_iter <= 0:
-            raise ValueError(f"Using first_iter value of {self.first_iter}, this should be >= 1")
+            # check that last_iter is not > current iteration
+            if self.last_iter > self.h5.attrs["west_current_iteration"]:
+                raise ValueError(f"last_iter of {self.last_iter} > current WE iteration {west_current_iteration}")
+            # check that first_iter is not 0 or negative
+            if self.first_iter <= 0:
+                raise ValueError(f"Using first_iter value of {self.first_iter}, this should be >= 1")
 
-        self.step_iter = step_iter
+            self.step_iter = step_iter
         
-        # standardize bins input
-        # case where the input bins is a single int
-        if isinstance(bins, int):
-            # convert single int to 1 element list to be indexable later
-            self.bins = [bins]
-            # if there is a 2 dimensional pdist requested, make same int bins each dim
-            if Yname is not None:
-                self.bins = [bins, bins]
-        # when input is already a list of bins with an item for each dimension
-        elif isinstance(bins, (list, tuple)):
-            self.bins = bins
-        else:
-            raise ValueError(f"Something may be wrong with bins input: {bins}")
+            # standardize bins input
+            # case where the input bins is a single int
+            if isinstance(bins, int):
+                # convert single int to 1 element list to be indexable later
+                self.bins = [bins]
+                # if there is a 2 dimensional pdist requested, make same int bins each dim
+                if Yname is not None:
+                    self.bins = [bins, bins]
+            # when input is already a list of bins with an item for each dimension
+            elif isinstance(bins, (list, tuple)):
+                self.bins = bins
+            else:
+                raise ValueError(f"Something may be wrong with bins input: {bins}")
 
-        self.skip_basis = skip_basis
+            self.skip_basis = skip_basis
 
-        # initialize weights
-        self._init_weights()
+            # initialize weights
+            self._init_weights()
 
-        # n_particles for each iteration
-        self.n_particles = self.h5["summary"]["n_particles"]
+            # n_particles for each iteration
+            self.n_particles = self.h5["summary"]["n_particles"]
 
-        # TODO: I wonder if both of these attributes are needed (total only used by reshape data array)
-        #       I should note somewhere that data array must be for the same length/iters as the west.h5 file
-        # the sum of n segments in all specified iterations and all iterations overall
-        self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
-        # do not include the final (empty) iteration
-        self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
+            # TODO: I wonder if both of these attributes are needed (total only used by reshape data array)
+            #       I should note somewhere that data array must be for the same length/iters as the west.h5 file
+            # the sum of n segments in all specified iterations and all iterations overall
+            self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+            # do not include the final (empty) iteration
+            self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
 
-        # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
-        self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
+            # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
+            self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
 
-        self.histrange_x = histrange_x
-        self.histrange_y = histrange_y
-        self.no_pbar = no_pbar
-        self.succ_only = succ_only
+            self.histrange_x = histrange_x
+            self.histrange_y = histrange_y
+            self.no_pbar = no_pbar
+            self.succ_only = succ_only
 
-        # accounts for array and filename input XYZnames
-        self._check_XYZnames()
+            # accounts for array and filename input XYZnames
+            self._check_XYZnames()
+        except BaseException:
+            self.h5.close()
+            raise
 
     def _process_name_and_index(self, name, index, Xname, Yname):
         """
