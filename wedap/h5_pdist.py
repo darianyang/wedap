@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 ######
 
 import os
+import functools
 import h5py
 import numpy as np
 from tqdm.auto import tqdm
@@ -29,10 +30,28 @@ import shutil
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
+def _closes_h5(method):
+    """
+    Decorator for H5_Pdist methods that read the h5 file. The file is opened on first
+    access (see H5_Pdist.h5) and closed again once the outermost decorated call returns
+    or raises, so the file (and its HDF5 file lock) is not held open between calls.
+    """
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        self._h5_depth = getattr(self, "_h5_depth", 0) + 1
+        try:
+            return method(self, *args, **kwargs)
+        finally:
+            self._h5_depth -= 1
+            if self._h5_depth == 0:
+                self.close()
+    return wrapper
+
 class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
     """
+    @_closes_h5
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0, 
                  H5save_out=None, Xsave_name=None, Ysave_name=None, Zsave_name=None, 
@@ -147,115 +166,130 @@ class H5_Pdist():
         else:
             self.data_type = data_type
 
-        # save both the name and the h5 file
+        # save the name of the (first) h5 file, which is opened on demand by self.h5
         self.h5_name = h5
-        self.h5 = h5py.File(h5, mode="r")
+        self._h5 = None
+        self._h5_path = h5
 
-        # close the h5 file if anything below fails, otherwise the file lock is held
-        # (e.g. in an interactive session where the traceback keeps this object alive)
-        try:
-            self.p_units = str(p_units)
+        self.p_units = str(p_units)
 
-            self.T = int(T)
-            self.weighted = weighted
+        self.T = int(T)
+        self.weighted = weighted
 
-            # process XYZ names and indicies (TODO: maybe a more efficient way to go about this)
-            self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
-            self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
-            self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
+        # process XYZ names and indicies (TODO: maybe a more efficient way to go about this)
+        self.Xname, self.Xindex = self._process_name_and_index(Xname, Xindex, Xname, Yname)
+        self.Yname, self.Yindex = self._process_name_and_index(Yname, Yindex, Xname, Yname)
+        self.Zname, self.Zindex = self._process_name_and_index(Zname, Zindex, Xname, Yname)
 
-            # for 3d proj plot cbar
-            self.Cname, self.Cindex = self._process_name_and_index(Cname, Cindex, Xname, Yname)
+        # for 3d proj plot cbar
+        self.Cname, self.Cindex = self._process_name_and_index(Cname, Cindex, Xname, Yname)
 
-            # check to make sure none of the Name / Index pairs are identical
-            self._check_duplicate_name_index_pairs()
+        # check to make sure none of the Name / Index pairs are identical
+        self._check_duplicate_name_index_pairs()
 
-            # XYZ save into new h5 file options
-            self.H5save_out = H5save_out
-            self.Xsave_name = Xsave_name
-            self.Ysave_name = Ysave_name
-            self.Zsave_name = Zsave_name
-            # if H5save_out is not None:
-            #     shutil.copyfile(self.h5_name, str(H5save_out))
-            #     self.H5save_out = h5py.File(H5save_out, "r+")
+        # XYZ save into new h5 file options
+        self.H5save_out = H5save_out
+        self.Xsave_name = Xsave_name
+        self.Ysave_name = Ysave_name
+        self.Zsave_name = Zsave_name
+        # if H5save_out is not None:
+        #     shutil.copyfile(self.h5_name, str(H5save_out))
+        #     self.H5save_out = h5py.File(H5save_out, "r+")
         
-            # raw data processing function
-            # TODO: allow for 2-3 functions as tuple input, right now one function only
-            self.data_proc = data_proc
+        # raw data processing function
+        # TODO: allow for 2-3 functions as tuple input, right now one function only
+        self.data_proc = data_proc
 
-            # current iteration variable
-            west_current_iteration = self.h5.attrs["west_current_iteration"]
+        # current iteration variable
+        west_current_iteration = self.h5.attrs["west_current_iteration"]
 
-            # default to last
-            if last_iter is not None:
-                self.last_iter = int(last_iter)
-            elif last_iter is None:
-                self.last_iter = west_current_iteration - 1
+        # default to last
+        if last_iter is not None:
+            self.last_iter = int(last_iter)
+        elif last_iter is None:
+            self.last_iter = west_current_iteration - 1
         
-            # set first_iter inst attr
-            if data_type == "instant":
-                self.first_iter = self.last_iter
-            else:
-                self.first_iter = int(first_iter)
+        # set first_iter inst attr
+        if data_type == "instant":
+            self.first_iter = self.last_iter
+        else:
+            self.first_iter = int(first_iter)
 
-            # check that last_iter is not > current iteration
-            if self.last_iter > self.h5.attrs["west_current_iteration"]:
-                raise ValueError(f"last_iter of {self.last_iter} > current WE iteration {west_current_iteration}")
-            # check that first_iter is not 0 or negative
-            if self.first_iter <= 0:
-                raise ValueError(f"Using first_iter value of {self.first_iter}, this should be >= 1")
+        # check that last_iter is not > current iteration
+        if self.last_iter > self.h5.attrs["west_current_iteration"]:
+            raise ValueError(f"last_iter of {self.last_iter} > current WE iteration {west_current_iteration}")
+        # check that first_iter is not 0 or negative
+        if self.first_iter <= 0:
+            raise ValueError(f"Using first_iter value of {self.first_iter}, this should be >= 1")
 
-            self.step_iter = step_iter
+        self.step_iter = step_iter
         
-            # standardize bins input
-            # case where the input bins is a single int
-            if isinstance(bins, int):
-                # convert single int to 1 element list to be indexable later
-                self.bins = [bins]
-                # if there is a 2 dimensional pdist requested, make same int bins each dim
-                if Yname is not None:
-                    self.bins = [bins, bins]
-            # when input is already a list of bins with an item for each dimension
-            elif isinstance(bins, (list, tuple)):
-                self.bins = bins
-            else:
-                raise ValueError(f"Something may be wrong with bins input: {bins}")
+        # standardize bins input
+        # case where the input bins is a single int
+        if isinstance(bins, int):
+            # convert single int to 1 element list to be indexable later
+            self.bins = [bins]
+            # if there is a 2 dimensional pdist requested, make same int bins each dim
+            if Yname is not None:
+                self.bins = [bins, bins]
+        # when input is already a list of bins with an item for each dimension
+        elif isinstance(bins, (list, tuple)):
+            self.bins = bins
+        else:
+            raise ValueError(f"Something may be wrong with bins input: {bins}")
 
-            self.skip_basis = skip_basis
+        self.skip_basis = skip_basis
 
-            # initialize weights
-            self._init_weights()
+        # initialize weights
+        self._init_weights()
 
-            # n_particles for each iteration
-            self.n_particles = self.h5["summary"]["n_particles"]
+        # n_particles for each iteration
+        self.n_particles = self.h5["summary"]["n_particles"]
 
-            # TODO: I wonder if both of these attributes are needed (total only used by reshape data array)
-            #       I should note somewhere that data array must be for the same length/iters as the west.h5 file
-            # the sum of n segments in all specified iterations and all iterations overall
-            self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
-            # do not include the final (empty) iteration
-            self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
+        # TODO: I wonder if both of these attributes are needed (total only used by reshape data array)
+        #       I should note somewhere that data array must be for the same length/iters as the west.h5 file
+        # the sum of n segments in all specified iterations and all iterations overall
+        self.current_particles = np.sum(self.h5["summary"]["n_particles"][self.first_iter-1:self.last_iter])
+        # do not include the final (empty) iteration
+        self.total_particles = np.sum(self.h5["summary"]["n_particles"][:-1])
 
-            # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
-            self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
+        # integer for the amount of frames saved (length) per tau (e.g. 101 for 100 ps tau)
+        self.tau = self._get_data_array("pcoord", 0, self.first_iter).shape[1]
 
-            self.histrange_x = histrange_x
-            self.histrange_y = histrange_y
-            self.no_pbar = no_pbar
-            self.succ_only = succ_only
+        self.histrange_x = histrange_x
+        self.histrange_y = histrange_y
+        self.no_pbar = no_pbar
+        self.succ_only = succ_only
 
-            # accounts for array and filename input XYZnames
-            self._check_XYZnames()
-        except BaseException:
-            self.h5.close()
-            raise
+        # accounts for array and filename input XYZnames
+        self._check_XYZnames()
+
+    @property
+    def h5(self):
+        """
+        The h5 file currently being read. It is opened on first access and closed again
+        after each public method call, so it is not held open (and locked) between calls.
+        """
+        if self._h5 is None or not self._h5.id.valid:
+            self._h5 = h5py.File(self._h5_path, mode="r")
+        return self._h5
+
+    def _set_h5_file(self, h5):
+        """
+        Switch to reading a different h5 file (e.g. for multiple h5 file input).
+        """
+        if h5 != self._h5_path:
+            self.close()
+            self._h5_path = h5
 
     def close(self):
         """
-        Close the h5 file (releasing its file lock). Safe to call more than once.
+        Close the h5 file (releasing its file lock). This is done automatically after
+        each method call, but is needed if you access the `h5` attribute directly.
+        Safe to call more than once.
         """
-        h5 = getattr(self, "h5", None)
-        if isinstance(h5, h5py.File) and h5.id.valid:
+        h5 = getattr(self, "_h5", None)
+        if h5 is not None and h5.id.valid:
             h5.close()
 
     def __enter__(self):
@@ -670,6 +704,7 @@ class H5_Pdist():
         return new_weights[self.first_iter-1:self.last_iter]
 
     ##################### TODO: update or organize this #############################
+    @_closes_h5
     def get_parents(self, walker_tuple):
         """
         Get parent of an input (iteration, walker).
@@ -687,6 +722,7 @@ class H5_Pdist():
         parent = self.h5[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
         return it-1, parent
 
+    @_closes_h5
     def trace_walker(self, walker_tuple, first_iter=1):
         """
         Get trace path of an input (iteration, walker).
@@ -713,6 +749,7 @@ class H5_Pdist():
             path.append((it,wlk))
         return np.array(sorted(path, key=lambda x: x[0]))
 
+    @_closes_h5
     def get_coords(self, path, data_name, data_index):
         """
         Get a list of data coordinates for plotting traces.
@@ -739,6 +776,7 @@ class H5_Pdist():
             coords[idx] = (self._get_data_array(data_name, data_index, it)[wlk][-1])
         return coords
     
+    @_closes_h5
     def get_full_coords(self, walker_tuple, data_name, data_index=0, first_iter=1):
         """
         Returns a full 1D set of data for a single trace (path).
@@ -776,6 +814,7 @@ class H5_Pdist():
 
         return coords            
 
+    @_closes_h5
     def find_iter_seg_from_xy_vals(self, val_x, val_y):
         """
         Find and return (iter, seg) closest to input data value(s).
@@ -830,6 +869,7 @@ class H5_Pdist():
 
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
+    @_closes_h5
     def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle='-', ax=None, 
                    find_iter_seg=False, mark_points=False, 
                    mp_size=80, mp_color=None, mp_markers=('o','v'), **kwargs):
@@ -918,6 +958,7 @@ class H5_Pdist():
         
         return aux_x, aux_y
 
+    @_closes_h5
     def w_succ(self):
         """
         Find and return all successfully recycled (iter, seg) pairs.
@@ -938,6 +979,7 @@ class H5_Pdist():
         # TODO: order this by iter and seg vals? currently segs not sorted but is iter ordered
         return succ
     
+    @_closes_h5
     def succ_pdist_weight_filter(self):
         """
         TODO: Filter weights to be zero for all non successfull trajectories.
@@ -982,6 +1024,7 @@ class H5_Pdist():
 
     ###############################################################################
 
+    @_closes_h5
     def aux_to_pdist_1d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
@@ -1024,6 +1067,7 @@ class H5_Pdist():
         # TODO: also save as instance attributes?
         return midpoints_x, histogram
 
+    @_closes_h5
     def aux_to_pdist_2d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
@@ -1074,6 +1118,7 @@ class H5_Pdist():
         # save midpoints and transposed histogram (corrected for plotting)
         return midpoints_x, midpoints_y, histogram.T
 
+    @_closes_h5
     def evolution_pdist(self):
         """
         Returns the pdist for 1 coordinate for the range iterations specified.
@@ -1105,6 +1150,7 @@ class H5_Pdist():
         return positions_x, np.arange(self.first_iter, self.last_iter + 1, 1), evolution_x
 
     # TODO: maybe don't need individual functions, maybe can handle in main
+    @_closes_h5
     def instant_pdist_1d(self):
         """
         Returns the x and y pdist datasets for a single iteration.
@@ -1118,6 +1164,7 @@ class H5_Pdist():
         #counts_total = self._normalize(counts_total, self.p_units)
         return center, counts_total
 
+    @_closes_h5
     def instant_pdist_2d(self):
         """
         Returns the xyz pdist datasets for a single iteration.
@@ -1133,6 +1180,7 @@ class H5_Pdist():
         #counts_total = self._normalize(counts_total, self.p_units)
         return center_x, center_y, counts_total
 
+    @_closes_h5
     def instant_datasets_3d(self):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
@@ -1154,6 +1202,7 @@ class H5_Pdist():
 
         return X, Y, Z
 
+    @_closes_h5
     def average_pdist_1d(self):
         """
         1 dataset: average pdist for a range of iterations.
@@ -1177,6 +1226,7 @@ class H5_Pdist():
         #return center_x, self._normalize(average_x, self.p_units)
         return center_x, average_x
 
+    @_closes_h5
     def average_pdist_2d(self):
         """
         2 datasets: average pdist for a range of iterations.
@@ -1199,6 +1249,7 @@ class H5_Pdist():
         #return center_x, center_y, self._normalize(average_xy, self.p_units)
         return center_x, center_y, average_xy
 
+    @_closes_h5
     def average_datasets_3d(self, interval=1):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
@@ -1238,6 +1289,7 @@ class H5_Pdist():
         return X[::interval], Y[::interval], Z[::interval]
     
     # TODO: very similar method to avg_datasets_3d, also could combine with code from get_total_dataset
+    @_closes_h5
     def average_datasets_4d(self, interval=1):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
@@ -1307,6 +1359,7 @@ class H5_Pdist():
 
     # TODO: option for data and weight output for a single iteration (iteration=None)
     # wait, isn't that already available in _get_data_array?
+    @_closes_h5
     def get_total_data_array(self, name, index=0, interval=1, reshape=True):
         """
         Loop through all iterations specified and get a 1d raw data array.
@@ -1353,6 +1406,7 @@ class H5_Pdist():
         else:
             return data[::interval]
 
+    @_closes_h5
     def reshape_total_data_array(self, array):
         """
         Take an input 1d array of the data values at every segment for each
@@ -1462,6 +1516,7 @@ class H5_Pdist():
 
         return new_weights
 
+    @_closes_h5
     def make_new_h5(self, new_weights=None):
         """
         TODO: actually make a new h5 file, see bstate filter code, integrate all.
@@ -1505,6 +1560,7 @@ class H5_Pdist():
                 os.remove(tmp_out)
             raise
 
+    @_closes_h5
     def pdist(self, normalize=True):
         """
         Main public method with pdist generation controls.
@@ -1542,12 +1598,8 @@ class H5_Pdist():
         yranges = []
         # go through each file and find a consistent histrange if histrangeXY is None
         for i, h5 in enumerate(self.h5_list):
-            # only needs to be done for non-first dataset in h5_list
-            if i != 0:
-                # close and re-open, keeping the class attribute for method calls
-                # but allowing the loop to propagate through each file
-                self.h5.close()
-                self.h5 = h5py.File(h5, mode="r")
+            # switch to reading the current h5 file in the list
+            self._set_h5_file(h5)
             if self.histrange_x is None:
                 # get the optimal histrange
                 xranges.append(self._get_histrange(self.Xname, self.Xindex))
@@ -1578,10 +1630,9 @@ class H5_Pdist():
             ### if i != 0:
             # but I can still skip this step, which is redundant when the list is length one
             if len(self.h5_list) > 1:
-                # close and re-open, keeping the class attribute for method calls
+                # switch to the current h5 file, keeping the class attribute for method calls
                 # but allowing the loop to propagate through each file
-                self.h5.close()
-                self.h5 = h5py.File(h5, mode="r")
+                self._set_h5_file(h5)
                 self._init_weights()
                 # apply the skip_basis or succ_only weight filters for this h5 file
                 self._filter_weights()
