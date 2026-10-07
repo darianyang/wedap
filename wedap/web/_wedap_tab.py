@@ -99,13 +99,9 @@ def get_last_iter(h5_path):
     ``last_iter`` attribute (i.e. west_current_iteration - 1).
     """
     # data_type is required by __init__ but irrelevant here (we don't run pdist)
+    # (H5_Pdist closes the h5 file again once initialized)
     pdist = wedap.H5_Pdist(h5=h5_path, data_type="evolution", no_pbar=True)
-    last = int(pdist.last_iter)
-    try:
-        pdist.h5.close()
-    except Exception:
-        pass
-    return last
+    return int(pdist.last_iter)
 
 
 # --------------------------------------------------------------------------- #

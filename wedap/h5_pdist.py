@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 ######
 
 import os
+import functools
 import h5py
 import numpy as np
 from tqdm.auto import tqdm
@@ -29,10 +30,28 @@ import shutil
 # Suppress divide-by-zero in log
 np.seterr(divide='ignore', invalid='ignore')
 
+def _closes_h5(method):
+    """
+    Decorator for H5_Pdist methods that read the h5 file. The file is opened on first
+    access (see H5_Pdist.h5) and closed again once the outermost decorated call returns
+    or raises, so the file (and its HDF5 file lock) is not held open between calls.
+    """
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        self._h5_depth = getattr(self, "_h5_depth", 0) + 1
+        try:
+            return method(self, *args, **kwargs)
+        finally:
+            self._h5_depth -= 1
+            if self._h5_depth == 0:
+                self.close()
+    return wrapper
+
 class H5_Pdist():
     """
     These class methods generate probability distributions from a WESTPA H5 file.
     """
+    @_closes_h5
     def __init__(self, h5="west.h5", data_type=None, Xname="pcoord", Xindex=0, Yname=None, 
                  Yindex=0, Zname=None, Zindex=0, Cname=None, Cindex=0, 
                  H5save_out=None, Xsave_name=None, Ysave_name=None, Zsave_name=None, 
@@ -142,14 +161,15 @@ class H5_Pdist():
         else:
             raise ValueError(f"Something may be wrong with the h5 file name input: {h5}")
 
-        # save both the name and the h5 file
-        self.h5_name = h5
-        self.h5 = h5py.File(h5, mode="r")
-
         if data_type is None or data_type not in ["evolution", "average", "instant"]:
             raise ValueError("Must input valid data_type str: `evolution`, `average`, or `instant`")
         else:
             self.data_type = data_type
+
+        # save the name of the (first) h5 file, which is opened on demand by self.h5
+        self.h5_name = h5
+        self._h5 = None
+        self._h5_path = h5
 
         self.p_units = str(p_units)
 
@@ -243,6 +263,45 @@ class H5_Pdist():
 
         # accounts for array and filename input XYZnames
         self._check_XYZnames()
+
+    @property
+    def h5(self):
+        """
+        The h5 file currently being read. It is opened on first access and closed again
+        after each public method call, so it is not held open (and locked) between calls.
+        """
+        if self._h5 is None or not self._h5.id.valid:
+            self._h5 = h5py.File(self._h5_path, mode="r")
+        return self._h5
+
+    def _set_h5_file(self, h5):
+        """
+        Switch to reading a different h5 file (e.g. for multiple h5 file input).
+        """
+        if h5 != self._h5_path:
+            self.close()
+            self._h5_path = h5
+
+    def close(self):
+        """
+        Close the h5 file (releasing its file lock). This is done automatically after
+        each method call, but is needed if you access the `h5` attribute directly.
+        Safe to call more than once.
+        """
+        h5 = getattr(self, "_h5", None)
+        if h5 is not None and h5.id.valid:
+            h5.close()
+
+    def __enter__(self):
+        # keep the h5 file open across all method calls inside the with block
+        # (e.g. calling get_parents in a loop), instead of reopening it for each call
+        self._h5_depth = getattr(self, "_h5_depth", 0) + 1
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._h5_depth -= 1
+        if self._h5_depth == 0:
+            self.close()
 
     def _process_name_and_index(self, name, index, Xname, Yname):
         """
@@ -393,8 +452,8 @@ class H5_Pdist():
             Dataset index.
         iteration : int
             WE iteration.
-        h5_create : str
-            Name of the h5 file to add the dataset to.
+        h5_create : h5py.File
+            Open (writable) h5 file to add the dataset to.
         h5_create_name : str
             Name of the dataset that is being placed into the h5 file.
 
@@ -646,9 +705,11 @@ class H5_Pdist():
         #         h5_skip_basis[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
             
         # only return portion of weights requested by user
-        return new_weights[self.first_iter-1:self.last_iter:self.step_iter]
+        # (every iteration from first_iter, step_iter is applied when indexing later)
+        return new_weights[self.first_iter-1:self.last_iter]
 
     ##################### TODO: update or organize this #############################
+    @_closes_h5
     def get_parents(self, walker_tuple):
         """
         Get parent of an input (iteration, walker).
@@ -666,6 +727,7 @@ class H5_Pdist():
         parent = self.h5[f"iterations/iter_{it:08d}"]["seg_index"]["parent_id"][wlk]
         return it-1, parent
 
+    @_closes_h5
     def trace_walker(self, walker_tuple, first_iter=1):
         """
         Get trace path of an input (iteration, walker).
@@ -692,6 +754,7 @@ class H5_Pdist():
             path.append((it,wlk))
         return np.array(sorted(path, key=lambda x: x[0]))
 
+    @_closes_h5
     def get_coords(self, path, data_name, data_index):
         """
         Get a list of data coordinates for plotting traces.
@@ -718,6 +781,7 @@ class H5_Pdist():
             coords[idx] = (self._get_data_array(data_name, data_index, it)[wlk][-1])
         return coords
     
+    @_closes_h5
     def get_full_coords(self, walker_tuple, data_name, data_index=0, first_iter=1):
         """
         Returns a full 1D set of data for a single trace (path).
@@ -755,6 +819,7 @@ class H5_Pdist():
 
         return coords            
 
+    @_closes_h5
     def find_iter_seg_from_xy_vals(self, val_x, val_y):
         """
         Find and return (iter, seg) closest to input data value(s).
@@ -809,6 +874,7 @@ class H5_Pdist():
 
     # TODO: alot of the self refs are not even in h5_pdist, but in h5_plot
     #       need to do some rearrangement and refactoring at some point
+    @_closes_h5
     def plot_trace(self, walker_tuple, color="white", linewidth=1.0, linestyle='-', ax=None, 
                    find_iter_seg=False, mark_points=False, 
                    mp_size=80, mp_color=None, mp_markers=('o','v'), **kwargs):
@@ -897,6 +963,7 @@ class H5_Pdist():
         
         return aux_x, aux_y
 
+    @_closes_h5
     def w_succ(self):
         """
         Find and return all successfully recycled (iter, seg) pairs.
@@ -917,6 +984,7 @@ class H5_Pdist():
         # TODO: order this by iter and seg vals? currently segs not sorted but is iter ordered
         return succ
     
+    @_closes_h5
     def succ_pdist_weight_filter(self):
         """
         TODO: Filter weights to be zero for all non successfull trajectories.
@@ -947,17 +1015,21 @@ class H5_Pdist():
         succ_trajs = self.w_succ()
         for succ in tqdm(succ_trajs, disable=self.no_pbar,
                          desc="Creating succ only weight array"):
-            trace_path = self.trace_walker(succ)
+            # self.weights starts at first_iter, so only trace back to there
+            trace_path = self.trace_walker(succ, first_iter=self.first_iter)
             for it, wlk in trace_path:
-                #print(succ_weights[it][wlk], self.weights[it][wlk])
-                # -1 for indexing iters but regular indexing walkers
-                succ_weights[it-1][wlk] = self.weights[it-1][wlk]
+                # recycled walkers found at first_iter are from first_iter - 1
+                if it < self.first_iter:
+                    continue
+                # offset by first_iter for indexing iters but regular indexing walkers
+                succ_weights[it-self.first_iter][wlk] = self.weights[it-self.first_iter][wlk]
 
-        # only return portion of weights requested by user
-        return succ_weights[self.first_iter-1:self.last_iter:self.step_iter]
+        # same shape as self.weights: every iteration from first_iter to last_iter
+        return succ_weights
 
     ###############################################################################
 
+    @_closes_h5
     def aux_to_pdist_1d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
@@ -1000,6 +1072,7 @@ class H5_Pdist():
         # TODO: also save as instance attributes?
         return midpoints_x, histogram
 
+    @_closes_h5
     def aux_to_pdist_2d(self, iteration):
         """
         Take the auxiliary dataset for a single iteration and generate a weighted
@@ -1050,6 +1123,7 @@ class H5_Pdist():
         # save midpoints and transposed histogram (corrected for plotting)
         return midpoints_x, midpoints_y, histogram.T
 
+    @_closes_h5
     def evolution_pdist(self):
         """
         Returns the pdist for 1 coordinate for the range iterations specified.
@@ -1081,6 +1155,7 @@ class H5_Pdist():
         return positions_x, np.arange(self.first_iter, self.last_iter + 1, 1), evolution_x
 
     # TODO: maybe don't need individual functions, maybe can handle in main
+    @_closes_h5
     def instant_pdist_1d(self):
         """
         Returns the x and y pdist datasets for a single iteration.
@@ -1094,6 +1169,7 @@ class H5_Pdist():
         #counts_total = self._normalize(counts_total, self.p_units)
         return center, counts_total
 
+    @_closes_h5
     def instant_pdist_2d(self):
         """
         Returns the xyz pdist datasets for a single iteration.
@@ -1109,6 +1185,7 @@ class H5_Pdist():
         #counts_total = self._normalize(counts_total, self.p_units)
         return center_x, center_y, counts_total
 
+    @_closes_h5
     def instant_datasets_3d(self):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
@@ -1130,6 +1207,7 @@ class H5_Pdist():
 
         return X, Y, Z
 
+    @_closes_h5
     def average_pdist_1d(self):
         """
         1 dataset: average pdist for a range of iterations.
@@ -1153,6 +1231,7 @@ class H5_Pdist():
         #return center_x, self._normalize(average_x, self.p_units)
         return center_x, average_x
 
+    @_closes_h5
     def average_pdist_2d(self):
         """
         2 datasets: average pdist for a range of iterations.
@@ -1175,6 +1254,7 @@ class H5_Pdist():
         #return center_x, center_y, self._normalize(average_xy, self.p_units)
         return center_x, center_y, average_xy
 
+    @_closes_h5
     def average_datasets_3d(self, interval=1):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
@@ -1214,6 +1294,7 @@ class H5_Pdist():
         return X[::interval], Y[::interval], Z[::interval]
     
     # TODO: very similar method to avg_datasets_3d, also could combine with code from get_total_dataset
+    @_closes_h5
     def average_datasets_4d(self, interval=1):
         """
         Unique case where `Zname` is specified and the XYZ datasets are returned.
@@ -1283,6 +1364,7 @@ class H5_Pdist():
 
     # TODO: option for data and weight output for a single iteration (iteration=None)
     # wait, isn't that already available in _get_data_array?
+    @_closes_h5
     def get_total_data_array(self, name, index=0, interval=1, reshape=True):
         """
         Loop through all iterations specified and get a 1d raw data array.
@@ -1329,6 +1411,7 @@ class H5_Pdist():
         else:
             return data[::interval]
 
+    @_closes_h5
     def reshape_total_data_array(self, array):
         """
         Take an input 1d array of the data values at every segment for each
@@ -1388,52 +1471,37 @@ class H5_Pdist():
 
         return array
 
-    def make_new_h5(self, new_weights=None):
+    def _check_h5_save_out(self):
         """
-        TODO: actually make a new h5 file, see bstate filter code, integrate all.
-        If self.H5save_out is not None and X/Y/Zsave_name is not None.
-        Saves out a new h5 file of name self.H5save_out with the current
-        X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.
-
-        Parameters
-        ----------
-        new_weights : numpy object array
-            Updated weight values, e.g. from skip_basis or succ_only.
+        Check the make_new_h5 inputs before anything is copied or written.
         """
-        # make copy of h5 file and open copy
-        shutil.copyfile(self.h5_name, self.H5save_out)
-        self.H5save_out = h5py.File(self.H5save_out, "r+")
-        # replace weights
-        if new_weights is not None:
-            for idx, weight in enumerate(new_weights):
-                self.H5save_out[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
+        # don't overwrite the input file
+        if os.path.exists(self.H5save_out) and os.path.samefile(self.H5save_out, self.h5_name):
+            raise ValueError(f"H5save_out ({self.H5save_out}) must be different from the input h5 file")
 
-        # create new dataset based on input XYZ data
-        for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
-                         desc="Creating new h5 dataset(s)", disable=self.no_pbar):
-            if self.Xsave_name:
-                self._get_data_array(self.Xname, self.Xindex, iter, self.H5save_out, self.Xsave_name)
-            if self.Ysave_name:
-                self._get_data_array(self.Yname, self.Yindex, iter, self.H5save_out, self.Ysave_name)
-            if self.Zsave_name:
-                self._get_data_array(self.Zname, self.Zindex, iter, self.H5save_out, self.Zsave_name)
+        if len(self.h5_list) > 1:
+            warn(f"Multiple h5 files were input, but only the first file ({self.h5_name}) "
+                 f"will be copied to {self.H5save_out}.")
 
-    def pdist(self, normalize=True):
+        # the new datasets can't already exist in the input file
+        for save_name in (self.Xsave_name, self.Ysave_name, self.Zsave_name):
+            if not save_name:
+                continue
+            for iter in range(self.first_iter, self.last_iter + 1, self.step_iter):
+                if f"iterations/iter_{iter:08d}/auxdata/{save_name}" in self.h5:
+                    raise ValueError(f"auxdata/{save_name} already exists in {self.h5_name} "
+                                     f"(e.g. iteration {iter}), choose a different save name.")
+
+    def _filter_weights(self):
         """
-        Main public method with pdist generation controls.
+        Apply the optional skip_basis and succ_only filters to self.weights
+        for the currently open h5 file.
 
-        Parameters
-        ----------
-        normalize : bool
-            By default (True), normalizes the output pdist.
-            Must be True when using multiple h5 input files.
-        
         Returns
         -------
-        X, Y, Z : arrays
-            Output probability distributions.
-        """ 
-        # empty object to pass to make_new_h5
+        new_weights : numpy object array or None
+            The filtered weights (also set as self.weights), or None if no filter was applied.
+        """
         new_weights = None
         # option to zero weight out specific basis states
         if self.skip_basis is not None:
@@ -1451,6 +1519,80 @@ class H5_Pdist():
             # replace the original weight array with succ only
             new_weights = self.weights = self.succ_pdist_weight_filter()
 
+        return new_weights
+
+    @_closes_h5
+    def make_new_h5(self, new_weights=None):
+        """
+        TODO: actually make a new h5 file, see bstate filter code, integrate all.
+        If self.H5save_out is not None and X/Y/Zsave_name is not None.
+        Saves out a new h5 file of name self.H5save_out with the current
+        X/Y/Zname data into auxdata of h5 file with name of X/Y/Zsave_name.
+
+        Parameters
+        ----------
+        new_weights : numpy object array
+            Updated weight values, e.g. from skip_basis or succ_only.
+        """
+        self._check_h5_save_out()
+
+        # make copy of h5 file and fill it out under a temporary name in the same directory,
+        # then move it into place only once complete: a failed run leaves no partial output
+        # and any existing output file is untouched until the new one is finished
+        out_dir, out_name = os.path.split(os.path.abspath(self.H5save_out))
+        tmp_out = os.path.join(out_dir, f".{out_name}.{os.getpid()}.tmp")
+        try:
+            shutil.copyfile(self.h5_name, tmp_out)
+            with h5py.File(tmp_out, "r+") as h5_out:
+                # replace weights
+                if new_weights is not None:
+                    # new_weights starts at first_iter
+                    for idx, weight in enumerate(new_weights):
+                        h5_out[f"iterations/iter_{self.first_iter+idx:08d}/seg_index"]["weight"] = weight
+
+                # create new dataset based on input XYZ data
+                for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
+                                 desc="Creating new h5 dataset(s)", disable=self.no_pbar):
+                    if self.Xsave_name:
+                        self._get_data_array(self.Xname, self.Xindex, iter, h5_out, self.Xsave_name)
+                    if self.Ysave_name:
+                        self._get_data_array(self.Yname, self.Yindex, iter, h5_out, self.Ysave_name)
+                    if self.Zsave_name:
+                        self._get_data_array(self.Zname, self.Zindex, iter, h5_out, self.Zsave_name)
+            os.replace(tmp_out, self.H5save_out)
+        except BaseException:
+            if os.path.exists(tmp_out):
+                os.remove(tmp_out)
+            raise
+
+    @_closes_h5
+    def pdist(self, normalize=True):
+        """
+        Main public method with pdist generation controls.
+
+        Parameters
+        ----------
+        normalize : bool
+            By default (True), normalizes the output pdist.
+            Must be True when using multiple h5 input files.
+        
+        Returns
+        -------
+        X, Y, Z : arrays
+            Output probability distributions.
+        """ 
+        # empty object to pass to make_new_h5
+        new_weights = None
+        # with multiple h5 files, start from the first file and its weights
+        # (a previous pdist call ends on the last file in the list)
+        if len(self.h5_list) > 1:
+            self._set_h5_file(self.h5_name)
+            self._init_weights()
+        # with multiple h5 files, the weights are filtered for each file in the loop below,
+        # so only filter here for a single file or for the make_new_h5 copy of the first file
+        if len(self.h5_list) == 1 or self.H5save_out is not None:
+            new_weights = self._filter_weights()
+
         # if requested, save out a new H5 file with the input data array in new aux name
         if self.H5save_out is not None:
             self.make_new_h5(new_weights)
@@ -1466,12 +1608,8 @@ class H5_Pdist():
         yranges = []
         # go through each file and find a consistent histrange if histrangeXY is None
         for i, h5 in enumerate(self.h5_list):
-            # only needs to be done for non-first dataset in h5_list
-            if i != 0:
-                # close and re-open, keeping the class attribute for method calls
-                # but allowing the loop to propagate through each file
-                self.h5.close()
-                self.h5 = h5py.File(h5, mode="r")
+            # switch to reading the current h5 file in the list
+            self._set_h5_file(h5)
             if self.histrange_x is None:
                 # get the optimal histrange
                 xranges.append(self._get_histrange(self.Xname, self.Xindex))
@@ -1502,11 +1640,12 @@ class H5_Pdist():
             ### if i != 0:
             # but I can still skip this step, which is redundant when the list is length one
             if len(self.h5_list) > 1:
-                # close and re-open, keeping the class attribute for method calls
+                # switch to the current h5 file, keeping the class attribute for method calls
                 # but allowing the loop to propagate through each file
-                self.h5.close()
-                self.h5 = h5py.File(h5, mode="r")
+                self._set_h5_file(h5)
                 self._init_weights()
+                # apply the skip_basis or succ_only weight filters for this h5 file
+                self._filter_weights()
                 
                 # TODO: instead of just opening h5 and re-init weights, need to also account for
                 # cases like with 3D dataset returns which use self.n_particles (segs per iter)

@@ -23,9 +23,11 @@ For a demo and summary of features, see this [jupyter notebook](docs/notebook/we
 
 Or view the same demo notebook on the [documentation web page](https://darianyang.github.io/wedap/docs/html/notebook/wedap_demo.html).
 
-### What's New in v1.2.0
+### What's New in v1.3.0
 
-This release replaces the previously removed/deprecated gooey-based GUI with a streamlit app (see the [Web app (Streamlit)](#web-app-streamlit) section below). See CHANGELOG.md for more info.
+This release fixes h5 files being left open and locked by wedap (e.g. after an error in a Jupyter notebook), which could block other programs like `w_multi_west` from writing to them (see the [H5 file access](#h5-file-access) section below), along with fixes to the `H5save_out`, `succ_only`, `skip_basis` and multiple h5 file options.
+
+v1.2.0 replaced the previously removed/deprecated gooey-based GUI with a streamlit app (see the [Web app (Streamlit)](#web-app-streamlit) section below). See CHANGELOG.md for more info.
 
 ### Requirements
 
@@ -108,6 +110,22 @@ The resulting `p53.h5` file average plot of the pcoord datasets will look like t
 <p align="left">
     <img src="https://github.com/darianyang/wedap/blob/main/docs/_static/p53_avg_pcoord.png?raw=true" alt="p53 avg pcoord plot" width="400">
 </p>
+
+### H5 file access
+
+wedap only keeps an h5 file open while one of its methods is running (e.g. `pdist()` or
+`plot_trace()`), and closes it again afterwards, even if there was an error. So an `H5_Pdist`
+or `H5_Plot` object left in a Jupyter notebook does not lock the file or block other programs
+like `w_run` or `w_multi_west` from writing to it. If you read from the `h5` attribute of these
+objects directly, call `close()` when you are done.
+
+When calling methods many times in a loop (e.g. `get_parents()`), use a `with` block to keep the
+file open for the whole loop instead of reopening it for each call, then it is closed at the end:
+``` python
+pdist = wedap.H5_Pdist(h5="west.h5", data_type="evolution")
+with pdist:
+    parents = [pdist.get_parents((10, seg)) for seg in range(50)]
+```
 
 ## Web app (Streamlit)
 

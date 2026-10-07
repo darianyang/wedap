@@ -5,6 +5,45 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-10-07
+
+Fixes h5 files being left open (and locked) by wedap, which could block other programs
+such as `w_multi_west` or `w_run` from writing to them, along with fixes to the
+`H5save_out`, `succ_only`, `skip_basis` and multiple h5 file options. All changes are
+backwards-compatible.
+
+### Added
+
+- **`H5_Pdist.close()` and `with` block support** (also for `H5_Plot`). These are not
+  needed for normal use (see Fixed), but a `with` block keeps the h5 file open across
+  repeated method calls, e.g. `get_parents()` in a loop, instead of reopening it for
+  each call.
+
+### Fixed
+
+- **h5 file left open and locked.** `H5_Pdist`/`H5_Plot` kept the h5 file open for as
+  long as the object existed, including after an error (e.g. `last_iter` larger than
+  the available iterations), since an interactive session keeps the traceback and
+  object alive. HDF5 file locking then blocked other processes from writing to the
+  file (`BlockingIOError: [Errno 11] ... unable to lock file`) until the Python session
+  was restarted. The file is now opened when needed and closed again after each method
+  call, whether it succeeds or raises.
+- **`H5save_out` file handling.** The new h5 file was never closed (holding a write
+  lock), and the `H5save_out` attribute was replaced by the open file, so a repeated
+  `pdist()` call failed. The file is now written under a temporary name and only moved
+  into place once complete, so a failed run leaves no partial output and an existing
+  output file is untouched. Inputs are checked before copying: an error is raised if
+  `H5save_out` is the input file or if an `X/Y/Zsave_name` dataset already exists, and
+  a warning is given that only the first file is copied for multiple h5 file input.
+- **`succ_only` and `skip_basis` weights with `first_iter`/`step_iter`.** `succ_only`
+  raised an `IndexError` with `first_iter > 1`, and both options used misaligned
+  weights with `step_iter > 1`. With `H5save_out`, the filtered weights were also
+  written to the wrong iterations.
+- **`succ_only` and `skip_basis` with multiple h5 files.** The weight filters were
+  dropped for all files, giving the same result as without the option. A repeated
+  `pdist()` call with `H5save_out` also saved weights from the last file instead of the
+  first.
+
 ## [1.2.0] - 2026-07-17
 
 Adds the optional Streamlit web app and a related fix to colorbar labeling. All
@@ -109,6 +148,7 @@ requirements and the removal of the deprecated GUI.
 
 - Initial tagged release.
 
+[1.3.0]: https://github.com/darianyang/wedap/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/darianyang/wedap/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/darianyang/wedap/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/darianyang/wedap/releases/tag/v1.0.0

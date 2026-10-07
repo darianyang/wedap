@@ -5,6 +5,10 @@ Unit and regression tests for the H5_Pdist class.
 # Import package, test suite, and other packages as needed
 import wedap
 
+import h5py
+import shutil
+import subprocess
+import sys
 import numpy as np
 import pytest
 
@@ -62,6 +66,233 @@ def assert_close(actual, desired, rtol=1e-5, atol=1e-4,
     assert max_diff <= max_bad_abs, \
         f"max abs diff {max_diff:.4g} exceeds {max_bad_abs}"
 
+
+def _assert_writable(h5_path):
+    """
+    Opening for writing fails if another handle (e.g. a leaked H5_Pdist.h5) is still open.
+    """
+    with h5py.File(h5_path, "a"):
+        pass
+
+class Test_H5_Pdist_File_Handling():
+    """
+    The h5 file should not be left open (and locked) after errors or explicit closing.
+    """
+    @pytest.fixture
+    def h5_copy(self, tmp_path):
+        h5_path = tmp_path / "p53.h5"
+        shutil.copyfile("wedap/data/p53.h5", h5_path)
+        return str(h5_path)
+
+    def test_closed_after_init_error(self, h5_copy):
+        # keep the exception (and its traceback) alive, like an interactive session would
+        with pytest.raises(ValueError, match="last_iter") as excinfo:
+            wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=10_000)
+        _assert_writable(h5_copy)
+        assert excinfo is not None
+
+    def test_closed_after_plot_init_error(self, h5_copy):
+        with pytest.raises(ValueError, match="not a valid object") as excinfo:
+            wedap.H5_Plot(h5=h5_copy, data_type="evolution", Xname="not_a_dataset")
+        _assert_writable(h5_copy)
+        assert excinfo is not None
+
+    def test_context_manager(self, h5_copy):
+        with wedap.H5_Pdist(h5=h5_copy, data_type="evolution") as pdist:
+            pdist.pdist()
+        _assert_writable(h5_copy)
+        # closing again is a no-op
+        pdist.close()
+
+    def test_h5_save_out_closed(self, h5_copy, tmp_path):
+        out = str(tmp_path / "saved.h5")
+        with wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                            H5save_out=out, Xsave_name="pcoord_copy") as pdist:
+            pdist.pdist()
+        assert pdist.H5save_out == out
+        _assert_writable(out)
+        with h5py.File(out, "r") as f:
+            assert "iterations/iter_00000005/auxdata/pcoord_copy" in f
+
+    def test_closed_between_calls(self, h5_copy):
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution")
+        _assert_writable(h5_copy)
+        pdist.pdist()
+        _assert_writable(h5_copy)
+        pdist.trace_walker((10, 0))
+        _assert_writable(h5_copy)
+        # the file is reopened as needed
+        pdist.pdist()
+        _assert_writable(h5_copy)
+
+    def test_with_block_keeps_file_open(self, h5_copy):
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution")
+        with pdist:
+            pdist.get_parents((10, 0))
+            h5 = pdist.h5
+            pdist.get_parents((10, 1))
+            # same handle reused for each call inside the with block
+            assert pdist.h5 is h5 and h5.id.valid
+        assert not h5.id.valid
+        _assert_writable(h5_copy)
+
+    def test_closed_after_chained_pdist_error(self, h5_copy):
+        # the object is only kept alive by the traceback, so it can't be closed by the user
+        with pytest.raises(ValueError, match="not a valid object") as excinfo:
+            wedap.H5_Pdist(h5=h5_copy, data_type="average", Yname="not_a_dataset").pdist()
+        _assert_writable(h5_copy)
+        assert excinfo is not None
+
+    def test_closed_after_multiple_h5(self, h5_copy, tmp_path):
+        h5_copy_2 = str(tmp_path / "p53_2.h5")
+        shutil.copyfile(h5_copy, h5_copy_2)
+        pdist = wedap.H5_Pdist(h5=[h5_copy, h5_copy_2], data_type="evolution")
+        pdist.pdist()
+        _assert_writable(h5_copy)
+        _assert_writable(h5_copy_2)
+
+    def test_other_process_can_write_while_plot_exists(self, h5_copy):
+        # e.g. running w_multi_west while an H5_Plot object still exists in a notebook,
+        # file locks only apply between processes, so write from a subprocess
+        plot = wedap.H5_Plot(h5=h5_copy, data_type="evolution")
+        writer = f"import h5py; h5py.File({h5_copy!r}, 'a').close()"
+        result = subprocess.run([sys.executable, "-c", writer], capture_output=True, text=True)
+        assert result.returncode == 0, result.stderr
+        assert plot is not None
+
+    def test_h5_save_out_same_as_input(self, h5_copy):
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                               H5save_out=h5_copy, Xsave_name="pcoord_copy")
+        with pdist, pytest.raises(ValueError, match="must be different"):
+            pdist.pdist()
+
+    def test_h5_save_out_existing_save_name(self, h5_copy, tmp_path):
+        out = tmp_path / "saved.h5"
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                               H5save_out=str(out), Xsave_name="dihedral_2")
+        with pdist, pytest.raises(ValueError, match="already exists"):
+            pdist.pdist()
+        assert not out.exists()
+
+    def test_h5_save_out_multiple_h5_warns(self, h5_copy, tmp_path):
+        h5_copy_2 = str(tmp_path / "p53_2.h5")
+        shutil.copyfile(h5_copy, h5_copy_2)
+        out = str(tmp_path / "saved.h5")
+        with wedap.H5_Pdist(h5=[h5_copy, h5_copy_2], data_type="evolution", last_iter=5,
+                            H5save_out=out, Xsave_name="pcoord_copy") as pdist:
+            with pytest.warns(UserWarning, match="only the first file"):
+                pdist.pdist()
+
+    def test_h5_save_out_failure_keeps_existing_output(self, h5_copy, tmp_path, monkeypatch):
+        out = tmp_path / "saved.h5"
+        out.write_bytes(b"previous output")
+        # fail partway through writing the new datasets
+        get_data_array = wedap.H5_Pdist._get_data_array
+        def failing_get_data_array(self, name, index, iteration, h5_create=None, h5_create_name=None):
+            if h5_create is not None and iteration == 3:
+                raise RuntimeError("simulated failure")
+            return get_data_array(self, name, index, iteration, h5_create, h5_create_name)
+        monkeypatch.setattr(wedap.H5_Pdist, "_get_data_array", failing_get_data_array)
+
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution", last_iter=5,
+                               H5save_out=str(out), Xsave_name="pcoord_copy")
+        with pdist, pytest.raises(RuntimeError, match="simulated failure"):
+            pdist.pdist()
+        # existing output untouched and no leftover temp file
+        assert out.read_bytes() == b"previous output"
+        assert sorted(p.name for p in tmp_path.iterdir()) == ["p53.h5", "saved.h5"]
+
+class Test_Succ_Only_Weights():
+    """
+    succ_only weights should line up with the iterations from first_iter to last_iter.
+    p53.h5 has no recycling events, so w_succ is stubbed with a few walkers to trace back.
+    """
+    h5 = "wedap/data/p53.h5"
+    succ = [(12, 0), (14, 2)]
+
+    def _stub_w_succ(self, monkeypatch):
+        succ = self.succ
+        monkeypatch.setattr(wedap.H5_Pdist, "w_succ", lambda pdist: succ)
+
+    def _succ_weights(self, monkeypatch, **kwargs):
+        self._stub_w_succ(monkeypatch)
+        with wedap.H5_Pdist(h5=self.h5, data_type="average", last_iter=15,
+                            no_pbar=True, **kwargs) as pdist:
+            return pdist.succ_pdist_weight_filter()
+
+    def test_first_iter(self, monkeypatch):
+        ref = self._succ_weights(monkeypatch, first_iter=1)
+        weights = self._succ_weights(monkeypatch, first_iter=5)
+        assert len(weights) == 11
+        for iteration in range(5, 16):
+            np.testing.assert_array_equal(weights[iteration - 5], ref[iteration - 1])
+        # the traced walkers keep their weight
+        assert np.count_nonzero(weights[12 - 5]) > 0
+
+    def test_step_iter(self, monkeypatch):
+        ref = self._succ_weights(monkeypatch, first_iter=1)
+        weights = self._succ_weights(monkeypatch, first_iter=1, step_iter=2)
+        # step_iter is applied when indexing the weights, not to the weight array
+        assert len(weights) == len(ref) == 15
+        for w, r in zip(weights, ref):
+            np.testing.assert_array_equal(w, r)
+
+    def test_multiple_h5(self, monkeypatch, tmp_path):
+        # two copies of the same file should give the same succ_only pdist as one file
+        h5_copy = str(tmp_path / "p53_copy.h5")
+        shutil.copyfile(self.h5, h5_copy)
+        self._stub_w_succ(monkeypatch)
+        def pdist(h5, succ_only):
+            with wedap.H5_Pdist(h5=h5, data_type="average", last_iter=15,
+                                succ_only=succ_only, no_pbar=True) as pdist:
+                return pdist.pdist()[1]
+        single = pdist(self.h5, succ_only=True)
+        multi = pdist([self.h5, h5_copy], succ_only=True)
+        np.testing.assert_allclose(multi, single)
+        # and the filter should actually change the result
+        assert not np.allclose(multi, pdist(self.h5, succ_only=False))
+
+    def test_multiple_h5_save_out_repeated_pdist(self, monkeypatch, tmp_path):
+        # H5save_out copies the first file, so its weights should come from the first file,
+        # also on a repeated pdist call (which would otherwise start from the last file)
+        h5_first = str(tmp_path / "p53_first.h5")
+        h5_last = str(tmp_path / "p53_last.h5")
+        shutil.copyfile(self.h5, h5_first)
+        shutil.copyfile(self.h5, h5_last)
+        with h5py.File(h5_last, "r+") as f:
+            for iteration in range(1, 16):
+                seg_index = f[f"iterations/iter_{iteration:08d}/seg_index"]
+                seg_index["weight"] = seg_index["weight"] * 0.5
+        out = str(tmp_path / "succ.h5")
+        self._stub_w_succ(monkeypatch)
+        pdist = wedap.H5_Pdist(h5=[h5_first, h5_last], data_type="average", last_iter=15,
+                               succ_only=True, H5save_out=out, no_pbar=True)
+        with pytest.warns(UserWarning, match="only the first file"):
+            pdist.pdist()
+        with h5py.File(out, "r") as f:
+            first_weights = f["iterations/iter_00000012/seg_index"]["weight"][:]
+        with pytest.warns(UserWarning, match="only the first file"):
+            pdist.pdist()
+        with h5py.File(out, "r") as f:
+            np.testing.assert_array_equal(f["iterations/iter_00000012/seg_index"]["weight"],
+                                          first_weights)
+        assert np.count_nonzero(first_weights) > 0
+
+    def test_h5_save_out(self, monkeypatch, tmp_path):
+        out = str(tmp_path / "succ.h5")
+        self._stub_w_succ(monkeypatch)
+        with wedap.H5_Pdist(h5=self.h5, data_type="average", first_iter=5, last_iter=15,
+                            succ_only=True, H5save_out=out, no_pbar=True) as pdist:
+            pdist.pdist()
+            weights = pdist.weights
+        with h5py.File(self.h5, "r") as f_in, h5py.File(out, "r") as f_out:
+            # weights before first_iter are untouched
+            for iteration in range(1, 5):
+                path = f"iterations/iter_{iteration:08d}/seg_index"
+                np.testing.assert_array_equal(f_out[path]["weight"], f_in[path]["weight"])
+            for iteration in range(5, 16):
+                path = f"iterations/iter_{iteration:08d}/seg_index"
+                np.testing.assert_array_equal(f_out[path]["weight"], weights[iteration - 5])
 
 # TODO: test for trace, search_aux, skip_basis, get_total_data_array, get_all_weights
 # maybe test more args like first_iter, last_iter, step_iter, H5save_out, data_proc, bins, histrange, p_units
