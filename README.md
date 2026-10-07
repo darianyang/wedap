@@ -117,6 +117,14 @@ or `H5_Plot` object left in a Jupyter notebook does not lock the file or block o
 like `w_run` or `w_multi_west` from writing to it. If you read from the `h5` attribute of these
 objects directly, call `close()` when you are done.
 
+When calling methods many times in a loop (e.g. `get_parents()`), use a `with` block to keep the
+file open for the whole loop instead of reopening it for each call, then it is closed at the end:
+``` python
+pdist = wedap.H5_Pdist(h5="west.h5", data_type="evolution")
+with pdist:
+    parents = [pdist.get_parents((10, seg)) for seg in range(50)]
+```
+
 ## Web app (Streamlit)
 
 `wedap` ships with an optional browser-based interface built on [Streamlit](https://streamlit.io/), providing a point-and-click alternative to the CLI (dataset dropdowns, live plot options, a downloadable figure, and a copy-pasteable equivalent Python snippet).
