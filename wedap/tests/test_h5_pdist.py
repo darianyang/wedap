@@ -125,6 +125,17 @@ class Test_H5_Pdist_File_Handling():
         pdist.pdist()
         _assert_writable(h5_copy)
 
+    def test_with_block_keeps_file_open(self, h5_copy):
+        pdist = wedap.H5_Pdist(h5=h5_copy, data_type="evolution")
+        with pdist:
+            pdist.get_parents((10, 0))
+            h5 = pdist.h5
+            pdist.get_parents((10, 1))
+            # same handle reused for each call inside the with block
+            assert pdist.h5 is h5 and h5.id.valid
+        assert not h5.id.valid
+        _assert_writable(h5_copy)
+
     def test_closed_after_chained_pdist_error(self, h5_copy):
         # the object is only kept alive by the traceback, so it can't be closed by the user
         with pytest.raises(ValueError, match="not a valid object") as excinfo:
