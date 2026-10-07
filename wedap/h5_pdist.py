@@ -1453,24 +1453,33 @@ class H5_Pdist():
         """
         self._check_h5_save_out()
 
-        # make copy of h5 file and open copy
-        # (keep self.H5save_out as the filename and close the copy when done)
-        shutil.copyfile(self.h5_name, self.H5save_out)
-        with h5py.File(self.H5save_out, "r+") as h5_out:
-            # replace weights
-            if new_weights is not None:
-                for idx, weight in enumerate(new_weights):
-                    h5_out[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
+        # make copy of h5 file and fill it out under a temporary name in the same directory,
+        # then move it into place only once complete: a failed run leaves no partial output
+        # and any existing output file is untouched until the new one is finished
+        out_dir, out_name = os.path.split(os.path.abspath(self.H5save_out))
+        tmp_out = os.path.join(out_dir, f".{out_name}.{os.getpid()}.tmp")
+        try:
+            shutil.copyfile(self.h5_name, tmp_out)
+            with h5py.File(tmp_out, "r+") as h5_out:
+                # replace weights
+                if new_weights is not None:
+                    for idx, weight in enumerate(new_weights):
+                        h5_out[f"iterations/iter_{idx+1:08d}/seg_index"]["weight"] = weight
 
-            # create new dataset based on input XYZ data
-            for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
-                             desc="Creating new h5 dataset(s)", disable=self.no_pbar):
-                if self.Xsave_name:
-                    self._get_data_array(self.Xname, self.Xindex, iter, h5_out, self.Xsave_name)
-                if self.Ysave_name:
-                    self._get_data_array(self.Yname, self.Yindex, iter, h5_out, self.Ysave_name)
-                if self.Zsave_name:
-                    self._get_data_array(self.Zname, self.Zindex, iter, h5_out, self.Zsave_name)
+                # create new dataset based on input XYZ data
+                for iter in tqdm(range(self.first_iter, self.last_iter + 1, self.step_iter), 
+                                 desc="Creating new h5 dataset(s)", disable=self.no_pbar):
+                    if self.Xsave_name:
+                        self._get_data_array(self.Xname, self.Xindex, iter, h5_out, self.Xsave_name)
+                    if self.Ysave_name:
+                        self._get_data_array(self.Yname, self.Yindex, iter, h5_out, self.Ysave_name)
+                    if self.Zsave_name:
+                        self._get_data_array(self.Zname, self.Zindex, iter, h5_out, self.Zsave_name)
+            os.replace(tmp_out, self.H5save_out)
+        except BaseException:
+            if os.path.exists(tmp_out):
+                os.remove(tmp_out)
+            raise
 
     def pdist(self, normalize=True):
         """
