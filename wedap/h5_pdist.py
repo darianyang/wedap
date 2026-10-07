@@ -1583,6 +1583,11 @@ class H5_Pdist():
         """ 
         # empty object to pass to make_new_h5
         new_weights = None
+        # with multiple h5 files, start from the first file and its weights
+        # (a previous pdist call ends on the last file in the list)
+        if len(self.h5_list) > 1:
+            self._set_h5_file(self.h5_name)
+            self._init_weights()
         # with multiple h5 files, the weights are filtered for each file in the loop below,
         # so only filter here for a single file or for the make_new_h5 copy of the first file
         if len(self.h5_list) == 1 or self.H5save_out is not None:
