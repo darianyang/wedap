@@ -1433,6 +1433,35 @@ class H5_Pdist():
                     raise ValueError(f"auxdata/{save_name} already exists in {self.h5_name} "
                                      f"(e.g. iteration {iter}), choose a different save name.")
 
+    def _filter_weights(self):
+        """
+        Apply the optional skip_basis and succ_only filters to self.weights
+        for the currently open h5 file.
+
+        Returns
+        -------
+        new_weights : numpy object array or None
+            The filtered weights (also set as self.weights), or None if no filter was applied.
+        """
+        new_weights = None
+        # option to zero weight out specific basis states
+        if self.skip_basis is not None:
+            self.n_bstates = self.h5["ibstates/index"]["n_bstates"]
+            try: 
+                new_weights = self.weights = self._new_weights_from_skip_basis()
+            # if the wrong amount of args are input and != n_bstates
+            except IndexError as e:
+                message = f"IndexError ({e}) for bstate input ({self.skip_basis}): " + \
+                          f"Did you use the correct amount of bstates {self.n_bstates}?"
+                warn(message)
+
+        # option to only use weights for succ trajs
+        if self.succ_only is True:
+            # replace the original weight array with succ only
+            new_weights = self.weights = self.succ_pdist_weight_filter()
+
+        return new_weights
+
     def make_new_h5(self, new_weights=None):
         """
         TODO: actually make a new h5 file, see bstate filter code, integrate all.
@@ -1493,21 +1522,10 @@ class H5_Pdist():
         """ 
         # empty object to pass to make_new_h5
         new_weights = None
-        # option to zero weight out specific basis states
-        if self.skip_basis is not None:
-            self.n_bstates = self.h5["ibstates/index"]["n_bstates"]
-            try: 
-                new_weights = self.weights = self._new_weights_from_skip_basis()
-            # if the wrong amount of args are input and != n_bstates
-            except IndexError as e:
-                message = f"IndexError ({e}) for bstate input ({self.skip_basis}): " + \
-                          f"Did you use the correct amount of bstates {self.n_bstates}?"
-                warn(message)
-
-        # option to only use weights for succ trajs
-        if self.succ_only is True:
-            # replace the original weight array with succ only
-            new_weights = self.weights = self.succ_pdist_weight_filter()
+        # with multiple h5 files, the weights are filtered for each file in the loop below,
+        # so only filter here for a single file or for the make_new_h5 copy of the first file
+        if len(self.h5_list) == 1 or self.H5save_out is not None:
+            new_weights = self._filter_weights()
 
         # if requested, save out a new H5 file with the input data array in new aux name
         if self.H5save_out is not None:
@@ -1565,6 +1583,8 @@ class H5_Pdist():
                 self.h5.close()
                 self.h5 = h5py.File(h5, mode="r")
                 self._init_weights()
+                # apply the skip_basis or succ_only weight filters for this h5 file
+                self._filter_weights()
                 
                 # TODO: instead of just opening h5 and re-init weights, need to also account for
                 # cases like with 3D dataset returns which use self.n_particles (segs per iter)
